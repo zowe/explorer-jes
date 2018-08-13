@@ -1,0 +1,17 @@
+node_modules
+coverage
+etc
+target
+node
+.nyc_output
+.settings
+.externalToolBuilders
+.apt_generated
+.project
+.jazzignore
+.history
+WebContent/app.min.js
+.classpath
+.factorypath
+*.war
+bin

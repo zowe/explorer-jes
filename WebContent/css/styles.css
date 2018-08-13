@@ -1,0 +1,135 @@
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright IBM Corporation 2018
+ */
+
+html, body, #app {
+    height: 100%;
+}
+
+html {
+    font-family: sans-serif;
+}
+
+body {
+    font-size: 13px;
+    line-height: 20px;
+    margin: 0;
+}
+
+.component {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#syslog-viewer pre {
+    max-height: 78vh;
+}
+
+#syslog-viewer-content {
+    font-family: monospace;
+    white-space: pre;
+    overflow: auto;
+    font-size: 12px;
+    margin: 0;
+    background:#F5F8F8;
+    border-style: solid;
+    border-width: thin;
+    border-color: #deedf7;
+    height: 100%;
+}
+
+.message-link {
+    cursor:pointer;
+    color:blue;
+    text-decoration:underline;
+}
+
+
+.hljs-link {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.hljs-dsn {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+pre code {
+    white-space: pre;
+}
+
+#node-viewer-content {
+    font-family: monospace;
+    white-space: pre;
+    background: #F5F8F8;
+    border-style: solid;
+    border-width: thin;
+    border-color: #deedf7;
+}
+
+#node-viewer-content h1 {
+    font-size: 20px;
+}
+
+#node-viewer-content h2 {
+    font-size: 18px;
+}
+
+#node-viewer-content h3 {
+    font-size: 16px;
+}
+
+.card-component {
+    margin-bottom: 10px;
+}
+
+.tree-card {
+    padding-bottom: 0;
+}
+
+#tree-text-content {
+    padding-bottom: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* Node Tree Styles */
+.content-link {
+    cursor: pointer;
+    color: #2E77A1;
+}
+
+.node-toggle {
+    cursor: pointer;
+}
+
+.node-toggle-placeholder {
+    width: 24px;
+    display: inline-block;
+}
+
+.node ul {
+    list-style: none;
+    padding-left: 10px;
+    margin: 0;
+}
+
+.node span {
+    display: inline-block;
+    vertical-align: top;
+    line-height: 24px;
+}
+
+.node .subsystem-type {
+    padding-right: 5px;
+}
+
+.node-annotation {
+    padding-left: 5px;
+}
