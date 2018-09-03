@@ -27,63 +27,8 @@ body {
     margin-bottom: 0px;
 }
 
-#syslog-viewer pre {
-    max-height: 78vh;
-}
-
-#syslog-viewer-content {
-    font-family: monospace;
-    white-space: pre;
-    overflow: auto;
-    font-size: 12px;
-    margin: 0;
-    background:#F5F8F8;
-    border-style: solid;
-    border-width: thin;
-    border-color: #deedf7;
-    height: 100%;
-}
-
-.message-link {
-    cursor:pointer;
-    color:blue;
-    text-decoration:underline;
-}
-
-
-.hljs-link {
-    cursor: pointer;
-    text-decoration: underline;
-}
-
-.hljs-dsn {
-    cursor: pointer;
-    text-decoration: underline;
-}
-
 pre code {
     white-space: pre;
-}
-
-#node-viewer-content {
-    font-family: monospace;
-    white-space: pre;
-    background: #F5F8F8;
-    border-style: solid;
-    border-width: thin;
-    border-color: #deedf7;
-}
-
-#node-viewer-content h1 {
-    font-size: 20px;
-}
-
-#node-viewer-content h2 {
-    font-size: 18px;
-}
-
-#node-viewer-content h3 {
-    font-size: 16px;
 }
 
 .card-component {

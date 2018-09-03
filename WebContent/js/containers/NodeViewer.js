@@ -49,8 +49,7 @@ export class NodeViewer extends React.Component {
     };
 
     render() {
-        const { label, sourceId, content, edit, isContentHTML, isContentRealtime, isFetching, dispatch } = this.props;
-        const instructionMessage = 'Select a dataset, member or job output file to view';
+        const { label, sourceId, content, isContentRealtime, isFetching, dispatch } = this.props;
         const languageSyntax = (label === 'JESJCL') ? 'jcl' : 'syslog';
         const cardTextStyle = { paddingTop: '0', paddingBottom: '0' };
         let contentViewer;
@@ -66,11 +65,8 @@ export class NodeViewer extends React.Component {
             contentViewer = (
                 <ContentViewer
                     isFetching={isFetching}
-                    isContentHTML={isContentHTML}
                     content={content}
-                    edit={edit}
                     languageSyntax={languageSyntax}
-                    instructionMessage={instructionMessage}
                     dispatch={dispatch}
                 />
             );
@@ -89,7 +85,6 @@ export class NodeViewer extends React.Component {
                     style={cardTextStyle}
                 >
                     <div
-                        className="node"
                         ref={this.onDivRef}
                         style={{ overflow: 'auto', height: this.state.height }}
                     >
@@ -106,8 +101,6 @@ NodeViewer.propTypes = {
     sourceId: PropTypes.string,
     label: PropTypes.string,
     content: PropTypes.string,
-    edit: PropTypes.bool,
-    isContentHTML: PropTypes.bool,
     isContentRealtime: PropTypes.bool,
     isFetching: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,

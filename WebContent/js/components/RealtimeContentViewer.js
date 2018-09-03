@@ -11,9 +11,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import ConnectedRichTextViewer from '../components/RichTextViewer';
+import OrionEditor from 'orion-editor-component';
 import { requestRealtimeContent, receiveRealtimeContent, invalidateRealtimeContent, markRealtimeContentRead } from '../actions/realtimeContent';
 import { validateUser } from '../actions/validation';
+import { SERVER_LOCATION } from '../utilities/urlUtils';
 
 const REALTIME_CONTENT_VIEWER = 'realtime-content-viewer';
 const BROWSER_SCROLL_OFFSET = 16; // Some browsers require additional offset (Firefox)
@@ -84,8 +85,8 @@ export class RealtimeContentViewer extends React.Component {
     }
 
     initWebsocket() {
-        const { contentURI, dispatch, server } = this.props;
-        const websocketURI = `wss://${server}/Atlas/api/sockets/${contentURI}`;
+        const { contentURI, dispatch } = this.props;
+        const websocketURI = `wss://${SERVER_LOCATION}/Atlas/api/sockets/${contentURI}`;
 
         this.websocket = new WebSocket(websocketURI);
         this.websocket.onopen = () => {
@@ -112,24 +113,18 @@ export class RealtimeContentViewer extends React.Component {
     }
 
     render() {
-        const { content, isFetching, dispatch, validated, languageSyntax } = this.props;
-        const eventListeners = [{
-            type: 'scroll',
-            handler: this.handleScroll,
-        }];
+        const { content, validated } = this.props;
         if (validated) {
-            if (isFetching) {
-                return <span>Loading...</span>;
-            }
             if (content) {
                 return (
-                    <ConnectedRichTextViewer
-                        id={REALTIME_CONTENT_VIEWER}
-                        languageSyntax={languageSyntax}
+                    <OrionEditor
                         content={content}
-                        dispatch={dispatch}
-                        eventListeners={eventListeners}
-                    />);
+                        syntax={'text/jclcontext'}
+                        languageFilesHost={'winmvs3b.hursley.ibm.com:7445'}
+                        editorTopOffset={60}
+                        readonly={true}
+                    />
+                );
             }
         }
         return null;
@@ -139,13 +134,10 @@ export class RealtimeContentViewer extends React.Component {
 RealtimeContentViewer.propTypes = {
     content: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
-    languageSyntax: PropTypes.string,
     contentURI: PropTypes.string.isRequired,
     validated: PropTypes.bool.isRequired,
-    isFetching: PropTypes.bool,
     updateUnreadLines: PropTypes.func.isRequired,
     unreadLines: PropTypes.number,
-    server: PropTypes.string,
 };
 
 function mapStateToProps(state) {

@@ -10,37 +10,22 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import ConnectedRichTextViewer from './RichTextViewer';
-import HTMLTextViewer from './HTMLTextViewer';
-
-const CONTENT_NODE_ID = 'node-viewer-content';
+import OrionEditor from 'orion-editor-component';
 
 const ContentViewer = props => {
-    const { content, isContentHTML, languageSyntax, dispatch } = props;
-    if (content) {
-        if (isContentHTML) {
-            return (<HTMLTextViewer
-                id={CONTENT_NODE_ID}
-                content={content}
-                languageSyntax={languageSyntax}
-                dispatch={dispatch}
-            />);
-        }
-        return (<ConnectedRichTextViewer
-            id={CONTENT_NODE_ID}
+    const { content } = props;
+    return (
+        <OrionEditor
             content={content}
-            languageSyntax={languageSyntax}
-            dispatch={dispatch}
+            syntax={'text/jclcontext'}
+            languageFilesHost={'winmvs3b.hursley.ibm.com:7445'}
+            editorTopOffset={60}
+            readonly={true}
         />);
-    }
-    return null;
 };
 
 ContentViewer.propTypes = {
     content: PropTypes.string,
-    languageSyntax: PropTypes.string.isRequired,
-    isContentHTML: PropTypes.bool,
-    dispatch: PropTypes.func.isRequired,
 };
 
 export default ContentViewer;
