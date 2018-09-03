@@ -46,10 +46,8 @@ ReactDOM.render(
     <MuiThemeProvider muiTheme={lightTheme}>
         <Provider store={store().getStore()}>
             <Router history={hashHistory}>
-                <Route path="/" component={JobsView}>
-                    <Route path="/filterJobs" component={JobsView} />
-                    <Route path="/syslog" component={SyslogView} />
-                </Route>
+                <Route path="/" component={JobsView} />
+                <Route path="/syslog" component={SyslogView} />
             </Router>
         </Provider>
     </MuiThemeProvider>

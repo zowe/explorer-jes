@@ -8,21 +8,21 @@
  * Copyright IBM Corporation 2018
  */
 
-let host = 'winmvs3b.hursley.ibm.com:7447';
+let host = 'winmvs3b.hursley.ibm.com:7443';
 if (typeof location !== 'undefined') {
     const hostname = location.hostname;
     if (hostname !== 'localhost') {
         host = location.host;
     }
 }
-export const LOCAL_DEV_SERVER = host;
+export const SERVER_LOCATION = host;
 
 export function encodeURLComponent(URL) {
     return encodeURIComponent(URL);
 }
 
 export function atlasFetch(endpoint, content) {
-    let server = LOCAL_DEV_SERVER;
+    let server = SERVER_LOCATION;
 
     if (location.hostname === 'tester.test.com') {
         server = 'tester.test.com:7443';
