@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 import { Card, CardHeader, CardText } from 'material-ui/Card';
 import ContentViewer from '../components/ContentViewer';
 import ConnectedRealtimeContentViewer from '../components/RealtimeContentViewer';
+import { fetchContentNoNode } from '../actions/content';
 
 const PADDING_OFFSET = 8;
 
@@ -25,6 +26,13 @@ export class NodeViewer extends React.Component {
         this.state = {
             height: 0,
         };
+    }
+
+    componentWillMount() {
+        const { locationQuery, dispatch } = this.props;
+        if (locationQuery && locationQuery.jobName && locationQuery.jobId && locationQuery.fileId) {
+            dispatch(fetchContentNoNode(locationQuery.jobName, locationQuery.jobId, locationQuery.fileId));
+        }
     }
 
     componentDidMount() {
@@ -50,14 +58,12 @@ export class NodeViewer extends React.Component {
 
     render() {
         const { label, sourceId, content, isContentRealtime, isFetching, dispatch } = this.props;
-        const languageSyntax = (label === 'JESJCL') ? 'jcl' : 'syslog';
         const cardTextStyle = { paddingTop: '0', paddingBottom: '0' };
         let contentViewer;
         if (isContentRealtime) {
             contentViewer = (
                 <ConnectedRealtimeContentViewer
                     contentURI={`${sourceId}?records=40`}
-                    languageSyntax="jcl"
                     dispatch={dispatch}
                     updateUnreadLines={this.updateUnreadLines}
                 />);
@@ -66,7 +72,6 @@ export class NodeViewer extends React.Component {
                 <ContentViewer
                     isFetching={isFetching}
                     content={content}
-                    languageSyntax={languageSyntax}
                     dispatch={dispatch}
                 />
             );
@@ -104,6 +109,11 @@ NodeViewer.propTypes = {
     isContentRealtime: PropTypes.bool,
     isFetching: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
+    locationQuery: PropTypes.shape({
+        jobName: PropTypes.string.isRequired,
+        jobId: PropTypes.string.isRequired,
+        fileId: PropTypes.string.isRequired,
+    }),
 };
 
 function mapStateToProps(state) {

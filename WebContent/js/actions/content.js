@@ -66,6 +66,40 @@ function fetchContent(node) {
     };
 }
 
+function getFileNameFromJob(jobName, jobId, fileId) {
+    const contentPath = `/jobs/${jobName}/ids/${jobId}/files`;
+    return atlasFetch(contentPath, { credentials: 'include' })
+        .then(response => { return response.json(); })
+        .then(json => {
+            return json.find(file => {
+                return parseInt(file.id, 10) === parseInt(fileId, 10);
+            });
+        })
+        .then(file => {
+            return file.ddname;
+        });
+}
+
+export function fetchContentNoNode(jobName, jobId, fileId) {
+    return dispatch => {
+        const contentPath = `jobs/${jobName}/ids/${jobId}/files/${fileId}`;
+        dispatch(requestContent(contentPath));
+        return atlasFetch(contentPath, { credentials: 'include' })
+            .then(response => { return response.json(); })
+            .then(json => {
+                getFileNameFromJob(jobName, jobId, fileId).then(
+                    fileName => {
+                        dispatch(receiveContent(contentPath, `${jobName} - ${jobId} - ${fileName}`, json.content));
+                    },
+                );
+            })
+            .catch(() => {
+                dispatch(constructAndPushMessage(`${GET_CONTENT_FAIL_MESSAGE} ${contentPath}`));
+                return dispatch(invalidateContent());
+            });
+    };
+}
+
 export function openContentIfAvailable(nodeId) {
     return (dispatch, getState) => {
         const node = getState().get('treeNodesJobs').get(nodeId);

@@ -23,6 +23,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import store from './store/Store';
 import JobsView from './containers/pages/Jobs';
+import FullScreenView from './containers/pages/FullScreen';
 import SyslogView from './containers/pages/Syslog';
 import * as ibmcolors from './themes/ibmcolors';
 
@@ -47,6 +48,7 @@ ReactDOM.render(
         <Provider store={store().getStore()}>
             <Router history={hashHistory}>
                 <Route path="/" component={JobsView} />
+                <Route path="/viewer" component={FullScreenView} />
                 <Route path="/syslog" component={SyslogView} />
             </Router>
         </Provider>
