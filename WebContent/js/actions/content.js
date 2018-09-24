@@ -87,11 +87,17 @@ export function fetchContentNoNode(jobName, jobId, fileId) {
         return atlasFetch(contentPath, { credentials: 'include' })
             .then(response => { return response.json(); })
             .then(json => {
-                getFileNameFromJob(jobName, jobId, fileId).then(
+                return getFileNameFromJob(jobName, jobId, fileId).then(
                     fileName => {
-                        dispatch(receiveContent(contentPath, `${jobName} - ${jobId} - ${fileName}`, json.content));
+                        if (fileName) {
+                            dispatch(receiveContent(contentPath, `${jobName} - ${jobId} - ${fileName}`, json.content));
+                        } else {
+                            throw Error();
+                        }
                     },
-                );
+                ).catch(() => {
+                    throw Error();
+                });
             })
             .catch(() => {
                 dispatch(constructAndPushMessage(`${GET_CONTENT_FAIL_MESSAGE} ${contentPath}`));
