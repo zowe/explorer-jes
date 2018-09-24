@@ -67,7 +67,7 @@ function fetchContent(node) {
 }
 
 function getFileNameFromJob(jobName, jobId, fileId) {
-    const contentPath = `/jobs/${jobName}/ids/${jobId}/files`;
+    const contentPath = `jobs/${jobName}/ids/${jobId}/files`;
     return atlasFetch(contentPath, { credentials: 'include' })
         .then(response => { return response.json(); })
         .then(json => {
@@ -90,7 +90,7 @@ export function fetchContentNoNode(jobName, jobId, fileId) {
                 return getFileNameFromJob(jobName, jobId, fileId).then(
                     fileName => {
                         if (fileName) {
-                            dispatch(receiveContent(contentPath, `${jobName} - ${jobId} - ${fileName}`, json.content));
+                            dispatch(receiveContent(contentPath, `${jobName} - ${jobId} - ${fileName}`, json.content, false, false));
                         } else {
                             throw Error();
                         }

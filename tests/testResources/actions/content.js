@@ -8,16 +8,6 @@
  * Copyright IBM Corporation 2018
  */
 
-export const content =
-    {
-        content: 'Some message content',
-        isContentHTML: undefined,
-        isContentRealtime: undefined,
-        label: undefined,
-        sourceId: 'DummyId',
-        type: 'RECEIVE_CONTENT',
-    };
-
 export const FAReport =
     '<div style="font-family:monospace; white-space:pre;"><div class="prolog">********************************************************************************\n' +
 '* IBM Fault Analyzer for z/OS V13R1M0 (PI58441 2016/03/20)                     *\n' +
@@ -69,6 +59,16 @@ export const DSMemberContent = "//TSTJIMS  JOB (ADL),'ATLAS',MSGCLASS=0,CLASS=A,
 '//SYSOUT   DD SYSOUT=*\n' +
 '//*\n';
 
+export const content =
+    {
+        content: DSMemberContent,
+        isContentHTML: undefined,
+        isContentRealtime: undefined,
+        label: undefined,
+        sourceId: 'DummyId',
+        type: 'RECEIVE_CONTENT',
+    };
+
 export const DSMemberFetchResponse = {
     records: "//TSTJIMS  JOB (ADL),'ATLAS',MSGCLASS=0,CLASS=A,TIME=1440\n" +
 '//*        THIS JOB SIMULATES AN IMS REGION FOR 60 SECONDS\n' +
@@ -91,3 +91,8 @@ export const USSFetchResponse = {
 };
 
 export const USSRequestFailed = "Could not read content from file '/u/jcain//hello1.txt':";
+
+export const jobName = 'DEMOJOB';
+export const jobId = 'JOB12345';
+export const fileId = '102';
+export const fileName = 'JESMSGLG';

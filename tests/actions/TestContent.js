@@ -27,6 +27,9 @@ describe('Action: content', () => {
     const middlewares = [thunk];
     const mockStore = configureMockStore(middlewares);
 
+    const rewiredContent = rewire('../../WebContent/js/actions/content');
+    const getContentFailMessage = rewiredContent.__get__('GET_CONTENT_FAIL_MESSAGE');
+
     describe('openContentIfAvailbable', () => {
         const expectedNodeId = 'DummyId';
         let node = Map({
@@ -59,8 +62,6 @@ describe('Action: content', () => {
         });
 
         it('Should not load content as the nodeID hasContent = false', () => {
-            const rewiredContent = rewire('../../WebContent/js/actions/content');
-            const getcontentFail = rewiredContent.__get__('GET_CONTENT_FAIL_MESSAGE');
             const expectedAction = [
                 {
                     type: contentActions.REQUEST_CONTENT,
@@ -69,7 +70,7 @@ describe('Action: content', () => {
                 {
                     type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
                     message: Map({
-                        message: `${getcontentFail} ${expectedNodeId}`,
+                        message: `${getContentFailMessage} ${expectedNodeId}`,
                     }),
                 },
                 {
@@ -143,6 +144,104 @@ describe('Action: content', () => {
 
             store.dispatch(contentActions.openRealtimeContent(expectedNodeId));
             expect(store.getActions()).toEqual(expectedActions);
+        });
+    });
+
+    describe.only('fetchContentNoNode', () => {
+        it('Should create a request and receive action', () => {
+            const nodeURI = `jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files/${contentResources.fileId}`;
+            const nodeNameURI = `jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files`;
+            const expectedActions = [
+                {
+                    type: contentActions.REQUEST_CONTENT,
+                    nodeId: nodeURI,
+                },
+                {
+                    type: contentActions.RECEIVE_CONTENT,
+                    label: `${contentResources.jobName} - ${contentResources.jobId} - ${contentResources.fileName}`,
+                    content: contentResources.DSMemberContent,
+                    sourceId: nodeURI,
+                    isContentHTML: false,
+                    isContentRealtime: false,
+                },
+            ];
+            const store = mockStore();
+
+            nock(BASE_URL)
+                .get(`/${nodeURI}`)
+                .reply(200, contentResources.content);
+
+            nock(BASE_URL)
+                .get(`/${nodeNameURI}`)
+                .reply(200, [{ ddname: contentResources.fileName, id: contentResources.fileId }]);
+
+            return store.dispatch(contentActions.fetchContentNoNode(contentResources.jobName, contentResources.jobId, contentResources.fileId))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
+        });
+
+        it('Should create a request but not receive action due to no file content', () => {
+            const nodeURI = `jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files/${contentResources.fileId}`;
+            const expectedActions = [
+                {
+                    type: contentActions.REQUEST_CONTENT,
+                    nodeId: nodeURI,
+                },
+                {
+                    type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
+                    message: Map({
+                        message: `${getContentFailMessage} ${nodeURI}`,
+                    }),
+                },
+                {
+                    type: contentActions.INVALIDATE_CONTENT,
+                },
+            ];
+            const store = mockStore();
+
+            nock(BASE_URL)
+                .get(`/${nodeURI}`)
+                .reply(404, null);
+
+            return store.dispatch(contentActions.fetchContentNoNode(contentResources.jobName, contentResources.jobId, contentResources.fileId))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
+        });
+
+        it('Should create a request but not receive action due to no file name match', () => {
+            const nodeURI = `jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files/${contentResources.fileId}`;
+            const nodeNameURI = `jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files`;
+            const expectedActions = [
+                {
+                    type: contentActions.REQUEST_CONTENT,
+                    nodeId: nodeURI,
+                },
+                {
+                    type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
+                    message: Map({
+                        message: `${getContentFailMessage} ${nodeURI}`,
+                    }),
+                },
+                {
+                    type: contentActions.INVALIDATE_CONTENT,
+                },
+            ];
+            const store = mockStore();
+
+            nock(BASE_URL)
+                .get(`/${nodeURI}`)
+                .reply(200, contentResources.content);
+
+            nock(BASE_URL)
+                .get(`/${nodeNameURI}`)
+                .reply(500, null);
+
+            return store.dispatch(contentActions.fetchContentNoNode(contentResources.jobName, contentResources.jobId, contentResources.fileId))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
         });
     });
 });
