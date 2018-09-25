@@ -147,7 +147,7 @@ describe('Action: content', () => {
         });
     });
 
-    describe.only('fetchContentNoNode', () => {
+    describe('fetchContentNoNode', () => {
         it('Should create a request and receive action', () => {
             const nodeURI = `jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files/${contentResources.fileId}`;
             const nodeNameURI = `jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files`;
