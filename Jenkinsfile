@@ -24,6 +24,19 @@ opts.push(disableConcurrentBuilds())
 
 // define custom build parameters
 def customParameters = []
+customParameters.push(credentials(
+  name: 'NPM_CREDENTIALS_ID',
+  description: 'npm auth token',
+  credentialType: 'org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl',
+  defaultValue: 'giza-jenkins-basicAuth',
+  required: true
+))
+customParameters.push(string(
+  name: 'NPM_USER_EMAIL',
+  description: 'npm user email',
+  defaultValue: 'giza-jenkins@gmail.com',
+  trim: true
+))
 customParameters.push(string(
   name: 'ARTIFACTORY_SERVER',
   description: 'Artifactory server, should be pre-defined in Jenkins configuration',
@@ -64,6 +77,10 @@ node ('jenkins-slave') {
       sh 'npm -v'
 
       ansiColor('xterm') {
+        // login to private npm registry
+        def npmRegistry = 'https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-release/'
+        npmLogin(npmRegistry, params.NPM_CREDENTIALS_ID, params.NPM_USER_EMAIL)
+
         // sh 'npm prune'
         sh 'npm install'
       }
