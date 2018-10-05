@@ -10,9 +10,7 @@
 
 import { Map, List } from 'immutable';
 import { ROOT_NODE_ID } from '../../../WebContent/js/reducers/treeNodesJobs';
-import {
-    ROOT_NODE_TYPE,
-} from '../../../WebContent/js/containers/JobNode';
+import { ROOT_NODE_TYPE } from '../../../WebContent/js/jobNodeTypesConstants';
 
 const ROOT_NODE = Map({
     id: ROOT_NODE_ID,
@@ -553,14 +551,14 @@ export const receivedStepsNodesTreeNodesJobs = Map({
         nodeType: 'JOB_STEP_PARENT',
         childIds: List(['jobs/ATLJ0003/ids/JOB05944/steps/1']),
     }),
-    'jobs/ATLJ0003/ids/JOB05944/steps/1/dds/1/datasets/ATLAS.TEST.LOAD': Map({
+    'datasets/ATLAS.TEST.LOAD/content': Map({
         isToggled: false,
         jobName: 'ATLJ0003',
         isFetchingChildren: false,
         owner: 'JCAIN',
         label: 'ATLAS.TEST.LOAD',
         type: 'JOB',
-        id: 'jobs/ATLJ0003/ids/JOB05944/steps/1/dds/1/datasets/ATLAS.TEST.LOAD',
+        id: 'datasets/ATLAS.TEST.LOAD/content',
         nodeType: 'JOB_STEP_DD_DSN',
         childIds: null,
         hasContent: true,
@@ -602,7 +600,7 @@ export const receivedStepsNodesTreeNodesJobs = Map({
         type: 'JOB',
         id: 'jobs/ATLJ0003/ids/JOB05944/steps/1/dds/1',
         nodeType: 'JOB_STEP_DD',
-        childIds: List(['jobs/ATLJ0003/ids/JOB05944/steps/1/dds/1/datasets/ATLAS.TEST.LOAD']),
+        childIds: List(['datasets/ATLAS.TEST.LOAD/content']),
     }),
     'jobs/ATLJ0003/ids/JOB05944': Map({
         isToggled: true,

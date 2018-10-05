@@ -28,7 +28,7 @@ import {
     JOB_OUTPUT_FILE_PARENT_NODE_TYPE,
     JOB_STEP_DD_NODE_TYPE,
     JOB_STEP_DD_DSN_NODE_TYPE,
-} from '../containers/JobNode';
+} from '../jobNodeTypesConstants';
 
 export const ROOT_NODE_ID = 'jobs';
 const ROOT_NODE = Map({
@@ -208,7 +208,7 @@ function createChildNodes(state, treeNode, json, autoExpandChildren) {
                     if (child.datasets && child.datasets.length > 0) {
                         childIds = List([]);
                         child.datasets.forEach(dsn => {
-                            const dsnId = `${childId}/datasets/${dsn}`;
+                            const dsnId = `datasets/${dsn}/content`;
                             childNodes = childNodes.set(dsnId, Map({
                                 id: dsnId,
                                 label: dsn,

@@ -25,17 +25,12 @@ import { List, Record } from 'immutable';
 import ReactTooltip from 'react-tooltip';
 import { openContentIfAvailable, openRealtimeContent } from '../actions/content';
 import { toggleAndFetchChildrenIfNeeded, purgeJob } from '../actions/treeNodesJobs';
-
-
-export const ROOT_NODE_TYPE = 'ROOT';
-export const JOB_NAME_NODE_TYPE = 'JOB_NAME';
-export const JOB_INSTANCE_NODE_TYPE = 'JOB_INSTANCE';
-export const JOB_STEP_PARENT_NODE_TYPE = 'JOB_STEP_PARENT';
-export const JOB_STEP_NODE_TYPE = 'JOB_STEP';
-export const JOB_OUTPUT_FILE_PARENT_NODE_TYPE = 'JOB_OUTPUT_FILE_PARENT';
-export const JOB_OUTPUT_FILE_NODE_TYPE = 'JOB_OUTPUT_FILE';
-export const JOB_STEP_DD_NODE_TYPE = 'JOB_STEP_DD';
-export const JOB_STEP_DD_DSN_NODE_TYPE = 'JOB_STEP_DD_DSN';
+import {
+    ROOT_NODE_TYPE,
+    JOB_NAME_NODE_TYPE,
+    JOB_INSTANCE_NODE_TYPE,
+    JOB_STEP_DD_NODE_TYPE,
+    JOB_OUTPUT_FILE_NODE_TYPE } from '../jobNodeTypesConstants';
 
 export class JobNode extends React.Component {
     constructor(props) {
