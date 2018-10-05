@@ -10,6 +10,7 @@
 
 import { atlasFetch } from '../utilities/urlUtils';
 import { constructAndPushMessage } from './snackbarNotifications';
+import { JOB_STEP_DD_DSN_NODE_TYPE } from '../jobNodeTypesConstants';
 
 export const REQUEST_CONTENT = 'REQUEST_CONTENT';
 export const RECEIVE_CONTENT = 'RECEIVE_CONTENT';
@@ -57,7 +58,11 @@ function fetchContent(node) {
         return atlasFetch(contentURL, { credentials: 'include' })
             .then(response => { return response.json(); })
             .then(json => {
-                dispatch(receiveContent(node.get('id'), node.get('label'), json.content));
+                if (node.get('nodeType') === JOB_STEP_DD_DSN_NODE_TYPE) {
+                    dispatch(receiveContent(node.get('id'), node.get('label'), json.records));
+                } else {
+                    dispatch(receiveContent(node.get('id'), node.get('label'), json.content));
+                }
             })
             .catch(() => {
                 dispatch(constructAndPushMessage(`${GET_CONTENT_FAIL_MESSAGE} ${node.get('id')}`));

@@ -11,7 +11,7 @@
 /* global fetch */
 import { atlasFetch } from '../utilities/urlUtils';
 import { ROOT_NODE_ID } from '../reducers/treeNodesJobs';
-import { JOB_NAME_NODE_TYPE, JOB_INSTANCE_NODE_TYPE } from '../containers/JobNode';
+import { JOB_NAME_NODE_TYPE, JOB_INSTANCE_NODE_TYPE, JOB_STEP_DD_NODE_TYPE } from '../jobNodeTypesConstants';
 import { constructAndPushMessage } from './snackbarNotifications';
 
 export const SELECT_NODE = 'SELECT_NODE';
@@ -166,7 +166,7 @@ function findAllNodesToRefresh(state, nodeId) {
 
     if (childIds && childIds.size > 0) {
         const nodeType = node.get('nodeType');
-        if (nodeType !== JOB_INSTANCE_NODE_TYPE && nodeType !== JOB_NAME_NODE_TYPE) {
+        if (nodeType !== JOB_INSTANCE_NODE_TYPE && nodeType !== JOB_NAME_NODE_TYPE && nodeType !== JOB_STEP_DD_NODE_TYPE) {
             nodesToRefresh.push(nodeId);
         }
 
@@ -189,7 +189,8 @@ export function purgeJob(jobName, jobId) {
     return dispatch => {
         dispatch(requestPurge(jobName, jobId));
         return atlasFetch(`${jobName}/${jobId}`,
-            { credentials: 'include',
+            {
+                credentials: 'include',
                 method: 'DELETE',
             },
         ).then(response => {
