@@ -27,5 +27,5 @@ export function atlasFetch(endpoint, content) {
     if (location.hostname === 'tester.test.com') {
         server = 'tester.test.com:7443';
     }
-    return fetch(`https://${server}/Atlas/api/${endpoint}`, content);
+    return fetch(`https://${server}/api/v1/${endpoint}`, content);
 }
