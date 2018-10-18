@@ -40,6 +40,13 @@ export class NodeViewer extends React.Component {
         window.addEventListener('resize', this.updateDivHeight);
     }
 
+    componentWillReceiveProps(nextProps) {
+        const { locationQuery } = this.props;
+        if (locationQuery && locationQuery !== nextProps.locationQuery) {
+            window.location.reload();
+        }
+    }
+
     onDivRef(node) {
         if (node) {
             this.divRef = node;
