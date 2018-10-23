@@ -1,0 +1,59 @@
+#app { 
+    background-color: #343a40;
+}
+
+.accent-card {
+    background-color: #3f51b5 !important;
+}
+
+.accent-button {
+    background-color: #343a40 !important;
+}
+
+.snackbar {
+    background-color: #343a40 !important;
+}
+
+.content-link {
+    color: #4ab5f3 !important;
+}
+
+/* Overide Orion editor style for dark theme */
+.textviewLeftRuler {
+    border-right-width: 0px !important;
+}
+
+.textviewRightRuler {
+    border-left-width: 0px !important;
+}
+
+.textview {
+    background-color: #1e1e1e !important;
+    color: #d4d4d4 !important;
+}
+
+.annotationLine.currentLine {
+    background-color: #505050 !important;
+}
+
+/*Syntax highlight changes */
+.cm-attribute {
+    color: #ce9178 !important;
+}
+
+.cm-string { 
+    color: #569cd6 !important;
+}
+
+.number {
+    color: #b5cea8 !important;
+}
+
+.variable-language {
+    color: #bb5f66 !important;
+}
+
+.storage {
+    color: #bb5f66 !important;
+}
+/*End of Orion overrides*/

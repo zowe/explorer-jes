@@ -10,7 +10,7 @@
 
 import { Map, List } from 'immutable';
 import { ROOT_NODE_ID } from '../../../WebContent/js/reducers/treeNodesJobs';
-import { ROOT_NODE_TYPE } from '../../../WebContent/js/jobNodeTypesConstants';
+import { ROOT_NODE_TYPE } from '../../../WebContent/js/constants/jobNodeTypesConstants';
 
 const ROOT_NODE = Map({
     id: ROOT_NODE_ID,

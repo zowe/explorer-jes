@@ -30,7 +30,7 @@ import {
     JOB_NAME_NODE_TYPE,
     JOB_INSTANCE_NODE_TYPE,
     JOB_STEP_DD_NODE_TYPE,
-    JOB_OUTPUT_FILE_NODE_TYPE } from '../jobNodeTypesConstants';
+    JOB_OUTPUT_FILE_NODE_TYPE } from '../constants/jobNodeTypesConstants';
 
 export class JobNode extends React.Component {
     constructor(props) {

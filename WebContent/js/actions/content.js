@@ -10,7 +10,7 @@
 
 import { atlasFetch } from '../utilities/urlUtils';
 import { constructAndPushMessage } from './snackbarNotifications';
-import { JOB_STEP_DD_DSN_NODE_TYPE } from '../jobNodeTypesConstants';
+import { JOB_STEP_DD_DSN_NODE_TYPE } from '../constants/jobNodeTypesConstants';
 
 export const REQUEST_CONTENT = 'REQUEST_CONTENT';
 export const RECEIVE_CONTENT = 'RECEIVE_CONTENT';

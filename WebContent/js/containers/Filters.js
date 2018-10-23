@@ -21,7 +21,6 @@ import UpperCaseTextField from '../components/dialogs/UpperCaseTextField';
 
 import { toggleFilters, setFilters, resetFilters, initialiseOwnerFilter } from '../actions/filters';
 import { fetchChildrenNoCheck } from '../actions/treeNodesJobs';
-import { ibmBlueDark } from '../themes/ibmcolors';
 
 const STATUS_TYPES = ['ACTIVE', 'INPUT', 'OUTPUT'];
 
@@ -122,7 +121,6 @@ export class Filters extends React.Component {
     render() {
         const { prefix, owner, status, jobId, isToggled } = this.props;
         const rightAlign = {
-            display: 'inline-block',
             float: 'right',
             width: '50%',
         };
@@ -137,28 +135,28 @@ export class Filters extends React.Component {
             position: 'absolute',
             color: orange500,
         };
-        const labelStyle = {
+        const labelStyleWarning = {
             color: orange500,
         };
 
         return (
-            <div>
+            <div >
                 <Card
-                    id="filter-view"
                     expanded={isToggled}
                     onExpandChange={this.toggle}
+                    class="accent-card"
                 >
                     <CardHeader
                         title="Job Filters"
                         actAsExpander={true}
                         showExpandableButton={true}
                     />
-                    <CardText expandable={true}>
+                    <CardText expandable={true} color="black">
                         <form onSubmit={e => { return this.applyValues(e); }}>
                             <div>
                                 <UpperCaseTextField
                                     floatingLabelText="Owner"
-                                    floatingLabelStyle={this.isOwnerAndPrefixWild() ? labelStyle : null}
+                                    floatingLabelStyle={this.isOwnerAndPrefixWild() ? labelStyleWarning : null}
                                     value={owner}
                                     fieldChangedCallback={this.handleOwnerChange}
                                     fullWidth={false}
@@ -168,7 +166,7 @@ export class Filters extends React.Component {
                                 />
                                 <UpperCaseTextField
                                     floatingLabelText="Prefix"
-                                    floatingLabelStyle={this.isOwnerAndPrefixWild() ? labelStyle : null}
+                                    floatingLabelStyle={this.isOwnerAndPrefixWild() ? labelStyleWarning : null}
                                     value={prefix}
                                     fieldChangedCallback={this.handlePrefixChange}
                                     fullWidth={false}
@@ -202,18 +200,19 @@ export class Filters extends React.Component {
                             <CardActions>
                                 <RaisedButton
                                     label="APPLY"
-                                    labelColor={ibmBlueDark}
-                                    primary={true}
                                     type="submit"
+                                    className="accent-button"
+                                    buttonStyle={{ backgroundColor: 'inherit' }}
+                                    labelStyle={{ color: 'white' }}
                                 />
                                 <RaisedButton
                                     label="RESET"
-                                    labelColor={ibmBlueDark}
-                                    secondary={true}
                                     onClick={this.resetValues}
+                                    className="accent-button"
+                                    buttonStyle={{ backgroundColor: 'inherit' }}
+                                    labelStyle={{ color: 'white' }}
                                 />
                             </CardActions>
-
                         </form>
                     </CardText>
                 </Card>

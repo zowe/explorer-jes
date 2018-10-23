@@ -28,7 +28,7 @@ import {
     JOB_OUTPUT_FILE_PARENT_NODE_TYPE,
     JOB_STEP_DD_NODE_TYPE,
     JOB_STEP_DD_DSN_NODE_TYPE,
-} from '../jobNodeTypesConstants';
+} from '../constants/jobNodeTypesConstants';
 
 export const ROOT_NODE_ID = 'jobs';
 const ROOT_NODE = Map({

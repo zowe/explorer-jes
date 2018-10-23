@@ -12,10 +12,6 @@ html, body, #app {
     height: 100%;
 }
 
-html {
-    font-family: sans-serif;
-}
-
 body {
     font-size: 13px;
     line-height: 20px;
@@ -77,4 +73,12 @@ pre code {
 
 .node-annotation {
     padding-left: 5px;
+}
+
+.snackbar {
+    background-color: black;
+}
+
+.accent-button {
+    background-color: #61b1fd !important;
 }

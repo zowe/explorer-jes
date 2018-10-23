@@ -17,40 +17,22 @@ import 'whatwg-fetch';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
 import { Router, Route, hashHistory } from 'react-router';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import store from './store/Store';
+import DarkView from './containers/views/DarkView';
+import LightView from './containers/views/LightView';
 import JobsView from './containers/pages/Jobs';
 import FullScreenView from './containers/pages/FullScreen';
 import SyslogView from './containers/pages/Syslog';
-import * as ibmcolors from './themes/ibmcolors';
 
 injectTapEventPlugin();
 
-const lightTheme = getMuiTheme({
-    palette: {
-        primary1Color: ibmcolors.ibmBlueDark,
-        primary2Color: ibmcolors.ibmBlue,
-        primary3Color: ibmcolors.ibmGray30,
-        accent1Color: ibmcolors.ibmBluePale,
-        accent2Color: ibmcolors.ibmNWhite30,
-        accent3Color: ibmcolors.ibmCGray40,
-        textColor: ibmcolors.ibmDarkText,
-        alternateTextColor: ibmcolors.ibmWhite,
-        canvasColor: ibmcolors.ibmCyanPale,
-    },
-});
-
 ReactDOM.render(
-    <MuiThemeProvider muiTheme={lightTheme}>
-        <Provider store={store().getStore()}>
-            <Router history={hashHistory}>
-                <Route path="/" component={JobsView} />
-                <Route path="/viewer" component={FullScreenView} />
-                <Route path="/syslog" component={SyslogView} />
-            </Router>
-        </Provider>
-    </MuiThemeProvider>
-    , document.getElementById('menuapp'));
+    <Router history={hashHistory}>
+        <Route path="/" component={() => { return <DarkView View={JobsView} />; }} />
+        <Route path="/viewer" component={() => { return <DarkView View={FullScreenView} />; }} />
+        <Route path="/syslog" component={() => { return <DarkView View={SyslogView} />; }} />
+        <Route path="/hc" component={() => { return <LightView View={JobsView} />; }} />
+        <Route path="/hc/viewer" component={() => { return <LightView View={FullScreenView} />; }} />
+        <Route path="/hc/syslog" component={() => { return <LightView View={SyslogView} />; }} />
+    </Router>
+    , document.getElementById('app'));

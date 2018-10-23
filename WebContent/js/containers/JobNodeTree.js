@@ -22,8 +22,6 @@ import { refreshJobs, fetchChildrenNoCheck } from '../actions/treeNodesJobs';
 import { LOADING_MESSAGE } from '../reducers/filters';
 import FullHeightTree from './FullHeightTree';
 
-const REFRESH_ICON_PADDING_HEIGHT = 20;
-
 export class JobNodeTree extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { owner, dispatch } = this.props;
@@ -56,7 +54,7 @@ export class JobNodeTree extends React.Component {
                         submitAction={() => { return dispatch(refreshJobs()); }}
                         dispatch={dispatch}
                     />
-                    <FullHeightTree offset={REFRESH_ICON_PADDING_HEIGHT}>
+                    <FullHeightTree>
                         <List>
                             <ConnectedJobNode id={ROOT_NODE_ID} />
                         </List>

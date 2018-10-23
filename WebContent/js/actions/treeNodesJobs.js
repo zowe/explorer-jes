@@ -11,7 +11,7 @@
 /* global fetch */
 import { atlasFetch } from '../utilities/urlUtils';
 import { ROOT_NODE_ID } from '../reducers/treeNodesJobs';
-import { JOB_NAME_NODE_TYPE, JOB_INSTANCE_NODE_TYPE, JOB_STEP_DD_NODE_TYPE } from '../jobNodeTypesConstants';
+import { JOB_NAME_NODE_TYPE, JOB_INSTANCE_NODE_TYPE, JOB_STEP_DD_NODE_TYPE } from '../constants/jobNodeTypesConstants';
 import { constructAndPushMessage } from './snackbarNotifications';
 
 export const SELECT_NODE = 'SELECT_NODE';

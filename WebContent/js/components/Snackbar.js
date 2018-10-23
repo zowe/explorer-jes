@@ -61,6 +61,8 @@ class AtlasSnackbar extends React.Component {
                     message={messageValue.get('message')}
                     open={this.state.open}
                     onRequestClose={this.handleRequestClose}
+                    className="snackbar"
+                    bodyStyle={{ backgroundColor: 'inherit' }}
                 />
             );
         }
