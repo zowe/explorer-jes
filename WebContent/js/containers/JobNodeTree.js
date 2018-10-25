@@ -14,7 +14,8 @@ import { connect } from 'react-redux';
 import { Map } from 'immutable';
 import List from 'material-ui/List';
 import { Card, CardHeader, CardText } from 'material-ui/Card';
-import ConnectedJobNode, { ROOT_NODE_TYPE } from './JobNode';
+import ConnectedJobNode from './JobNode';
+import { ROOT_NODE_TYPE } from '../jobNodeTypesConstants';
 import ConnectedFilter from './Filters';
 import RefreshIcon from '../components/RefreshIcon';
 import { ROOT_NODE_ID } from '../reducers/treeNodesJobs';
@@ -44,15 +45,20 @@ export class JobNodeTree extends React.Component {
         return null;
     }
 
+    checkIfFetchingChildren() {
+        const { rootJobNode } = this.props;
+        return (rootJobNode.get('nodeType') === ROOT_NODE_TYPE && rootJobNode.get('isFetchingChildren'));
+    }
+
     render() {
-        const { rootJobNode, dispatch } = this.props;
+        const { dispatch } = this.props;
         return (
             <Card class="tree-card" containerStyle={{ paddingBottom: 0 }}>
                 <CardHeader title="JES Viewer" subtitle={this.getFilterValues()} />
                 <CardText id="tree-text-content">
                     <ConnectedFilter />
                     <RefreshIcon
-                        isFetching={rootJobNode.get('nodeType') === ROOT_NODE_TYPE && rootJobNode.get('isFetchingChildren')}
+                        isFetching={this.checkIfFetchingChildren()}
                         submitAction={() => { return dispatch(refreshJobs()); }}
                         dispatch={dispatch}
                     />
