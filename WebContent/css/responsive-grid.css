@@ -47,6 +47,10 @@
 .col-2 {width: 15.33%;}
 .col-1 {width: 6.866%;}
 
+/* Specialised Column */
+.col-11-8 {width: 98%; margin-left: 0%}
+.col-0-2 {width: 1.5%; margin-right: 0.5%}
+
 /*  FULL WIDTH */
 @media only screen and (max-width: 600px) {
 	.col { margin: 1% 0 1% 0%; }

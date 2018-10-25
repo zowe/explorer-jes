@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 import { Map } from 'immutable';
 import List from 'material-ui/List';
 import { Card, CardHeader, CardText } from 'material-ui/Card';
+import LeftArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
 import ConnectedJobNode from './JobNode';
 import { ROOT_NODE_TYPE } from '../jobNodeTypesConstants';
 import ConnectedFilter from './Filters';
@@ -51,10 +52,18 @@ export class JobNodeTree extends React.Component {
     }
 
     render() {
-        const { dispatch } = this.props;
+        const { dispatch, toggleTreeCard } = this.props;
         return (
             <Card class="tree-card" containerStyle={{ paddingBottom: 0 }}>
-                <CardHeader title="JES Viewer" subtitle={this.getFilterValues()} />
+                <CardHeader>
+                    <span className="card-title" >JES Viewer</span>
+                    <span className="card-action-right" onClick={() => { toggleTreeCard(); }}>
+                        <LeftArrow />
+                    </span>
+                    <div className="card-subtitle" >{this.getFilterValues()}</div>
+
+                </CardHeader>
+
                 <CardText id="tree-text-content">
                     <ConnectedFilter />
                     <RefreshIcon
@@ -82,6 +91,7 @@ JobNodeTree.propTypes = {
     type: PropTypes.string,
     rootJobNode: PropTypes.instanceOf(Map),
     dispatch: PropTypes.func.isRequired,
+    toggleTreeCard: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {

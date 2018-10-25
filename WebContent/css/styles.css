@@ -31,6 +31,28 @@ pre code {
     white-space: pre;
 }
 
+.card-title{
+    font-size: 15px;
+    float: left;
+}
+
+.card-subtitle {
+    font-size: 15px;
+    color: #0002038a;
+}
+
+.card-action-right {
+    float: right;
+}
+
+.card-action:hover {
+    cursor: pointer;
+}
+
+.card-action-right:hover {
+    cursor: pointer;
+}
+
 .card-component {
     margin-bottom: 10px;
 }
