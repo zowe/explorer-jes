@@ -16,12 +16,9 @@ import ContentViewer from '../components/ContentViewer';
 import ConnectedRealtimeContentViewer from '../components/RealtimeContentViewer';
 import { fetchContentNoNode } from '../actions/content';
 
-const PADDING_OFFSET = 8;
-
 export class NodeViewer extends React.Component {
     constructor(props) {
         super(props);
-        this.onDivRef = this.onDivRef.bind(this);
 
         this.state = {
             height: 0,
@@ -36,27 +33,10 @@ export class NodeViewer extends React.Component {
         }
     }
 
-    componentDidMount() {
-        this.updateDivHeight();
-        window.addEventListener('resize', this.updateDivHeight);
-    }
-
     componentWillReceiveProps(nextProps) {
         const { locationQuery } = this.props;
         if (locationQuery && locationQuery !== nextProps.locationQuery) {
             window.location.reload();
-        }
-    }
-
-    onDivRef(node) {
-        if (node) {
-            this.divRef = node;
-        }
-    }
-
-    updateDivHeight() {
-        if (this.divRef) {
-            this.setState({ height: window.innerHeight - this.divRef.offsetTop - PADDING_OFFSET });
         }
     }
 
@@ -94,16 +74,8 @@ export class NodeViewer extends React.Component {
                 <CardHeader
                     title={label || 'Content Viewer'}
                 />
-                <CardText
-                    style={cardTextStyle}
-                >
-                    <div
-                        ref={this.onDivRef}
-                        style={{ overflow: 'auto', height: this.state.height }}
-                    >
-                        {contentViewer}
-                    </div>
-
+                <CardText style={cardTextStyle} >
+                    {contentViewer}
                 </CardText>
             </Card>
         );
