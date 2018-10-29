@@ -30,8 +30,9 @@ export class NodeViewer extends React.Component {
 
     componentWillMount() {
         const { locationQuery, dispatch } = this.props;
-        if (locationQuery && locationQuery.jobName && locationQuery.jobId && locationQuery.fileId) {
-            dispatch(fetchContentNoNode(locationQuery.jobName, locationQuery.jobId, locationQuery.fileId));
+        if (locationQuery && locationQuery.jobId && locationQuery.fileId &&
+            (locationQuery.jobName || locationQuery.prefix)) {
+            dispatch(fetchContentNoNode(locationQuery.jobName || locationQuery.prefix, locationQuery.jobId, locationQuery.fileId));
         }
     }
 

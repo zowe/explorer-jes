@@ -12,8 +12,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import CircularProgress from 'material-ui/CircularProgress';
-import RightArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
-import { Card, CardText } from 'material-ui/Card';
 import JobNodeTreeComponent from '../JobNodeTree';
 import ConnectedNodeViewer from '../NodeViewer';
 import ConnectedSnackbar from '../../components/Snackbar';
@@ -25,8 +23,6 @@ class JobsView extends React.Component {
         this.state = {
             treeVisible: true,
         };
-        this.getLeftColumn = this.getLeftColumn.bind(this);
-        this.toggleTreeCard = this.toggleTreeCard.bind(this);
     }
 
     componentWillMount() {
@@ -36,39 +32,16 @@ class JobsView extends React.Component {
         }
     }
 
-    getLeftColumn() {
-        const treeColumns = this.state.treeVisible ? 'component col col-3' : 'component col col-0';
-        if (this.state.treeVisible) {
-            return (
-                <div className={treeColumns}>
-                    <JobNodeTreeComponent toggleTreeCard={this.toggleTreeCard} />
-                </div>);
-        }
-        return (
-            <Card
-                className="component col col-0-2"
-                containerStyle={{ paddingBottom: 'inherit' }}
-                onClick={() => { this.toggleTreeCard(); }}
-            >
-                <CardText style={{ paddingLeft: 'inherit' }}>
-                    <RightArrow className="card-action" />
-                </CardText>
-            </Card>);
-    }
-
-    toggleTreeCard() {
-        this.setState({ treeVisible: !this.state.treeVisible });
-    }
-
     render() {
-        const { validated, isValidating } = this.props;
+        const { validated, isValidating, location } = this.props;
         if (validated) {
-            const nodeViewerColumns = this.state.treeVisible ? 'component col col-9' : 'component col col-11-8';
             return (
                 <div className="row group">
-                    {this.getLeftColumn()}
-                    <div className={nodeViewerColumns}>
-                        <ConnectedNodeViewer />
+                    <div className="component col col-3">
+                        <JobNodeTreeComponent />
+                    </div>
+                    <div className="component col col-9">
+                        <ConnectedNodeViewer locationQuery={location.query} />
                     </div>
                     <ConnectedSnackbar />
                 </div>
@@ -85,6 +58,14 @@ JobsView.propTypes = {
     dispatch: PropTypes.func.isRequired,
     validated: PropTypes.bool.isRequired,
     isValidating: PropTypes.bool.isRequired,
+    location: PropTypes.shape({
+        query: PropTypes.shape({
+            prefix: PropTypes.string,
+            jobName: PropTypes.string,
+            jobId: PropTypes.string.isRequired,
+            fileId: PropTypes.string.isRequired,
+        }),
+    }),
 };
 
 function mapStateToProps(state) {

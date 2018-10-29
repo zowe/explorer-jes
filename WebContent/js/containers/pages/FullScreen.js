@@ -10,13 +10,21 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 import PropTypes from 'prop-types';
 import CircularProgress from 'material-ui/CircularProgress';
+import RightArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
+import { Card, CardText } from 'material-ui/Card';
 import ConnectedNodeViewer from '../NodeViewer';
 import ConnectedSnackbar from '../../components/Snackbar';
 import { validateUser } from '../../actions/validation';
 
 class FullScreenViewer extends React.Component {
+    constructor() {
+        super();
+        this.getTreeQueryParams = this.getTreeQueryParams.bind(this);
+    }
+
     componentWillMount() {
         const { dispatch, validated } = this.props;
         if (!validated) {
@@ -24,12 +32,32 @@ class FullScreenViewer extends React.Component {
         }
     }
 
+    getTreeQueryParams() {
+        const { location } = this.props;
+        if (location && location.query) {
+            if (location.query.jobName && location.query.jobId && location.query.fileId) {
+                return `?prefix=${location.query.jobName}&jobId=${location.query.jobId}&fileId=${location.query.fileId}`;
+            }
+        }
+        return '';
+    }
+
     render() {
         const { validated, isValidating, location } = this.props;
         if (validated) {
             return (
                 <div className="row group">
-                    <div className="component col col-12">
+                    <Link to={`/${this.getTreeQueryParams()}`}>
+                        <Card
+                            className="component col col-0-2"
+                            containerStyle={{ paddingBottom: 'inherit' }}
+                        >
+                            <CardText style={{ paddingLeft: 'inherit' }}>
+                                <RightArrow className="card-action" />
+                            </CardText>
+                        </Card>
+                    </Link>
+                    <div className="component col col-11-8">
                         <ConnectedNodeViewer locationQuery={location.query} />
                     </div>
                     <ConnectedSnackbar />

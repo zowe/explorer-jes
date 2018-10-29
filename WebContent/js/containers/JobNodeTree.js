@@ -11,6 +11,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 import { Map } from 'immutable';
 import List from 'material-ui/List';
 import { Card, CardHeader, CardText } from 'material-ui/Card';
@@ -27,6 +28,11 @@ import FullHeightTree from './FullHeightTree';
 const REFRESH_ICON_PADDING_HEIGHT = 20;
 
 export class JobNodeTree extends React.Component {
+    constructor() {
+        super();
+        this.getFullScreenQuery = this.getFullScreenQuery.bind(this);
+    }
+
     componentWillReceiveProps(nextProps) {
         const { owner, dispatch } = this.props;
         if (owner === LOADING_MESSAGE && nextProps.owner && nextProps.owner !== LOADING_MESSAGE) {
@@ -35,15 +41,24 @@ export class JobNodeTree extends React.Component {
     }
 
     getFilterValues() {
-        const { owner, prefix, returnCode, status, type, rootJobNode } = this.props;
+        const { owner, prefix, status, rootJobNode } = this.props;
         if (rootJobNode.get('nodeType') === ROOT_NODE_TYPE && rootJobNode.get('isToggled')) {
             let filtersString = `Owner= ${owner} Prefix= ${prefix || '*'}`;
-            if (returnCode) { filtersString += ` Return Code= ${ConnectedFilter.returnCodeToString(returnCode)}`; }
             if (status) { filtersString += ` Status= ${status}`; }
-            if (type) { filtersString += ` Type= ${type}`; }
             return filtersString;
         }
         return null;
+    }
+
+    getFullScreenQuery() {
+        const { contentSourceId } = this.props;
+        if (contentSourceId && contentSourceId.includes('jobs/') && contentSourceId.includes('ids/') && contentSourceId.includes('files/')) {
+            const jobName = contentSourceId.substring(contentSourceId.indexOf('jobs/') + 5, contentSourceId.indexOf('/ids'));
+            const jobId = contentSourceId.substring(contentSourceId.indexOf('ids/') + 4, contentSourceId.indexOf('/files'));
+            const fileId = contentSourceId.substring(contentSourceId.indexOf('files/') + 6);
+            return `?jobName=${jobName}&jobId=${jobId}&fileId=${fileId}`;
+        }
+        return '';
     }
 
     checkIfFetchingChildren() {
@@ -52,14 +67,16 @@ export class JobNodeTree extends React.Component {
     }
 
     render() {
-        const { dispatch, toggleTreeCard } = this.props;
+        const { dispatch } = this.props;
         return (
             <Card class="tree-card" containerStyle={{ paddingBottom: 0 }}>
                 <CardHeader>
                     <span className="card-title" >JES Viewer</span>
-                    <span className="card-action-right" onClick={() => { toggleTreeCard(); }}>
-                        <LeftArrow />
-                    </span>
+                    <Link to={`/viewer${this.getFullScreenQuery()}`}>
+                        <span className="card-action-right">
+                            <LeftArrow />
+                        </span>
+                    </Link>
                     <div className="card-subtitle" >{this.getFilterValues()}</div>
 
                 </CardHeader>
@@ -77,7 +94,6 @@ export class JobNodeTree extends React.Component {
                         </List>
                     </FullHeightTree>
                 </CardText>
-
             </Card>
         );
     }
@@ -86,17 +102,16 @@ export class JobNodeTree extends React.Component {
 JobNodeTree.propTypes = {
     prefix: PropTypes.string,
     owner: PropTypes.string,
-    returnCode: PropTypes.string,
     status: PropTypes.string,
-    type: PropTypes.string,
     rootJobNode: PropTypes.instanceOf(Map),
     dispatch: PropTypes.func.isRequired,
-    toggleTreeCard: PropTypes.func.isRequired,
+    contentSourceId: PropTypes.string,
 };
 
 function mapStateToProps(state) {
     const filtersRoot = state.get('filters');
     const jobsTreeRoot = state.get('treeNodesJobs');
+    const contentRoot = state.get('content');
     return {
         prefix: filtersRoot.get('prefix'),
         owner: filtersRoot.get('owner'),
@@ -104,6 +119,7 @@ function mapStateToProps(state) {
         status: filtersRoot.get('status'),
         type: filtersRoot.get('type'),
         rootJobNode: jobsTreeRoot.get(ROOT_NODE_ID),
+        contentSourceId: contentRoot.get('sourceId'),
     };
 }
 

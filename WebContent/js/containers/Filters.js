@@ -51,7 +51,9 @@ export class Filters extends React.Component {
         if (location && Object.keys(location.query).length > 0) {
             const queryFilters = {};
             Object.keys(location.query).forEach(filter => {
-                queryFilters[filter] = location.query[filter].toUpperCase();
+                if (filter === 'prefix' || filter === 'jobId' || filter === 'owner') {
+                    queryFilters[filter] = location.query[filter].toUpperCase();
+                }
             });
             dispatch(setFilters(queryFilters));
             dispatch(fetchChildrenNoCheck(queryFilters));
