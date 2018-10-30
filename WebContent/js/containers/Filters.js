@@ -51,7 +51,7 @@ export class Filters extends React.Component {
         if (location && Object.keys(location.query).length > 0) {
             const queryFilters = {};
             Object.keys(location.query).forEach(filter => {
-                if (filter === 'prefix' || filter === 'jobId' || filter === 'owner') {
+                if (filter === 'prefix' || filter === 'jobId' || (filter === 'owner' && !('jobId' in location.query))) {
                     queryFilters[filter] = location.query[filter].toUpperCase();
                 }
             });
@@ -62,7 +62,7 @@ export class Filters extends React.Component {
 
     componentDidMount() {
         const { owner, location, dispatch } = this.props;
-        if (owner === '' && !location.query.length > 0 && !location.query.owner) {
+        if (owner === '' && !location.query.length > 0 && (!location.query.owner && !location.query.jobId)) {
             dispatch(initialiseOwnerFilter());
         }
     }

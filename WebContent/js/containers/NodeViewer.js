@@ -90,9 +90,10 @@ NodeViewer.propTypes = {
     isFetching: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     locationQuery: PropTypes.shape({
-        jobName: PropTypes.string.isRequired,
-        jobId: PropTypes.string.isRequired,
-        fileId: PropTypes.string.isRequired,
+        prefix: PropTypes.string,
+        jobName: PropTypes.string,
+        jobId: PropTypes.string,
+        fileId: PropTypes.string,
     }),
 };
 

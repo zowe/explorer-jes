@@ -62,8 +62,8 @@ JobsView.propTypes = {
         query: PropTypes.shape({
             prefix: PropTypes.string,
             jobName: PropTypes.string,
-            jobId: PropTypes.string.isRequired,
-            fileId: PropTypes.string.isRequired,
+            jobId: PropTypes.string,
+            fileId: PropTypes.string,
         }),
     }),
 };
