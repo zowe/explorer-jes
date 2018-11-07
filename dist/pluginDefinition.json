@@ -1,6 +1,6 @@
 {
     "identifier": "com.ibm.explorer-jes",
-    "apiVersion": "1.0",
+    "apiVersion": "1.0.0",
     "pluginVersion": "0.0.1",
     "pluginType": "application",
     "webContent": {
@@ -16,7 +16,9 @@
       "isSingleWindowApp": true,
       "defaultWindowStyle": {
         "width": 1600,
-        "height": 800
+        "height": 800,
+        "x": 0,
+        "y": 0
       }
     }
   }
