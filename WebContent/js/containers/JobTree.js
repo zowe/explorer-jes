@@ -11,61 +11,57 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Map } from 'immutable';
-import List from 'material-ui/List';
+import { List } from 'immutable';
 import { Card, CardHeader, CardText } from 'material-ui/Card';
-import ConnectedJobNode from './JobNode';
-import { ROOT_NODE_TYPE } from '../jobNodeTypesConstants';
 import ConnectedFilter from './Filters';
 import RefreshIcon from '../components/RefreshIcon';
-import { ROOT_NODE_ID } from '../reducers/treeNodesJobs';
-import { refreshJobs, fetchChildrenNoCheck } from '../actions/treeNodesJobs';
+import { fetchJobs } from '../actions/jobNodes';
 import { LOADING_MESSAGE } from '../reducers/filters';
 import FullHeightTree from './FullHeightTree';
-
-const REFRESH_ICON_PADDING_HEIGHT = 20;
+import JobInstance from '../components/JobInstance';
 
 export class JobNodeTree extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { owner, dispatch } = this.props;
         if (owner === LOADING_MESSAGE && nextProps.owner && nextProps.owner !== LOADING_MESSAGE) {
-            dispatch(fetchChildrenNoCheck(nextProps));
+            dispatch(fetchJobs(nextProps));
         }
     }
 
     getFilterValues() {
-        const { owner, prefix, returnCode, status, type, rootJobNode } = this.props;
-        if (rootJobNode.get('nodeType') === ROOT_NODE_TYPE && rootJobNode.get('isToggled')) {
-            let filtersString = `Owner= ${owner} Prefix= ${prefix || '*'}`;
-            if (returnCode) { filtersString += ` Return Code= ${ConnectedFilter.returnCodeToString(returnCode)}`; }
-            if (status) { filtersString += ` Status= ${status}`; }
-            if (type) { filtersString += ` Type= ${type}`; }
-            return filtersString;
-        }
-        return null;
+        const { owner, prefix, returnCode, status, type } = this.props;
+        let filtersString = `Owner= ${owner} Prefix= ${prefix || '*'}`;
+        if (returnCode) { filtersString += ` Return Code= ${ConnectedFilter.returnCodeToString(returnCode)}`; }
+        if (status) { filtersString += ` Status= ${status}`; }
+        if (type) { filtersString += ` Type= ${type}`; }
+        return filtersString;
     }
 
-    checkIfFetchingChildren() {
-        const { rootJobNode } = this.props;
-        return (rootJobNode.get('nodeType') === ROOT_NODE_TYPE && rootJobNode.get('isFetchingChildren'));
+    renderJobs() {
+        const { jobs, dispatch } = this.props;
+        return jobs.map(job => {
+            return (
+                <JobInstance key={job.get('label')} job={job} dispatch={dispatch} />
+            );
+        });
     }
 
     render() {
-        const { dispatch } = this.props;
+        const { dispatch, isFetching } = this.props;
         return (
             <Card class="tree-card" containerStyle={{ paddingBottom: 0 }}>
-                <CardHeader title="JES Viewer" subtitle={this.getFilterValues()} />
+                <CardHeader subtitle={this.getFilterValues()} />
                 <CardText id="tree-text-content">
                     <ConnectedFilter />
                     <RefreshIcon
-                        isFetching={this.checkIfFetchingChildren()}
-                        submitAction={() => { return dispatch(refreshJobs()); }}
+                        isFetching={isFetching}
+                        submitAction={() => { return dispatch(fetchJobs(this.props)); }}
                         dispatch={dispatch}
                     />
-                    <FullHeightTree offset={REFRESH_ICON_PADDING_HEIGHT}>
-                        <List>
-                            <ConnectedJobNode id={ROOT_NODE_ID} />
-                        </List>
+                    <FullHeightTree >
+                        <ul>
+                            {this.renderJobs()}
+                        </ul>
                     </FullHeightTree>
                 </CardText>
 
@@ -80,20 +76,22 @@ JobNodeTree.propTypes = {
     returnCode: PropTypes.string,
     status: PropTypes.string,
     type: PropTypes.string,
-    rootJobNode: PropTypes.instanceOf(Map),
     dispatch: PropTypes.func.isRequired,
+    isFetching: PropTypes.bool.isRequired,
+    jobs: PropTypes.instanceOf(List),
 };
 
 function mapStateToProps(state) {
     const filtersRoot = state.get('filters');
-    const jobsTreeRoot = state.get('treeNodesJobs');
+    const jobNodesRoot = state.get('jobNodes');
     return {
         prefix: filtersRoot.get('prefix'),
         owner: filtersRoot.get('owner'),
         returnCode: filtersRoot.get('returnCode'),
         status: filtersRoot.get('status'),
         type: filtersRoot.get('type'),
-        rootJobNode: jobsTreeRoot.get(ROOT_NODE_ID),
+        isFetching: jobNodesRoot.get('isFetching'),
+        jobs: jobNodesRoot.get('jobs'),
     };
 }
 

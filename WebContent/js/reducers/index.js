@@ -10,7 +10,7 @@
 
 import { combineReducers } from 'redux-immutable';
 import content from './content';
-import treeNodesJobs from './treeNodesJobs';
+import jobNodes from './jobNodes';
 import filters from './filters';
 import validation from './validation';
 import realtimeContent from './realtimeContent';
@@ -18,7 +18,7 @@ import snackbarNotifications from './snackbarNotifications';
 
 const REDUCERS = {
     content,
-    treeNodesJobs,
+    jobNodes,
     filters,
     validation,
     realtimeContent,

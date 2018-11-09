@@ -10,7 +10,6 @@
 
 import { atlasFetch } from '../utilities/urlUtils';
 import { constructAndPushMessage } from './snackbarNotifications';
-import { JOB_STEP_DD_DSN_NODE_TYPE } from '../jobNodeTypesConstants';
 
 export const REQUEST_CONTENT = 'REQUEST_CONTENT';
 export const RECEIVE_CONTENT = 'RECEIVE_CONTENT';
@@ -19,21 +18,24 @@ export const INVALIDATE_CONTENT_IF_OPEN = 'INVALIDATE_CONTENT_IF_OPEN';
 
 const GET_CONTENT_FAIL_MESSAGE = 'Get content failed for';
 
-function requestContent(nodeId) {
+function requestContent(jobName, jobId, fileLabel, fileId) {
     return {
         type: REQUEST_CONTENT,
-        nodeId,
+        jobName,
+        jobId,
+        fileLabel,
+        fileId,
     };
 }
 
-function receiveContent(sourceId, label, content, isContentHTML, isContentRealtime) {
+function receiveContent(jobName, jobId, fileLabel, fileId, content) {
     return {
         type: RECEIVE_CONTENT,
-        sourceId,
-        label,
+        jobName,
+        jobId,
         content,
-        isContentHTML,
-        isContentRealtime,
+        fileLabel,
+        fileId,
     };
 }
 
@@ -43,29 +45,16 @@ export function invalidateContent() {
     };
 }
 
-export function invalidateContentIfOpen(path) {
-    return {
-        type: INVALIDATE_CONTENT_IF_OPEN,
-        path,
-    };
-}
-
-function fetchContent(node) {
+export function fetchJobFile(jobName, jobId, fileLabel, fileId) {
     return dispatch => {
-        dispatch(requestContent(node.get('id')));
-        const contentURL = node.get('id');
-
-        return atlasFetch(contentURL, { credentials: 'include' })
+        dispatch(requestContent(jobName, jobId, fileLabel, fileId));
+        return atlasFetch(`jobs/${jobName}/ids/${jobId}/files/${fileId}`, { credentials: 'include' })
             .then(response => { return response.json(); })
             .then(json => {
-                if (node.get('nodeType') === JOB_STEP_DD_DSN_NODE_TYPE) {
-                    dispatch(receiveContent(node.get('id'), node.get('label'), json.records));
-                } else {
-                    dispatch(receiveContent(node.get('id'), node.get('label'), json.content));
-                }
+                dispatch(receiveContent(jobName, jobId, fileLabel, fileId, json.content));
             })
             .catch(() => {
-                dispatch(constructAndPushMessage(`${GET_CONTENT_FAIL_MESSAGE} ${node.get('id')}`));
+                dispatch(constructAndPushMessage(`${GET_CONTENT_FAIL_MESSAGE} ${jobName}:${jobId}:${fileLabel}`));
                 return dispatch(invalidateContent());
             });
     };
@@ -108,23 +97,5 @@ export function fetchContentNoNode(jobName, jobId, fileId) {
                 dispatch(constructAndPushMessage(`${GET_CONTENT_FAIL_MESSAGE} ${contentPath}`));
                 return dispatch(invalidateContent());
             });
-    };
-}
-
-export function openContentIfAvailable(nodeId) {
-    return (dispatch, getState) => {
-        const node = getState().get('treeNodesJobs').get(nodeId);
-        if (node.get('hasContent')) {
-            return dispatch(fetchContent(node));
-        }
-        return dispatch(invalidateContent());
-    };
-}
-
-export function openRealtimeContent(nodeId) {
-    return (dispatch, getState) => {
-        dispatch(requestContent(nodeId));
-        const node = getState().get('treeNodesJobs').get(nodeId);
-        dispatch(receiveContent(nodeId, `Real-time tail of ${node.get('label')}`, '', false, true));
     };
 }
