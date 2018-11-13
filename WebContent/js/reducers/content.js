@@ -16,10 +16,7 @@ import {
 } from '../actions/content';
 
 const INITIAL_CONTENT_STATE = Map({
-    sourceId: null,
     content: null,
-    isContentHTML: false,
-    isContentRealtime: false,
     isFetching: false,
     label: '',
 });
@@ -36,7 +33,7 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
             });
         case RECEIVE_CONTENT:
             return state.merge({
-                label: action.fileLabel,
+                label: `${action.jobName} - ${action.jobId} - ${action.fileLabel}`,
                 content: action.content,
                 isFetching: false,
             });

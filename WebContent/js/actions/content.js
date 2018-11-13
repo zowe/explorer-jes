@@ -14,7 +14,6 @@ import { constructAndPushMessage } from './snackbarNotifications';
 export const REQUEST_CONTENT = 'REQUEST_CONTENT';
 export const RECEIVE_CONTENT = 'RECEIVE_CONTENT';
 export const INVALIDATE_CONTENT = 'INVALIDATE_CONTENT';
-export const INVALIDATE_CONTENT_IF_OPEN = 'INVALIDATE_CONTENT_IF_OPEN';
 
 const GET_CONTENT_FAIL_MESSAGE = 'Get content failed for';
 
@@ -74,27 +73,27 @@ function getFileNameFromJob(jobName, jobId, fileId) {
         });
 }
 
-export function fetchContentNoNode(jobName, jobId, fileId) {
+export function fetchJobFileNoName(jobName, jobId, fileId) {
     return dispatch => {
         const contentPath = `jobs/${jobName}/ids/${jobId}/files/${fileId}`;
-        dispatch(requestContent(contentPath));
+        dispatch(requestContent(jobName, jobId, 'UNKNOWN', fileId));
         return atlasFetch(contentPath, { credentials: 'include' })
             .then(response => { return response.json(); })
             .then(json => {
                 return getFileNameFromJob(jobName, jobId, fileId).then(
-                    fileName => {
-                        if (fileName) {
-                            dispatch(receiveContent(contentPath, `${jobName} - ${jobId} - ${fileName}`, json.content, false, false));
+                    fileLabel => {
+                        if (fileLabel) {
+                            dispatch(receiveContent(jobName, jobId, fileLabel, fileId, json.content));
                         } else {
-                            throw Error();
+                            throw Error(fileLabel);
                         }
                     },
-                ).catch(() => {
-                    throw Error();
+                ).catch(e => {
+                    throw Error(e);
                 });
             })
             .catch(() => {
-                dispatch(constructAndPushMessage(`${GET_CONTENT_FAIL_MESSAGE} ${contentPath}`));
+                dispatch(constructAndPushMessage(`${GET_CONTENT_FAIL_MESSAGE} ${jobName}:${jobId}:${fileId}`));
                 return dispatch(invalidateContent());
             });
     };

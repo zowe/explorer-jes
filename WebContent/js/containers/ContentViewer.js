@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import { Card, CardHeader, CardText } from 'material-ui/Card';
 import ContentViewer from '../components/ContentViewer';
 import ConnectedRealtimeContentViewer from '../components/RealtimeContentViewer';
-import { fetchContentNoNode } from '../actions/content';
+import { fetchJobFileNoName } from '../actions/content';
 
 export class NodeViewer extends React.Component {
     constructor(props) {
@@ -28,7 +28,7 @@ export class NodeViewer extends React.Component {
     componentWillMount() {
         const { locationQuery, dispatch } = this.props;
         if (locationQuery && locationQuery.jobName && locationQuery.jobId && locationQuery.fileId) {
-            dispatch(fetchContentNoNode(locationQuery.jobName, locationQuery.jobId, locationQuery.fileId));
+            dispatch(fetchJobFileNoName(locationQuery.jobName, locationQuery.jobId, locationQuery.fileId));
         }
     }
 

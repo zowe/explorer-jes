@@ -12,8 +12,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import CircularProgress from 'material-ui/CircularProgress';
-import ConnectedNodeViewer from '../NodeViewer';
-import ConnectedSnackbar from '../../components/Snackbar';
+import ConentViewer from '../ContentViewer';
+import Snackbar from '../../components/Snackbar';
 import { validateUser } from '../../actions/validation';
 
 class FullScreenViewer extends React.Component {
@@ -30,9 +30,9 @@ class FullScreenViewer extends React.Component {
             return (
                 <div className="row group">
                     <div className="component col col-12">
-                        <ConnectedNodeViewer locationQuery={location.query} />
+                        <ConentViewer locationQuery={location.query} />
                     </div>
-                    <ConnectedSnackbar />
+                    <Snackbar />
                 </div>
             );
         }

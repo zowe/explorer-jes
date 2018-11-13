@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import CircularProgress from 'material-ui/CircularProgress';
 import JobTree from '../JobTree';
-import ConnectedNodeViewer from '../NodeViewer';
+import ContentViewer from '../ContentViewer';
 import ConnectedSnackbar from '../../components/Snackbar';
 import { validateUser } from '../../actions/validation';
 
@@ -34,7 +34,7 @@ class JobsView extends React.Component {
                         <JobTree />
                     </div>
                     <div className="component col col-9">
-                        <ConnectedNodeViewer />
+                        <ContentViewer />
                     </div>
                     <ConnectedSnackbar />
                 </div>

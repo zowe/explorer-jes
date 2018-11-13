@@ -54,7 +54,6 @@ body {
 .node span {
     display: inline-block;
     line-height: 24px;
-    cursor: pointer;
     vertical-align: middle;
 }
 

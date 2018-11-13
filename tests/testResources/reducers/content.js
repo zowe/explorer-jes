@@ -12,50 +12,40 @@ import { Map } from 'immutable';
 
 export const baseContent =
     Map({
-        sourceId: null,
         content: null,
-        isContentHTML: false,
-        isContentRealtime: false,
         isFetching: false,
         label: '',
     });
+
+export const jobName = 'DEMOJOB';
+export const jobId = 'JOB1234';
+export const fileLabel = 'SYSOUT';
 
 export const requestedContent =
     Map({
-        sourceId: null,
         content: null,
-        isContentHTML: false,
-        isContentRealtime: false,
         isFetching: true,
-        label: '',
+        label: `Loading: ${fileLabel}`,
     });
+
 
 export const receivedContent =
     Map({
-        sourceId: 'jobs/JCAIN/ids/TSU05471/files/101',
         content: 'test',
-        isContentHTML: false,
-        isContentRealtime: false,
         isFetching: false,
-        label: 'SYSOUT',
+        label: `${jobName} - ${jobId} - ${fileLabel}`,
     });
 
 export const invalidatedContent =
     Map({
-        sourceId: undefined,
         content: 'Unable to retrieve content',
-        isContentHTML: undefined,
-        isContentRealtime: undefined,
         isFetching: false,
         label: 'Unable to retrieve content',
     });
 
 export const toggledContent =
     Map({
-        sourceId: null,
         content: null,
-        isContentHTML: false,
-        isContentRealtime: false,
         isFetching: false,
         label: '',
     });
