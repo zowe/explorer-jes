@@ -20,7 +20,7 @@ import { orange500 } from 'material-ui/styles/colors';
 import UpperCaseTextField from '../components/dialogs/UpperCaseTextField';
 
 import { toggleFilters, setFilters, resetFilters, initialiseOwnerFilter } from '../actions/filters';
-import { fetchChildrenNoCheck } from '../actions/treeNodesJobs';
+import { fetchJobs } from '../actions/jobNodes';
 import { ibmBlueDark } from '../themes/ibmcolors';
 
 const STATUS_TYPES = ['ACTIVE', 'INPUT', 'OUTPUT'];
@@ -54,7 +54,7 @@ export class Filters extends React.Component {
                 queryFilters[filter] = location.query[filter].toUpperCase();
             });
             dispatch(setFilters(queryFilters));
-            dispatch(fetchChildrenNoCheck(queryFilters));
+            dispatch(fetchJobs(queryFilters));
         }
     }
 
@@ -116,7 +116,7 @@ export class Filters extends React.Component {
         const { dispatch } = this.props;
         e.preventDefault();
         this.toggle(false);
-        dispatch(fetchChildrenNoCheck(this.props));
+        dispatch(fetchJobs(this.props));
     }
 
     render() {

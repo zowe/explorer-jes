@@ -19,17 +19,20 @@ describe('Reducer: content', () => {
     });
 
     it('Should handle REQUEST_CONTENT', () => {
-        const action = { type: contentActions.REQUEST_CONTENT };
+        const action = {
+            type: contentActions.REQUEST_CONTENT,
+            fileLabel: contentResources.fileLabel,
+        };
         expect(content(contentResources.baseContent, action)).toEqual(contentResources.requestedContent);
     });
 
     it('Should handle RECEIVE_CONTENT', () => {
         const action = {
             type: contentActions.RECEIVE_CONTENT,
-            sourceId: 'jobs/JCAIN/ids/TSU05471/files/101',
-            label: 'SYSOUT',
-            isFetching: false,
             content: 'test',
+            jobName: contentResources.jobName,
+            fileLabel: contentResources.fileLabel,
+            jobId: contentResources.jobId,
         };
         expect(content(contentResources.baseContent, action)).toEqual(contentResources.receivedContent);
     });

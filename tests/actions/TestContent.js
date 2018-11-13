@@ -13,7 +13,7 @@ import nock from 'nock';
 import thunk from 'redux-thunk';
 import expect from 'expect';
 import rewire from 'rewire';
-import { fromJS, Map } from 'immutable';
+import { Map } from 'immutable';
 import * as contentActions from '../../WebContent/js/actions/content';
 import * as snackbarNotifications from '../../WebContent/js/actions/snackbarNotifications';
 import { LOCAL_HOST_ENDPOINT as BASE_URL } from '../testResources/hostConstants';
@@ -30,47 +30,50 @@ describe('Action: content', () => {
     const rewiredContent = rewire('../../WebContent/js/actions/content');
     const getContentFailMessage = rewiredContent.__get__('GET_CONTENT_FAIL_MESSAGE');
 
-    describe('openContentIfAvailbable', () => {
-        const expectedNodeId = 'DummyId';
-        let node = Map({
-            childNodesURI: expectedNodeId,
-            id: expectedNodeId,
-            hasContent: true,
-        });
-        it('Should call fetch content causing a request action and recieve action', () => {
+    describe('fetchJobFile', () => {
+        it('Should create an action to request and receive content', () => {
             const expectedActions = [
                 {
                     type: contentActions.REQUEST_CONTENT,
-                    nodeId: 'DummyId',
+                    jobName: contentResources.jobName,
+                    jobId: contentResources.jobId,
+                    fileLabel: contentResources.fileName,
+                    fileId: contentResources.fileId,
                 },
-                contentResources.content,
+                {
+                    type: contentActions.RECEIVE_CONTENT,
+                    jobName: contentResources.jobName,
+                    jobId: contentResources.jobId,
+                    content: contentResources.jobFileContents,
+                    fileLabel: contentResources.fileName,
+                    fileId: contentResources.fileId,
+                },
             ];
 
             nock(BASE_URL)
-                .get(`/${expectedNodeId}`)
-                .reply(200, contentResources.content);
+                .get(`/jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files/${contentResources.fileId}`)
+                .reply(200, contentResources.jobFileFetchResponse);
 
-            const store = mockStore(fromJS({
-                treeNodesJobs: {
-                    DummyId: node,
-                },
-            }));
-            return store.dispatch(contentActions.openContentIfAvailable(expectedNodeId))
+            const store = mockStore();
+            return store.dispatch(contentActions.fetchJobFile(contentResources.jobName, contentResources.jobId, contentResources.fileName, contentResources.fileId))
                 .then(() => {
                     expect(store.getActions()).toEqual(expectedActions);
                 });
         });
 
-        it('Should not load content as the nodeID hasContent = false', () => {
-            const expectedAction = [
+        it('Should create an action to request but not receive due to no response and create error', () => {
+            const expectedActions = [
                 {
                     type: contentActions.REQUEST_CONTENT,
-                    nodeId: expectedNodeId,
+                    jobName: contentResources.jobName,
+                    jobId: contentResources.jobId,
+                    fileLabel: contentResources.fileName,
+                    fileId: contentResources.fileId,
                 },
                 {
                     type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
                     message: Map({
-                        message: `${getContentFailMessage} ${expectedNodeId}`,
+                        message: `${getContentFailMessage} ${contentResources.jobName}:${contentResources.jobId}:${contentResources.fileName}`,
                     }),
                 },
                 {
@@ -78,133 +81,78 @@ describe('Action: content', () => {
                 },
             ];
 
-            const store = mockStore(fromJS({
-                treeNodesJobs: {
-                    DummyId: node,
-                },
-            }));
-
             nock(BASE_URL)
-                .get(`/${expectedNodeId}`)
-                .reply(500, null);
+                .get(`/jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files/${contentResources.fileId}`)
+                .reply(500, '');
 
-            return store.dispatch(contentActions.openContentIfAvailable(expectedNodeId))
+            const store = mockStore();
+            return store.dispatch(contentActions.fetchJobFile(contentResources.jobName, contentResources.jobId, contentResources.fileName, contentResources.fileId))
                 .then(() => {
-                    expect(store.getActions()).toEqual(expectedAction);
+                    expect(store.getActions()).toEqual(expectedActions);
                 });
         });
-
-        it('Should not load content as the api request will fail, should also generate invalid content action', () => {
-            const expectedAction = [
-                {
-                    type: contentActions.INVALIDATE_CONTENT,
-                }];
-
-            node = node.set('hasContent', false);
-
-            const store = mockStore(fromJS({
-                treeNodesJobs: {
-                    DummyId: node,
-                },
-            }));
-
-            store.dispatch(contentActions.openContentIfAvailable(expectedNodeId));
-            expect(store.getActions()).toEqual(expectedAction);
-        });
     });
 
-    describe('openRealtimeContent', () => {
-        it('Should create a request and recieve action', () => {
-            const expectedNodeId = 'DummyId';
-
-            const node = new Map();
-            node.set('childNodesURI', expectedNodeId);
-            node.set('id', expectedNodeId);
-
-            const expectedActions = [
-                {
-                    type: contentActions.REQUEST_CONTENT,
-                    nodeId: expectedNodeId,
-                },
-                {
-                    type: contentActions.RECEIVE_CONTENT,
-                    label: `Real-time tail of ${node.get('label')}`,
-                    content: '',
-                    sourceId: expectedNodeId,
-                    isContentHTML: false,
-                    isContentRealtime: true,
-                },
-            ];
-
-            const store = mockStore(fromJS({
-                treeNodesJobs: {
-                    DummyId: node,
-                },
-            }));
-
-            store.dispatch(contentActions.openRealtimeContent(expectedNodeId));
-            expect(store.getActions()).toEqual(expectedActions);
-        });
-    });
-
-    describe('fetchContentNoNode', () => {
+    describe('fetchJobFileNoName', () => {
         it('Should create a request and receive action', () => {
-            const nodeURI = `jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files/${contentResources.fileId}`;
-            const nodeNameURI = `jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files`;
             const expectedActions = [
                 {
                     type: contentActions.REQUEST_CONTENT,
-                    nodeId: nodeURI,
+                    jobName: contentResources.jobName,
+                    jobId: contentResources.jobId,
+                    fileLabel: 'UNKNOWN',
+                    fileId: contentResources.fileId,
                 },
                 {
                     type: contentActions.RECEIVE_CONTENT,
-                    label: `${contentResources.jobName} - ${contentResources.jobId} - ${contentResources.fileName}`,
-                    content: contentResources.DSMemberContent,
-                    sourceId: nodeURI,
-                    isContentHTML: false,
-                    isContentRealtime: false,
+                    jobName: contentResources.jobName,
+                    jobId: contentResources.jobId,
+                    content: contentResources.jobFileContents,
+                    fileLabel: contentResources.fileName,
+                    fileId: contentResources.fileId,
                 },
             ];
+
             const store = mockStore();
-
             nock(BASE_URL)
-                .get(`/${nodeURI}`)
-                .reply(200, contentResources.content);
-
+                .get(`/jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files/${contentResources.fileId}`)
+                .reply(200, contentResources.jobFileFetchResponse);
             nock(BASE_URL)
-                .get(`/${nodeNameURI}`)
-                .reply(200, [{ ddname: contentResources.fileName, id: contentResources.fileId }]);
+                .get(`/jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files`)
+                .reply(200, contentResources.fileList);
 
-            return store.dispatch(contentActions.fetchContentNoNode(contentResources.jobName, contentResources.jobId, contentResources.fileId))
+            return store.dispatch(contentActions.fetchJobFileNoName(contentResources.jobName, contentResources.jobId, contentResources.fileId))
                 .then(() => {
                     expect(store.getActions()).toEqual(expectedActions);
                 });
         });
 
         it('Should create a request but not receive action due to no file content', () => {
-            const nodeURI = `jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files/${contentResources.fileId}`;
             const expectedActions = [
                 {
                     type: contentActions.REQUEST_CONTENT,
-                    nodeId: nodeURI,
+                    jobName: contentResources.jobName,
+                    jobId: contentResources.jobId,
+                    fileLabel: 'UNKNOWN',
+                    fileId: contentResources.fileId,
                 },
                 {
                     type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
                     message: Map({
-                        message: `${getContentFailMessage} ${nodeURI}`,
+                        message: `${getContentFailMessage} ${contentResources.jobName}:${contentResources.jobId}:${contentResources.fileId}`,
                     }),
                 },
                 {
                     type: contentActions.INVALIDATE_CONTENT,
                 },
             ];
+
             const store = mockStore();
-
             nock(BASE_URL)
-                .get(`/${nodeURI}`)
-                .reply(404, null);
+                .get(`/jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files/${contentResources.fileId}`)
+                .reply(500, '');
 
-            return store.dispatch(contentActions.fetchContentNoNode(contentResources.jobName, contentResources.jobId, contentResources.fileId))
+            return store.dispatch(contentActions.fetchJobFileNoName(contentResources.jobName, contentResources.jobId, contentResources.fileId))
                 .then(() => {
                     expect(store.getActions()).toEqual(expectedActions);
                 });
@@ -216,12 +164,15 @@ describe('Action: content', () => {
             const expectedActions = [
                 {
                     type: contentActions.REQUEST_CONTENT,
-                    nodeId: nodeURI,
+                    jobName: contentResources.jobName,
+                    jobId: contentResources.jobId,
+                    fileLabel: 'UNKNOWN',
+                    fileId: contentResources.fileId,
                 },
                 {
                     type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
                     message: Map({
-                        message: `${getContentFailMessage} ${nodeURI}`,
+                        message: `${getContentFailMessage} ${contentResources.jobName}:${contentResources.jobId}:${contentResources.fileId}`,
                     }),
                 },
                 {
@@ -238,7 +189,7 @@ describe('Action: content', () => {
                 .get(`/${nodeNameURI}`)
                 .reply(500, null);
 
-            return store.dispatch(contentActions.fetchContentNoNode(contentResources.jobName, contentResources.jobId, contentResources.fileId))
+            return store.dispatch(contentActions.fetchJobFileNoName(contentResources.jobName, contentResources.jobId, contentResources.fileId))
                 .then(() => {
                     expect(store.getActions()).toEqual(expectedActions);
                 });

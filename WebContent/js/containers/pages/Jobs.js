@@ -12,8 +12,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import CircularProgress from 'material-ui/CircularProgress';
-import JobNodeTreeComponent from '../JobNodeTree';
-import ConnectedNodeViewer from '../NodeViewer';
+import JobTree from '../JobTree';
+import ContentViewer from '../ContentViewer';
 import ConnectedSnackbar from '../../components/Snackbar';
 import { validateUser } from '../../actions/validation';
 
@@ -31,10 +31,10 @@ class JobsView extends React.Component {
             return (
                 <div className="row group">
                     <div className="component col col-3">
-                        <JobNodeTreeComponent />
+                        <JobTree />
                     </div>
                     <div className="component col col-9">
-                        <ConnectedNodeViewer />
+                        <ContentViewer />
                     </div>
                     <ConnectedSnackbar />
                 </div>
