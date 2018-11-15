@@ -15,7 +15,7 @@ import { Map } from 'immutable';
 import List from 'material-ui/List';
 import { Card, CardHeader, CardText } from 'material-ui/Card';
 import ConnectedJobNode from './JobNode';
-import { ROOT_NODE_TYPE } from '../jobNodeTypesConstants';
+import { ROOT_NODE_TYPE } from '../constants/jobNodeTypesConstants';
 import ConnectedFilter from './Filters';
 import RefreshIcon from '../components/RefreshIcon';
 import { ROOT_NODE_ID } from '../reducers/treeNodesJobs';
