@@ -17,6 +17,7 @@ export const TOGGLE_JOB = 'TOGGLE_JOB';
 
 export const REQUEST_JOBS = 'REQUEST_JOBS';
 export const RECEIVE_JOBS = 'RECEIVE_JOBS';
+export const RECEIVE_SINGLE_JOB = 'RECEIVE_SINGLE_JOB';
 export const INVALIDATE_JOBS = 'INVALIDATE_JOBS';
 
 export const REQUEST_JOB_FILES_AND_STEPS = 'REQUEST_JOB_FILES_AND_STEPS';
@@ -43,11 +44,17 @@ function requestJobs(filters) {
     };
 }
 
-function receiveJobs(jobs, autoExpandChildren) {
+function receiveJobs(jobs) {
     return {
         type: RECEIVE_JOBS,
         jobs,
-        autoExpandChildren,
+    };
+}
+
+function receiveSingleJob(job) {
+    return {
+        type: RECEIVE_SINGLE_JOB,
+        job,
     };
 }
 
@@ -130,14 +137,28 @@ function getURIQuery(filters) {
     return query;
 }
 
+function filterByJobId(json, jobId, dispatch) {
+    // filter for job Id as api doesn't support
+    json.forEach(job => {
+        job.jobInstances.forEach(jobInstance => {
+            if (jobInstance.jobId === jobId) {
+                dispatch(receiveSingleJob(jobInstance, true));
+            }
+        });
+    });
+}
+
 export function fetchJobs(filters) {
     return dispatch => {
         dispatch(requestJobs(filters));
         return atlasFetch(`jobs${getURIQuery(filters)}`, { credentials: 'include' })
             .then(response => { return response.json(); })
             .then(json => {
-                const autoExpandChildren = ('jobId' in filters && filters.jobId !== '*');
-                dispatch(receiveJobs(json, autoExpandChildren));
+                if ('jobId' in filters && filters.jobId !== '*') {
+                    filterByJobId(json, filters.jobId, dispatch);
+                } else {
+                    dispatch(receiveJobs(json));
+                }
             })
             .catch(() => {
                 dispatch(constructAndPushMessage(FETCH_JOBS_FAIL_MESSAGE));

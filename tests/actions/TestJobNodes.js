@@ -55,7 +55,6 @@ describe('Action: jobNodes', () => {
                 {
                     type: JobNodes.RECEIVE_JOBS,
                     jobs: jobNodesResources.jobFetchResponse,
-                    autoExpandChildren: false,
                 },
             ];
 

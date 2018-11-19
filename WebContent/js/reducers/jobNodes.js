@@ -3,6 +3,7 @@ import { Map, List } from 'immutable';
 import {
     REQUEST_JOBS,
     RECEIVE_JOBS,
+    RECEIVE_SINGLE_JOB,
     TOGGLE_JOB,
     REQUEST_JOB_FILES_AND_STEPS,
     RECEIVE_JOB_FILES,
@@ -63,6 +64,21 @@ function extractJobs(jobs) {
     return flattenArray(jobList);
 }
 
+function extractJob(job) {
+    return List([
+        Map({
+            jobName: job.jobName,
+            jobId: job.jobId,
+            label: `${job.jobName}:${job.jobId}`,
+            returnCode: job.returnCode,
+            status: job.status,
+            isToggled: false,
+            files: List(),
+            steps: List(),
+        }),
+    ]);
+}
+
 function findKeyOfJob(jobs, jobId) {
     return jobs.findKey(job => {
         return job.get('jobId') === jobId;
@@ -106,6 +122,8 @@ export default function JobNodes(state = INITIAL_STATE, action) {
             return state.set('isFetching', true);
         case RECEIVE_JOBS:
             return state.merge({ jobs: extractJobs(action.jobs), isFetching: false });
+        case RECEIVE_SINGLE_JOB:
+            return state.merge({ jobs: extractJob(action.job), isFetching: false });
         case INVALIDATE_JOBS:
             return state.set('isFetching', false);
         case TOGGLE_JOB:
