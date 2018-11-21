@@ -70,7 +70,7 @@ export default class JobInstance extends React.Component {
         const { job } = this.props;
 
         return (
-            <div>
+            <div className="job-instance">
                 <li>
                     <ContextMenuTrigger id={job.get('label')}>
                         <span className="content-link" onClick={() => { this.handleJobToggle(job); }}>

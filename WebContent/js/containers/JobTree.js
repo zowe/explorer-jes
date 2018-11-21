@@ -59,7 +59,7 @@ export class JobNodeTree extends React.Component {
                         dispatch={dispatch}
                     />
                     <FullHeightTree >
-                        <ul>
+                        <ul id="job-list">
                             {this.renderJobs()}
                         </ul>
                     </FullHeightTree>

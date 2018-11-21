@@ -4,7 +4,7 @@ import React from 'react';
 const JobStep = props => {
     const { step } = props;
     return (
-        <li>
+        <li className="job-step">
             <span>{step.label}</span>
         </li>);
 };
