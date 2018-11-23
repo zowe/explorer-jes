@@ -7,7 +7,7 @@ import { fetchJobFile } from '../actions/content';
 const JobFile = props => {
     const { job, file, dispatch } = props;
     return (
-        <li>
+        <li className="job-file">
             <span
                 className="content-link"
                 onClick={() => { dispatch(fetchJobFile(job.get('jobName'), job.get('jobId'), file.label, file.id)); }}

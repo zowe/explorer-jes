@@ -28,7 +28,7 @@ const STATUS_TYPES = ['ACTIVE', 'INPUT', 'OUTPUT'];
 export class Filters extends React.Component {
     static renderStatusOptions() {
         return STATUS_TYPES.map(status => {
-            return <MenuItem key={status} value={status} primaryText={status} />;
+            return <MenuItem id={`status-${status}`} key={status} value={status} primaryText={status} />;
         });
     }
 
@@ -154,9 +154,10 @@ export class Filters extends React.Component {
                         showExpandableButton={true}
                     />
                     <CardText expandable={true}>
-                        <form onSubmit={e => { return this.applyValues(e); }}>
+                        <form id="filter-form" onSubmit={e => { return this.applyValues(e); }}>
                             <div>
                                 <UpperCaseTextField
+                                    id="filter-owner-field"
                                     floatingLabelText="Owner"
                                     floatingLabelStyle={this.isOwnerAndPrefixWild() ? labelStyle : null}
                                     value={owner}
@@ -167,6 +168,7 @@ export class Filters extends React.Component {
                                     errorStyle={hiddenErrorText}
                                 />
                                 <UpperCaseTextField
+                                    id="filter-prefix-field"
                                     floatingLabelText="Prefix"
                                     floatingLabelStyle={this.isOwnerAndPrefixWild() ? labelStyle : null}
                                     value={prefix}
@@ -180,6 +182,7 @@ export class Filters extends React.Component {
                             </div>
                             <div>
                                 <UpperCaseTextField
+                                    id="filter-jobId-field"
                                     floatingLabelText="Job ID"
                                     value={jobId}
                                     fieldChangedCallback={this.handleJobIdChange}
@@ -187,6 +190,7 @@ export class Filters extends React.Component {
                                     style={leftAlign}
                                 />
                                 <SelectField
+                                    id="filter-status-field"
                                     floatingLabelText="Status"
                                     floatingLabelFixed={true}
                                     value={status}
@@ -201,19 +205,20 @@ export class Filters extends React.Component {
                             </div>
                             <CardActions>
                                 <RaisedButton
+                                    id="filters-apply-button"
                                     label="APPLY"
                                     labelColor={ibmBlueDark}
                                     primary={true}
                                     type="submit"
                                 />
                                 <RaisedButton
+                                    id="filters-reset-button"
                                     label="RESET"
                                     labelColor={ibmBlueDark}
                                     secondary={true}
                                     onClick={this.resetValues}
                                 />
                             </CardActions>
-
                         </form>
                     </CardText>
                 </Card>
