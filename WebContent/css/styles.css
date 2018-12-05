@@ -49,6 +49,7 @@ body {
     list-style: none;
     padding-left: 10px;
     margin: 0;
+    white-space: nowrap;
 }
 
 .node span {
