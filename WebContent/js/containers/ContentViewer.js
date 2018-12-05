@@ -11,25 +11,19 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import OrionEditor from 'orion-editor-component';
 import { Card, CardHeader, CardText } from 'material-ui/Card';
-import ContentViewer from '../components/ContentViewer';
 import ConnectedRealtimeContentViewer from '../components/RealtimeContentViewer';
 import { fetchJobFileNoName } from '../actions/content';
 
 export class NodeViewer extends React.Component {
     constructor(props) {
         super(props);
+        this.editorReady = this.editorReady.bind(this);
 
         this.state = {
             height: 0,
         };
-    }
-
-    componentWillMount() {
-        const { locationQuery, dispatch } = this.props;
-        if (locationQuery && locationQuery.jobName && locationQuery.jobId && locationQuery.fileId) {
-            dispatch(fetchJobFileNoName(locationQuery.jobName, locationQuery.jobId, locationQuery.fileId));
-        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -43,8 +37,15 @@ export class NodeViewer extends React.Component {
         this.setState({ unreadLines });
     };
 
+    editorReady = () => {
+        const { locationQuery, dispatch } = this.props;
+        if (locationQuery) {
+            dispatch(fetchJobFileNoName(locationQuery.jobName, locationQuery.jobId, locationQuery.fileId));
+        }
+    };
+
     render() {
-        const { label, sourceId, content, isContentRealtime, isFetching, dispatch } = this.props;
+        const { label, sourceId, content, isContentRealtime, dispatch, locationHost } = this.props;
         const cardTextStyle = { paddingTop: '0', paddingBottom: '0' };
         let contentViewer;
         if (isContentRealtime) {
@@ -56,10 +57,13 @@ export class NodeViewer extends React.Component {
                 />);
         } else {
             contentViewer = (
-                <ContentViewer
-                    isFetching={isFetching}
+                <OrionEditor
                     content={content}
-                    dispatch={dispatch}
+                    syntax={'text/jclcontext'}
+                    languageFilesHost={locationHost}
+                    editorTopOffset={60}
+                    readonly={true}
+                    editorReady={this.editorReady}
                 />
             );
         }
@@ -86,8 +90,8 @@ NodeViewer.propTypes = {
     label: PropTypes.string,
     content: PropTypes.string,
     isContentRealtime: PropTypes.bool,
-    isFetching: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
+    locationHost: PropTypes.string,
     locationQuery: PropTypes.shape({
         jobName: PropTypes.string.isRequired,
         jobId: PropTypes.string.isRequired,

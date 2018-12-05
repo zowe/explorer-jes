@@ -30,7 +30,7 @@ class FullScreenViewer extends React.Component {
             return (
                 <div className="row group">
                     <div className="component col col-12">
-                        <ConentViewer locationQuery={location.query} />
+                        <ConentViewer locationQuery={location.query} locationHost={location.host} />
                     </div>
                     <Snackbar />
                 </div>
@@ -53,6 +53,7 @@ FullScreenViewer.propTypes = {
             jobId: PropTypes.string.isRequired,
             fileId: PropTypes.string.isRequired,
         }),
+        host: PropTypes.string.isRequired,
     }),
 };
 
