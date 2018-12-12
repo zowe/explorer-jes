@@ -113,9 +113,9 @@ node ('jenkins-slave') {
         sh 'npm run prod'
       }
       //copy static files to dist directory
-      sh 'cp ./WebContent/css ./WebContent/dist/'
-      sh 'cp ./WebContent/img ./WebContent/dist/'
-      sh 'cp ./WebContent/index.html ./WebContent/dist/'
+      sh 'cp ./WebContent/css ./dist/'
+      sh 'cp ./WebContent/img ./dist/'
+      sh 'cp ./WebContent/index.html ./dist/'
     }
 
     stage('publish') {
