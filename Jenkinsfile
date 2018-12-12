@@ -88,8 +88,6 @@ node ('jenkins-slave') {
 
     stage('test') {
       ansiColor('xterm') {
-        sh 'ls -al'
-        sh 'pwd'
         sh 'npm run lint'
         sh 'npm run coverage'
         sh 'npm run coverageReport'
@@ -115,8 +113,8 @@ node ('jenkins-slave') {
         sh 'npm run prod'
       }
       //copy static files to dist directory
-      sh 'cp ./WebContent/css ./dist/'
-      sh 'cp ./WebContent/img ./dist/'
+      sh 'cp -r ./WebContent/css ./dist/'
+      sh 'cp -r ./WebContent/img ./dist/'
       sh 'cp ./WebContent/index.html ./dist/'
     }
 
