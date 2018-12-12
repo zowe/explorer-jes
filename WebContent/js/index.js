@@ -53,4 +53,4 @@ ReactDOM.render(
             </Router>
         </Provider>
     </MuiThemeProvider>
-    , document.getElementById('menuapp'));
+    , document.getElementById('app'));

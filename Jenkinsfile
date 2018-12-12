@@ -112,23 +112,41 @@ node ('jenkins-slave') {
       ansiColor('xterm') {
         sh 'npm run prod'
       }
+      //copy static files to dist directory
+      sh 'cp ./WebContent/css ./WebContent/dist/'
+      sh 'cp ./WebContent/img ./WebContent/dist/'
+      sh 'cp ./WebContent/index.html ./WebContent/dist/'
     }
 
     stage('publish') {
-      // ===== publishing to generic artifactory ==============================
-      // gizaArtifactory is pre-defined in Jenkins management
+      // ===== publishing to jfrog npm registry ==============================
+      // artifactory is pre-defined in Jenkins management
       def server = Artifactory.server params.ARTIFACTORY_SERVER
-      def uploadSpec = readFile "artifactory-upload-spec.json"
-      def buildIdentifier = getBuildIdentifier(true, 'master', false)
-      uploadSpec = uploadSpec.replaceAll(/\$\{version\}/, "${packageName}-${packageVersion}-${buildIdentifier}")
-      // prepare build information
-      def buildInfo = Artifactory.newBuildInfo()
-      // build info name/number are optional
-      // buildInfo.name = env.JOB_NAME // packageName
-      // buildInfo.number = "${packageVersion}-dev+${env.BUILD_NUMBER}"
-      // upload
-      server.upload spec: uploadSpec, buildInfo: buildInfo
-      server.publishBuildInfo buildInfo
+      def npmRegistry = sh(script: "node -e \"console.log(require('./package.json').publishConfig.registry)\"", returnStdout: true).trim()
+      if (!npmRegistry || !npmRegistry.startsWith('http')) {
+        error 'npm registry is not defined, or cannot be retrieved'
+      }
+      // login to private npm registry
+      def npmUser = npmLogin(npmRegistry, params.NPM_CREDENTIALS_ID, params.NPM_USER_EMAIL)
+
+      if (!params.NPM_RELEASE) {
+        // show current git status for troubleshooting purpose
+        // if git status is not clean, npm version will fail
+        sh "git config --global user.email \"${params.NPM_USER_EMAIL}\""
+        sh "git config --global user.name \"${npmUser}\""
+        sh "git status"
+
+        def buildIdentifier = getBuildIdentifier('%Y%m%d-%H%M%S', 'master', false)
+        def newVersion = "${packageVersion}-snapshot.${buildIdentifier}"
+        echo "ready to publish snapshot version v${newVersion}..."
+        sh "npm version ${newVersion}"
+        // publish
+        sh 'npm publish --tag snapshot --force'
+      } else {
+        echo "ready to release v${packageVersion}"
+        // publish
+        sh 'npm publish'
+      }
     }
 
     stage('done') {

@@ -1,0 +1,15 @@
+WebContent/
+tests/
+target/
+node_modules/
+coverage/
+.vscode/
+.nyc_output/
+.history/
+.babelrc
+.eslintrc.js
+.gitignore
+Jenkinsfile
+jsconfig.json
+README.md
+webpack.config.js
