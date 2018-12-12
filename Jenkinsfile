@@ -88,6 +88,8 @@ node ('jenkins-slave') {
 
     stage('test') {
       ansiColor('xterm') {
+        sh 'ls -al'
+        sh 'pwd'
         sh 'npm run lint'
         sh 'npm run coverage'
         sh 'npm run coverageReport'
