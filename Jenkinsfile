@@ -135,6 +135,7 @@ node ('jenkins-slave') {
         sh "git config --global user.email \"${params.NPM_USER_EMAIL}\""
         sh "git config --global user.name \"${npmUser}\""
         sh "git status"
+        sh "git diff"
 
         def buildIdentifier = getBuildIdentifier('%Y%m%d-%H%M%S', 'master', false)
         def newVersion = "${packageVersion}-snapshot.${buildIdentifier}"
