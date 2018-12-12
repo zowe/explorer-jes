@@ -82,7 +82,7 @@ node ('jenkins-slave') {
         npmLogin(npmRegistry, params.NPM_CREDENTIALS_ID, params.NPM_USER_EMAIL)
 
         // sh 'npm prune'
-        sh 'npm install'
+        sh 'npm ci'
       }
     }
 
