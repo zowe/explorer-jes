@@ -56,8 +56,7 @@
     "rewire": "^2.5.2 ",
     "style-loader": "^0.18.2",
     "webpack": "^2.6.1",
-    "webpack-dev-server": "^2.4.5",
-    "webpack-war-plugin": "^1.0.0-beta.3"
+    "webpack-dev-server": "^2.4.5"
   },
   "scripts": {
     "dev": "webpack-dev-server --content-base WebContent --inline --hot",
@@ -77,13 +76,11 @@
     "exclude": [
       "tests",
       "WebContent/js/themes",
-      "WebContent/js/resources/languages",
-      "WebContent/js/actions/proclib.js",
-      "WebContent/js/actions/messages.js"
+      "WebContent/js/resources/languages"
     ]
   },
   "publishConfig": {
-    "registry": "https://eu.artifactory.swg-devops.com:443/artifactory/api/npm/npm-local"
+    "registry": "https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-local-release/"
   },
   "description": "Installation Requirements: - Node.js",
   "author": "IBM",
