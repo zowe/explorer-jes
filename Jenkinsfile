@@ -161,6 +161,9 @@ node ('jenkins-slave') {
         echo "ready to release v${packageVersion}"
         // publish
         sh 'npm publish'
+        // tag branch
+        sh "git tag v${packageVersion}"
+        sh "git push --tags"
       }
     }
 
