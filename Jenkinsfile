@@ -114,10 +114,16 @@ node ('jenkins-slave') {
     }
 
     stage('SonarQube analysis') {
-      // requires SonarQube Scanner 2.8+
-      def scannerHome = tool 'SonarQube Scanner 3.2.0.1227';
+      def scannerHome = tool 'sonar-scanner-3.2.0';
       withSonarQubeEnv('sonar-default-server') {
         sh "${scannerHome}/bin/sonar-scanner"
+      }
+
+      timeout(time: 1, unit: 'HOURS') {
+        def qg = waitForQualityGate()
+        if (qg.status != 'OK') {
+          error "Pipeline aborted due to quality gate failure: ${qg.status}"
+        }
       }
     }
 
