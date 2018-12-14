@@ -1,7 +1,6 @@
 {
   "name": "explorer-jes",
-  "version": "0.0.1",
-  "main": "index.js",
+  "version": "0.0.2",
   "dependencies": {
     "babel-polyfill": "^6.16.0",
     "file-loader": "^0.11.2",
@@ -66,7 +65,7 @@
     "coverage": "JUNIT_REPORT_PATH=target/report.xml nyc --report cobertura --require babel-core/register --all mocha --compilers js:babel-register tests --recursive --colors --reporter mocha-jenkins-reporter",
     "coverageReport": "nyc report --reporter=cobertura",
     "coverageReportHTML": "nyc report --reporter=lcov ",
-    "prod": "cross-env NODE_ENV='production' webpack -p",
+    "prod": "cross-env NODE_ENV='production' webpack -p && cp -r ./WebContent/css ./dist/ && cp -r ./WebContent/img ./dist/ && cp ./WebContent/index.html ./dist/",
     "preCommit": "npm-run-all --aggregate-output --parallel --print-label lint test prod"
   },
   "nyc": {
@@ -79,6 +78,7 @@
       "WebContent/js/resources/languages"
     ]
   },
+  "repository": "zowe/explorer-jes",
   "publishConfig": {
     "registry": "https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-local-release/"
   },

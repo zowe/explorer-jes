@@ -1,0 +1,23 @@
+#The contents of this file should be moved to the zowe-install process where it is built dynamically
+services:
+    - serviceId: jesUI
+      title: JES explorer UI
+      description: JES explorer UI providing access to jobs and job output
+      catalogUiTileId: jesUI
+      instanceBaseUrls:
+        - http://WINMVS3B.HURSLEY.IBM.COM:3000/
+      homePageRelativeUrl:  # Home page is at the same URL
+      routedServices:
+        - gatewayUrl: api/v1
+          serviceRelativeUrl: api/v1/
+        - gatewayUrl: ui/v1/
+          serviceRelativeUrl: ui/v1/jobs
+      apiInfo:
+        - apiId: com.ibm.jes.ui
+          gatewayUrl: api/v1
+          version: 0.0.1
+          documentationUrl: https://WINMVS3B.HURSLEY.IBM.COM:7445/ibm/api/explorer/
+catalogUiTiles:
+    jesUI:
+        title: JES explorer UI
+        description: JES explorer UI providing access to jobs and job output

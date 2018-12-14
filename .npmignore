@@ -1,5 +1,4 @@
 WebContent/
-plugin-definition/
 tests/
 target/
 node_modules/
@@ -15,3 +14,4 @@ jsconfig.json
 README.md
 webpack.config.js
 .scannerwork
+sonar-project.properties

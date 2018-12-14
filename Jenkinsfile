@@ -15,6 +15,7 @@
 @Library('zoe-jenkins-library') _
 
 def isPullRequest = env.BRANCH_NAME.startsWith('PR-')
+def isMasterBranch = env.BRANCH_NAME == 'master'
 
 def opts = []
 // keep last 20 builds for regular branches, no keep for pull requests
@@ -41,12 +42,33 @@ customParameters.push(booleanParam(
   name: 'NPM_RELEASE',
   description: 'Publish a release or snapshot version. By default, this task will create snapshot. Check this to publish a release version.',
   defaultValue: false
- ))
+))
 customParameters.push(string(
   name: 'ARTIFACTORY_SERVER',
   description: 'Artifactory server, should be pre-defined in Jenkins configuration',
   defaultValue: 'gizaArtifactory',
   trim: true
+))
+customParameters.push(credentials(
+  name: 'GITHUB_CREDENTIALS',
+  description: 'Github user credentials',
+  credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
+  defaultValue: 'zowe-robot-github',
+  required: true
+))
+customParameters.push(string(
+  name: 'GITHUB_USER_EMAIL',
+  description: 'github user email',
+  defaultValue: 'zowe.robot@gmail.com',
+  trim: true,
+  required: true
+))
+customParameters.push(string(
+  name: 'GITHUB_USER_NAME',
+  description: 'github user name',
+  defaultValue: 'Zowe Robot',
+  trim: true,
+  required: true
 ))
 opts.push(parameters(customParameters))
 
@@ -144,11 +166,12 @@ node ('jenkins-slave') {
       // login to private npm registry
       def npmUser = npmLogin(npmRegistry, params.NPM_CREDENTIALS_ID, params.NPM_USER_EMAIL)
 
+      sh "git config --global user.email \"${params.GITHUB_USER_EMAIL}\""
+      sh "git config --global user.name \"${params.GITHUB_USER_NAME}\""
+
       if (!params.NPM_RELEASE) {
         // show current git status for troubleshooting purpose
         // if git status is not clean, npm version will fail
-        sh "git config --global user.email \"${params.NPM_USER_EMAIL}\""
-        sh "git config --global user.name \"${npmUser}\""
         sh "git status"
 
         def buildIdentifier = getBuildIdentifier('%Y%m%d-%H%M%S', 'master', false)
@@ -164,6 +187,8 @@ node ('jenkins-slave') {
         // tag branch
         sh "git tag v${packageVersion}"
         sh "git push --tags"
+        // bump version to avoid another release on same version
+        sh "npm version patch"
       }
     }
 
