@@ -15,7 +15,5 @@ WebContent/app.min.js
 .factorypath
 *.war
 bin
-dist/app.min.js
-dist/css
-dist/img
-dist/index.html
+dist
+.scannerwork
