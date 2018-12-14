@@ -7,7 +7,7 @@
     "file-loader": "^0.11.2",
     "immutable": "^3.8.1",
     "material-ui": "^0.18.2",
-    "orion-editor-component": "0.0.8",
+    "orion-editor-component": "0.0.9",
     "prop-types": "^15.5.10",
     "react": "^15.4.0",
     "react-contextmenu": "^2.6.1",
