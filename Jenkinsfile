@@ -37,6 +37,11 @@ customParameters.push(string(
   defaultValue: 'giza-jenkins@gmail.com',
   trim: true
 ))
+customParameters.push(booleanParam(
+  name: 'NPM_RELEASE',
+  description: 'Publish a release or snapshot version. By default, this task will create snapshot. Check this to publish a release version.',
+  defaultValue: false
+ ))
 customParameters.push(string(
   name: 'ARTIFACTORY_SERVER',
   description: 'Artifactory server, should be pre-defined in Jenkins configuration',
@@ -108,14 +113,18 @@ node ('jenkins-slave') {
       }
     }
 
+    stage('SonarQube analysis') {
+      // requires SonarQube Scanner 2.8+
+      def scannerHome = tool 'SonarQube Scanner 3.2.0.1227';
+      withSonarQubeEnv('sonar-default-server') {
+        sh "${scannerHome}/bin/sonar-scanner"
+      }
+    }
+
     stage('build') {
       ansiColor('xterm') {
         sh 'npm run prod'
       }
-      //copy static files to dist directory
-      sh 'cp -r ./WebContent/css ./dist/'
-      sh 'cp -r ./WebContent/img ./dist/'
-      sh 'cp ./WebContent/index.html ./dist/'
     }
 
     stage('publish') {
