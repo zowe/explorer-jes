@@ -6,6 +6,7 @@
     "file-loader": "^0.11.2",
     "immutable": "^3.8.1",
     "material-ui": "^0.18.2",
+    "npm-install-peers": "^1.2.1",
     "orion-editor-component": "0.0.8",
     "prop-types": "^15.5.10",
     "react": "^15.4.0",
@@ -21,6 +22,9 @@
     "redux-thunk": "^2.1.0",
     "url-loader": "^0.5.7",
     "whatwg-fetch": "^2.0.3"
+  },
+  "peerDependencies": {
+    "explorer-ui-server": "0.0.4"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
@@ -82,7 +86,7 @@
   "publishConfig": {
     "registry": "https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-local-release/"
   },
-  "description": "Installation Requirements: - Node.js",
+  "description": "JES Explorer",
   "author": "IBM",
   "license": "EPL-2.0"
 }
