@@ -43,6 +43,19 @@ customParameters.push(booleanParam(
   description: 'Publish a release or snapshot version. By default, this task will create snapshot. Check this to publish a release version.',
   defaultValue: false
 ))
+customParameters.push(credentials(
+  name: 'PAX_SERVER_CREDENTIALS_ID',
+  description: 'The server credential used to create PAX file',
+  credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
+  defaultValue: 'TestAdminzOSaaS2',
+  required: true
+))
+customParameters.push(string(
+  name: 'PAX_SERVER_IP',
+  description: 'The server IP used to create PAX file',
+  defaultValue: '172.30.0.1',
+  trim: true
+))
 customParameters.push(string(
   name: 'ARTIFACTORY_SERVER',
   description: 'Artifactory server, should be pre-defined in Jenkins configuration',
@@ -79,6 +92,7 @@ node ('jenkins-slave') {
   currentBuild.result = 'SUCCESS'
   def packageName
   def packageVersion
+  def versionId
 
   try {
 
@@ -95,6 +109,7 @@ node ('jenkins-slave') {
       // get package information
       packageName = sh(script: "node -e \"console.log(require('./package.json').name)\"", returnStdout: true).trim()
       packageVersion = sh(script: "node -e \"console.log(require('./package.json').version)\"", returnStdout: true).trim()
+      versionId = packageVersion
       echo "Building ${packageName} v${packageVersion}..."
     }
 
@@ -175,20 +190,50 @@ node ('jenkins-slave') {
         sh "git status"
 
         def buildIdentifier = getBuildIdentifier('%Y%m%d-%H%M%S', 'master', false)
-        def newVersion = "${packageVersion}-snapshot.${buildIdentifier}"
-        echo "ready to publish snapshot version v${newVersion}..."
-        sh "npm version ${newVersion}"
+        versionId = "${packageVersion}-snapshot.${buildIdentifier}"
+        echo "ready to publish snapshot version v${versionId}..."
+        sh "npm version ${versionId}"
         // publish
         sh 'npm publish --tag snapshot --force'
       } else {
         echo "ready to release v${packageVersion}"
         // publish
         sh 'npm publish'
+        // FIXME: tag failed
         // tag branch
-        sh "git tag v${packageVersion}"
-        sh "git push --tags"
-        // bump version to avoid another release on same version
-        sh "npm version patch"
+        // sh "git tag v${packageVersion}"
+        // sh "git push --tags"
+        // // bump version to avoid another release on same version
+        // sh "npm version patch"
+      }
+    }
+
+    stage('package') {
+      timeout(time: 30, unit: 'MINUTES') {
+        echo "prepare pax workspace..."
+        sh "scripts/build.sh"
+
+        echo "creating pax file from workspace..."
+        createPax("${packageName}-packaging", "${packageName}-${versionId}.pax",
+                  params.PAX_SERVER_IP, params.PAX_SERVER_CREDENTIALS_ID,
+                  './pax-workspace', '/zaas1/buildWorkspace', '-x os390')
+
+        echo 'publishing pax file to artifactory...'
+        def releaseIdentifier = getReleaseIdentifier()
+        def server = Artifactory.server params.ARTIFACTORY_SERVER
+        def uploadSpec
+        if (params.NPM_RELEASE) {
+          uploadSpec = readFile "artifactory-upload-spec.release.json.template"
+          uploadSpec = uploadSpec.replaceAll(/\{ARTIFACTORY_VERSION\}/, packageVersion)
+          uploadSpec = uploadSpec.replaceAll(/\{RELEASE_IDENTIFIER\}/, releaseIdentifier)
+        } else {
+          uploadSpec = readFile "artifactory-upload-spec.snapshot.json.template"
+          uploadSpec = uploadSpec.replaceAll(/\{ARTIFACTORY_VERSION\}/, packageVersion)
+          uploadSpec = uploadSpec.replaceAll(/\{RELEASE_IDENTIFIER\}/, releaseIdentifier)
+        }
+        def buildInfo = Artifactory.newBuildInfo()
+        server.upload spec: uploadSpec, buildInfo: buildInfo
+        server.publishBuildInfo buildInfo
       }
     }
 

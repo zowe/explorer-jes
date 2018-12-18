@@ -15,3 +15,9 @@ README.md
 webpack.config.js
 .scannerwork
 sonar-project.properties
+
+# pax workspace
+pax-workspace/*
+!pax-workspace/.keep
+!pax-workspace/pre-packaging.sh
+!pax-workspace/post-packaging.sh

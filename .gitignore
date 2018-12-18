@@ -17,3 +17,9 @@ WebContent/app.min.js
 bin
 dist
 .scannerwork
+
+# pax workspace
+pax-workspace/*
+!pax-workspace/.keep
+!pax-workspace/pre-packaging.sh
+!pax-workspace/post-packaging.sh
