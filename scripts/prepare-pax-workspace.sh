@@ -65,6 +65,7 @@ mkdir -p "${PAX_WORKSPACE_DIR}/ascii/server/public/${APPLICATION_DIR}"
 cp -r dist/. "${PAX_WORKSPACE_DIR}/ascii/server/public/${APPLICATION_DIR}"
 
 # pre-configure server config
+echo "[${SCRIPT_NAME}] update default UI server config ..."
 sed -e "s#{{service-name}}#${PACKAGE_NAME}#" \
   -e "s#{{path-uri}}#${APPLICAIION_URI}#" \
   -e "s#{{path-dir}}#public#" \
@@ -75,6 +76,10 @@ sed -e "s#{{service-name}}#${PACKAGE_NAME}#" \
   -e "s#{{https-cert}}#configs/server.cert#" \
   "${PAX_WORKSPACE_DIR}/ascii/server/configs/config.json.template" \
   > "${PAX_WORKSPACE_DIR}/ascii/server/configs/config.json"
+
+echo "[${SCRIPT_NAME}] tar ascii folder ..."
+tar -c -f "${PAX_WORKSPACE_DIR}/ascii.tar" -C "${PAX_WORKSPACE_DIR}/" ascii
+rm -fr "${PAX_WORKSPACE_DIR}/ascii"
 
 echo "[${SCRIPT_NAME}] ${PAX_WORKSPACE_DIR} folder is prepared."
 exit 0
