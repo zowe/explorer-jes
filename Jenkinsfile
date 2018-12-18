@@ -173,8 +173,6 @@ node ('jenkins-slave') {
 
     stage('publish') {
       // ===== publishing to jfrog npm registry ==============================
-      // artifactory is pre-defined in Jenkins management
-      def server = Artifactory.server params.ARTIFACTORY_SERVER
       def npmRegistry = sh(script: "node -e \"console.log(require('./package.json').publishConfig.registry)\"", returnStdout: true).trim()
       if (!npmRegistry || !npmRegistry.startsWith('http')) {
         error 'npm registry is not defined, or cannot be retrieved'
@@ -211,8 +209,12 @@ node ('jenkins-slave') {
 
     stage('package') {
       timeout(time: 30, unit: 'MINUTES') {
+        // login to private npm registry where we can download explorer-ui-server
+        def npmRegistry = 'https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-release'
+        def npmUser = npmLogin(npmRegistry, params.NPM_CREDENTIALS_ID, params.NPM_USER_EMAIL)
+
         echo "prepare pax workspace..."
-        sh "scripts/build.sh"
+        sh "scripts/prepare-pax-workspace.sh"
 
         echo "creating pax file from workspace..."
         createPax("${packageName}-packaging", "${packageName}-${versionId}.pax",
