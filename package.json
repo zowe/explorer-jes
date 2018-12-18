@@ -90,6 +90,6 @@
   "license": "EPL-2.0",
   "config": {
     "baseuri": "/ui/v1/jobs",
-    "port": 7301
+    "port": 8546
   }
 }
