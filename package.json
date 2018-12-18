@@ -90,6 +90,8 @@
   "author": "IBM",
   "license": "EPL-2.0",
   "config": {
+    "pluginId": "org.zowe.explorer-jes",
+    "pluginName": "JES Explorer",
     "baseuri": "/ui/v1/jobs",
     "port": 8546
   }
