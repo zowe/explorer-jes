@@ -24,13 +24,13 @@ PAX_WORKSPACE_DIR=pax-workspace
 PACKAGE_NAME=$(node -e "console.log(require('./package.json').name)")
 PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
 PACKAGE_DESC=$(node -e "console.log(require('./package.json').description)")
-APPLICAIION_URI=/ui/v1/jobs
-APPLICAIION_PORT=7301
-APPLICATION_ID="com.ibm.${PACKAGE_NAME}"
-APPLICATION_NAME="JES Explorer"
+APPLICAIION_URI=$(node -e "console.log(require('./package.json').config.baseuri)")
+APPLICAIION_PORT=$(node -e "console.log(require('./package.json').config.port)")
+ZOWE_PLUGIN_ID="com.ibm.${PACKAGE_NAME}"
 
 cd $BASEDIR
 cd ..
+ROOT_DIR=$(pwd)
 
 # prepare pax workspace
 echo "[${SCRIPT_NAME}] cleaning PAX workspace ..."
@@ -58,6 +58,9 @@ fi
 echo "[${SCRIPT_NAME}] copying explorer UI server ..."
 mkdir -p "${PAX_WORKSPACE_DIR}/ascii/server/public"
 cp -r node_modules/explorer-ui-server/. "${PAX_WORKSPACE_DIR}/ascii/server"
+cd "${PAX_WORKSPACE_DIR}/ascii/server"
+npm install
+cd "${ROOT_DIR}"
 
 # copy explorer-jes to target folder
 echo "[${SCRIPT_NAME}] copying explorer JES backend ..."
