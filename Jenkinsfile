@@ -171,7 +171,7 @@ node ('jenkins-slave') {
       }
     }
 
-    stage('publish') {
+    stage('npm-publish') {
       // ===== publishing to jfrog npm registry ==============================
       def npmRegistry = sh(script: "node -e \"console.log(require('./package.json').publishConfig.registry)\"", returnStdout: true).trim()
       if (!npmRegistry || !npmRegistry.startsWith('http')) {
@@ -207,7 +207,7 @@ node ('jenkins-slave') {
       }
     }
 
-    stage('package') {
+    stage('pax-package') {
       timeout(time: 30, unit: 'MINUTES') {
         // login to private npm registry where we can download explorer-ui-server
         def npmRegistry = 'https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-release'
