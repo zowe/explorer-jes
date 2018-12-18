@@ -59,7 +59,7 @@ echo "[${SCRIPT_NAME}] copying explorer UI server ..."
 mkdir -p "${PAX_WORKSPACE_DIR}/ascii/server/public"
 cp -r node_modules/explorer-ui-server/. "${PAX_WORKSPACE_DIR}/ascii/server"
 cd "${PAX_WORKSPACE_DIR}/ascii/server"
-npm install
+npm install --only=production
 cd "${ROOT_DIR}"
 
 # copy explorer-jes to target folder
