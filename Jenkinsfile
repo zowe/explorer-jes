@@ -88,7 +88,12 @@ node ('jenkins-slave') {
       // get package information
       packageName = sh(script: "node -e \"console.log(require('./package.json').name)\"", returnStdout: true).trim()
       packageVersion = sh(script: "node -e \"console.log(require('./package.json').version)\"", returnStdout: true).trim()
-      versionId = packageVersion
+      if (params.NPM_RELEASE) {
+        versionId = packageVersion
+      } else {
+        def buildIdentifier = getBuildIdentifier('%Y%m%d%H%M%S', 'master', false)
+        versionId = "${packageVersion}-snapshot.${buildIdentifier}"
+      }
       echo "Building ${packageName} v${packageVersion}..."
     }
 
