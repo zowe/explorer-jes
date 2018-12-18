@@ -64,6 +64,9 @@ cd "${ROOT_DIR}"
 
 # copy explorer-jes to target folder
 echo "[${SCRIPT_NAME}] copying explorer JES backend ..."
+cp README.md "${PAX_WORKSPACE_DIR}/ascii/"
+cp package.json "${PAX_WORKSPACE_DIR}/ascii/"
+cp package-lock.json "${PAX_WORKSPACE_DIR}/ascii/"
 mkdir -p "${PAX_WORKSPACE_DIR}/ascii/server/public/${APPLICATION_DIR}"
 cp -r dist/. "${PAX_WORKSPACE_DIR}/ascii/server/public/${APPLICATION_DIR}"
 
@@ -75,14 +78,15 @@ sed -e "s#{{service-name}}#${PACKAGE_NAME}#" \
   -e "s#{{port}}#${APPLICAIION_PORT}#" \
   -e "s#{{https-pfx}}##" \
   -e "s#{{https-passphrase}}##" \
-  -e "s#{{https-key}}#configs/server.key#" \
-  -e "s#{{https-cert}}#configs/server.cert#" \
+  -e "s#{{https-key}}#server.key#" \
+  -e "s#{{https-cert}}#server.cert#" \
   "${PAX_WORKSPACE_DIR}/ascii/server/configs/config.json.template" \
   > "${PAX_WORKSPACE_DIR}/ascii/server/configs/config.json"
 
 echo "[${SCRIPT_NAME}] tar ascii folder ..."
 tar -c -f "${PAX_WORKSPACE_DIR}/ascii.tar" -C "${PAX_WORKSPACE_DIR}/" ascii
-rm -fr "${PAX_WORKSPACE_DIR}/ascii"
+# do not remove it for local debugging
+# rm -fr "${PAX_WORKSPACE_DIR}/ascii"
 
 echo "[${SCRIPT_NAME}] ${PAX_WORKSPACE_DIR} folder is prepared."
 exit 0

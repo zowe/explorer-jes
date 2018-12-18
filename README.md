@@ -2,22 +2,44 @@
 
 [![Code Quality](https://jayne.zowe.org:9000/api/project_badges/measure?project=zowe%3Aexplorer-jes&metric=alert_status)](https://jayne.zowe.org:9000/dashboard/index/zowe:explorer-jes)
 
-**Pre reqs**
+## Build 
+
+### Install Dependencies
+
 ```
 npm install
 ```
 
-**Development:**
+### Build for Development
+
 ```
 npm run dev 
-GOTO: localhost:8080
 ```
-**Production:**
+
+Then you can visit http://localhost:8080 to test.
+
+
+### Build for Production
+
 ```
 npm run prod
 ```
 
-**Run SonarQube Code Analysis**
+### Prepare PAX Packaging Workspace
+
+```
+./scripts/prepare-pax-workspace.sh
+```
+
+## Start With explorer-ui-server
+
+After preparing PAX workspace, you can serve the explorer UI with explorer-ui-server:
+
+```
+node pax-workspace/ascii/server/src/index.js --config pax-workspace/ascii/server/configs/config.json
+```
+
+## Run SonarQube Code Analysis
 
 Install [SonarQube Scanner](https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner).
 

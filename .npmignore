@@ -15,6 +15,7 @@ README.md
 webpack.config.js
 .scannerwork
 sonar-project.properties
+.DS_Store
 
 # pax workspace
 pax-workspace/*
