@@ -45,8 +45,8 @@ cp -r plugin-definition "${PAX_WORKSPACE_DIR}/ascii"
 
 # install peerDependencies
 echo "[${SCRIPT_NAME}] install peer dependencies (explorer-ui-server) ..."
-npm install npm-install-peers
-npx npm-install-peers
+EXPLORER_UI_SERVER_VERSION=$(node -e "console.log(require('./package.json').peerDependencies['explorer-ui-server'])")
+npm install "explorer-ui-server@${EXPLORER_UI_SERVER_VERSION}" --no-save
 
 # build client
 if [ ! -f "dist/app.min.js" ]; then
@@ -73,7 +73,8 @@ sed -e "s#{{service-name}}#${PACKAGE_NAME}#" \
   -e "s#{{https-passphrase}}##" \
   -e "s#{{https-key}}#configs/server.key#" \
   -e "s#{{https-cert}}#configs/server.cert#" \
-  pax-workspace/server/configs/config.json.template > pax-workspace/server/configs/config.json
+  "${PAX_WORKSPACE_DIR}/ascii/server/configs/config.json.template" \
+  > "${PAX_WORKSPACE_DIR}/ascii/server/configs/config.json"
 
 echo "[${SCRIPT_NAME}] ${PAX_WORKSPACE_DIR} folder is prepared."
 exit 0
