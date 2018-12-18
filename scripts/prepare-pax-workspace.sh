@@ -56,7 +56,7 @@ fi
 
 # copy explorer UI server
 echo "[${SCRIPT_NAME}] copying explorer UI server ..."
-mkdir -p "${PAX_WORKSPACE_DIR}/ascii/server/public"
+mkdir -p "${PAX_WORKSPACE_DIR}/ascii/server"
 cp -r node_modules/explorer-ui-server/. "${PAX_WORKSPACE_DIR}/ascii/server"
 cd "${PAX_WORKSPACE_DIR}/ascii/server"
 npm install --only=production
@@ -67,14 +67,14 @@ echo "[${SCRIPT_NAME}] copying explorer JES backend ..."
 cp README.md "${PAX_WORKSPACE_DIR}/ascii/"
 cp package.json "${PAX_WORKSPACE_DIR}/ascii/"
 cp package-lock.json "${PAX_WORKSPACE_DIR}/ascii/"
-mkdir -p "${PAX_WORKSPACE_DIR}/ascii/server/public/${APPLICATION_DIR}"
-cp -r dist/. "${PAX_WORKSPACE_DIR}/ascii/server/public/${APPLICATION_DIR}"
+mkdir -p "${PAX_WORKSPACE_DIR}/ascii/app"
+cp -r dist/. "${PAX_WORKSPACE_DIR}/ascii/app"
 
 # pre-configure server config
 echo "[${SCRIPT_NAME}] update default UI server config ..."
 sed -e "s#{{service-name}}#${PACKAGE_NAME}#" \
   -e "s#{{path-uri}}#${APPLICAIION_URI}#" \
-  -e "s#{{path-dir}}#public#" \
+  -e "s#{{path-dir}}#../app#" \
   -e "s#{{port}}#${APPLICAIION_PORT}#" \
   -e "s#{{https-pfx}}##" \
   -e "s#{{https-passphrase}}##" \
