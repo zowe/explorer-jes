@@ -1,6 +1,6 @@
 {
   "files": [{
     "pattern": "*.pax",
-    "target": "libs-snapshot-release/org/zowe/explorer-jes/{ARTIFACTORY_VERSION}/"
+    "target": "libs-release-local/org/zowe/explorer-jes/{ARTIFACTORY_VERSION}/"
   }]
 }
