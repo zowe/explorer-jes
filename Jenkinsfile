@@ -62,27 +62,6 @@ customParameters.push(string(
   defaultValue: 'gizaArtifactory',
   trim: true
 ))
-customParameters.push(credentials(
-  name: 'GITHUB_CREDENTIALS',
-  description: 'Github user credentials',
-  credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
-  defaultValue: 'zowe-robot-github',
-  required: true
-))
-customParameters.push(string(
-  name: 'GITHUB_USER_EMAIL',
-  description: 'github user email',
-  defaultValue: 'zowe.robot@gmail.com',
-  trim: true,
-  required: true
-))
-customParameters.push(string(
-  name: 'GITHUB_USER_NAME',
-  description: 'github user name',
-  defaultValue: 'Zowe Robot',
-  trim: true,
-  required: true
-))
 opts.push(parameters(customParameters))
 
 // set build properties
@@ -155,14 +134,6 @@ node ('jenkins-slave') {
       withSonarQubeEnv('sonar-default-server') {
         sh "${scannerHome}/bin/sonar-scanner"
       }
-
-      // FIXME: this code stops at IN_PROGRES status and won't try again
-      // timeout(time: 1, unit: 'HOURS') {
-      //   def qg = waitForQualityGate()
-      //   if (qg.status != 'OK') {
-      //     error "Pipeline aborted due to quality gate failure: ${qg.status}"
-      //   }
-      // }
     }
 
     stage('build') {
@@ -171,48 +142,8 @@ node ('jenkins-slave') {
       }
     }
 
-    stage('npm-publish') {
-      // ===== publishing to jfrog npm registry ==============================
-      def npmRegistry = sh(script: "node -e \"console.log(require('./package.json').publishConfig.registry)\"", returnStdout: true).trim()
-      if (!npmRegistry || !npmRegistry.startsWith('http')) {
-        error 'npm registry is not defined, or cannot be retrieved'
-      }
-      // login to private npm registry
-      def npmUser = npmLogin(npmRegistry, params.NPM_CREDENTIALS_ID, params.NPM_USER_EMAIL)
-
-      sh "git config --global user.email \"${params.GITHUB_USER_EMAIL}\""
-      sh "git config --global user.name \"${params.GITHUB_USER_NAME}\""
-
-      if (!params.NPM_RELEASE) {
-        // show current git status for troubleshooting purpose
-        // if git status is not clean, npm version will fail
-        sh "git status"
-
-        def buildIdentifier = getBuildIdentifier('%Y%m%d-%H%M%S', 'master', false)
-        versionId = "${packageVersion}-snapshot.${buildIdentifier}"
-        echo "ready to publish snapshot version v${versionId}..."
-        sh "npm version ${versionId}"
-        // publish
-        sh 'npm publish --tag snapshot --force'
-      } else {
-        echo "ready to release v${packageVersion}"
-        // publish
-        sh 'npm publish'
-        // FIXME: tag failed
-        // tag branch
-        // sh "git tag v${packageVersion}"
-        // sh "git push --tags"
-        // // bump version to avoid another release on same version
-        // sh "npm version patch"
-      }
-    }
-
-    stage('pax-package') {
+    stage('publish') {
       timeout(time: 30, unit: 'MINUTES') {
-        // login to private npm registry where we can download explorer-ui-server
-        def npmRegistry = 'https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-release'
-        def npmUser = npmLogin(npmRegistry, params.NPM_CREDENTIALS_ID, params.NPM_USER_EMAIL)
-
         echo "prepare pax workspace..."
         sh "scripts/prepare-pax-workspace.sh"
 
@@ -237,6 +168,8 @@ node ('jenkins-slave') {
         def buildInfo = Artifactory.newBuildInfo()
         server.upload spec: uploadSpec, buildInfo: buildInfo
         server.publishBuildInfo buildInfo
+
+        // TODO: tag the branch once we release
       }
     }
 
