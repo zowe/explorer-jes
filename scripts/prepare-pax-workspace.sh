@@ -70,6 +70,11 @@ cp package-lock.json "${PAX_WORKSPACE_DIR}/ascii/"
 mkdir -p "${PAX_WORKSPACE_DIR}/ascii/app"
 cp -r dist/. "${PAX_WORKSPACE_DIR}/ascii/app"
 
+# copy start script to target folder
+echo "[${SCRIPT_NAME}] copying startup script ..."
+mkdir -p "${PAX_WORKSPACE_DIR}/ascii/scripts"
+cp -r scripts/start-explorer-jes-ui-server.sh "${PAX_WORKSPACE_DIR}/ascii/scripts"
+
 # pre-configure server config
 echo "[${SCRIPT_NAME}] update default UI server config ..."
 sed -e "s#{{service-name}}#${PACKAGE_NAME}#" \
