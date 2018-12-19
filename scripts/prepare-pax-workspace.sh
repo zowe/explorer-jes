@@ -35,13 +35,11 @@ ROOT_DIR=$(pwd)
 # prepare pax workspace
 echo "[${SCRIPT_NAME}] cleaning PAX workspace ..."
 rm -fr "${PAX_WORKSPACE_DIR}/content"
-rm -fr "${PAX_WORKSPACE_DIR}/ascii"
 mkdir -p "${PAX_WORKSPACE_DIR}/content"
-mkdir -p "${PAX_WORKSPACE_DIR}/ascii"
 
 # copy plugin definition files
 echo "[${SCRIPT_NAME}] copying plugin definitions ..."
-cp -r plugin-definition "${PAX_WORKSPACE_DIR}/ascii"
+cp -r plugin-definition "${PAX_WORKSPACE_DIR}/content"
 
 # install peerDependencies
 echo "[${SCRIPT_NAME}] install peer dependencies (explorer-ui-server) ..."
@@ -56,24 +54,24 @@ fi
 
 # copy explorer UI server
 echo "[${SCRIPT_NAME}] copying explorer UI server ..."
-mkdir -p "${PAX_WORKSPACE_DIR}/ascii/server"
-cp -r node_modules/explorer-ui-server/. "${PAX_WORKSPACE_DIR}/ascii/server"
-cd "${PAX_WORKSPACE_DIR}/ascii/server"
+mkdir -p "${PAX_WORKSPACE_DIR}/content/server"
+cp -r node_modules/explorer-ui-server/. "${PAX_WORKSPACE_DIR}/content/server"
+cd "${PAX_WORKSPACE_DIR}/content/server"
 npm install --only=production
 cd "${ROOT_DIR}"
 
 # copy explorer-jes to target folder
 echo "[${SCRIPT_NAME}] copying explorer JES backend ..."
-cp README.md "${PAX_WORKSPACE_DIR}/ascii/"
-cp package.json "${PAX_WORKSPACE_DIR}/ascii/"
-cp package-lock.json "${PAX_WORKSPACE_DIR}/ascii/"
-mkdir -p "${PAX_WORKSPACE_DIR}/ascii/app"
-cp -r dist/. "${PAX_WORKSPACE_DIR}/ascii/app"
+cp README.md "${PAX_WORKSPACE_DIR}/content/"
+cp package.json "${PAX_WORKSPACE_DIR}/content/"
+cp package-lock.json "${PAX_WORKSPACE_DIR}/content/"
+mkdir -p "${PAX_WORKSPACE_DIR}/content/app"
+cp -r dist/. "${PAX_WORKSPACE_DIR}/content/app"
 
 # copy start script to target folder
 echo "[${SCRIPT_NAME}] copying startup script ..."
-mkdir -p "${PAX_WORKSPACE_DIR}/ascii/scripts"
-cp -r scripts/start-explorer-jes-ui-server.sh "${PAX_WORKSPACE_DIR}/ascii/scripts"
+mkdir -p "${PAX_WORKSPACE_DIR}/content/scripts"
+cp -r scripts/start-explorer-jes-ui-server.sh "${PAX_WORKSPACE_DIR}/content/scripts"
 
 # pre-configure server config
 echo "[${SCRIPT_NAME}] update default UI server config ..."
@@ -85,8 +83,18 @@ sed -e "s#{{service-name}}#${PACKAGE_NAME}#" \
   -e "s#{{https-passphrase}}##" \
   -e "s#{{https-key}}#server.key#" \
   -e "s#{{https-cert}}#server.cert#" \
-  "${PAX_WORKSPACE_DIR}/ascii/server/configs/config.json.template" \
-  > "${PAX_WORKSPACE_DIR}/ascii/server/configs/config.json"
+  "${PAX_WORKSPACE_DIR}/content/server/configs/config.json.template" \
+  > "${PAX_WORKSPACE_DIR}/content/server/configs/config.json"
+
+# move content to another folder
+rm -fr "${PAX_WORKSPACE_DIR}/ascii"
+mkdir -p "${PAX_WORKSPACE_DIR}/ascii"
+rsync -rv \
+  --include '*.json' --include '*.html' --include '*.jcl' --include '*.template' \
+  --exclude '*.zip' --exclude '*.png' --exclude '*.tgz' --exclude '*.tar.gz' --exclude '*.pax' \
+  --prune-empty-dirs --remove-source-files \
+  "${PAX_WORKSPACE_DIR}/content/" \
+  "${PAX_WORKSPACE_DIR}/ascii"
 
 echo "[${SCRIPT_NAME}] tar ascii folder ..."
 tar -c -f "${PAX_WORKSPACE_DIR}/ascii.tar" -C "${PAX_WORKSPACE_DIR}/" ascii
