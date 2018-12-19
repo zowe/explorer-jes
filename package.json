@@ -92,7 +92,7 @@
   "config": {
     "pluginId": "org.zowe.explorer-jes",
     "pluginName": "JES Explorer",
-    "baseuri": "/ui/v1/jobs",
+    "baseuri": "/ui/v1/explorer-jes",
     "port": 8546
   }
 }

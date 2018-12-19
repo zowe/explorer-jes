@@ -10,9 +10,22 @@
 # Copyright IBM Corporation 2018
 ################################################################################
 
+################################################################################
 # start explorer ui server
+# 
+# NOTE: this script is intended to be called by ZOWE service, not manually by .
 
-NODE_BIN=${NODE_HOME}/bin/node
-SCRIPT_DIR=`dirname $0`
+# find node bin
+if [ ! -z "$NODE_HOME" ]; then
+  NODE_BIN=${NODE_HOME}/bin/node
+else
+  echo "Error: cannot find node bin, JES Explorer UI is not started."
+  exit 1
+fi
+# get current script directory
+SCRIPT_DIR=$(dirname "$0")
+# get current ui server directory
+SERVER_DIR=$(cd "$SCRIPT_DIR/../server"; pwd)
 
-$NODE_BIN $SCRIPT_DIR/../server/src/index.js -C $SCRIPT_DIR/../server/configs/config.json -v
+# start service
+$NODE_BIN $SERVER_DIR/src/index.js -C config.json -v &
