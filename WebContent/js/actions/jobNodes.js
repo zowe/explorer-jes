@@ -10,7 +10,6 @@
 
 /* global fetch */
 import { atlasFetch } from '../utilities/urlUtils';
-import HTTP_STATUS_CODES from '../HTTPStatusCodeConstants';
 import { constructAndPushMessage } from './snackbarNotifications';
 
 export const TOGGLE_JOB = 'TOGGLE_JOB';
@@ -20,11 +19,9 @@ export const RECEIVE_JOBS = 'RECEIVE_JOBS';
 export const RECEIVE_SINGLE_JOB = 'RECEIVE_SINGLE_JOB';
 export const INVALIDATE_JOBS = 'INVALIDATE_JOBS';
 
-export const REQUEST_JOB_FILES_AND_STEPS = 'REQUEST_JOB_FILES_AND_STEPS';
+export const REQUEST_JOB_FILES = 'REQUEST_JOB_FILES';
 export const RECEIVE_JOB_FILES = 'RECEIVE_JOB_FILES';
-export const RECEIVE_JOB_STEPS = 'RECEIVE_JOB_STEPS';
 export const INVALIDATE_JOB_FILES = 'INVALIDATE_JOB_FILES';
-export const INVALIDATE_JOB_STEPS = 'INVALIDATE_JOB_STEPS';
 export const STOP_REFRESH_ICON = 'STOP_REFRESH_ICON';
 
 export const REQUEST_PURGE_JOB = 'REQUEST_PURGE_JOB';
@@ -33,7 +30,6 @@ export const INVALIDATE_PURGE_JOB = 'INVALIDATE_PURGE_JOB';
 
 const FETCH_JOBS_FAIL_MESSAGE = 'Fetch failed for';
 const FETCH_JOB_FILES_FAIL_MESSAGE = 'Fetch files failed for';
-const FETCH_JOB_STEPS_FAIL_MESSAGE = 'Fetch steps failed for';
 const PURGE_JOB_SUCCESS_MESSAGE = 'Purge request succeeded for';
 const PURGE_JOB_FAIL_MESSAGE = 'Purge request failed for';
 
@@ -72,9 +68,9 @@ export function toggleJob(jobId) {
     };
 }
 
-function requestJobFilesAndSteps(jobName, jobId) {
+function requestJobFiles(jobName, jobId) {
     return {
-        type: REQUEST_JOB_FILES_AND_STEPS,
+        type: REQUEST_JOB_FILES,
         jobName,
         jobId,
     };
@@ -86,15 +82,6 @@ function receiveJobFiles(jobName, jobId, jobFiles) {
         jobName,
         jobId,
         jobFiles,
-    };
-}
-
-function receiveJobSteps(jobName, jobId, jobSteps) {
-    return {
-        type: RECEIVE_JOB_STEPS,
-        jobName,
-        jobId,
-        jobSteps,
     };
 }
 
@@ -140,11 +127,9 @@ function getURIQuery(filters) {
 function filterByJobId(json, jobId, dispatch) {
     // filter for job Id as api doesn't support
     json.forEach(job => {
-        job.jobInstances.forEach(jobInstance => {
-            if (jobInstance.jobId === jobId) {
-                dispatch(receiveSingleJob(jobInstance, true));
-            }
-        });
+        if (job.jobId === jobId) {
+            dispatch(receiveSingleJob(job));
+        }
     });
 }
 
@@ -167,9 +152,9 @@ export function fetchJobs(filters) {
     };
 }
 
-function fetchJobFiles(jobName, jobId) {
+function getJobFiles(jobName, jobId) {
     return dispatch => {
-        return atlasFetch(`jobs/${jobName}/ids/${jobId}/files`, { credentials: 'include' })
+        return atlasFetch(`jobs/${jobName}/${jobId}/files`, { credentials: 'include' })
             .then(response => { return response.json(); })
             .then(json => {
                 return dispatch(receiveJobFiles(jobName, jobId, json));
@@ -180,48 +165,26 @@ function fetchJobFiles(jobName, jobId) {
     };
 }
 
-function fetchJobSteps(jobName, jobId) {
+function issueFetchFiles(jobName, jobId) {
     return dispatch => {
-        return atlasFetch(`jobs/${jobName}/ids/${jobId}/steps`, { credentials: 'include' })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw response;
-            })
-            .then(json => {
-                return dispatch(receiveJobSteps(jobName, jobId, json));
-            })
-            .catch(response => {
-                if (response.status !== HTTP_STATUS_CODES['Not Found']) {
-                    dispatch(constructAndPushMessage(`${FETCH_JOB_STEPS_FAIL_MESSAGE} ${jobName}:${jobId}`));
-                }
-            });
-    };
-}
-
-function issueFetchFilesAndSteps(jobName, jobId) {
-    return dispatch => {
-        return dispatch(fetchJobFiles(jobName, jobId)).then(() => {
-            return dispatch(fetchJobSteps(jobName, jobId)).then(() => {
-                return dispatch(stopRefreshIcon());
-            });
+        return dispatch(getJobFiles(jobName, jobId)).then(() => {
+            return dispatch(stopRefreshIcon());
         });
     };
 }
 
-export function fetchJobFilesAndSteps(jobName, jobId) {
+export function fetchJobFiles(jobName, jobId) {
     return dispatch => {
-        dispatch(requestJobFilesAndSteps(jobName, jobId));
+        dispatch(requestJobFiles(jobName, jobId));
         dispatch(toggleJob(jobId));
-        return dispatch(issueFetchFilesAndSteps(jobName, jobId));
+        return dispatch(issueFetchFiles(jobName, jobId));
     };
 }
 
 export function purgeJob(jobName, jobId) {
     return dispatch => {
         dispatch(requestPurge(jobName, jobId));
-        return atlasFetch(`${jobName}/${jobId}`,
+        return atlasFetch(`jobs/${jobName}/${jobId}`,
             {
                 credentials: 'include',
                 method: 'DELETE',

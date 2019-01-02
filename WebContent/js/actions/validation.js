@@ -38,11 +38,11 @@ export function validateUser() {
     return dispatch => {
         dispatch(requestValidation());
 
-        return atlasFetch('zos/username', { credentials: 'include' })
-            .then(response => { return response.json(); })
-            .then(json => {
-                if (json.username) {
-                    return dispatch(receiveValidation(json.username));
+        return atlasFetch('jobs/username', { credentials: 'include' })
+            .then(response => { return response.text(); })
+            .then(username => {
+                if (username && username !== '') {
+                    return dispatch(receiveValidation(username));
                 }
                 return dispatch(invalidateValidation());
             })

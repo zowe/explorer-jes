@@ -9,7 +9,7 @@
  */
 
 import expect from 'expect';
-import treeNodesJobs from '../../WebContent/js/reducers/jobNodes';
+import JobNodes from '../../WebContent/js/reducers/jobNodes';
 import * as jobNodesActions from '../../WebContent/js/actions/jobNodes';
 import * as jobNodesResources from '../testResources/reducers/jobNodesResources';
 import * as jobNodesActionResources from '../testResources/actions/jobNodesResources';
@@ -17,7 +17,7 @@ import * as filtersResources from '../testResources/actions/filters';
 
 describe('Reducer: treeNodesJobs', () => {
     it('Should return the INITIAL_STATE', () => {
-        expect(treeNodesJobs(undefined, {})).toEqual(jobNodesResources.initialState);
+        expect(JobNodes(undefined, {})).toEqual(jobNodesResources.initialState);
     });
 
     it('Should handle REQUEST_JOBS and set isFetching to true', () => {
@@ -25,7 +25,7 @@ describe('Reducer: treeNodesJobs', () => {
             type: jobNodesActions.REQUEST_JOBS,
             filters: filtersResources.defaultFilter,
         };
-        expect(treeNodesJobs(jobNodesResources.initialState, action)).toEqual(jobNodesResources.requestedJobsState);
+        expect(JobNodes(jobNodesResources.initialState, action)).toEqual(jobNodesResources.requestedJobsState);
     });
 
     it('Should handle RECEIVE_JOBS , process job data with only one jobName and set isFetching to false', () => {
@@ -33,7 +33,7 @@ describe('Reducer: treeNodesJobs', () => {
             type: jobNodesActions.RECEIVE_JOBS,
             jobs: jobNodesActionResources.jobFetchResponseSingleJobName,
         };
-        expect(treeNodesJobs(jobNodesResources.initialState, action)).toEqual(jobNodesResources.receivedJobsStateSingleJobName);
+        expect(JobNodes(jobNodesResources.initialState, action)).toEqual(jobNodesResources.receivedJobsStateSingleJobName);
     });
 
     it('Should handle RECEIVE_JOBS , process job data with multiple jobNames and set isFetching to false', () => {
@@ -41,14 +41,14 @@ describe('Reducer: treeNodesJobs', () => {
             type: jobNodesActions.RECEIVE_JOBS,
             jobs: jobNodesActionResources.jobFetchResponse,
         };
-        expect(treeNodesJobs(jobNodesResources.initialState, action)).toEqual(jobNodesResources.receivedJobsState);
+        expect(JobNodes(jobNodesResources.initialState, action)).toEqual(jobNodesResources.receivedJobsState);
     });
 
     it('Should handle INVALIDATE_JOBS and set isFetching to true', () => {
         const action = {
             type: jobNodesActions.INVALIDATE_JOBS,
         };
-        expect(treeNodesJobs(jobNodesResources.requestedJobsState, action)).toEqual(jobNodesResources.initialState);
+        expect(JobNodes(jobNodesResources.requestedJobsState, action)).toEqual(jobNodesResources.initialState);
     });
 
     it('Should handle TOGGLE_JOB and set isToggled to true for a given job', () => {
@@ -56,14 +56,14 @@ describe('Reducer: treeNodesJobs', () => {
             type: jobNodesActions.TOGGLE_JOB,
             jobId: jobNodesActionResources.jobId,
         };
-        expect(treeNodesJobs(jobNodesResources.receivedJobsState, action)).toEqual(jobNodesResources.toggledJobState);
+        expect(JobNodes(jobNodesResources.receivedJobsState, action)).toEqual(jobNodesResources.toggledJobState);
     });
 
-    it('Should handle REQUEST_JOB_FILES_AND_STEPS and set isFetching to true', () => {
+    it('Should handle REQUEST_JOB_FILES and set isFetching to true', () => {
         const action = {
-            type: jobNodesActions.REQUEST_JOB_FILES_AND_STEPS,
+            type: jobNodesActions.REQUEST_JOB_FILES,
         };
-        expect(treeNodesJobs(jobNodesResources.receivedJobsStateSingleJobName, action)).toEqual(jobNodesResources.requestStepsAndFilesState);
+        expect(JobNodes(jobNodesResources.receivedJobsStateSingleJobName, action)).toEqual(jobNodesResources.requestFilesState);
     });
 
     it('Should handle RECEIVE_JOB_FILES and process received files', () => {
@@ -72,22 +72,13 @@ describe('Reducer: treeNodesJobs', () => {
             jobId: jobNodesActionResources.jobId,
             jobFiles: jobNodesActionResources.jobFiles,
         };
-        expect(treeNodesJobs(jobNodesResources.requestStepsAndFilesState, action)).toEqual(jobNodesResources.receivedJobFiles);
-    });
-
-    it('Should handle RECEIVE_JOB_STEPS and process received steps', () => {
-        const action = {
-            type: jobNodesActions.RECEIVE_JOB_STEPS,
-            jobId: jobNodesActionResources.jobId,
-            jobSteps: jobNodesActionResources.jobSteps,
-        };
-        expect(treeNodesJobs(jobNodesResources.receivedJobFiles, action)).toEqual(jobNodesResources.receivedJobSteps);
+        expect(JobNodes(jobNodesResources.requestFilesState, action)).toEqual(jobNodesResources.receivedJobFiles);
     });
 
     it('Should handle STOP_REFRESH_ICON and set isFetching to false', () => {
         const action = {
             type: jobNodesActions.STOP_REFRESH_ICON,
         };
-        expect(treeNodesJobs(jobNodesResources.receivedJobSteps, action)).toEqual(jobNodesResources.receivedFilesAndSteps);
+        expect(JobNodes(jobNodesResources.receivedJobFiles, action)).toEqual(jobNodesResources.receivedFiles);
     });
 });

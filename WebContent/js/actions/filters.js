@@ -52,11 +52,11 @@ function receiveUserId(userId) {
 export function initialiseOwnerFilter() {
     return dispatch => {
         dispatch(requestUserId());
-        return atlasFetch('zos/username', { credentials: 'include' })
-            .then(response => { return response.json(); })
-            .then(json => {
-                if (json.username) {
-                    dispatch(receiveUserId(json.username));
+        return atlasFetch('jobs/username', { credentials: 'include' })
+            .then(response => { return response.text(); })
+            .then(username => {
+                if (username && username !== '') {
+                    dispatch(receiveUserId(username));
                 }
             });
     };
