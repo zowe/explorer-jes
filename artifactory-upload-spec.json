@@ -1,8 +1,0 @@
-{
-    "files": [
-        {
-            "pattern": "./WebContent/explorer-jes-*.war",
-            "target": "zlux-applications/explorer-jes/${version}/"
-        }
-    ]
-}

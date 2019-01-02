@@ -11,10 +11,6 @@
 const debug = process.env.NODE_ENV !== 'production';
 const webpack = require('webpack');
 const path = require('path');
-const packageJson = require('./package.json');
-const { WebpackWarPlugin } = require('webpack-war-plugin');
-
-const VERSION = packageJson.version;
 
 module.exports = {
     devtool: debug ? 'inline-sourcemap' : false,
@@ -44,7 +40,7 @@ module.exports = {
         ],
     },
     output: {
-        path: path.join(__dirname, 'WebContent'),
+        path: path.join(__dirname, 'dist'),
         filename: 'app.min.js',
     },
     plugins: debug ? [] : [
@@ -59,14 +55,6 @@ module.exports = {
                 screw_ie8: true,
                 warnings: false,
             },
-        }),
-        new WebpackWarPlugin({
-            archiveName: `explorer-jes-${VERSION}.war`,
-            additionalElements: [
-                { path: 'WebContent/index.html', destPath: 'index.html' },
-                { path: 'WebContent/css', destPath: 'css' },
-                { path: 'WebContent/img', destPath: 'img' },
-            ],
         }),
     ],
 };

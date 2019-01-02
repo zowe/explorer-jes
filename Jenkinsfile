@@ -15,6 +15,7 @@
 @Library('zoe-jenkins-library') _
 
 def isPullRequest = env.BRANCH_NAME.startsWith('PR-')
+def isMasterBranch = env.BRANCH_NAME == 'master'
 
 def opts = []
 // keep last 20 builds for regular branches, no keep for pull requests
@@ -37,6 +38,24 @@ customParameters.push(string(
   defaultValue: 'giza-jenkins@gmail.com',
   trim: true
 ))
+customParameters.push(booleanParam(
+  name: 'NPM_RELEASE',
+  description: 'Publish a release or snapshot version. By default, this task will create snapshot. Check this to publish a release version.',
+  defaultValue: false
+))
+customParameters.push(credentials(
+  name: 'PAX_SERVER_CREDENTIALS_ID',
+  description: 'The server credential used to create PAX file',
+  credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
+  defaultValue: 'TestAdminzOSaaS2',
+  required: true
+))
+customParameters.push(string(
+  name: 'PAX_SERVER_IP',
+  description: 'The server IP used to create PAX file',
+  defaultValue: '172.30.0.1',
+  trim: true
+))
 customParameters.push(string(
   name: 'ARTIFACTORY_SERVER',
   description: 'Artifactory server, should be pre-defined in Jenkins configuration',
@@ -52,6 +71,7 @@ node ('jenkins-slave') {
   currentBuild.result = 'SUCCESS'
   def packageName
   def packageVersion
+  def versionId
 
   try {
 
@@ -68,6 +88,12 @@ node ('jenkins-slave') {
       // get package information
       packageName = sh(script: "node -e \"console.log(require('./package.json').name)\"", returnStdout: true).trim()
       packageVersion = sh(script: "node -e \"console.log(require('./package.json').version)\"", returnStdout: true).trim()
+      if (params.NPM_RELEASE) {
+        versionId = packageVersion
+      } else {
+        def buildIdentifier = getBuildIdentifier('%Y%m%d%H%M%S', 'master', false)
+        versionId = "${packageVersion}-snapshot.${buildIdentifier}"
+      }
       echo "Building ${packageName} v${packageVersion}..."
     }
 
@@ -82,7 +108,7 @@ node ('jenkins-slave') {
         npmLogin(npmRegistry, params.NPM_CREDENTIALS_ID, params.NPM_USER_EMAIL)
 
         // sh 'npm prune'
-        sh 'npm install'
+        sh 'npm ci'
       }
     }
 
@@ -108,6 +134,13 @@ node ('jenkins-slave') {
       }
     }
 
+    stage('SonarQube analysis') {
+      def scannerHome = tool 'sonar-scanner-3.2.0';
+      withSonarQubeEnv('sonar-default-server') {
+        sh "${scannerHome}/bin/sonar-scanner"
+      }
+    }
+
     stage('build') {
       ansiColor('xterm') {
         sh 'npm run prod'
@@ -115,20 +148,34 @@ node ('jenkins-slave') {
     }
 
     stage('publish') {
-      // ===== publishing to generic artifactory ==============================
-      // gizaArtifactory is pre-defined in Jenkins management
-      def server = Artifactory.server params.ARTIFACTORY_SERVER
-      def uploadSpec = readFile "artifactory-upload-spec.json"
-      def buildIdentifier = getBuildIdentifier(true, 'master', false)
-      uploadSpec = uploadSpec.replaceAll(/\$\{version\}/, "${packageName}-${packageVersion}-${buildIdentifier}")
-      // prepare build information
-      def buildInfo = Artifactory.newBuildInfo()
-      // build info name/number are optional
-      // buildInfo.name = env.JOB_NAME // packageName
-      // buildInfo.number = "${packageVersion}-dev+${env.BUILD_NUMBER}"
-      // upload
-      server.upload spec: uploadSpec, buildInfo: buildInfo
-      server.publishBuildInfo buildInfo
+      timeout(time: 30, unit: 'MINUTES') {
+        echo "prepare pax workspace..."
+        sh "scripts/prepare-pax-workspace.sh"
+
+        echo "creating pax file from workspace..."
+        createPax("${packageName}-packaging", "${packageName}-${versionId}.pax",
+                  params.PAX_SERVER_IP, params.PAX_SERVER_CREDENTIALS_ID,
+                  './pax-workspace', '/zaas1/buildWorkspace', '-x os390')
+
+        echo 'publishing pax file to artifactory...'
+        def releaseIdentifier = getReleaseIdentifier()
+        def server = Artifactory.server params.ARTIFACTORY_SERVER
+        def uploadSpec
+        if (params.NPM_RELEASE) {
+          uploadSpec = readFile "artifactory-upload-spec.release.json.template"
+          uploadSpec = uploadSpec.replaceAll(/\{ARTIFACTORY_VERSION\}/, packageVersion)
+          uploadSpec = uploadSpec.replaceAll(/\{RELEASE_IDENTIFIER\}/, releaseIdentifier)
+        } else {
+          uploadSpec = readFile "artifactory-upload-spec.snapshot.json.template"
+          uploadSpec = uploadSpec.replaceAll(/\{ARTIFACTORY_VERSION\}/, packageVersion)
+          uploadSpec = uploadSpec.replaceAll(/\{RELEASE_IDENTIFIER\}/, releaseIdentifier)
+        }
+        def buildInfo = Artifactory.newBuildInfo()
+        server.upload spec: uploadSpec, buildInfo: buildInfo
+        server.publishBuildInfo buildInfo
+
+        // TODO: tag the branch once we release
+      }
     }
 
     stage('done') {

@@ -15,3 +15,12 @@ WebContent/app.min.js
 .factorypath
 *.war
 bin
+dist
+.scannerwork
+.DS_Store
+
+# pax workspace
+pax-workspace/*
+!pax-workspace/.keep
+!pax-workspace/pre-packaging.sh
+!pax-workspace/post-packaging.sh

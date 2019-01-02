@@ -1,7 +1,6 @@
 {
   "name": "explorer-jes",
-  "version": "0.0.1",
-  "main": "index.js",
+  "version": "0.0.2",
   "dependencies": {
     "babel-polyfill": "^6.16.0",
     "file-loader": "^0.11.2",
@@ -22,6 +21,9 @@
     "redux-thunk": "^2.1.0",
     "url-loader": "^0.5.7",
     "whatwg-fetch": "^2.0.3"
+  },
+  "peerDependencies": {
+    "explorer-ui-server": "0.0.7"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
@@ -56,8 +58,7 @@
     "rewire": "^2.5.2 ",
     "style-loader": "^0.18.2",
     "webpack": "^2.6.1",
-    "webpack-dev-server": "^2.4.5",
-    "webpack-war-plugin": "^1.0.0-beta.3"
+    "webpack-dev-server": "^2.4.5"
   },
   "scripts": {
     "dev": "webpack-dev-server --content-base WebContent --inline --hot",
@@ -67,7 +68,7 @@
     "coverage": "JUNIT_REPORT_PATH=target/report.xml nyc --report cobertura --require babel-core/register --all mocha --compilers js:babel-register tests --recursive --colors --reporter mocha-jenkins-reporter",
     "coverageReport": "nyc report --reporter=cobertura",
     "coverageReportHTML": "nyc report --reporter=lcov ",
-    "prod": "cross-env NODE_ENV='production' webpack -p",
+    "prod": "cross-env NODE_ENV='production' webpack -p && cp -r ./WebContent/css ./dist/ && cp -r ./WebContent/img ./dist/ && cp ./WebContent/index.html ./dist/",
     "preCommit": "npm-run-all --aggregate-output --parallel --print-label lint test prod"
   },
   "nyc": {
@@ -77,15 +78,20 @@
     "exclude": [
       "tests",
       "WebContent/js/themes",
-      "WebContent/js/resources/languages",
-      "WebContent/js/actions/proclib.js",
-      "WebContent/js/actions/messages.js"
+      "WebContent/js/resources/languages"
     ]
   },
+  "repository": "zowe/explorer-jes",
   "publishConfig": {
-    "registry": "https://eu.artifactory.swg-devops.com:443/artifactory/api/npm/npm-local"
+    "registry": "https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-local-release/"
   },
-  "description": "Installation Requirements: - Node.js",
+  "description": "JES Explorer",
   "author": "IBM",
-  "license": "EPL-2.0"
+  "license": "EPL-2.0",
+  "config": {
+    "pluginId": "org.zowe.explorer-jes",
+    "pluginName": "JES Explorer",
+    "baseuri": "/ui/v1/explorer-jes",
+    "port": 8546
+  }
 }
