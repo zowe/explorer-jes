@@ -3,7 +3,7 @@ import React from 'react';
 import { Map } from 'immutable';
 import LabelIcon from 'material-ui/svg-icons/action/label';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
-import { fetchJobFilesAndSteps, toggleJob, purgeJob } from '../actions/jobNodes';
+import { fetchJobFiles, toggleJob, purgeJob } from '../actions/jobNodes';
 import JobFile from './JobFile';
 import JobStep from './JobStep';
 
@@ -12,7 +12,7 @@ export default class JobInstance extends React.Component {
     handleJobToggle(job) {
         const { dispatch } = this.props;
         if (!job.get('isToggled') && !job.get('files').length > 0) {
-            dispatch(fetchJobFilesAndSteps(job.get('jobName'), job.get('jobId')));
+            dispatch(fetchJobFiles(job.get('jobName'), job.get('jobId')));
         } else {
             dispatch(toggleJob(job.get('jobId')));
         }

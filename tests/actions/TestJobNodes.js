@@ -99,52 +99,11 @@ describe('Action: jobNodes', () => {
         });
     });
 
-    describe('fetchJobFilesAndSteps', () => {
-        it('Should create actions to request files and steps, toggle job, received files and recevie steps', () => {
+    describe('fetchJobFiles', () => {
+        it('Should create actions to request files, toggle job and received files', () => {
             const expectedActions = [
                 {
-                    type: JobNodes.REQUEST_JOB_FILES_AND_STEPS,
-                    jobName: jobNodesResources.jobName,
-                    jobId: jobNodesResources.jobId,
-                },
-                {
-                    type: JobNodes.TOGGLE_JOB,
-                    jobId: jobNodesResources.jobId,
-                },
-                {
-                    type: JobNodes.RECEIVE_JOB_FILES,
-                    jobName: jobNodesResources.jobName,
-                    jobId: jobNodesResources.jobId,
-                    jobFiles: jobNodesResources.jobFiles,
-                },
-                {
-                    type: JobNodes.RECEIVE_JOB_STEPS,
-                    jobName: jobNodesResources.jobName,
-                    jobId: jobNodesResources.jobId,
-                    jobSteps: jobNodesResources.jobSteps,
-                },
-                {
-                    type: JobNodes.STOP_REFRESH_ICON,
-                },
-            ];
-
-            nock(BASE_URL)
-                .get(`/jobs/${jobNodesResources.jobName}/ids/${jobNodesResources.jobId}/files`)
-                .reply(200, jobNodesResources.jobFiles);
-            nock(BASE_URL)
-                .get(`/jobs/${jobNodesResources.jobName}/ids/${jobNodesResources.jobId}/steps`)
-                .reply(200, jobNodesResources.jobSteps);
-
-            const store = mockStore();
-            return store.dispatch(JobNodes.fetchJobFilesAndSteps(jobNodesResources.jobName, jobNodesResources.jobId)).then(() => {
-                expect(store.getActions()).toEqual(expectedActions);
-            });
-        });
-
-        it('Should create actions to request files and steps, toggle job, received files but no steps due to not found', () => {
-            const expectedActions = [
-                {
-                    type: JobNodes.REQUEST_JOB_FILES_AND_STEPS,
+                    type: JobNodes.REQUEST_JOB_FILES,
                     jobName: jobNodesResources.jobName,
                     jobId: jobNodesResources.jobId,
                 },
@@ -164,65 +123,20 @@ describe('Action: jobNodes', () => {
             ];
 
             nock(BASE_URL)
-                .get(`/jobs/${jobNodesResources.jobName}/ids/${jobNodesResources.jobId}/files`)
+                .get(`/jobs/${jobNodesResources.jobName}/${jobNodesResources.jobId}/files`)
                 .reply(200, jobNodesResources.jobFiles);
-            nock(BASE_URL)
-                .get(`/jobs/${jobNodesResources.jobName}/ids/${jobNodesResources.jobId}/steps`)
-                .reply(404, []);
 
             const store = mockStore();
-            return store.dispatch(JobNodes.fetchJobFilesAndSteps(jobNodesResources.jobName, jobNodesResources.jobId)).then(() => {
+            return store.dispatch(JobNodes.fetchJobFiles(jobNodesResources.jobName, jobNodesResources.jobId)).then(() => {
                 expect(store.getActions()).toEqual(expectedActions);
             });
         });
 
-        it('Should create actions to request files and steps, toggle job, received files and message due to server error on steps', () => {
-            const fetchStepsFail = rewiredJobNodes.__get__('FETCH_JOB_STEPS_FAIL_MESSAGE');
-            const expectedActions = [
-                {
-                    type: JobNodes.REQUEST_JOB_FILES_AND_STEPS,
-                    jobName: jobNodesResources.jobName,
-                    jobId: jobNodesResources.jobId,
-                },
-                {
-                    type: JobNodes.TOGGLE_JOB,
-                    jobId: jobNodesResources.jobId,
-                },
-                {
-                    type: JobNodes.RECEIVE_JOB_FILES,
-                    jobName: jobNodesResources.jobName,
-                    jobId: jobNodesResources.jobId,
-                    jobFiles: jobNodesResources.jobFiles,
-                },
-                {
-                    type: snackbar.PUSH_NOTIFICATION_MESSAGE,
-                    message: Map({
-                        message: `${fetchStepsFail} ${jobNodesResources.jobName}:${jobNodesResources.jobId}`,
-                    }),
-                },
-                {
-                    type: JobNodes.STOP_REFRESH_ICON,
-                },
-            ];
-
-            nock(BASE_URL)
-                .get(`/jobs/${jobNodesResources.jobName}/ids/${jobNodesResources.jobId}/files`)
-                .reply(200, jobNodesResources.jobFiles);
-            nock(BASE_URL)
-                .get(`/jobs/${jobNodesResources.jobName}/ids/${jobNodesResources.jobId}/steps`)
-                .reply(500, '');
-
-            const store = mockStore();
-            return store.dispatch(JobNodes.fetchJobFilesAndSteps(jobNodesResources.jobName, jobNodesResources.jobId)).then(() => {
-                expect(store.getActions()).toEqual(expectedActions);
-            });
-        });
-
-        it('Should create actions to request files and steps, toggle job, received steps and message due to server error on files', () => {
+        it('Should create actions to request files, toggle job and push message due to server error on files', () => {
             const fetchFilesFail = rewiredJobNodes.__get__('FETCH_JOB_FILES_FAIL_MESSAGE');
             const expectedActions = [
                 {
-                    type: JobNodes.REQUEST_JOB_FILES_AND_STEPS,
+                    type: JobNodes.REQUEST_JOB_FILES,
                     jobName: jobNodesResources.jobName,
                     jobId: jobNodesResources.jobId,
                 },
@@ -237,12 +151,6 @@ describe('Action: jobNodes', () => {
                     }),
                 },
                 {
-                    type: JobNodes.RECEIVE_JOB_STEPS,
-                    jobName: jobNodesResources.jobName,
-                    jobId: jobNodesResources.jobId,
-                    jobSteps: jobNodesResources.jobSteps,
-                },
-                {
                     type: JobNodes.STOP_REFRESH_ICON,
                 },
             ];
@@ -250,12 +158,9 @@ describe('Action: jobNodes', () => {
             nock(BASE_URL)
                 .get(`/jobs/${jobNodesResources.jobName}/ids/${jobNodesResources.jobId}/files`)
                 .reply(500, '');
-            nock(BASE_URL)
-                .get(`/jobs/${jobNodesResources.jobName}/ids/${jobNodesResources.jobId}/steps`)
-                .reply(200, jobNodesResources.jobSteps);
 
             const store = mockStore();
-            return store.dispatch(JobNodes.fetchJobFilesAndSteps(jobNodesResources.jobName, jobNodesResources.jobId)).then(() => {
+            return store.dispatch(JobNodes.fetchJobFiles(jobNodesResources.jobName, jobNodesResources.jobId)).then(() => {
                 expect(store.getActions()).toEqual(expectedActions);
             });
         });
@@ -263,7 +168,7 @@ describe('Action: jobNodes', () => {
 
     describe('purgeJob', () => {
         it('Should create an action to request a job purge and then receive validation', () => {
-            const purgeFail = rewiredJobNodes.__get__('PURGE_JOB_SUCCESS_MESSAGE');
+            const purgeSuccessMessage = rewiredJobNodes.__get__('PURGE_JOB_SUCCESS_MESSAGE');
 
             const expectedActions = [{
                 type: JobNodes.REQUEST_PURGE_JOB,
@@ -273,7 +178,7 @@ describe('Action: jobNodes', () => {
             {
                 type: snackbar.PUSH_NOTIFICATION_MESSAGE,
                 message: Map({
-                    message: `${purgeFail} ${jobNodesResources.jobName}/${jobNodesResources.jobId}`,
+                    message: `${purgeSuccessMessage} ${jobNodesResources.jobName}/${jobNodesResources.jobId}`,
                 }),
             },
             {
@@ -293,7 +198,7 @@ describe('Action: jobNodes', () => {
             }));
 
             nock(BASE_URL)
-                .delete(`/${jobNodesResources.jobName}/${jobNodesResources.jobId}`)
+                .delete(`/jobs/${jobNodesResources.jobName}/${jobNodesResources.jobId}`)
                 .reply(200, '');
 
             return store.dispatch(JobNodes.purgeJob(jobNodesResources.jobName, jobNodesResources.jobId))
