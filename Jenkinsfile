@@ -115,22 +115,35 @@ node ('jenkins-slave') {
     stage('test') {
       ansiColor('xterm') {
         sh 'npm run lint'
-        sh 'npm run coverage'
-        sh 'npm run coverageReport'
-
-        junit 'target/report.xml'
-        cobertura coberturaReportFile: 'coverage/cobertura-coverage.xml',
-          sourceEncoding: 'ASCII',
-          autoUpdateHealth: false,
-          autoUpdateStability: false,
-          onlyStable: false,
-          failUnhealthy: false,
-          failUnstable: false,
-          zoomCoverageChart: false,
-          conditionalCoverageTargets: '70, 0, 0',
-          lineCoverageTargets: '80, 0, 0',
-          methodCoverageTargets: '80, 0, 0',
-          maxNumberOfBuilds: 0
+        try {
+          sh 'npm test'
+        } catch (err) {
+          error "Test failed: $err"
+        } finally {
+          // publish test reports
+          junit 'target/report.xml'
+          cobertura coberturaReportFile: 'coverage/cobertura-coverage.xml',
+            sourceEncoding: 'ASCII',
+            autoUpdateHealth: false,
+            autoUpdateStability: false,
+            onlyStable: false,
+            failUnhealthy: false,
+            failUnstable: false,
+            zoomCoverageChart: false,
+            conditionalCoverageTargets: '70, 0, 0',
+            lineCoverageTargets: '80, 0, 0',
+            methodCoverageTargets: '80, 0, 0',
+            maxNumberOfBuilds: 0
+          publishHTML([
+            allowMissing: false,
+            alwaysLinkToLastBuild: false,
+            keepAll: false,
+            reportDir: 'coverage/lcov-report',
+            reportFiles: 'index.html',
+            reportName: 'Coverage HTML Report',
+            reportTitles: ''
+          ])
+        }
       }
     }
 
