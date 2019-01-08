@@ -47,7 +47,7 @@ export function invalidateContent() {
 export function fetchJobFile(jobName, jobId, fileLabel, fileId) {
     return dispatch => {
         dispatch(requestContent(jobName, jobId, fileLabel, fileId));
-        return atlasFetch(`jobs/${jobName}/ids/${jobId}/files/${fileId}`, { credentials: 'include' })
+        return atlasFetch(`jobs/${jobName}/${jobId}/files/${fileId}/content`, { credentials: 'include' })
             .then(response => { return response.json(); })
             .then(json => {
                 dispatch(receiveContent(jobName, jobId, fileLabel, fileId, json.content));
@@ -60,7 +60,7 @@ export function fetchJobFile(jobName, jobId, fileLabel, fileId) {
 }
 
 function getFileNameFromJob(jobName, jobId, fileId) {
-    const contentPath = `jobs/${jobName}/ids/${jobId}/files`;
+    const contentPath = `jobs/${jobName}/${jobId}/files`;
     return atlasFetch(contentPath, { credentials: 'include' })
         .then(response => { return response.json(); })
         .then(json => {
@@ -75,7 +75,7 @@ function getFileNameFromJob(jobName, jobId, fileId) {
 
 export function fetchJobFileNoName(jobName, jobId, fileId) {
     return dispatch => {
-        const contentPath = `jobs/${jobName}/ids/${jobId}/files/${fileId}`;
+        const contentPath = `jobs/${jobName}/${jobId}/files/${fileId}/content`;
         dispatch(requestContent(jobName, jobId, 'UNKNOWN', fileId));
         return atlasFetch(contentPath, { credentials: 'include' })
             .then(response => { return response.json(); })

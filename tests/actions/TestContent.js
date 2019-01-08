@@ -51,7 +51,7 @@ describe('Action: content', () => {
             ];
 
             nock(BASE_URL)
-                .get(`/jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files/${contentResources.fileId}`)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/content`)
                 .reply(200, contentResources.jobFileFetchResponse);
 
             const store = mockStore();
@@ -82,7 +82,7 @@ describe('Action: content', () => {
             ];
 
             nock(BASE_URL)
-                .get(`/jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files/${contentResources.fileId}`)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}`)
                 .reply(500, '');
 
             const store = mockStore();
@@ -115,10 +115,10 @@ describe('Action: content', () => {
 
             const store = mockStore();
             nock(BASE_URL)
-                .get(`/jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files/${contentResources.fileId}`)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/content`)
                 .reply(200, contentResources.jobFileFetchResponse);
             nock(BASE_URL)
-                .get(`/jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files`)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files`)
                 .reply(200, contentResources.fileList);
 
             return store.dispatch(contentActions.fetchJobFileNoName(contentResources.jobName, contentResources.jobId, contentResources.fileId))
@@ -149,7 +149,7 @@ describe('Action: content', () => {
 
             const store = mockStore();
             nock(BASE_URL)
-                .get(`/jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files/${contentResources.fileId}`)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}`)
                 .reply(500, '');
 
             return store.dispatch(contentActions.fetchJobFileNoName(contentResources.jobName, contentResources.jobId, contentResources.fileId))
@@ -159,8 +159,8 @@ describe('Action: content', () => {
         });
 
         it('Should create a request but not receive action due to no file name match', () => {
-            const nodeURI = `jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files/${contentResources.fileId}`;
-            const nodeNameURI = `jobs/${contentResources.jobName}/ids/${contentResources.jobId}/files`;
+            const nodeURI = `jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}`;
+            const nodeNameURI = `jobs/${contentResources.jobName}/${contentResources.jobId}/files`;
             const expectedActions = [
                 {
                     type: contentActions.REQUEST_CONTENT,

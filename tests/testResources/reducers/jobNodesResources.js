@@ -31,7 +31,6 @@ export const receivedJobsState = Map({
                 status: 'OUTPUT',
                 isToggled: false,
                 files: List([]),
-                steps: List([]),
             }),
             Map({
                 jobName: 'TEST1',
@@ -41,7 +40,6 @@ export const receivedJobsState = Map({
                 status: 'OUTPUT',
                 isToggled: false,
                 files: List([]),
-                steps: List([]),
             }),
             Map({
                 jobName: 'TEST1',
@@ -51,7 +49,6 @@ export const receivedJobsState = Map({
                 status: 'OUTPUT',
                 isToggled: false,
                 files: List([]),
-                steps: List([]),
             }),
         ],
     ),
@@ -69,7 +66,6 @@ export const toggledJobState = Map({
                 status: 'OUTPUT',
                 isToggled: true,
                 files: List([]),
-                steps: List([]),
             }),
             Map({
                 jobName: 'TEST1',
@@ -79,7 +75,6 @@ export const toggledJobState = Map({
                 status: 'OUTPUT',
                 isToggled: false,
                 files: List([]),
-                steps: List([]),
             }),
             Map({
                 jobName: 'TEST1',
@@ -89,7 +84,6 @@ export const toggledJobState = Map({
                 status: 'OUTPUT',
                 isToggled: false,
                 files: List([]),
-                steps: List([]),
             }),
         ],
     ),
@@ -107,14 +101,13 @@ export const receivedJobsStateSingleJobName = Map({
                 status: 'OUTPUT',
                 isToggled: false,
                 files: List([]),
-                steps: List([]),
             }),
         ],
     ),
     isFetching: false,
 });
 
-export const requestStepsAndFilesState = receivedJobsStateSingleJobName.set('isFetching', true);
+export const requestFilesState = receivedJobsStateSingleJobName.set('isFetching', true);
 
 export const receivedJobFiles = Map({
     jobs: List(
@@ -136,52 +129,10 @@ export const receivedJobFiles = Map({
                         id: 3,
                     },
                 ],
-                steps: List(),
             }),
         ],
     ),
     isFetching: true,
 });
 
-export const receivedJobSteps = Map({
-    jobs: List(
-        [
-            Map({
-                jobName: 'TEST',
-                jobId: 'JOB1234',
-                label: 'TEST:JOB1234',
-                returnCode: 'CC 0000',
-                status: 'OUTPUT',
-                isToggled: false,
-                files: [
-                    {
-                        label: 'JESMSGLG',
-                        id: 2,
-                    },
-                    {
-                        label: 'JESJCL',
-                        id: 3,
-                    },
-                ],
-                steps: [
-                    {
-                        label: 'STEP1:IEBGENER',
-                        id: 1,
-                    },
-                    {
-                        label: 'STEP2:AOPBATCH',
-                        id: 2,
-                    },
-                    {
-                        label: 'STEP3:IEBGENER',
-                        id: 3,
-                    },
-                ],
-            }),
-        ],
-    ),
-    isFetching: true,
-});
-
-export const receivedFilesAndSteps = receivedJobSteps.set('isFetching', false);
-
+export const receivedFiles = receivedJobFiles.set('isFetching', false);
