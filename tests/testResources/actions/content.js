@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018
+ * Copyright IBM Corporation 2018, 2019
  */
 
 export const jobFileContents = "//TSTJIMS  JOB (ADL),'ATLAS',MSGCLASS=0,CLASS=A,TIME=1440\n" +
