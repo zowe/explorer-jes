@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2018
+ * Copyright IBM Corporation 2016, 2019
  */
 
 export const CONTENT_TYPE_APPLICATION_JSON = { 'Content-Type': 'application/json' };
