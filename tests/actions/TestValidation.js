@@ -40,7 +40,7 @@ describe('Action: validation', () => {
 
             nock(LOCAL_HOST_ENDPOINT)
                 .get('/jobs/username')
-                .reply(200, username);
+                .reply(200, { username });
 
             const store = mockStore();
 
