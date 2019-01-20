@@ -48,6 +48,7 @@ ReactDOM.render(
         <Provider store={store().getStore()}>
             <Router history={hashHistory}>
                 <Route path="/" component={JobsView} />
+                <Route path="/jobs" component={JobsView} />
                 <Route path="/viewer" component={FullScreenView} />
                 <Route path="/syslog" component={SyslogView} />
             </Router>
