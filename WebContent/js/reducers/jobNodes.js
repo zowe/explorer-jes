@@ -108,7 +108,7 @@ export default function JobNodes(state = INITIAL_STATE, action) {
         case RECEIVE_SINGLE_JOB:
             return state.merge({ jobs: extractJob(action.job), isFetching: false });
         case INVALIDATE_JOBS:
-            return state.set('isFetching', false);
+            return state.merge({ isFetching: false, jobs: List() });
         case TOGGLE_JOB:
             return state.merge({
                 jobs: state.get('jobs').set(findKeyOfJob(state.get('jobs'), action.jobId), toggleJob(state.get('jobs'), action.jobId)),

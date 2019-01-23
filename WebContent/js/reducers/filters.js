@@ -16,9 +16,7 @@ export const LOADING_MESSAGE = 'Loading...';
 const FilterRecord = Record({
     prefix: '*',
     owner: '',
-    returnCode: '',
     status: '',
-    type: '',
     jobId: '*',
     isToggled: false,
     userId: '',

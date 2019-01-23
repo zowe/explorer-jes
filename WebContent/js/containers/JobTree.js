@@ -29,11 +29,9 @@ export class JobNodeTree extends React.Component {
     }
 
     getFilterValues() {
-        const { owner, prefix, returnCode, status, type } = this.props;
-        let filtersString = `Owner= ${owner} Prefix= ${prefix || '*'}`;
-        if (returnCode) { filtersString += ` Return Code= ${ConnectedFilter.returnCodeToString(returnCode)}`; }
+        const { owner, prefix, jobId, status } = this.props;
+        let filtersString = `Owner= ${owner} Prefix= ${prefix || '*'} JobId= ${jobId}`;
         if (status) { filtersString += ` Status= ${status}`; }
-        if (type) { filtersString += ` Type= ${type}`; }
         return filtersString;
     }
 
@@ -73,9 +71,8 @@ export class JobNodeTree extends React.Component {
 JobNodeTree.propTypes = {
     prefix: PropTypes.string,
     owner: PropTypes.string,
-    returnCode: PropTypes.string,
+    jobId: PropTypes.string,
     status: PropTypes.string,
-    type: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
     isFetching: PropTypes.bool.isRequired,
     jobs: PropTypes.instanceOf(List),
@@ -87,9 +84,8 @@ function mapStateToProps(state) {
     return {
         prefix: filtersRoot.get('prefix'),
         owner: filtersRoot.get('owner'),
-        returnCode: filtersRoot.get('returnCode'),
+        jobId: filtersRoot.get('jobId'),
         status: filtersRoot.get('status'),
-        type: filtersRoot.get('type'),
         isFetching: jobNodesRoot.get('isFetching'),
         jobs: jobNodesRoot.get('jobs'),
     };
