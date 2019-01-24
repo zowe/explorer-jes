@@ -126,11 +126,16 @@ function getURIQuery(filters) {
 
 function filterByJobId(json, jobId, dispatch) {
     // filter for job Id as api doesn't support
+    let jobFound = false;
     json.forEach(job => {
         if (job.jobId === jobId) {
+            jobFound = true;
             dispatch(receiveSingleJob(job));
         }
     });
+    if (!jobFound) {
+        dispatch(invalidateJobs());
+    }
 }
 
 export function fetchJobs(filters) {
