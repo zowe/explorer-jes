@@ -67,7 +67,7 @@ opts.push(parameters(customParameters))
 // set build properties
 properties(opts)
 
-node ('jenkins-slave') {
+node ('ibm-jenkins-slave-nvm-jnlp') {
   currentBuild.result = 'SUCCESS'
   def packageName
   def packageVersion
