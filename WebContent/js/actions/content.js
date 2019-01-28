@@ -69,7 +69,7 @@ function getFileNameFromJob(jobName, jobId, fileId) {
             });
         })
         .then(file => {
-            return file.ddname;
+            return file.ddName;
         });
 }
 
