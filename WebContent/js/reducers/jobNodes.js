@@ -89,7 +89,7 @@ function toggleJob(jobs, jobId) {
 function extractJobFiles(jobFiles) {
     return jobFiles.map(file => {
         return {
-            label: file.ddname,
+            label: file.ddName,
             id: file.id,
         };
     });
