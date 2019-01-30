@@ -15,8 +15,6 @@ export const REQUEST_CONTENT = 'REQUEST_CONTENT';
 export const RECEIVE_CONTENT = 'RECEIVE_CONTENT';
 export const INVALIDATE_CONTENT = 'INVALIDATE_CONTENT';
 
-const GET_CONTENT_FAIL_MESSAGE = 'Get content failed for';
-
 function requestContent(jobName, jobId, fileLabel, fileId) {
     return {
         type: REQUEST_CONTENT,
@@ -48,12 +46,17 @@ export function fetchJobFile(jobName, jobId, fileLabel, fileId) {
     return dispatch => {
         dispatch(requestContent(jobName, jobId, fileLabel, fileId));
         return atlasFetch(`jobs/${jobName}/${jobId}/files/${fileId}/content`, { credentials: 'include' })
-            .then(response => { return response.json(); })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                return response.json().then(e => { throw Error(e.message); });
+            })
             .then(json => {
                 dispatch(receiveContent(jobName, jobId, fileLabel, fileId, json.content));
             })
-            .catch(() => {
-                dispatch(constructAndPushMessage(`${GET_CONTENT_FAIL_MESSAGE} ${jobName}:${jobId}:${fileLabel}`));
+            .catch(e => {
+                dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileLabel}`));
                 return dispatch(invalidateContent());
             });
     };
@@ -62,7 +65,12 @@ export function fetchJobFile(jobName, jobId, fileLabel, fileId) {
 function getFileNameFromJob(jobName, jobId, fileId) {
     const contentPath = `jobs/${jobName}/${jobId}/files`;
     return atlasFetch(contentPath, { credentials: 'include' })
-        .then(response => { return response.json(); })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            return response.json().then(e => { throw Error(e.message); });
+        })
         .then(json => {
             return json.find(file => {
                 return parseInt(file.id, 10) === parseInt(fileId, 10);
@@ -78,7 +86,12 @@ export function fetchJobFileNoName(jobName, jobId, fileId) {
         const contentPath = `jobs/${jobName}/${jobId}/files/${fileId}/content`;
         dispatch(requestContent(jobName, jobId, 'UNKNOWN', fileId));
         return atlasFetch(contentPath, { credentials: 'include' })
-            .then(response => { return response.json(); })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                return response.json().then(e => { throw Error(e.message); });
+            })
             .then(json => {
                 return getFileNameFromJob(jobName, jobId, fileId).then(
                     fileLabel => {
@@ -92,8 +105,8 @@ export function fetchJobFileNoName(jobName, jobId, fileId) {
                     throw Error(e);
                 });
             })
-            .catch(() => {
-                dispatch(constructAndPushMessage(`${GET_CONTENT_FAIL_MESSAGE} ${jobName}:${jobId}:${fileId}`));
+            .catch(e => {
+                dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileId}`));
                 return dispatch(invalidateContent());
             });
     };

@@ -12,7 +12,6 @@ import configureMockStore from 'redux-mock-store';
 import nock from 'nock';
 import thunk from 'redux-thunk';
 import expect from 'expect';
-import rewire from 'rewire';
 import { Map } from 'immutable';
 import * as contentActions from '../../WebContent/js/actions/content';
 import * as snackbarNotifications from '../../WebContent/js/actions/snackbarNotifications';
@@ -26,9 +25,7 @@ describe('Action: content', () => {
 
     const middlewares = [thunk];
     const mockStore = configureMockStore(middlewares);
-
-    const rewiredContent = rewire('../../WebContent/js/actions/content');
-    const getContentFailMessage = rewiredContent.__get__('GET_CONTENT_FAIL_MESSAGE');
+    const errorMessage = 'Internal Server Error';
 
     describe('fetchJobFile', () => {
         it('Should create an action to request and receive content', () => {
@@ -73,7 +70,7 @@ describe('Action: content', () => {
                 {
                     type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
                     message: Map({
-                        message: `${getContentFailMessage} ${contentResources.jobName}:${contentResources.jobId}:${contentResources.fileName}`,
+                        message: `${errorMessage} - ${contentResources.jobName}:${contentResources.jobId}:${contentResources.fileName}`,
                     }),
                 },
                 {
@@ -82,8 +79,8 @@ describe('Action: content', () => {
             ];
 
             nock(BASE_URL)
-                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}`)
-                .reply(500, '');
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/content`)
+                .reply(500, { status: 'INTERNAL_SERVER_ERROR', message: errorMessage });
 
             const store = mockStore();
             return store.dispatch(contentActions.fetchJobFile(contentResources.jobName, contentResources.jobId, contentResources.fileName, contentResources.fileId))
@@ -139,7 +136,7 @@ describe('Action: content', () => {
                 {
                     type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
                     message: Map({
-                        message: `${getContentFailMessage} ${contentResources.jobName}:${contentResources.jobId}:${contentResources.fileId}`,
+                        message: `${errorMessage} - ${contentResources.jobName}:${contentResources.jobId}:${contentResources.fileId}`,
                     }),
                 },
                 {
@@ -149,8 +146,8 @@ describe('Action: content', () => {
 
             const store = mockStore();
             nock(BASE_URL)
-                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}`)
-                .reply(500, '');
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/content`)
+                .reply(500, { status: 'INTERNAL_SERVER_ERROR', message: errorMessage });
 
             return store.dispatch(contentActions.fetchJobFileNoName(contentResources.jobName, contentResources.jobId, contentResources.fileId))
                 .then(() => {
@@ -159,7 +156,7 @@ describe('Action: content', () => {
         });
 
         it('Should create a request but not receive action due to no file name match', () => {
-            const nodeURI = `jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}`;
+            const nodeURI = `jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/content`;
             const nodeNameURI = `jobs/${contentResources.jobName}/${contentResources.jobId}/files`;
             const expectedActions = [
                 {
@@ -172,7 +169,7 @@ describe('Action: content', () => {
                 {
                     type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
                     message: Map({
-                        message: `${getContentFailMessage} ${contentResources.jobName}:${contentResources.jobId}:${contentResources.fileId}`,
+                        message: `Error: ${errorMessage} - ${contentResources.jobName}:${contentResources.jobId}:${contentResources.fileId}`,
                     }),
                 },
                 {
@@ -183,11 +180,11 @@ describe('Action: content', () => {
 
             nock(BASE_URL)
                 .get(`/${nodeURI}`)
-                .reply(200, contentResources.content);
+                .reply(200, contentResources.jobFileContents);
 
             nock(BASE_URL)
                 .get(`/${nodeNameURI}`)
-                .reply(500, null);
+                .reply(500, { status: 'INTERNAL_SERVER_ERROR', message: errorMessage });
 
             return store.dispatch(contentActions.fetchJobFileNoName(contentResources.jobName, contentResources.jobId, contentResources.fileId))
                 .then(() => {
