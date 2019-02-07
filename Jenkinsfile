@@ -14,8 +14,13 @@
 
 @Library('zoe-jenkins-library') _
 
+def repositoryName = 'zowe/explorer-jes'
 def isPullRequest = env.BRANCH_NAME.startsWith('PR-')
 def isMasterBranch = env.BRANCH_NAME == 'master'
+def isReleaseBranch = env.BRANCH_NAME ==~ /^v[0-9]+\.[0-9]+\.[0-9x]+$/
+def extraReleaseBranches = ['tag-release']
+def supportedReleaseTypes = ['PATCH', 'MINOR', 'MAJOR']
+def allowReleasing = false
 
 def opts = []
 // keep last 20 builds for regular branches, no keep for pull requests
@@ -38,10 +43,10 @@ customParameters.push(string(
   defaultValue: 'giza-jenkins@gmail.com',
   trim: true
 ))
-customParameters.push(booleanParam(
+customParameters.push(choice(
   name: 'NPM_RELEASE',
-  description: 'Publish a release or snapshot version. By default, this task will create snapshot. Check this to publish a release version.',
-  defaultValue: false
+  description: 'Publish a release or snapshot version. By default, this task will create snapshot. If you choose release other than snapshot, your branch version will bump up. Release can only be enabled on `master` or version branch like `v1.2.3`.',
+  choices: ['SNAPSHOT', 'PATCH', 'MINOR', 'MAJOR']
 ))
 customParameters.push(credentials(
   name: 'PAX_SERVER_CREDENTIALS_ID',
@@ -61,6 +66,27 @@ customParameters.push(string(
   description: 'Artifactory server, should be pre-defined in Jenkins configuration',
   defaultValue: 'gizaArtifactory',
   trim: true
+))
+customParameters.push(credentials(
+  name: 'GITHUB_CREDENTIALS',
+  description: 'Github user credentials',
+  credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
+  defaultValue: 'zowe-robot-github',
+  required: true
+))
+customParameters.push(string(
+  name: 'GITHUB_USER_EMAIL',
+  description: 'github user email',
+  defaultValue: 'zowe.robot@gmail.com',
+  trim: true,
+  required: true
+))
+customParameters.push(string(
+  name: 'GITHUB_USER_NAME',
+  description: 'github user name',
+  defaultValue: 'Zowe Robot',
+  trim: true,
+  required: true
 ))
 opts.push(parameters(customParameters))
 
@@ -85,16 +111,24 @@ node ('ibm-jenkins-slave-nvm-jnlp') {
         echo "This is a pull request"
       }
 
+      // only if we are on master, or v?.?.? / v?.?.x branch, we allow release
+      if (params.NPM_RELEASE && supportedReleaseTypes.any{it == "${params.NPM_RELEASE}"} &&
+        (isMasterBranch || isReleaseBranch || extraReleaseBranches.any{it == "${env.BRANCH_NAME}"})) {
+        allowReleasing = true
+      } else {
+        echo "Release will be skipped."
+      }
+
       // get package information
       packageName = sh(script: "node -e \"console.log(require('./package.json').name)\"", returnStdout: true).trim()
       packageVersion = sh(script: "node -e \"console.log(require('./package.json').version)\"", returnStdout: true).trim()
-      if (params.NPM_RELEASE) {
+      if (allowReleasing) {
         versionId = packageVersion
       } else {
         def buildIdentifier = getBuildIdentifier('%Y%m%d%H%M%S', 'master', false)
         versionId = "${packageVersion}-snapshot.${buildIdentifier}"
       }
-      echo "Building ${packageName} v${packageVersion}..."
+      echo "Building ${packageName} v${versionId}..."
     }
 
     stage('prepare') {
@@ -174,7 +208,7 @@ node ('ibm-jenkins-slave-nvm-jnlp') {
         def releaseIdentifier = getReleaseIdentifier()
         def server = Artifactory.server params.ARTIFACTORY_SERVER
         def uploadSpec
-        if (params.NPM_RELEASE) {
+        if (allowReleasing) {
           uploadSpec = readFile "artifactory-upload-spec.release.json.template"
           uploadSpec = uploadSpec.replaceAll(/\{ARTIFACTORY_VERSION\}/, packageVersion)
           uploadSpec = uploadSpec.replaceAll(/\{RELEASE_IDENTIFIER\}/, releaseIdentifier)
@@ -186,9 +220,29 @@ node ('ibm-jenkins-slave-nvm-jnlp') {
         def buildInfo = Artifactory.newBuildInfo()
         server.upload spec: uploadSpec, buildInfo: buildInfo
         server.publishBuildInfo buildInfo
-
-        // TODO: tag the branch once we release
       }
+    }
+
+    utils.conditionalStage('tag-version', allowReleasing) {
+      def commitHash = sh(script: 'git rev-parse --verify HEAD', returnStdout: true).trim()
+      // tag branch
+      tagGithubRepository(
+        repositoryName,
+        commitHash,
+        "v${packageVersion}",
+        params.GITHUB_CREDENTIALS,
+        params.GITHUB_USER_NAME,
+        params.GITHUB_USER_EMAIL
+      )
+      // bump version
+      npmVersion(
+        repositoryName,
+        env.BRANCH_NAME,
+        params.NPM_RELEASE.toLowerCase(),
+        params.GITHUB_CREDENTIALS,
+        params.GITHUB_USER_NAME,
+        params.GITHUB_USER_EMAIL
+      )
     }
 
     stage('done') {
