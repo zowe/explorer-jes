@@ -46,7 +46,7 @@ export default class FulleHeightTree extends React.Component {
             <div
                 className="node"
                 ref={this.onDivRef}
-                style={{ overflow: 'auto', height: overrideHeight || this.state.height }}
+                style={{ overflow: 'scroll', height: overrideHeight || this.state.height }}
             >
                 {children}
             </div>

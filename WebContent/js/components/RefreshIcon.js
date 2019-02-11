@@ -26,12 +26,14 @@ export default class RefreshIcon extends React.Component {
         if (isFetching) {
             return (
                 <CircularProgressMui
+                    id="loading-icon"
                     size={iconSize}
                     style={iconStyle}
                 />);
         }
         return (
             <RefreshIconMui
+                id="refresh-icon"
                 size={iconSize}
                 style={iconStyle}
                 onClick={this.handleSubmit}
