@@ -16,7 +16,7 @@ import { Card, CardHeader, CardText } from 'material-ui/Card';
 import ConnectedRealtimeContentViewer from '../components/RealtimeContentViewer';
 import { fetchJobFileNoName } from '../actions/content';
 
-export class NodeViewer extends React.Component {
+export class ContentViewer extends React.Component {
     constructor(props) {
         super(props);
         this.editorReady = this.editorReady.bind(this);
@@ -61,7 +61,6 @@ export class NodeViewer extends React.Component {
                     content={content}
                     syntax={'text/jclcontext'}
                     languageFilesHost={locationHost}
-                    editorTopOffset={60}
                     readonly={true}
                     editorReady={this.editorReady}
                 />
@@ -72,6 +71,7 @@ export class NodeViewer extends React.Component {
                 id="content-viewer"
                 className="card-component"
                 style={{ marginBottom: 0 }}
+                containerStyle={{ paddingBottom: 0 }}
                 expanded={true}
             >
                 <CardHeader
@@ -85,7 +85,7 @@ export class NodeViewer extends React.Component {
     }
 }
 
-NodeViewer.propTypes = {
+ContentViewer.propTypes = {
     sourceId: PropTypes.string,
     label: PropTypes.string,
     content: PropTypes.string,
@@ -113,5 +113,5 @@ function mapStateToProps(state) {
     };
 }
 
-const ConnectedNodeViewer = connect(mapStateToProps)(NodeViewer);
-export default ConnectedNodeViewer;
+const ConnectedContentViewer = connect(mapStateToProps)(ContentViewer);
+export default ConnectedContentViewer;
