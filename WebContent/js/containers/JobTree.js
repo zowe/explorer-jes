@@ -21,6 +21,8 @@ import { LOADING_MESSAGE } from '../reducers/filters';
 import FullHeightTree from './FullHeightTree';
 import JobInstance from '../components/JobInstance';
 
+const NO_JOBS_FOUND_MESSAGE = 'No jobs found';
+
 export class JobNodeTree extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { owner, dispatch } = this.props;
@@ -49,7 +51,7 @@ export class JobNodeTree extends React.Component {
             <div className="job-instance">
                 <li>
                     <ErrorIcon className="node-icon" />
-                    <span className="job-label">No Jobs Found</span>
+                    <span className="job-label">{NO_JOBS_FOUND_MESSAGE}</span>
                 </li>
             </div>);
     }
