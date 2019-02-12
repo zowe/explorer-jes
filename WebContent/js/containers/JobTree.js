@@ -13,6 +13,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { List } from 'immutable';
 import { Card, CardHeader, CardText } from 'material-ui/Card';
+import ErrorIcon from 'material-ui/svg-icons/alert/error';
 import ConnectedFilter from './Filters';
 import RefreshIcon from '../components/RefreshIcon';
 import { fetchJobs } from '../actions/jobNodes';
@@ -37,11 +38,20 @@ export class JobNodeTree extends React.Component {
 
     renderJobs() {
         const { jobs, dispatch } = this.props;
-        return jobs.map(job => {
-            return (
-                <JobInstance key={job.get('label')} job={job} dispatch={dispatch} />
-            );
-        });
+        if (jobs && jobs.size >= 1) {
+            return jobs.map(job => {
+                return (
+                    <JobInstance key={job.get('label')} job={job} dispatch={dispatch} />
+                );
+            });
+        }
+        return (
+            <div className="job-instance">
+                <li>
+                    <ErrorIcon className="node-icon" />
+                    <span className="job-label">No Jobs Found</span>
+                </li>
+            </div>);
     }
 
     render() {
