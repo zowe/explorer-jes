@@ -24,8 +24,8 @@ API_INSTALL_FOLDER=explorer-jobs-api
 
 # validate parameters
 if [ -z "$FVT_API_ARTIFACT" ]; then
-  echo "[${SCRIPT_NAME}][error] API artifact is not defined ..."
-  exit 1
+  FVT_API_ARTIFACT="libs-release-local/org/zowe/explorer/jobs/jobs-zowe-server-package/*/jobs-zowe-server-package-*.zip"
+  echo "[${SCRIPT_NAME}][warn] API artifact is not defined, using default value."
 fi
 
 # prepare pax workspace
@@ -46,15 +46,19 @@ echo
 echo "[${SCRIPT_NAME}] copying plugin to target test folder ..."
 cp -R pax-workspace/content/. "${FVT_WORKSPACE}/${PLUGIN_INSTALL_FOLDER}/"
 cp -R pax-workspace/ascii/. "${FVT_WORKSPACE}/${PLUGIN_INSTALL_FOLDER}/"
+echo
 
 # prepare to download API
 echo "[${SCRIPT_NAME}] preparing API artifact download spec ..."
-cat artifactory-download-spec-api.json
-sed -e "s/{API_ARTIFACT}/${FVT_API_ARTIFACT}/g" \
-    -e "s/{API_TARGET}/${FVT_WORKSPACE}\/${API_INSTALL_FOLDER}/g"
+echo "-e \"s#{API_ARTIFACT}#${FVT_API_ARTIFACT}#g\""
+echo "-e \"s#{API_TARGET}#${FVT_WORKSPACE}/${API_INSTALL_FOLDER}#g\""
+sed -e "s#{API_ARTIFACT}#${FVT_API_ARTIFACT}#g" \
+    -e "s#{API_TARGET}#${FVT_WORKSPACE}/${API_INSTALL_FOLDER}/#g" \
     artifactory-download-spec-api.json.template > artifactory-download-spec-api.json
+cat artifactory-download-spec-api.json
 echo "[${SCRIPT_NAME}] downloading API to target test folder ..."
 jfrog rt dl --spec=artifactory-download-spec-api.json
+echo
 
 echo "[${SCRIPT_NAME}] test folder prepared:"
 find .fvt -print
