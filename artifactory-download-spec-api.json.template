@@ -1,0 +1,11 @@
+{
+  "files": [{
+    "pattern": "{API_ARTIFACT}",
+    "target": ".fvt/explorer-jobs-api/",
+    "flat": "true",
+    "explode": "true",
+    "sortBy": ["created"],
+    "sortOrder": "desc",
+    "limit": 1
+  }]
+}

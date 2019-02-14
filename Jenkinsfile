@@ -48,6 +48,13 @@ customParameters.push(choice(
   description: 'Publish a release or snapshot version. By default, this task will create snapshot. If you choose release other than snapshot, your branch version will bump up. Release can only be enabled on `master` or version branch like `v1.2.3`.',
   choices: ['SNAPSHOT', 'PATCH', 'MINOR', 'MAJOR']
 ))
+customParameters.push(string(
+  name: 'API_ARTIFACT',
+  description: 'API artifact download pattern',
+  defaultValue: 'libs-release-local/org/zowe/explorer/jobs/jobs-zowe-server-package/*/jobs-zowe-server-package-*.zip',
+  trim: true,
+  required: true
+))
 customParameters.push(credentials(
   name: 'PAX_SERVER_CREDENTIALS_ID',
   description: 'The server credential used to create PAX file',
@@ -191,6 +198,23 @@ node ('ibm-jenkins-slave-nvm-jnlp') {
     stage('build') {
       ansiColor('xterm') {
         sh 'npm run prod'
+      }
+    }
+
+    stage('prepare-fvt') {
+      ansiColor('xterm') {
+        // prepare plugin
+        sh './scripts/prepare-fvt.sh'
+
+        // prepare Jobs API by downloading from artifactory
+        def server = Artifactory.server params.ARTIFACTORY_SERVER
+        def downloadSpec = readFile "artifactory-download-spec-api.json.template"
+        downloadSpec = downloadSpec.replaceAll(/\{API_ARTIFACT\}/, params.API_ARTIFACT)
+        timeout(20) {
+          server.download(downloadSpec)
+        }
+
+        sh 'find .fvt -print'
       }
     }
 
