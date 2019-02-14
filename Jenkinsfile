@@ -49,8 +49,8 @@ customParameters.push(choice(
   choices: ['SNAPSHOT', 'PATCH', 'MINOR', 'MAJOR']
 ))
 customParameters.push(string(
-  name: 'API_ARTIFACT',
-  description: 'API artifact download pattern',
+  name: 'FVT_API_ARTIFACT',
+  description: 'Jobs API artifact download pattern',
   defaultValue: 'libs-release-local/org/zowe/explorer/jobs/jobs-zowe-server-package/*/jobs-zowe-server-package-*.zip',
   trim: true,
   required: true
@@ -73,6 +73,20 @@ customParameters.push(string(
   description: 'Artifactory server, should be pre-defined in Jenkins configuration',
   defaultValue: 'gizaArtifactory',
   trim: true
+))
+customParameters.push(string(
+  name: 'ARTIFACTORY_URL',
+  description: 'Artifactory URL',
+  defaultValue: 'https://gizaartifactory.jfrog.io/gizaartifactory',
+  trim: true,
+  required: true
+))
+customParameters.push(credentials(
+  name: 'ARTIFACTORY_SECRET',
+  description: 'Artifactory access secret',
+  credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
+  defaultValue: 'GizaArtifactory',
+  required: true
 ))
 customParameters.push(credentials(
   name: 'GITHUB_CREDENTIALS',
@@ -203,19 +217,20 @@ node ('ibm-jenkins-slave-nvm-jnlp') {
 
     stage('prepare-fvt') {
       ansiColor('xterm') {
-        // prepare plugin
-        sh './scripts/prepare-fvt.sh'
-
-        // prepare Jobs API by downloading from artifactory
-        def server = Artifactory.server params.ARTIFACTORY_SERVER
-        def downloadSpec = readFile "artifactory-download-spec-api.json.template"
-        downloadSpec = downloadSpec.replaceAll(/\{API_ARTIFACT\}/, params.API_ARTIFACT)
-        timeout(20) {
-          server.download(downloadSpec)
+        // prepare JFrog CLI configurations
+        withCredentials([usernamePassword(credentialsId: params.ARTIFACTORY_SECRET, passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+          sh "jfrog rt config rt-server-1 --url=${params.ARTIFACTORY_URL} --user=${USERNAME} --password=${PASSWORD}"
         }
 
-        sh 'find .fvt -print'
+        // prepare environtment for integration test
+        sh "./scripts/prepare-fvt.sh \"${params.FVT_API_ARTIFACT}\""
       }
+    }
+
+    stage('fvt') {
+      // run test
+      // sh 'npm run test:fvt'
+      // publish report
     }
 
     stage('publish') {
