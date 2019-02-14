@@ -65,7 +65,7 @@
     "lint": "eslint ./WebContent/js/ ./tests/",
     "testWatch": "mocha --watch --compilers js:babel-register tests --recursive",
     "test": "JUNIT_REPORT_PATH=target/report.xml nyc mocha --compilers js:babel-register tests --recursive --colors --reporter mocha-jenkins-reporter",
-    "prod": "cross-env NODE_ENV='production' webpack -p && cp -r ./WebContent/css ./dist/ && cp -r ./WebContent/img ./dist/ && cp ./WebContent/index.html ./dist/",
+    "prod": "cross-env NODE_ENV='production' webpack -p && cp -r ./WebContent/css ./dist/ && cp -r ./WebContent/img ./dist/ && cp ./WebContent/index.html ./dist/ && cp ./WebContent/favicon.ico ./dist/",
     "preCommit": "npm-run-all --aggregate-output --parallel --print-label lint test prod"
   },
   "nyc": {
