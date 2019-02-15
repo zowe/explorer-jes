@@ -1,3 +1,13 @@
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright IBM Corporation 2019
+ */
+
 import { Map, List } from 'immutable';
 
 import {
@@ -79,7 +89,7 @@ function toggleJob(jobs, jobId) {
 function extractJobFiles(jobFiles) {
     return jobFiles.map(file => {
         return {
-            label: file.ddname,
+            label: file.ddName,
             id: file.id,
         };
     });
@@ -98,7 +108,7 @@ export default function JobNodes(state = INITIAL_STATE, action) {
         case RECEIVE_SINGLE_JOB:
             return state.merge({ jobs: extractJob(action.job), isFetching: false });
         case INVALIDATE_JOBS:
-            return state.set('isFetching', false);
+            return state.merge({ isFetching: false, jobs: List() });
         case TOGGLE_JOB:
             return state.merge({
                 jobs: state.get('jobs').set(findKeyOfJob(state.get('jobs'), action.jobId), toggleJob(state.get('jobs'), action.jobId)),

@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018
+ * Copyright IBM Corporation 2018, 2019
  */
 
 import configureMockStore from 'redux-mock-store';
@@ -40,7 +40,7 @@ describe('Action: validation', () => {
 
             nock(LOCAL_HOST_ENDPOINT)
                 .get('/jobs/username')
-                .reply(200, username);
+                .reply(200, { username });
 
             const store = mockStore();
 

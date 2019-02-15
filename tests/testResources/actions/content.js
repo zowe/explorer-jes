@@ -5,16 +5,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018
+ * Copyright IBM Corporation 2018, 2019
  */
 
-export const jobFileContents = "//TSTJIMS  JOB (ADL),'ATLAS',MSGCLASS=0,CLASS=A,TIME=1440\n" +
+export const jobFileContents = { content: "//TSTJIMS  JOB (ADL),'ATLAS',MSGCLASS=0,CLASS=A,TIME=1440\n" +
 '//*        THIS JOB SIMULATES AN IMS REGION FOR 60 SECONDS\n' +
 '//IMS      EXEC PGM=DFSMVRC0\n' +
 '//STEPLIB  DD DSN=ATLAS.TEST.LOAD,DISP=SHR\n' +
 '//SYSPRINT DD SYSOUT=*\n' +
 '//SYSOUT   DD SYSOUT=*\n' +
-'//*\n';
+'//*\n' };
 
 export const jobFileFetchResponse = {
     content: jobFileContents,
@@ -40,17 +40,17 @@ export const fileName = 'JESMSGLG';
 
 export const fileList = [
     {
-        ddname: 'JESMSGLG',
-        recfm: 'UA',
-        lrecl: 133,
+        ddName: 'JESMSGLG',
+        recordFormat: 'UA',
+        recordLength: 133,
         byteCount: 1609,
         recordCount: 24,
         id: 102,
     },
     {
-        ddname: 'JESJCL',
-        recfm: 'V',
-        lrecl: 136,
+        ddName: 'JESJCL',
+        recordFormat: 'V',
+        recordLength: 136,
         byteCount: 981,
         recordCount: 19,
         id: 3,

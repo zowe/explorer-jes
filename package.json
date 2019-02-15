@@ -1,6 +1,6 @@
 {
   "name": "explorer-jes",
-  "version": "0.0.2",
+  "version": "0.0.13",
   "dependencies": {
     "babel-polyfill": "^6.16.0",
     "file-loader": "^0.11.2",
@@ -63,15 +63,22 @@
   "scripts": {
     "dev": "webpack-dev-server --content-base WebContent --inline --hot",
     "lint": "eslint ./WebContent/js/ ./tests/",
-    "test": "JUNIT_REPORT_PATH=target/report.xml mocha --compilers js:babel-register tests --recursive --reporter mocha-jenkins-reporter",
     "testWatch": "mocha --watch --compilers js:babel-register tests --recursive",
-    "coverage": "JUNIT_REPORT_PATH=target/report.xml nyc --report cobertura --require babel-core/register --all mocha --compilers js:babel-register tests --recursive --colors --reporter mocha-jenkins-reporter",
-    "coverageReport": "nyc report --reporter=cobertura",
-    "coverageReportHTML": "nyc report --reporter=lcov ",
-    "prod": "cross-env NODE_ENV='production' webpack -p && cp -r ./WebContent/css ./dist/ && cp -r ./WebContent/img ./dist/ && cp ./WebContent/index.html ./dist/",
+    "test": "JUNIT_REPORT_PATH=target/report.xml nyc mocha --compilers js:babel-register tests --recursive --colors --reporter mocha-jenkins-reporter",
+    "prod": "cross-env NODE_ENV='production' webpack -p && cp -r ./WebContent/css ./dist/ && cp -r ./WebContent/img ./dist/ && cp ./WebContent/index.html ./dist/ && cp ./WebContent/favicon.ico ./dist/",
     "preCommit": "npm-run-all --aggregate-output --parallel --print-label lint test prod"
   },
   "nyc": {
+    "reporter": [
+      "lcov",
+      "cobertura",
+      "text"
+    ],
+    "report-dir": "./coverage",
+    "require": [
+      "babel-core/register"
+    ],
+    "all": true,
     "include": [
       "WebContent/js"
     ],

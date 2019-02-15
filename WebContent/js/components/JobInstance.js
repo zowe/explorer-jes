@@ -1,3 +1,13 @@
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright IBM Corporation 2019
+ */
+
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Map } from 'immutable';
@@ -25,6 +35,7 @@ export default class JobInstance extends React.Component {
 
     renderJobStatus() {
         const { job } = this.props;
+        const statusStyleActive = { display: 'inline' };
         const statusStyleAbend = { color: 'red', display: 'inline' };
         const statusStyleComplete = { color: 'grey', display: 'inline' };
         if (job.get('returnCode')) {
@@ -34,9 +45,9 @@ export default class JobInstance extends React.Component {
             if (job.get('returnCode').toLowerCase().includes('cc') || job.get('returnCode').toLowerCase().includes('canceled')) {
                 return (<div style={statusStyleComplete}> [{job.get('returnCode')}]</div>);
             }
-            return ` [${job.get('returnCode')}]`;
+            return (<div style={statusStyleActive}> [{job.get('returnCode')}]</div>);
         } else if (job.get('status')) {
-            return ` [${job.get('status')}]`;
+            return <div style={statusStyleActive}>[{job.get('status')}]</div>;
         }
         return null;
     }
@@ -75,7 +86,7 @@ export default class JobInstance extends React.Component {
                     <ContextMenuTrigger id={job.get('label')}>
                         <span className="content-link" onClick={() => { this.handleJobToggle(job); }}>
                             <LabelIcon className="node-icon" />
-                            <span>
+                            <span className="job-label">
                                 {job.get('label')}
                                 {this.renderJobStatus()}
                             </span>

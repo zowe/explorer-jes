@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2018
+ * Copyright IBM Corporation 2016, 2019
  */
 
 import React from 'react';
@@ -26,12 +26,14 @@ export default class RefreshIcon extends React.Component {
         if (isFetching) {
             return (
                 <CircularProgressMui
+                    id="loading-icon"
                     size={iconSize}
                     style={iconStyle}
                 />);
         }
         return (
             <RefreshIconMui
+                id="refresh-icon"
                 size={iconSize}
                 style={iconStyle}
                 onClick={this.handleSubmit}

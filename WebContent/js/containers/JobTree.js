@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2018
+ * Copyright IBM Corporation 2016, 2019
  */
 
 import PropTypes from 'prop-types';
@@ -13,12 +13,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { List } from 'immutable';
 import { Card, CardHeader, CardText } from 'material-ui/Card';
+import ErrorIcon from 'material-ui/svg-icons/alert/error';
 import ConnectedFilter from './Filters';
 import RefreshIcon from '../components/RefreshIcon';
 import { fetchJobs } from '../actions/jobNodes';
 import { LOADING_MESSAGE } from '../reducers/filters';
 import FullHeightTree from './FullHeightTree';
 import JobInstance from '../components/JobInstance';
+
+const NO_JOBS_FOUND_MESSAGE = 'No jobs found';
 
 export class JobNodeTree extends React.Component {
     componentWillReceiveProps(nextProps) {
@@ -29,21 +32,28 @@ export class JobNodeTree extends React.Component {
     }
 
     getFilterValues() {
-        const { owner, prefix, returnCode, status, type } = this.props;
-        let filtersString = `Owner= ${owner} Prefix= ${prefix || '*'}`;
-        if (returnCode) { filtersString += ` Return Code= ${ConnectedFilter.returnCodeToString(returnCode)}`; }
+        const { owner, prefix, jobId, status } = this.props;
+        let filtersString = `Owner= ${owner} Prefix= ${prefix || '*'} JobId= ${jobId}`;
         if (status) { filtersString += ` Status= ${status}`; }
-        if (type) { filtersString += ` Type= ${type}`; }
         return filtersString;
     }
 
     renderJobs() {
         const { jobs, dispatch } = this.props;
-        return jobs.map(job => {
-            return (
-                <JobInstance key={job.get('label')} job={job} dispatch={dispatch} />
-            );
-        });
+        if (jobs && jobs.size >= 1) {
+            return jobs.map(job => {
+                return (
+                    <JobInstance key={job.get('label')} job={job} dispatch={dispatch} />
+                );
+            });
+        }
+        return (
+            <div className="job-instance">
+                <li>
+                    <ErrorIcon className="node-icon" />
+                    <span className="job-label">{NO_JOBS_FOUND_MESSAGE}</span>
+                </li>
+            </div>);
     }
 
     render() {
@@ -73,9 +83,8 @@ export class JobNodeTree extends React.Component {
 JobNodeTree.propTypes = {
     prefix: PropTypes.string,
     owner: PropTypes.string,
-    returnCode: PropTypes.string,
+    jobId: PropTypes.string,
     status: PropTypes.string,
-    type: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
     isFetching: PropTypes.bool.isRequired,
     jobs: PropTypes.instanceOf(List),
@@ -87,9 +96,8 @@ function mapStateToProps(state) {
     return {
         prefix: filtersRoot.get('prefix'),
         owner: filtersRoot.get('owner'),
-        returnCode: filtersRoot.get('returnCode'),
+        jobId: filtersRoot.get('jobId'),
         status: filtersRoot.get('status'),
-        type: filtersRoot.get('type'),
         isFetching: jobNodesRoot.get('isFetching'),
         jobs: jobNodesRoot.get('jobs'),
     };

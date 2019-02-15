@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2018
+ * Copyright IBM Corporation 2016, 2019
  */
 
 import { atlasFetch } from '../utilities/urlUtils';
@@ -39,10 +39,10 @@ export function validateUser() {
         dispatch(requestValidation());
 
         return atlasFetch('jobs/username', { credentials: 'include' })
-            .then(response => { return response.text(); })
-            .then(username => {
-                if (username && username !== '') {
-                    return dispatch(receiveValidation(username));
+            .then(response => { return response.json(); })
+            .then(response => {
+                if (response && response.username && response.username !== '') {
+                    return dispatch(receiveValidation(response.username));
                 }
                 return dispatch(invalidateValidation());
             })

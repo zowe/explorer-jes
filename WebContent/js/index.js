@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2018
+ * Copyright IBM Corporation 2016, 2019
  */
 
 /* global document */
@@ -48,6 +48,7 @@ ReactDOM.render(
         <Provider store={store().getStore()}>
             <Router history={hashHistory}>
                 <Route path="/" component={JobsView} />
+                <Route path="/jobs" component={JobsView} />
                 <Route path="/viewer" component={FullScreenView} />
                 <Route path="/syslog" component={SyslogView} />
             </Router>

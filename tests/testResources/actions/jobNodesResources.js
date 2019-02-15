@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018
+ * Copyright IBM Corporation 2018, 2019
  */
 
 export const jobFetchResponse = [
@@ -61,17 +61,17 @@ export const jobId = 'JOB1234';
 
 export const jobFiles = [
     {
-        ddname: 'JESMSGLG',
-        recfm: 'UA',
-        lrecl: 133,
+        ddName: 'JESMSGLG',
+        recordFormat: 'UA',
+        recordLength: 133,
         byteCount: 1609,
         recordCount: 24,
         id: 2,
     },
     {
-        ddname: 'JESJCL',
-        recfm: 'V',
-        lrecl: 136,
+        ddName: 'JESJCL',
+        recordFormat: 'V',
+        recordLength: 136,
         byteCount: 981,
         recordCount: 19,
         id: 3,
