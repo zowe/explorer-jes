@@ -54,10 +54,9 @@ export function fetchJobFile(jobName, jobId, fileLabel, fileId) {
             })
             .then(json => {
                 if (json.content) {
-                    dispatch(receiveContent(jobName, jobId, fileLabel, fileId, json.content));
-                } else {
-                    throw Error(json.message);
+                    return dispatch(receiveContent(jobName, jobId, fileLabel, fileId, json.content));
                 }
+                throw Error(json.message);
             })
             .catch(e => {
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileLabel}`));
@@ -101,10 +100,9 @@ export function fetchJobFileNoName(jobName, jobId, fileId) {
                     return getFileNameFromJob(jobName, jobId, fileId).then(
                         fileLabel => {
                             if (fileLabel) {
-                                dispatch(receiveContent(jobName, jobId, fileLabel, fileId, json.content));
-                            } else {
-                                throw Error(fileLabel);
+                                return dispatch(receiveContent(jobName, jobId, fileLabel, fileId, json.content));
                             }
+                            throw Error(fileLabel);
                         },
                     ).catch(e => {
                         throw Error(e);

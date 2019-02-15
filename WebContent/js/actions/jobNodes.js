@@ -206,14 +206,14 @@ export function purgeJob(jobName, jobId) {
             },
         ).then(response => {
             if (response.ok) {
-                return response.text();
+                return response.text().then(() => {
+                    dispatch(constructAndPushMessage(`${PURGE_JOB_SUCCESS_MESSAGE} ${jobName}/${jobId}`));
+                    return dispatch(receivePurge(jobName, jobId));
+                });
             }
-            throw Error(response.message);
-        }).then(() => {
-            dispatch(constructAndPushMessage(`${PURGE_JOB_SUCCESS_MESSAGE} ${jobName}/${jobId}`));
-            return dispatch(receivePurge(jobName, jobId));
+            return response.json().then(json => { throw Error(json && json.message ? json.message : ''); });
         }).catch(e => {
-            dispatch(constructAndPushMessage(e.message ? e.message : `${PURGE_JOB_FAIL_MESSAGE} ${jobName}/${jobId}`));
+            dispatch(constructAndPushMessage(`${PURGE_JOB_FAIL_MESSAGE} ${jobName}/${jobId} : ${e.message}`));
             dispatch(invalidatePurge(jobName, jobId));
         });
     };
