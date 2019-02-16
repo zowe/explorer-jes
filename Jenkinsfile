@@ -128,7 +128,7 @@ opts.push(parameters(customParameters))
 // set build properties
 properties(opts)
 
-node ('ibm-jenkins-slave-dind') {
+node ('ibm-jenkins-slave-swarm-dind') {
   currentBuild.result = 'SUCCESS'
   def packageName
   def packageVersion
