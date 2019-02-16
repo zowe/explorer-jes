@@ -55,6 +55,20 @@ customParameters.push(string(
   trim: true,
   required: true
 ))
+customParameters.push(string(
+  name: 'FVT_ZOSMF_HOST',
+  description: 'z/OSMF server for integration test',
+  defaultValue: 'river.zowe.org',
+  trim: true,
+  required: true
+))
+customParameters.push(string(
+  name: 'FVT_ZOSMF_PORT',
+  description: 'z/OSMF port for integration test',
+  defaultValue: '10443',
+  trim: true,
+  required: true
+))
 customParameters.push(credentials(
   name: 'PAX_SERVER_CREDENTIALS_ID',
   description: 'The server credential used to create PAX file',
@@ -223,12 +237,16 @@ node ('ibm-jenkins-slave-nvm-jnlp') {
         }
 
         // prepare environtment for integration test
-        sh "./scripts/prepare-fvt.sh \"${params.FVT_API_ARTIFACT}\""
+        sh "./scripts/prepare-fvt.sh \"${params.FVT_API_ARTIFACT}\" \"${params.FVT_ZOSMF_HOST}\" \"${params.FVT_ZOSMF_PORT}\""
       }
     }
 
     stage('fvt') {
-      // run test
+      // run tests
+      sh 'docker ps'
+      // wait a while for debugging
+      sleep time: 60, unit: 'MINUTES'
+      error 'WIP ...'
       // sh 'npm run test:fvt'
       // publish report
     }
