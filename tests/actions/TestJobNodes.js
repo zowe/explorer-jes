@@ -70,7 +70,7 @@ describe('Action: jobNodes', () => {
         });
 
         it('Should create an action to request and invalidate jobs due to failed fetch', () => {
-            const fetchJobsFailMessage = rewiredJobNodes.__get__('FETCH_JOBS_FAIL_MESSAGE');
+            const apiResponseMessage = 'Request to fetch failed';
             const expectedActions = [
                 {
                     type: JobNodes.REQUEST_JOBS,
@@ -79,7 +79,7 @@ describe('Action: jobNodes', () => {
                 {
                     type: snackbar.PUSH_NOTIFICATION_MESSAGE,
                     message: Map({
-                        message: `${fetchJobsFailMessage}`,
+                        message: apiResponseMessage,
                     }),
                 },
                 {
@@ -90,7 +90,7 @@ describe('Action: jobNodes', () => {
             const rewiredGetURIQuery = rewiredJobNodes.__get__('getURIQuery');
             nock(BASE_URL)
                 .get(`/jobs${rewiredGetURIQuery(filtersResources.filters)}`)
-                .reply(500, '');
+                .reply(500, { message: apiResponseMessage });
             const store = mockStore();
             return store.dispatch(JobNodes.fetchJobs(filtersResources.filters))
                 .then(() => {
@@ -133,7 +133,7 @@ describe('Action: jobNodes', () => {
         });
 
         it('Should create actions to request files, toggle job and push message due to server error on files', () => {
-            const fetchFilesFail = rewiredJobNodes.__get__('FETCH_JOB_FILES_FAIL_MESSAGE');
+            const apiResponseMessage = `Request to fetch failed ${jobNodesResources.jobName}:${jobNodesResources.jobId}`;
             const expectedActions = [
                 {
                     type: JobNodes.REQUEST_JOB_FILES,
@@ -147,7 +147,7 @@ describe('Action: jobNodes', () => {
                 {
                     type: snackbar.PUSH_NOTIFICATION_MESSAGE,
                     message: Map({
-                        message: `${fetchFilesFail} ${jobNodesResources.jobName}:${jobNodesResources.jobId}`,
+                        message: `${apiResponseMessage}`,
                     }),
                 },
                 {
@@ -156,8 +156,8 @@ describe('Action: jobNodes', () => {
             ];
 
             nock(BASE_URL)
-                .get(`/jobs/${jobNodesResources.jobName}/ids/${jobNodesResources.jobId}/files`)
-                .reply(500, '');
+                .get(`/jobs/${jobNodesResources.jobName}/${jobNodesResources.jobId}/files`)
+                .reply(500, { message: apiResponseMessage });
 
             const store = mockStore();
             return store.dispatch(JobNodes.fetchJobFiles(jobNodesResources.jobName, jobNodesResources.jobId)).then(() => {
@@ -209,7 +209,7 @@ describe('Action: jobNodes', () => {
 
         it('Should create an action to request a job purge and then invalidate', () => {
             const purgeFail = rewiredJobNodes.__get__('PURGE_JOB_FAIL_MESSAGE');
-
+            const fetchResponseMessage = 'Job Not found';
             const expectedActions = [{
                 type: JobNodes.REQUEST_PURGE_JOB,
                 jobName: jobNodesResources.jobName,
@@ -218,7 +218,7 @@ describe('Action: jobNodes', () => {
             {
                 type: snackbar.PUSH_NOTIFICATION_MESSAGE,
                 message: Map({
-                    message: `${purgeFail} ${jobNodesResources.jobName}/${jobNodesResources.jobId}`,
+                    message: `${purgeFail} ${jobNodesResources.jobName}/${jobNodesResources.jobId} : ${fetchResponseMessage}`,
                 }),
             },
             {
@@ -238,8 +238,8 @@ describe('Action: jobNodes', () => {
             }));
 
             nock(BASE_URL)
-                .delete(`${jobNodesResources.jobName}/${jobNodesResources.jobId}`)
-                .reply(404, '');
+                .delete(`/jobs/${jobNodesResources.jobName}/${jobNodesResources.jobId}`)
+                .reply(404, { message: fetchResponseMessage });
 
             return store.dispatch(JobNodes.purgeJob(jobNodesResources.jobName, jobNodesResources.jobId))
                 .then(() => {

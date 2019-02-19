@@ -53,7 +53,10 @@ export function fetchJobFile(jobName, jobId, fileLabel, fileId) {
                 return response.json().then(e => { throw Error(e.message); });
             })
             .then(json => {
-                dispatch(receiveContent(jobName, jobId, fileLabel, fileId, json.content));
+                if (json.content) {
+                    return dispatch(receiveContent(jobName, jobId, fileLabel, fileId, json.content));
+                }
+                throw Error(json.message);
             })
             .catch(e => {
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileLabel}`));
@@ -93,17 +96,19 @@ export function fetchJobFileNoName(jobName, jobId, fileId) {
                 return response.json().then(e => { throw Error(e.message); });
             })
             .then(json => {
-                return getFileNameFromJob(jobName, jobId, fileId).then(
-                    fileLabel => {
-                        if (fileLabel) {
-                            dispatch(receiveContent(jobName, jobId, fileLabel, fileId, json.content));
-                        } else {
+                if (json.content) {
+                    return getFileNameFromJob(jobName, jobId, fileId).then(
+                        fileLabel => {
+                            if (fileLabel) {
+                                return dispatch(receiveContent(jobName, jobId, fileLabel, fileId, json.content));
+                            }
                             throw Error(fileLabel);
-                        }
-                    },
-                ).catch(e => {
-                    throw Error(e);
-                });
+                        },
+                    ).catch(e => {
+                        throw Error(e);
+                    });
+                }
+                throw Error(json.message);
             })
             .catch(e => {
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileId}`));
