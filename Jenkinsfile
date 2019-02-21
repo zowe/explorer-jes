@@ -170,6 +170,7 @@ node ('ibm-jenkins-slave-dind') {
       // show node/npm version
       sh 'node -v'
       sh 'npm -v'
+      sh 'npm install -g npm'
 
       ansiColor('xterm') {
         // login to private npm registry
