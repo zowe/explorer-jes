@@ -83,6 +83,7 @@ sed -e "s#{{service-name}}#${PACKAGE_NAME}#" \
   -e "s#{{https-passphrase}}##" \
   -e "s#{{https-key}}#server.key#" \
   -e "s#{{https-cert}}#server.cert#" \
+  -e "s#\"{{csp-frame-ancestors}}\"##" \
   "${PAX_WORKSPACE_DIR}/content/server/configs/config.json.template" \
   > "${PAX_WORKSPACE_DIR}/content/server/configs/config.json"
 

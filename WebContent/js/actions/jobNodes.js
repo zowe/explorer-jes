@@ -28,8 +28,7 @@ export const REQUEST_PURGE_JOB = 'REQUEST_PURGE_JOB';
 export const RECEIVE_PURGE_JOB = 'RECEIVE_PURGE_JOB';
 export const INVALIDATE_PURGE_JOB = 'INVALIDATE_PURGE_JOB';
 
-const FETCH_JOBS_FAIL_MESSAGE = 'Fetch failed for';
-const FETCH_JOB_FILES_FAIL_MESSAGE = 'Fetch files failed for';
+const NO_JOBS_FOUND_MESSAGE = 'No Jobs found for filter parameters';
 const PURGE_JOB_SUCCESS_MESSAGE = 'Purge request succeeded for';
 const PURGE_JOB_FAIL_MESSAGE = 'Purge request failed for';
 
@@ -144,14 +143,22 @@ export function fetchJobs(filters) {
         return atlasFetch(`jobs${getURIQuery(filters)}`, { credentials: 'include' })
             .then(response => { return response.json(); })
             .then(json => {
-                if ('jobId' in filters && filters.jobId !== '*') {
-                    filterByJobId(json, filters.jobId, dispatch);
-                } else {
-                    dispatch(receiveJobs(json));
+                if (json.constructor === Array) {
+                    if (json.length > 0) {
+                        if ('jobId' in filters && filters.jobId !== '*') {
+                            filterByJobId(json, filters.jobId, dispatch);
+                        } else {
+                            dispatch(receiveJobs(json));
+                        }
+                    } else {
+                        throw Error(NO_JOBS_FOUND_MESSAGE);
+                    }
+                } else if (json.message) {
+                    throw Error(json.message);
                 }
             })
-            .catch(() => {
-                dispatch(constructAndPushMessage(FETCH_JOBS_FAIL_MESSAGE));
+            .catch(e => {
+                dispatch(constructAndPushMessage(e.message));
                 dispatch(invalidateJobs());
             });
     };
@@ -162,10 +169,13 @@ function getJobFiles(jobName, jobId) {
         return atlasFetch(`jobs/${jobName}/${jobId}/files`, { credentials: 'include' })
             .then(response => { return response.json(); })
             .then(json => {
-                return dispatch(receiveJobFiles(jobName, jobId, json));
+                if (json.constructor === Array) {
+                    return dispatch(receiveJobFiles(jobName, jobId, json));
+                }
+                throw Error(json.message);
             })
-            .catch(() => {
-                return dispatch(constructAndPushMessage(`${FETCH_JOB_FILES_FAIL_MESSAGE} ${jobName}:${jobId}`));
+            .catch(e => {
+                return dispatch(constructAndPushMessage(e.message));
             });
     };
 }
@@ -196,14 +206,14 @@ export function purgeJob(jobName, jobId) {
             },
         ).then(response => {
             if (response.ok) {
-                return response.text();
+                return response.text().then(() => {
+                    dispatch(constructAndPushMessage(`${PURGE_JOB_SUCCESS_MESSAGE} ${jobName}/${jobId}`));
+                    return dispatch(receivePurge(jobName, jobId));
+                });
             }
-            throw Error(response.statusText);
-        }).then(() => {
-            dispatch(constructAndPushMessage(`${PURGE_JOB_SUCCESS_MESSAGE} ${jobName}/${jobId}`));
-            return dispatch(receivePurge(jobName, jobId));
-        }).catch(() => {
-            dispatch(constructAndPushMessage(`${PURGE_JOB_FAIL_MESSAGE} ${jobName}/${jobId}`));
+            return response.json().then(json => { throw Error(json && json.message ? json.message : ''); });
+        }).catch(e => {
+            dispatch(constructAndPushMessage(`${PURGE_JOB_FAIL_MESSAGE} ${jobName}/${jobId} : ${e.message}`));
             dispatch(invalidatePurge(jobName, jobId));
         });
     };

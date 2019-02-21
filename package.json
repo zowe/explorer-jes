@@ -1,6 +1,6 @@
 {
   "name": "explorer-jes",
-  "version": "0.0.12",
+  "version": "0.0.14",
   "dependencies": {
     "babel-polyfill": "^6.16.0",
     "file-loader": "^0.11.2",
@@ -23,7 +23,7 @@
     "whatwg-fetch": "^2.0.3"
   },
   "peerDependencies": {
-    "explorer-ui-server": "0.0.7"
+    "explorer-ui-server": "0.1.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
@@ -65,7 +65,7 @@
     "lint": "eslint ./WebContent/js/ ./tests/",
     "testWatch": "mocha --watch --compilers js:babel-register tests --recursive",
     "test": "JUNIT_REPORT_PATH=target/report.xml nyc mocha --compilers js:babel-register tests --recursive --colors --reporter mocha-jenkins-reporter",
-    "prod": "cross-env NODE_ENV='production' webpack -p && cp -r ./WebContent/css ./dist/ && cp -r ./WebContent/img ./dist/ && cp ./WebContent/index.html ./dist/",
+    "prod": "cross-env NODE_ENV='production' webpack -p && cp -r ./WebContent/css ./dist/ && cp -r ./WebContent/img ./dist/ && cp ./WebContent/index.html ./dist/ && cp ./WebContent/favicon.ico ./dist/",
     "preCommit": "npm-run-all --aggregate-output --parallel --print-label lint test prod"
   },
   "nyc": {
