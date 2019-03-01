@@ -126,7 +126,7 @@ function getURIQuery(filters) {
 function filterByJobId(json, jobId, dispatch) {
     // filter for job Id as api doesn't support
     let jobFound = false;
-    json.forEach(job => {
+    json.items.forEach(job => {
         if (job.jobId === jobId) {
             jobFound = true;
             dispatch(receiveSingleJob(job));
@@ -143,8 +143,8 @@ export function fetchJobs(filters) {
         return atlasFetch(`jobs${getURIQuery(filters)}`, { credentials: 'include' })
             .then(response => { return response.json(); })
             .then(json => {
-                if (json.constructor === Array) {
-                    if (json.length > 0) {
+                if (json.items && json.items.constructor === Array) {
+                    if (json.items.length > 0) {
                         if ('jobId' in filters && filters.jobId !== '*') {
                             filterByJobId(json, filters.jobId, dispatch);
                         } else {
@@ -169,7 +169,7 @@ function getJobFiles(jobName, jobId) {
         return atlasFetch(`jobs/${jobName}/${jobId}/files`, { credentials: 'include' })
             .then(response => { return response.json(); })
             .then(json => {
-                if (json.constructor === Array) {
+                if (json.items && json.items.constructor === Array) {
                     return dispatch(receiveJobFiles(jobName, jobId, json));
                 }
                 throw Error(json.message);

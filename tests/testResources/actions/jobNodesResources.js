@@ -8,7 +8,7 @@
  * Copyright IBM Corporation 2018, 2019
  */
 
-export const jobFetchResponse = [
+export const jobFetchResponse = { items: [
     {
         jobId: 'JOB1234',
         jobName: 'TEST',
@@ -41,9 +41,9 @@ export const jobFetchResponse = [
         executionClass: 'TSU',
         phaseName: 'Job is on the hard copy queue',
     },
-];
+] };
 
-export const jobFetchResponseSingleJobName = [
+export const jobFetchResponseSingleJobName = { items: [
     {
         jobId: 'JOB1234',
         jobName: 'TEST',
@@ -54,12 +54,12 @@ export const jobFetchResponseSingleJobName = [
         subsystem: 'JES2',
         executionClass: 'A',
         phaseName: 'Job is on the hard copy queue' },
-];
+] };
 
 export const jobName = 'TESTJOB';
 export const jobId = 'JOB1234';
 
-export const jobFiles = [
+export const jobFiles = { items: [
     {
         ddName: 'JESMSGLG',
         recordFormat: 'UA',
@@ -76,4 +76,4 @@ export const jobFiles = [
         recordCount: 19,
         id: 3,
     },
-];
+] };

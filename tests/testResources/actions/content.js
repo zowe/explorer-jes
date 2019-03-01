@@ -38,7 +38,7 @@ export const jobId = 'JOB12345';
 export const fileId = '102';
 export const fileName = 'JESMSGLG';
 
-export const fileList = [
+export const fileList = { items: [
     {
         ddName: 'JESMSGLG',
         recordFormat: 'UA',
@@ -55,4 +55,4 @@ export const fileList = [
         recordCount: 19,
         id: 3,
     },
-];
+] };

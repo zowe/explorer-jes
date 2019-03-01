@@ -75,7 +75,7 @@ function getFileNameFromJob(jobName, jobId, fileId) {
             return response.json().then(e => { throw Error(e.message); });
         })
         .then(json => {
-            return json.find(file => {
+            return json.items.find(file => {
                 return parseInt(file.id, 10) === parseInt(fileId, 10);
             });
         })

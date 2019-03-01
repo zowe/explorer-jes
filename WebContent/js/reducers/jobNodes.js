@@ -48,7 +48,7 @@ const INITIAL_STATE = Map({
 });
 
 function extractJobs(jobs) {
-    return jobs.map(job => {
+    return jobs.items.map(job => {
         return {
             jobName: job.jobName,
             jobId: job.jobId,
@@ -87,7 +87,7 @@ function toggleJob(jobs, jobId) {
 }
 
 function extractJobFiles(jobFiles) {
-    return jobFiles.map(file => {
+    return jobFiles.items.map(file => {
         return {
             label: file.ddName,
             id: file.id,
