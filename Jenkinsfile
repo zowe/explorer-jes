@@ -259,6 +259,7 @@ node ('ibm-jenkins-slave-dind') {
     stage('fvt') {
       // run tests
       sh 'docker ps'
+      try {
       timeout(time: 60, unit: 'MINUTES') {
         withCredentials([usernamePassword(credentialsId: params.FVT_ZOSMF_CREDENTIAL, passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
           sh """
@@ -270,6 +271,11 @@ SERVER_HTTPS_PORT=7554 \
 npm run integrationTest
 """
         }
+      }
+      } catch (e1) {
+        echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>. Integration test failed: ${e1}"
+        // wait a while for debugging
+        sleep time: 360, unit: 'MINUTES'
       }
     }
 
