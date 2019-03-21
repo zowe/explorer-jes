@@ -6,7 +6,7 @@ const {
     waitForAndExtractJobs,
     waitForAndExtractFilters,
     setStatusFilter,
-    reloadAndOpenFilterPannel,
+    reloadAndOpenFilterPanel,
     checkJobsOwner,
     checkJobsStatus,
     checkJobsId,
@@ -22,7 +22,7 @@ const {
  *
  * @param {WebDriver} driver selenium-webdriver
  * @param {string} id html id
- * @param {int} count expected occurences
+ * @param {int} count expected occurrences
  */
 async function testElementAppearsXTimesById(driver, id, count) {
     try {
@@ -38,7 +38,7 @@ async function testElementAppearsXTimesById(driver, id, count) {
  *
  * @param {WebDriver} driver selenium-webdriver
  * @param {string} id html css path
- * @param {int} count expected occurences
+ * @param {int} count expected occurrences
  */
 async function testElementAppearsXTimesByCSS(driver, css, count) {
     try {
@@ -140,7 +140,7 @@ async function testColourOfStatus(driver, statusText, expectedColour) {
 
 /**
  *
- * @param {WebDriver} driver selinium-webdriver
+ * @param {WebDriver} driver selenium-webdriver
  * @param {string} prefix filter prefix
  */
 async function testPrefixFilterFetching(driver, prefix) {
@@ -154,7 +154,7 @@ async function testPrefixFilterFetching(driver, prefix) {
 
 /**
  *
- * @param {WebDriver} driver selinium-webdriver
+ * @param {WebDriver} driver selenium-webdriver
  * @param {string} prefix filter owner
  * @param {Array<String>} potentialJobs job prefixes that could be present in fetch
  */
@@ -178,14 +178,14 @@ async function testStatusFilterFetching(driver, status, potentialStatuses) {
 
 /**
  *
- * @param {WebDriver} driver selinium-webdriver
+ * @param {WebDriver} driver selenium-webdriver
  * @param {string} owner filter owner
  * @param {string} prefix filter prefix
  * @param {string} status filter status
  */
 async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter) {
     const jobsInstances = await driver.findElements(By.className('job-instance'));
-    await reloadAndOpenFilterPannel(driver, jobsInstances.length > 0);
+    await reloadAndOpenFilterPanel(driver, jobsInstances.length > 0);
     await testTextInputFieldCanBeModified(driver, 'filter-owner-field', ownerFilter);
     await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', prefixFilter);
     await setStatusFilter(driver, statusFilter);
@@ -206,7 +206,7 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
 
 /**
  *
- * @param {WebDriver} driver selinium-webdriver
+ * @param {WebDriver} driver selenium-webdriver
  * @param {string} ownerFilter filter owner
  * @param {string} prefixFilter filter prefix
  * @param {string} statusFilter filter status
@@ -227,7 +227,7 @@ async function testJobFilesClick(driver, ownerFilter, prefixFilter, statusFilter
     return testJob.length > 0;
 }
 
-const testHiglightColorByClass = (colorClass, elems) => {
+const testHighlightColorByClass = (colorClass, elems) => {
     const colorVal = textHighlightColors[colorClass];
 
     let classStr = colorClass;
@@ -250,10 +250,10 @@ const testHiglightColorByClass = (colorClass, elems) => {
     return testColor;
 };
 
-const testAllHiglightColor = elems => {
+const testAllHighlightColor = elems => {
     let testHighlights = true;
     textColorClasses.forEach(colorClass => {
-        testHighlights = testHighlights && testHiglightColorByClass(colorClass, elems);
+        testHighlights = testHighlights && testHighlightColorByClass(colorClass, elems);
     });
 
     return testHighlights;
@@ -305,6 +305,6 @@ module.exports = {
     testJobIdFilter,
     testFilterDisplayStringValues,
     testFilterFormInputValues,
-    testHiglightColorByClass,
-    testAllHiglightColor,
+    testHighlightColorByClass,
+    testAllHighlightColor,
 };

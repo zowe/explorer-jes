@@ -1,5 +1,6 @@
 const { Capabilities, Builder } = require('selenium-webdriver');
 const { By, Key, until } = require('selenium-webdriver');
+const firefox = require('selenium-webdriver/firefox');
 
 
 const VAR_LANG_CLASS = 'variable-language';
@@ -97,9 +98,26 @@ const parseJob = async job => {
 };
 
 async function getDriver() {
+    // configure Options
+    const options = new firefox.Options();
+    options.setPreference('dom.disable_beforeunload', true);
+    // use headless mode
+    options.headless();
+
     const capabilities = Capabilities.firefox();
     capabilities.setAcceptInsecureCerts(true);
-    return new Builder().forBrowser('firefox').withCapabilities(capabilities).build();
+
+    // configure ServiceBuilder
+    const service = new firefox.ServiceBuilder();
+
+    // build driver using options and service
+    let driver = await new Builder()
+        .forBrowser('firefox')
+        .withCapabilities(capabilities);
+    driver = driver.setFirefoxOptions(options).setFirefoxService(service);
+    driver = driver.build();
+
+    return driver;
 }
 
 async function login(driver, username, password) {
@@ -123,7 +141,7 @@ async function checkJobsOwner(actualJobs, expectedJobs) {
         for (const text of jobTexts) {
             if (!expectedJobs.some(expectedJob => { return text.startsWith(expectedJob); })) {
                 allMatchFlag = false;
-                console.log(`${text} is not expected owner`);
+                // console.log(`${text} is not expected owner`);
                 break;
             }
         }
@@ -142,7 +160,7 @@ const checkJobsAttribute = attr => {
         for (const job of jobObjs) {
             if (!expectedValues.some(val => { return job[attr].includes(val); })) {
                 allMatchFlag = false;
-                console.log(`${job.text} is not expected status`);
+                // console.log(`${job.text} is not expected status`);
                 break;
             }
         }
@@ -164,7 +182,7 @@ async function checkJobsPrefix(actualJobs, expectedPrefix) {
     for (const text of jobTexts) {
         if (!text.startsWith(searchPrefix)) {
             allMatchFlag = false;
-            console.log(`${text} is not expected prefix`);
+            // console.log(`${text} is not expected prefix`);
             break;
         }
     }
@@ -220,7 +238,7 @@ async function findAndClickApplyButton(driver) {
  *
  * @param {WebDriver} driver selenium-webdriver
  */
-async function reloadAndOpenFilterPannel(driver, hasJobs) {
+async function reloadAndOpenFilterPanel(driver, hasJobs) {
     await driver.navigate().refresh();
     await driver.wait(until.elementLocated(By.id('filter-view')), 10000);
     await driver.sleep(1000);
@@ -304,8 +322,11 @@ async function getTextLineElements(driver) {
     const textLineObjs = [];
     for (let i = 0; i < textLineSpans.length; i++) {
         const ld = textLineSpans[i];
+        // eslint-disable-next-line no-await-in-loop
         const elemText = await ld.getText();
+        // eslint-disable-next-line no-await-in-loop
         const elemCss = await ld.getAttribute('class');
+        // eslint-disable-next-line no-await-in-loop
         const elemColor = await ld.getCssValue('color');
         textLineObjs.push({
             elemText, elemCss, elemColor,
@@ -318,7 +339,7 @@ module.exports = {
     getDriver,
     loadPage,
     findAndClickApplyButton,
-    reloadAndOpenFilterPannel,
+    reloadAndOpenFilterPanel,
     waitForAndExtractJobs,
     waitForAndExtractParsedJobs,
     waitForAndExtractFilters,
