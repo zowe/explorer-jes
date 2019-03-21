@@ -266,6 +266,8 @@ node ('ibm-jenkins-slave-dind') {
     stage('fvt') {
       // run tests
       sh 'docker ps'
+      // wait a while to give time for service to be started
+      sleep time: 3, unit: 'MINUTES'
       try {
       timeout(time: 60, unit: 'MINUTES') {
         withCredentials([usernamePassword(credentialsId: params.FVT_ZOSMF_CREDENTIAL, passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
