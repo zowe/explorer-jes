@@ -70,6 +70,20 @@ customParameters.push(string(
   required: true
 ))
 customParameters.push(credentials(
+  name: 'FVT_ZOSMF_CREDENTIAL',
+  description: 'The SSH credential used to connect to z/OSMF for integration test',
+  credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
+  defaultValue: 'ssh-zdt-test-image-guest',
+  required: true
+))
+customParameters.push(string(
+  name: 'FVT_JOBNAME',
+  description: 'Job name for integration test',
+  defaultValue: 'ZOWESVR',
+  trim: true,
+  required: true
+))
+customParameters.push(credentials(
   name: 'PAX_SERVER_CREDENTIALS_ID',
   description: 'The server credential used to create PAX file',
   credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
@@ -245,11 +259,18 @@ node ('ibm-jenkins-slave-dind') {
     stage('fvt') {
       // run tests
       sh 'docker ps'
-      // wait a while for debugging
-      sleep time: 60, unit: 'MINUTES'
-      error 'WIP ...'
-      // sh 'npm run test:fvt'
-      // publish report
+      timeout(time: 60, unit: 'MINUTES') {
+        withCredentials([usernamePassword(credentialsId: params.FVT_ZOSMF_CREDENTIAL, passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+          sh """
+ZOWE_USERNAME=${USERNAME} \
+ZOWE_PASSWORD=${PASSWORD} \
+ZOWE_JOB_NAME=${params.FVT_JOBNAME} \
+SERVER_HOST_NAME=localhost \
+SERVER_HTTPS_PORT=7554 \
+npm run integrationTest
+"""
+        }
+      }
     }
 
     stage('publish') {
