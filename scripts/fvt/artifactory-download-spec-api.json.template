@@ -1,0 +1,11 @@
+{
+  "files": [{
+    "pattern": "{API_ARTIFACT}",
+    "target": "{API_TARGET}",
+    "flat": "true",
+    "explode": "true",
+    "sortBy": ["created"],
+    "sortOrder": "desc",
+    "limit": 1
+  }]
+}

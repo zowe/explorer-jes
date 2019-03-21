@@ -48,6 +48,27 @@ customParameters.push(choice(
   description: 'Publish a release or snapshot version. By default, this task will create snapshot. If you choose release other than snapshot, your branch version will bump up. Release can only be enabled on `master` or version branch like `v1.2.3`.',
   choices: ['SNAPSHOT', 'PATCH', 'MINOR', 'MAJOR']
 ))
+customParameters.push(string(
+  name: 'FVT_API_ARTIFACT',
+  description: 'Jobs API artifact download pattern',
+  defaultValue: 'libs-release-local/org/zowe/explorer/jobs/jobs-zowe-server-package/*/jobs-zowe-server-package-*.zip',
+  trim: true,
+  required: true
+))
+customParameters.push(string(
+  name: 'FVT_ZOSMF_HOST',
+  description: 'z/OSMF server for integration test',
+  defaultValue: 'river.zowe.org',
+  trim: true,
+  required: true
+))
+customParameters.push(string(
+  name: 'FVT_ZOSMF_PORT',
+  description: 'z/OSMF port for integration test',
+  defaultValue: '10443',
+  trim: true,
+  required: true
+))
 customParameters.push(credentials(
   name: 'PAX_SERVER_CREDENTIALS_ID',
   description: 'The server credential used to create PAX file',
@@ -66,6 +87,20 @@ customParameters.push(string(
   description: 'Artifactory server, should be pre-defined in Jenkins configuration',
   defaultValue: 'gizaArtifactory',
   trim: true
+))
+customParameters.push(string(
+  name: 'ARTIFACTORY_URL',
+  description: 'Artifactory URL',
+  defaultValue: 'https://gizaartifactory.jfrog.io/gizaartifactory',
+  trim: true,
+  required: true
+))
+customParameters.push(credentials(
+  name: 'ARTIFACTORY_SECRET',
+  description: 'Artifactory access secret',
+  credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
+  defaultValue: 'GizaArtifactory',
+  required: true
 ))
 customParameters.push(credentials(
   name: 'GITHUB_CREDENTIALS',
@@ -93,7 +128,7 @@ opts.push(parameters(customParameters))
 // set build properties
 properties(opts)
 
-node ('ibm-jenkins-slave-nvm-jnlp') {
+node ('ibm-jenkins-slave-dind') {
   currentBuild.result = 'SUCCESS'
   def packageName
   def packageVersion
@@ -135,6 +170,7 @@ node ('ibm-jenkins-slave-nvm-jnlp') {
       // show node/npm version
       sh 'node -v'
       sh 'npm -v'
+      sh 'npm install -g npm'
 
       ansiColor('xterm') {
         // login to private npm registry
@@ -192,6 +228,28 @@ node ('ibm-jenkins-slave-nvm-jnlp') {
       ansiColor('xterm') {
         sh 'npm run prod'
       }
+    }
+
+    stage('prepare-fvt') {
+      ansiColor('xterm') {
+        // prepare JFrog CLI configurations
+        withCredentials([usernamePassword(credentialsId: params.ARTIFACTORY_SECRET, passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+          sh "jfrog rt config rt-server-1 --url=${params.ARTIFACTORY_URL} --user=${USERNAME} --password=${PASSWORD}"
+        }
+
+        // prepare environtment for integration test
+        sh "./scripts/prepare-fvt.sh \"${params.FVT_API_ARTIFACT}\" \"${params.FVT_ZOSMF_HOST}\" \"${params.FVT_ZOSMF_PORT}\""
+      }
+    }
+
+    stage('fvt') {
+      // run tests
+      sh 'docker ps'
+      // wait a while for debugging
+      sleep time: 60, unit: 'MINUTES'
+      error 'WIP ...'
+      // sh 'npm run test:fvt'
+      // publish report
     }
 
     stage('publish') {
