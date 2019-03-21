@@ -83,6 +83,13 @@ customParameters.push(string(
   trim: true,
   required: true
 ))
+customParameters.push(string(
+  name: 'FVT_SERVER_HOSTNAME',
+  description: 'Server hostname for integration test',
+  defaultValue: 'fvt-test-server',
+  trim: true,
+  required: true
+))
 customParameters.push(credentials(
   name: 'PAX_SERVER_CREDENTIALS_ID',
   description: 'The server credential used to create PAX file',
@@ -266,7 +273,7 @@ node ('ibm-jenkins-slave-dind') {
 ZOWE_USERNAME=${USERNAME} \
 ZOWE_PASSWORD=${PASSWORD} \
 ZOWE_JOB_NAME=${params.FVT_JOBNAME} \
-SERVER_HOST_NAME=localhost \
+SERVER_HOST_NAME=${FVT_SERVER_HOSTNAME} \
 SERVER_HTTPS_PORT=7554 \
 npm run integrationTest
 """
