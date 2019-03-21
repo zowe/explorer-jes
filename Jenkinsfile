@@ -212,7 +212,6 @@ node ('ibm-jenkins-slave-dind') {
           error "Test failed: $err"
         } finally {
           // publish test reports
-          junit 'target/report.xml'
           cobertura coberturaReportFile: 'coverage/cobertura-coverage.xml',
             sourceEncoding: 'ASCII',
             autoUpdateHealth: false,
@@ -271,8 +270,7 @@ node ('ibm-jenkins-slave-dind') {
       timeout(time: 60, unit: 'MINUTES') {
         withCredentials([usernamePassword(credentialsId: params.FVT_ZOSMF_CREDENTIAL, passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
           ansiColor('xterm') {
-            try {
-              sh """
+            sh """
 ZOWE_USERNAME=${USERNAME} \
 ZOWE_PASSWORD=${PASSWORD} \
 ZOWE_JOB_NAME=${params.FVT_JOBNAME} \
@@ -280,12 +278,6 @@ SERVER_HOST_NAME=${params.FVT_SERVER_HOSTNAME} \
 SERVER_HTTPS_PORT=7554 \
 npm run test:fvt
 """
-            } catch (err) {
-              error "Intgeration test failed: $err"
-            } finally {
-              // publish test reports
-              junit 'target/report-fvt.xml'
-            }
           }
         }
       }
@@ -343,6 +335,9 @@ npm run test:fvt
     }
 
     stage('done') {
+      // publish test reports
+      junit 'target/*.xml'
+
       // send out notification
       emailext body: "Job \"${env.JOB_NAME}\" build #${env.BUILD_NUMBER} success.\n\nCheck detail: ${env.BUILD_URL}" ,
           subject: "[Jenkins] Job \"${env.JOB_NAME}\" build #${env.BUILD_NUMBER} success",
@@ -355,6 +350,9 @@ npm run test:fvt
     }
 
   } catch (err) {
+    // publish test reports
+    junit 'target/*.xml'
+
     currentBuild.result = 'FAILURE'
 
     // catch all failures to send out notification
