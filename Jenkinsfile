@@ -28,6 +28,10 @@ opts.push(buildDiscarder(logRotator(numToKeepStr: (isPullRequest ? '' : '20'))))
 // disable concurrent build
 opts.push(disableConcurrentBuilds())
 
+// FIXME: before merge to master, this line should be removed
+// run the build every 3 hours to verify FVT success rate
+opts.push(pipelineTriggers([cron('H */3 * * *')]))
+
 // define custom build parameters
 def customParameters = []
 customParameters.push(credentials(
@@ -237,7 +241,10 @@ node ('ibm-jenkins-slave-dind') {
       }
     }
 
-    stage('SonarQube analysis') {
+    // FIXME: before merge to master, this change should be reverted
+    // skip to verify FVT success rate
+    // stage('SonarQube analysis') {
+    utils.conditionalStage('SonarQube analysis', false) {
       def scannerHome = tool 'sonar-scanner-3.2.0';
       withSonarQubeEnv('sonar-default-server') {
         sh "${scannerHome}/bin/sonar-scanner"
@@ -283,7 +290,10 @@ npm run test:fvt
       }
     }
 
-    stage('publish') {
+    // FIXME: before merge to master, this change should be reverted
+    // skip to verify FVT success rate
+    // stage('publish') {
+    utils.conditionalStage('publish', false) {
       timeout(time: 30, unit: 'MINUTES') {
         echo "prepare pax workspace..."
         sh "scripts/prepare-pax-workspace.sh"
