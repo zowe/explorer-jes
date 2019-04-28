@@ -94,6 +94,7 @@ node('ibm-jenkins-slave-nvm') {
           paxOptions: '-x os390',
         )
         echo "Packaged: ${result}"
+        sh 'ls -l ./pax-workspace'
     },
     artifacts: [
       './pax-workspace/explorer-jes.pax'
