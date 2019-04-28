@@ -55,7 +55,10 @@ node('ibm-jenkins-slave-nvm') {
     name          : 'Unit',
     junit         : "target/report.xml",
     cobertura     : [
-      coberturaReportFile       : "coverage/cobertura-coverage.xml"
+      coberturaReportFile       : "coverage/cobertura-coverage.xml",
+      // if coverage check failed, the pipeline will be marked as UNSTABLE, which
+      // will block publish/release. So we overwrite default and set to false here.
+      autoUpdateStability       : false
     ],
     htmlReports   : [
       [dir: "coverage/lcov-report", files: "index.html", name: "Report: Code Coverage"],
