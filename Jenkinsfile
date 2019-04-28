@@ -38,7 +38,8 @@ node('ibm-jenkins-slave-nvm') {
     publishRegistry: [
       email                      : 'giza-jenkins@gmail.com',
       usernamePasswordCredential : 'GizaArtifactory',
-    ]
+    ],
+    ignoreAuditFailure            : true
   )
 
   // we have a custom build command
