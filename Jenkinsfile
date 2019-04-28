@@ -78,7 +78,7 @@ node('ibm-jenkins-slave-nvm') {
         echo "prepare pax workspace..."
         sh "scripts/prepare-pax-workspace.sh"
 
-        def packageName = 'explore-jes'
+        def packageName = 'explorer-jes'
         echo "creating pax file from workspace..."
         pax = lib.package.Pax.new(this)
         if (!pax) {
@@ -92,8 +92,8 @@ node('ibm-jenkins-slave-nvm') {
             'remoteWorkspace'  : '/zaas1',
         ])
         def result = pax.pack(
-          job: "pax-packaging-explore-jes",
-          filename: "explore-jes.pax",
+          job: "pax-packaging-explorer-jes",
+          filename: "explorer-jes.pax",
           paxOptions: '-x os390',
         )
         echo "Packaged: ${result}"
