@@ -39,6 +39,7 @@ node('ibm-jenkins-slave-nvm') {
       email                      : 'giza-jenkins@gmail.com',
       usernamePasswordCredential : 'GizaArtifactory',
     ],
+    // FIXME: ideally this should set to false (using default by remove this line)
     ignoreAuditFailure            : true
   )
 
@@ -58,7 +59,13 @@ node('ibm-jenkins-slave-nvm') {
       coberturaReportFile       : "coverage/cobertura-coverage.xml",
       // if coverage check failed, the pipeline will be marked as UNSTABLE, which
       // will block publish/release. So we overwrite default and set to false here.
+      // FIXME: ideally this should set to true (using default by remove this line)
       autoUpdateStability       : false
+      fileCoverageTargets       : '100, 0, 0',
+      classCoverageTargets      : '85, 0, 0',
+      methodCoverageTargets     : '80, 0, 0',
+      lineCoverageTargets       : '80, 0, 0',
+      conditionalCoverageTargets: '70, 0, 0',
     ],
     htmlReports   : [
       [dir: "coverage/lcov-report", files: "index.html", name: "Report: Code Coverage"],
