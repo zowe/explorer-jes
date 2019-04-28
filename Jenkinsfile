@@ -78,7 +78,7 @@ node('ibm-jenkins-slave-nvm') {
         echo "prepare pax workspace..."
         sh "scripts/prepare-pax-workspace.sh"
 
-        def packageName = (pipeline.packageInfo && pipeline.packageInfo['name']) ? pipeline.packageInfo['name'] : 'explore-jes'
+        def packageName = 'explore-jes'
         echo "creating pax file from workspace..."
         pax = lib.package.Pax.new(this)
         if (!pax) {
@@ -89,11 +89,11 @@ node('ibm-jenkins-slave-nvm') {
             'sshPort'          : 2022,
             'sshCredential'    : 'ssh-zdt-test-image-guest',
             'localWorkspace'   : './pax-workspace',
-            'remoteWorkspace'  : '/zaas1/buildWorkspace',
+            'remoteWorkspace'  : '/zaas1',
         ])
         def result = pax.pack(
-          job: "${packageName}-packaging",
-          filename: "${packageName}.pax",
+          job: "pax-packaging-explore-jes",
+          filename: "explore-jes.pax",
           paxOptions: '-x os390',
         )
         echo "Packaged: ${result}"
