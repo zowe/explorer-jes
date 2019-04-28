@@ -24,3 +24,4 @@ pax-workspace/*
 !pax-workspace/.keep
 !pax-workspace/pre-packaging.sh
 !pax-workspace/post-packaging.sh
+!pax-workspace/prepare-workspace.sh

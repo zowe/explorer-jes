@@ -75,9 +75,6 @@ node('ibm-jenkins-slave-nvm') {
   // define we need publish stage
   pipeline.publish(
     operation: {
-        echo "prepare pax workspace..."
-        sh "scripts/prepare-pax-workspace.sh"
-
         def packageName = 'explorer-jes'
         echo "creating pax file from workspace..."
         pax = lib.package.Pax.new(this)
