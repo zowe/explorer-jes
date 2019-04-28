@@ -60,7 +60,7 @@ node('ibm-jenkins-slave-nvm') {
       // if coverage check failed, the pipeline will be marked as UNSTABLE, which
       // will block publish/release. So we overwrite default and set to false here.
       // FIXME: ideally this should set to true (using default by remove this line)
-      autoUpdateStability       : false
+      autoUpdateStability       : false,
       fileCoverageTargets       : '100, 0, 0',
       classCoverageTargets      : '85, 0, 0',
       methodCoverageTargets     : '80, 0, 0',
