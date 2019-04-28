@@ -97,7 +97,7 @@ node('ibm-jenkins-slave-nvm') {
         sh 'ls -l ./pax-workspace'
     },
     artifacts: [
-      './pax-workspace/explorer-jes.pax'
+      'pax-workspace/explorer-jes.pax'
     ]
   )
 
