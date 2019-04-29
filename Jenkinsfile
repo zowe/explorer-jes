@@ -28,6 +28,12 @@ node('ibm-jenkins-slave-nvm') {
       url                        : 'https://gizaartifactory.jfrog.io/gizaartifactory',
       usernamePasswordCredential : 'GizaArtifactory',
     ],
+    pax: [
+      sshHost                    : 'river.zowe.org',
+      sshPort                    : 2022,
+      sshCredential              : 'ssh-zdt-test-image-guest',
+      remoteWorkspace            : '/zaas1'
+    ],
     installRegistries: [
       [
         email                      : 'giza-jenkins@gmail.com',
@@ -72,30 +78,17 @@ node('ibm-jenkins-slave-nvm') {
     ],
   )
 
+  // we need sonar scan
+  pipeline.sonarScan(
+    scannerTool     : 'sonar-scanner-3.2.0',
+    scannerServer   : 'sonar-default-server'
+  )
+
+  // we have pax packaging step
+  pipeline.packaging(name: 'explorer-jes')
+
   // define we need publish stage
   pipeline.publish(
-    operation: {
-        def packageName = 'explorer-jes'
-        echo "creating pax file from workspace..."
-        pax = lib.package.Pax.new(this)
-        if (!pax) {
-            error 'Failed to initialize package/Pax instance.'
-        }
-        pax.init([
-            'sshHost'          : 'river.zowe.org',
-            'sshPort'          : 2022,
-            'sshCredential'    : 'ssh-zdt-test-image-guest',
-            'localWorkspace'   : './pax-workspace',
-            'remoteWorkspace'  : '/zaas1',
-        ])
-        def result = pax.pack(
-          job: "pax-packaging-explorer-jes",
-          filename: "explorer-jes.pax",
-          paxOptions: '-x os390',
-        )
-        echo "Packaged: ${result}"
-        sh 'ls -l ./pax-workspace'
-    },
     artifacts: [
       'pax-workspace/explorer-jes.pax'
     ]
