@@ -97,10 +97,5 @@ rsync -rv \
   "${PAX_WORKSPACE_DIR}/content/" \
   "${PAX_WORKSPACE_DIR}/ascii"
 
-echo "[${SCRIPT_NAME}] tar ascii folder ..."
-tar -c -f "${PAX_WORKSPACE_DIR}/ascii.tar" -C "${PAX_WORKSPACE_DIR}/" ascii
-# do not remove it for local debugging
-# rm -fr "${PAX_WORKSPACE_DIR}/ascii"
-
 echo "[${SCRIPT_NAME}] ${PAX_WORKSPACE_DIR} folder is prepared."
 exit 0
