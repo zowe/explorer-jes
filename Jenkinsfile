@@ -90,7 +90,7 @@ node('ibm-jenkins-slave-nvm') {
   // define we need publish stage
   pipeline.publish(
     artifacts: [
-      'pax-workspace/explorer-jes.pax'
+      '.pax/explorer-jes.pax'
     ]
   )
 

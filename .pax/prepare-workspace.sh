@@ -20,7 +20,7 @@
 # contants
 SCRIPT_NAME=$(basename "$0")
 BASEDIR=$(dirname "$0")
-PAX_WORKSPACE_DIR=pax-workspace
+PAX_WORKSPACE_DIR=.pax
 PACKAGE_NAME=$(node -e "console.log(require('./package.json').name)")
 PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
 PACKAGE_DESC=$(node -e "console.log(require('./package.json').description)")
