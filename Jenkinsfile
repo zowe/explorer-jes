@@ -21,29 +21,29 @@ node('ibm-jenkins-slave-nvm') {
   pipeline.setup(
     packageName: 'org.zowe.explorer-jes',
     github: [
-      email                      : 'zowe.robot@gmail.com',
-      usernamePasswordCredential : 'zowe-robot-github',
+      email                      : lib.Constants.DEFAULT_GITHUB_ROBOT_EMAIL,
+      usernamePasswordCredential : lib.Constants.DEFAULT_GITHUB_ROBOT_CREDENTIAL,
     ],
     artifactory: [
-      url                        : 'https://gizaartifactory.jfrog.io/gizaartifactory',
-      usernamePasswordCredential : 'GizaArtifactory',
+      url                        : lib.Constants.DEFAULT_ARTIFACTORY_URL,
+      usernamePasswordCredential : lib.Constants.DEFAULT_ARTIFACTORY_ROBOT_CREDENTIAL,
     ],
     pax: [
-      sshHost                    : 'river.zowe.org',
-      sshPort                    : 2022,
-      sshCredential              : 'ssh-zdt-test-image-guest',
-      remoteWorkspace            : '/zaas1'
+      sshHost                    : lib.Constants.DEFAULT_PAX_PACKAGING_SSH_HOST,
+      sshPort                    : lib.Constants.DEFAULT_PAX_PACKAGING_SSH_PORT,
+      sshCredential              : lib.Constants.DEFAULT_PAX_PACKAGING_SSH_CREDENTIAL,
+      remoteWorkspace            : lib.Constants.DEFAULT_PAX_PACKAGING_REMOTE_WORKSPACE,
     ],
     installRegistries: [
       [
-        email                      : 'giza-jenkins@gmail.com',
-        usernamePasswordCredential : 'GizaArtifactory',
-        registry                   : 'https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-release/',
+        email                      : lib.Constants.DEFAULT_NPM_PRIVATE_REGISTRY_EMAIL,
+        usernamePasswordCredential : lib.Constants.DEFAULT_NPM_PRIVATE_REGISTRY_CREDENTIAL,
+        registry                   : lib.Constants.DEFAULT_NPM_PRIVATE_REGISTRY_INSTALL,
       ]
     ],
     publishRegistry: [
-      email                      : 'giza-jenkins@gmail.com',
-      usernamePasswordCredential : 'GizaArtifactory',
+      email                      : lib.Constants.DEFAULT_NPM_PRIVATE_REGISTRY_EMAIL,
+      usernamePasswordCredential : lib.Constants.DEFAULT_NPM_PRIVATE_REGISTRY_CREDENTIAL,
     ],
     // FIXME: ideally this should set to false (using default by remove this line)
     ignoreAuditFailure            : true
@@ -80,8 +80,8 @@ node('ibm-jenkins-slave-nvm') {
 
   // we need sonar scan
   pipeline.sonarScan(
-    scannerTool     : 'sonar-scanner-3.2.0',
-    scannerServer   : 'sonar-default-server'
+    scannerTool     : lib.Constants.DEFAULT_SONARQUBE_SCANNER_TOOL,
+    scannerServer   : lib.Constants.DEFAULT_SONARQUBE_SERVER
   )
 
   // we have pax packaging step
