@@ -14,15 +14,6 @@ set -x
 FUNC=[CreatePax][pre-packaging]
 PWD=$(pwd)
 
-# extract ASCII files
-echo "$FUNC extracting ASCII files ...."
-pax -r -x tar -o to=IBM-1047 -f ascii.tar
-# copy to target folder
-cp -R ascii/. content/
-# remove ascii files
-rm ascii.tar
-rm -fr ascii
-
 # display extracted files
 echo "$FUNC content of $PWD...."
 find . -print
