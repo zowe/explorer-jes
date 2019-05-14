@@ -1,6 +1,6 @@
 {
   "name": "explorer-jes",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "dependencies": {
     "babel-polyfill": "^6.16.0",
     "file-loader": "^0.11.2",
