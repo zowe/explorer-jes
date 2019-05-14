@@ -89,6 +89,9 @@ node('ibm-jenkins-slave-nvm') {
 
   // define we need publish stage
   pipeline.publish(
+    operation: {
+      echo "Default npm publish will be skipped."
+    },
     artifacts: [
       '.pax/explorer-jes.pax'
     ]
