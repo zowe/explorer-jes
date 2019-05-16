@@ -53,7 +53,7 @@ echo
 
 # prepare UI package
 echo "[${SCRIPT_NAME}] prepare plugin package ..."
-./scripts/prepare-pax-workspace.sh
+./.pax/prepare-workspace.sh
 echo
 
 # prepare UI package
