@@ -21,6 +21,11 @@ node('ibm-jenkins-slave-nvm') {
   // FIXME: before merge to master, this line should be removed
   // run the build every 3 hours to verify FVT success rate
   pipeline.addBuildOption(pipelineTriggers([cron('H */3 * * *')]))
+  // extend build history for fvt test branch
+  pipeline.branches.addMap([
+    name         : 'merge-fvt-tests',
+    buildHistory : 50,
+  ])
 
   // build parameters for FVT test
   pipeline.addBuildParameters(
