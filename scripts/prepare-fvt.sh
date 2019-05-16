@@ -58,8 +58,8 @@ echo
 
 # prepare UI package
 echo "[${SCRIPT_NAME}] copying plugin to target test folder ..."
-cp -R pax-workspace/content/. "${FVT_WORKSPACE}/${PLUGIN_INSTALL_FOLDER}/"
-cp -R pax-workspace/ascii/. "${FVT_WORKSPACE}/${PLUGIN_INSTALL_FOLDER}/"
+cp -R .pax/content/. "${FVT_WORKSPACE}/${PLUGIN_INSTALL_FOLDER}/"
+cp -R .pax/ascii/. "${FVT_WORKSPACE}/${PLUGIN_INSTALL_FOLDER}/"
 echo
 
 # prepare to download API
