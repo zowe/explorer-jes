@@ -18,7 +18,7 @@ sonar-project.properties
 .DS_Store
 
 # pax workspace
-pax-workspace/*
-!pax-workspace/.keep
-!pax-workspace/pre-packaging.sh
-!pax-workspace/post-packaging.sh
+.pax/*
+!.pax/.keep
+!.pax/pre-packaging.sh
+!.pax/post-packaging.sh

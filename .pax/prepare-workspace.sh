@@ -20,7 +20,7 @@
 # contants
 SCRIPT_NAME=$(basename "$0")
 BASEDIR=$(dirname "$0")
-PAX_WORKSPACE_DIR=pax-workspace
+PAX_WORKSPACE_DIR=.pax
 PACKAGE_NAME=$(node -e "console.log(require('./package.json').name)")
 PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
 PACKAGE_DESC=$(node -e "console.log(require('./package.json').description)")
@@ -96,11 +96,6 @@ rsync -rv \
   --prune-empty-dirs --remove-source-files \
   "${PAX_WORKSPACE_DIR}/content/" \
   "${PAX_WORKSPACE_DIR}/ascii"
-
-echo "[${SCRIPT_NAME}] tar ascii folder ..."
-tar -c -f "${PAX_WORKSPACE_DIR}/ascii.tar" -C "${PAX_WORKSPACE_DIR}/" ascii
-# do not remove it for local debugging
-# rm -fr "${PAX_WORKSPACE_DIR}/ascii"
 
 echo "[${SCRIPT_NAME}] ${PAX_WORKSPACE_DIR} folder is prepared."
 exit 0
