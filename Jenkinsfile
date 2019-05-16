@@ -101,7 +101,10 @@ node('ibm-jenkins-slave-dind') {
       usernamePasswordCredential : lib.Constants.DEFAULT_NPM_PRIVATE_REGISTRY_CREDENTIAL,
     ],
     // FIXME: ideally this should set to false (using default by remove this line)
-    ignoreAuditFailure            : true
+    ignoreAuditFailure            : true,
+    // FIXME: npm version in ibm-jenkins-slave-dind is too old, doesn't support "npm ci"
+    alwaysUseNpmInstall           : true
+
   )
 
   // we have a custom build command
