@@ -61,17 +61,18 @@ export class Filters extends React.Component {
             const data = event.data;
             if (data && data.dispatchType && data.dispatchData) {
                 switch (data.dispatchType) {
-                case 'launch':            
-                case 'message':
-                    const messageData = data.dispatchType === 'launch'
-                        ? data.dispatchData.launchMetadata.data
-                        : data.dispatchData.data;
-                    if (messageData.owner && messageData.prefix) {
-                        dispatch(setFilters(messageData));
-                        dispatch(fetchJobs(messageData));
-                    }
-                default:
-                    console.warn(`Unknown app2app type=${data.dispatchType}`);
+                    case 'launch':
+                    case 'message':
+                        const messageData = data.dispatchType === 'launch'
+                            ? data.dispatchData.launchMetadata.data
+                            : data.dispatchData.data;
+                        if (messageData.owner && messageData.prefix) {
+                            dispatch(setFilters(messageData));
+                            dispatch(fetchJobs(messageData));
+                        }
+                        break;
+                    default:
+                        console.warn(`Unknown app2app type=${data.dispatchType}`);
                 }
             }
         }
