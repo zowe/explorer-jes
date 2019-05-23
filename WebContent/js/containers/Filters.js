@@ -62,7 +62,7 @@ export class Filters extends React.Component {
             if (data && data.dispatchType && data.dispatchData) {
                 switch (data.dispatchType) {
                     case 'launch':
-                    case 'message':
+                    case 'message': {
                         const messageData = data.dispatchType === 'launch'
                             ? data.dispatchData.launchMetadata.data
                             : data.dispatchData.data;
@@ -71,6 +71,7 @@ export class Filters extends React.Component {
                             dispatch(fetchJobs(messageData));
                         }
                         break;
+                    }
                     default:
                         console.warn(`Unknown app2app type=${data.dispatchType}`);
                 }
