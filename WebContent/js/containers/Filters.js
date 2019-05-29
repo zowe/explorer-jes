@@ -66,7 +66,7 @@ export class Filters extends React.Component {
                         const messageData = data.dispatchType === 'launch'
                             ? data.dispatchData.launchMetadata.data
                             : data.dispatchData.data;
-                        if (messageData.owner && messageData.prefix) {
+                        if (messageData.owner && messageData.jobId) {
                             dispatch(setFilters(messageData));
                             dispatch(fetchJobs(messageData));
                         }
@@ -78,6 +78,7 @@ export class Filters extends React.Component {
             }
         }
         window.addEventListener('message', e => { receiveMessage(e); }, false);
+        window.top.postMessage('iframeload', '*');
     }
 
     componentDidMount() {
