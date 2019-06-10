@@ -13,6 +13,11 @@ import expect from 'expect';
 import { shallow } from 'enzyme';
 import { Filters } from '../../WebContent/js/containers/Filters';
 
+// window really exists at runtime, but the tests don't know this, so we mock it here for app2app use downstream
+global.window = {};
+global.window.addEventListener = () => {};
+global.window.top = {};
+global.window.top.postMessage = () => {};
 
 function setUpOwnerAndPrefix(owner, prefix) {
     const props = {
