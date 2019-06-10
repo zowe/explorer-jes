@@ -19,7 +19,7 @@
     "redux-immutable": "^4.0.0",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.1.0",
-    "url-loader": "^0.5.7",
+    "url-loader": "^0.6.2",
     "whatwg-fetch": "^2.0.3"
   },
   "peerDependencies": {
@@ -36,7 +36,7 @@
     "babel-preset-stage-0": "^6.3.13",
     "babel-register": "^6.14.0",
     "cross-env": "^5.0.0",
-    "css-loader": "^0.28.4",
+    "css-loader": "^1.0.1",
     "enzyme": "^2.8.2",
     "es6-promise": "^4.1.0",
     "eslint": "^4.9.0",
@@ -48,7 +48,7 @@
     "eslint-plugin-react": "^7.3.0",
     "expect": "^1.20.2",
     "isomorphic-fetch": "^2.2.1",
-    "mocha": "^3.4.2",
+    "mocha": "^6.1.4",
     "mocha-jenkins-reporter": "^0.3.8",
     "nock": "^9.0.13",
     "npm-run-all": "^4.1.2",
@@ -64,7 +64,7 @@
     "dev": "webpack-dev-server --content-base WebContent --inline --hot",
     "lint": "eslint ./WebContent/js/ ./tests/",
     "testWatch": "mocha --watch --compilers js:babel-register tests --recursive",
-    "test": "JUNIT_REPORT_PATH=target/report.xml nyc mocha --compilers js:babel-register tests --recursive --colors --reporter mocha-jenkins-reporter",
+    "test": "JUNIT_REPORT_PATH=target/report.xml nyc mocha --require babel-core/register tests --recursive --colors --reporter mocha-jenkins-reporter",
     "prod": "cross-env NODE_ENV='production' webpack -p && cp -r ./WebContent/css ./dist/ && cp -r ./WebContent/img ./dist/ && cp ./WebContent/index.html ./dist/ && cp ./WebContent/favicon.ico ./dist/",
     "preCommit": "npm-run-all --aggregate-output --parallel --print-label lint test prod"
   },
