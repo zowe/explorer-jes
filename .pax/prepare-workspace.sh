@@ -48,4 +48,10 @@ cp -r web  "${PAX_WORKSPACE_DIR}/ascii"
 # copy pluginDefinition
 cp pluginDefinition.json "${PAX_WORKSPACE_DIR}/ascii"
 
+echo "Contents of ascii dir"
+ls -al "${PAX_WORKSPACE_DIR}/ascii"
+
+echo "contents of pax workspace dir"
+ls -al "${PAX_WORKSPACE_DIR}"
+
 exit 0
