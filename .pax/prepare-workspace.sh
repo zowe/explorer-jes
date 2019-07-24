@@ -35,7 +35,6 @@ ROOT_DIR=$(pwd)
 echo "[${SCRIPT_NAME}] cleaning PAX workspace ..."
 rm -fr "${PAX_WORKSPACE_DIR}/content"
 mkdir -p "${PAX_WORKSPACE_DIR}/ascii"
-mkdir -p "${PAX_WORKSPACE_DIR}/ascii/web"
 
 # build client
 if [ ! -f "web/app.min.js" ]; then
@@ -44,7 +43,7 @@ if [ ! -f "web/app.min.js" ]; then
 fi
 
 # copy react app
-cp -r web  "${PAX_WORKSPACE_DIR}/ascii/web"
+cp -r web  "${PAX_WORKSPACE_DIR}/ascii/"
 
 # copy pluginDefinition
 cp pluginDefinition.json "${PAX_WORKSPACE_DIR}/ascii"
