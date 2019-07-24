@@ -40,7 +40,7 @@ module.exports = {
         ],
     },
     output: {
-        path: path.join(__dirname, 'dist'),
+        path: path.join(__dirname, 'web'),
         filename: 'app.min.js',
     },
     plugins: debug ? [] : [
