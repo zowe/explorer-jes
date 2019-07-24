@@ -34,6 +34,8 @@ ROOT_DIR=$(pwd)
 # prepare pax workspace
 echo "[${SCRIPT_NAME}] cleaning PAX workspace ..."
 rm -fr "${PAX_WORKSPACE_DIR}/content"
+mkdir -p "${PAX_WORKSPACE_DIR}/ascii"
+mkdir -p "${PAX_WORKSPACE_DIR}/ascii/web"
 
 # build client
 if [ ! -f "web/app.min.js" ]; then
