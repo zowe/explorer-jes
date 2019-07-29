@@ -9,7 +9,7 @@
     "launchDefinition": {
       "pluginShortNameKey": "JES Explorer",
       "pluginShortNameDefault": "JES Explorer", 
-      "imageSrc": "images/explorer-MVS.png"
+      "imageSrc": "assets/explorer-MVS.png"
     },
     "descriptionKey": "",
     "descriptionDefault": "",
