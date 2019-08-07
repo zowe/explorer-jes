@@ -15,7 +15,7 @@ WebContent/app.min.js
 .factorypath
 *.war
 bin
-web
+dist
 .scannerwork
 .DS_Store
 
