@@ -12,8 +12,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { List } from 'immutable';
-import { Card, CardHeader, CardText } from 'material-ui/Card';
-import ErrorIcon from 'material-ui/svg-icons/alert/error';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import ErrorIcon from '@material-ui/icons/Error';
 import ConnectedFilter from './Filters';
 import RefreshIcon from '../components/RefreshIcon';
 import { fetchJobs } from '../actions/jobNodes';
@@ -23,7 +25,7 @@ import JobInstance from '../components/JobInstance';
 
 const NO_JOBS_FOUND_MESSAGE = 'No jobs found';
 
-export class JobNodeTree extends React.Component {
+class JobNodeTree extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { owner, dispatch } = this.props;
         if (owner === LOADING_MESSAGE && nextProps.owner && nextProps.owner !== LOADING_MESSAGE) {
@@ -59,9 +61,9 @@ export class JobNodeTree extends React.Component {
     render() {
         const { dispatch, isFetching } = this.props;
         return (
-            <Card class="tree-card" containerStyle={{ paddingBottom: 0 }}>
+            <Card class="tree-card">
                 <CardHeader subtitle={this.getFilterValues()} />
-                <CardText id="tree-text-content">
+                <CardContent id="tree-text-content">
                     <ConnectedFilter />
                     <RefreshIcon
                         isFetching={isFetching}
@@ -73,7 +75,7 @@ export class JobNodeTree extends React.Component {
                             {this.renderJobs()}
                         </ul>
                     </FullHeightTree>
-                </CardText>
+                </CardContent>
 
             </Card>
         );

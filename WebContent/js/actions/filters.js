@@ -16,13 +16,6 @@ export const RESET_FILTERS = 'RESET_FILTERS';
 export const REQUEST_USER_ID = 'REQUEST_USER_ID';
 export const RECEIVE_USER_ID = 'RECEIVE_USER_ID';
 
-export function toggleFilters(isToggled) {
-    return {
-        type: TOGGLE_FILTERS,
-        isToggled,
-    };
-}
-
 export function setFilters(filters) {
     return {
         type: SET_FILTERS,

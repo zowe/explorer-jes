@@ -11,7 +11,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import ConentViewer from '../ContentViewer';
 import Snackbar from '../../components/Snackbar';
 import { validateUser } from '../../actions/validation';

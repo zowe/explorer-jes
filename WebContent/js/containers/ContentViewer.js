@@ -12,8 +12,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import OrionEditor from 'orion-editor-component';
-import { Card, CardHeader, CardText } from 'material-ui/Card';
-import ConnectedRealtimeContentViewer from '../components/RealtimeContentViewer';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
 import { fetchJobFileNoName } from '../actions/content';
 
 export class ContentViewer extends React.Component {
@@ -45,51 +46,35 @@ export class ContentViewer extends React.Component {
     };
 
     render() {
-        const { label, sourceId, content, isContentRealtime, dispatch, locationHost } = this.props;
+        const { label, content, locationHost } = this.props;
         const cardTextStyle = { paddingTop: '0', paddingBottom: '0' };
-        let contentViewer;
-        if (isContentRealtime) {
-            contentViewer = (
-                <ConnectedRealtimeContentViewer
-                    contentURI={`${sourceId}?records=40`}
-                    dispatch={dispatch}
-                    updateUnreadLines={this.updateUnreadLines}
-                />);
-        } else {
-            contentViewer = (
-                <OrionEditor
-                    content={content}
-                    syntax={'text/jclcontext'}
-                    languageFilesHost={locationHost}
-                    readonly={true}
-                    editorReady={this.editorReady}
-                />
-            );
-        }
         return (
             <Card
                 id="content-viewer"
                 className="card-component"
                 style={{ marginBottom: 0 }}
-                containerStyle={{ paddingBottom: 0 }}
                 expanded={true}
             >
                 <CardHeader
                     title={label || 'Content Viewer'}
                 />
-                <CardText style={cardTextStyle} >
-                    {contentViewer}
-                </CardText>
+                <CardContent style={cardTextStyle} >
+                    <OrionEditor
+                        content={content}
+                        syntax={'text/jclcontext'}
+                        languageFilesHost={locationHost}
+                        readonly={true}
+                        editorReady={this.editorReady}
+                    />
+                </CardContent>
             </Card>
         );
     }
 }
 
 ContentViewer.propTypes = {
-    sourceId: PropTypes.string,
     label: PropTypes.string,
     content: PropTypes.string,
-    isContentRealtime: PropTypes.bool,
     dispatch: PropTypes.func.isRequired,
     locationHost: PropTypes.string,
     locationQuery: PropTypes.shape({
@@ -102,13 +87,10 @@ ContentViewer.propTypes = {
 function mapStateToProps(state) {
     const contentRoot = state.get('content');
     return {
-        sourceId: contentRoot.get('sourceId'),
         label: contentRoot.get('label'),
         content: contentRoot.get('content'),
         edit: contentRoot.get('edit'),
         checksum: contentRoot.get('checksum'),
-        isContentHTML: contentRoot.get('isContentHTML'),
-        isContentRealtime: contentRoot.get('isContentRealtime'),
         isFetching: contentRoot.get('isFetching'),
     };
 }

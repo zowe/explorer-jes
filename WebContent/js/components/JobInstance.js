@@ -11,7 +11,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Map } from 'immutable';
-import LabelIcon from 'material-ui/svg-icons/action/label';
+import LabelIcon from '@material-ui/icons/Label';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { fetchJobFiles, toggleJob, purgeJob } from '../actions/jobNodes';
 import JobFile from './JobFile';
