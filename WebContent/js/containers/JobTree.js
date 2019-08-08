@@ -62,7 +62,7 @@ class JobNodeTree extends React.Component {
         const { dispatch, isFetching } = this.props;
         return (
             <Card class="tree-card">
-                <CardHeader subtitle={this.getFilterValues()} />
+                <CardHeader subheader={this.getFilterValues()} />
                 <CardContent id="tree-text-content">
                     <ConnectedFilter />
                     <RefreshIcon

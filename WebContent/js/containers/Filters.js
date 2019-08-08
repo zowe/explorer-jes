@@ -159,7 +159,7 @@ export class Filters extends React.Component {
                     expandIcon={<ExpandMoreIcon />}
                     onClick={() => { this.toggleFilters(); }}
                 >
-                       Filters
+                    Job Filters
                 </ExpansionPanelSummary>
                 <form
                     id="filter-form"

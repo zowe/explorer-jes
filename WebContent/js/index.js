@@ -19,18 +19,36 @@ import { Route, HashRouter } from 'react-router-dom';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { createLogger } from 'redux-logger';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import rootReducer from './reducers';
 import JobsView from './containers/pages/Jobs';
 import FullScreenView from './containers/pages/FullScreen';
 
 const store = applyMiddleware(thunk, createLogger())(createStore)(rootReducer, Map({}));
 
+const theme = createMuiTheme({
+    overrides: {
+        MuiCard: {
+            root: {
+                backgroundColor: '#F5F8F8',
+            },
+        },
+        MuiExpansionPanel: {
+            root: {
+                backgroundColor: '#F5F8F8',
+            },
+        },
+    },
+});
+
 ReactDOM.render(
-    <Provider store={store}>
-        <HashRouter>
-            <Route path="/" component={JobsView} />
-            <Route path="/jobs" component={JobsView} />
-            <Route path="/viewer" component={FullScreenView} />
-        </HashRouter>
-    </Provider>
+    <MuiThemeProvider theme={theme}>
+        <Provider store={store}>
+            <HashRouter>
+                <Route path="/" component={JobsView} />
+                <Route path="/jobs" component={JobsView} />
+                <Route path="/viewer" component={FullScreenView} />
+            </HashRouter>
+        </Provider>
+    </MuiThemeProvider>
     , document.getElementById('app'));

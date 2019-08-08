@@ -56,7 +56,7 @@ export class ContentViewer extends React.Component {
                 expanded={true}
             >
                 <CardHeader
-                    title={label || 'Content Viewer'}
+                    subheader={label || 'Content Viewer'}
                 />
                 <CardContent style={cardTextStyle} >
                     <OrionEditor
