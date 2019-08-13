@@ -10,30 +10,63 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
+import { connect } from 'react-redux';
 import Description from '@material-ui/icons/Description';
-import { fetchJobFile } from '../actions/content';
+import { fetchJobFile, getFileLabel, changeSelectedContent } from '../actions/content';
 
-const JobFile = props => {
-    const { job, file, dispatch } = props;
-    return (
-        <li className="job-file">
-            <span
-                className="content-link"
-                onClick={() => { dispatch(fetchJobFile(job.get('jobName'), job.get('jobId'), file.label, file.id)); }}
-            >
-                <Description className="node-icon" />
-                <span>{file.label}</span>
-            </span>
-        </li>);
-};
-export default JobFile;
+class JobFile extends React.Component {
+    constructor(props) {
+        super(props);
+        this.openFile = this.openFile.bind(this);
+    }
+
+    openFile() {
+        const { content, dispatch, job, file } = this.props;
+        // Is the file already open?
+        if (content.filter(x => { return x.label === getFileLabel(job.get('jobId'), file.label); }).size > 0) {
+            // Find which index the file is open in and change to it
+            content.forEach(x => {
+                if (x.label === getFileLabel(job.get('jobId'), file.label)) {
+                    dispatch(changeSelectedContent(content.indexOf(x)));
+                }
+            });
+        } else {
+            dispatch(fetchJobFile(job.get('jobName'), job.get('jobId'), file.label, file.id));
+        }
+    }
+
+    render() {
+        const { file } = this.props;
+        return (
+            <li className="job-file">
+                <span
+                    className="content-link"
+                    onClick={() => { this.openFile(); }}
+                >
+                    <Description className="node-icon" />
+                    <span>{file.label}</span>
+                </span>
+            </li>);
+    }
+}
 
 JobFile.propTypes = {
     job: PropTypes.instanceOf(Map).isRequired,
+    content: PropTypes.instanceOf(List),
     file: PropTypes.shape({
         label: PropTypes.string.isRequired,
         id: PropTypes.number.isRequired,
     }),
     dispatch: PropTypes.func.isRequired,
 };
+
+function mapStateToProps(state) {
+    const contentRoot = state.get('content');
+    return {
+        content: contentRoot.get('content'),
+    };
+}
+
+const ConnectedJobFile = connect(mapStateToProps)(JobFile);
+export default ConnectedJobFile;

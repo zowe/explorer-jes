@@ -21,7 +21,6 @@ describe('Reducer: content', () => {
     it('Should handle REQUEST_CONTENT', () => {
         const action = {
             type: contentActions.REQUEST_CONTENT,
-            fileLabel: contentResources.fileLabel,
         };
         expect(content(contentResources.baseContent, action)).toEqual(contentResources.requestedContent);
     });
@@ -37,24 +36,29 @@ describe('Reducer: content', () => {
         expect(content(contentResources.baseContent, action)).toEqual(contentResources.receivedContent);
     });
 
+    it('Should handle RECEIVE_CONTENT when we already have existing content in the list', () => {
+        const action = {
+            type: contentActions.RECEIVE_CONTENT,
+            content: 'test2',
+            jobName: contentResources.jobName,
+            fileLabel: contentResources.fileLabel2,
+            jobId: contentResources.jobId,
+        };
+        expect(content(contentResources.receivedContent, action)).toEqual(contentResources.receivedContent2);
+    });
+
     it('Should handle INVALIDATE_CONTENT with baseContent', () => {
         const action = { type: contentActions.INVALIDATE_CONTENT };
         expect(content(contentResources.baseContent, action)).toEqual(contentResources.invalidatedContent);
     });
 
-
-    it('Should handle INVALIDATE_CONTENT with ReceivedContent', () => {
-        const action = { type: contentActions.INVALIDATE_CONTENT };
-        expect(content(contentResources.receivedContent, action)).toEqual(contentResources.invalidatedContent);
+    it('Should handle CHANGE_SELECTED_CONTENT', () => {
+        const action = { type: contentActions.CHANGE_SELECTED_CONTENT, newSelectedContent: 1 };
+        expect(content(contentResources.baseContent, action)).toEqual(contentResources.baseContent.set('selectedContent', 1));
     });
 
-    it('Should handle TOGGLE_CONTENT_VIEWER toggle to true', () => {
-        const action = { type: contentActions.TOGGLE_CONTENT_VIEWER, expandedUpdate: true };
-        expect(content(contentResources.baseContent, action)).toEqual(contentResources.toggledContent);
-    });
-
-    it('Should handle TOGGLE_CONTENT_VIEWER toggle to false', () => {
-        const action = { type: contentActions.TOGGLE_CONTENT_VIEWER, expandedUpdate: false };
-        expect(content(contentResources.toggledContent, action)).toEqual(contentResources.baseContent);
+    it('Should handle REMOVE_CONTENT', () => {
+        const action = { type: contentActions.REMOVE_CONTENT, index: 0 };
+        expect(content(contentResources.receivedContent, action)).toEqual(contentResources.baseContent);
     });
 });

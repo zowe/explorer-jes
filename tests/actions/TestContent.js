@@ -34,7 +34,7 @@ describe('Action: content', () => {
                     type: contentActions.REQUEST_CONTENT,
                     jobName: contentResources.jobName,
                     jobId: contentResources.jobId,
-                    fileLabel: contentResources.fileName,
+                    fileName: contentResources.fileName,
                     fileId: contentResources.fileId,
                 },
                 {
@@ -42,8 +42,9 @@ describe('Action: content', () => {
                     jobName: contentResources.jobName,
                     jobId: contentResources.jobId,
                     content: contentResources.jobFileContents,
-                    fileLabel: contentResources.fileName,
+                    fileName: contentResources.fileName,
                     fileId: contentResources.fileId,
+                    fileLabel: contentActions.getFileLabel(contentResources.jobId, contentResources.fileName),
                 },
             ];
 
@@ -64,7 +65,7 @@ describe('Action: content', () => {
                     type: contentActions.REQUEST_CONTENT,
                     jobName: contentResources.jobName,
                     jobId: contentResources.jobId,
-                    fileLabel: contentResources.fileName,
+                    fileName: contentResources.fileName,
                     fileId: contentResources.fileId,
                 },
                 {
@@ -97,7 +98,7 @@ describe('Action: content', () => {
                     type: contentActions.REQUEST_CONTENT,
                     jobName: contentResources.jobName,
                     jobId: contentResources.jobId,
-                    fileLabel: 'UNKNOWN',
+                    fileName: 'UNKNOWN',
                     fileId: contentResources.fileId,
                 },
                 {
@@ -105,8 +106,9 @@ describe('Action: content', () => {
                     jobName: contentResources.jobName,
                     jobId: contentResources.jobId,
                     content: contentResources.jobFileContents,
-                    fileLabel: contentResources.fileName,
+                    fileName: contentResources.fileName,
                     fileId: contentResources.fileId,
+                    fileLabel: contentActions.getFileLabel(contentResources.jobId, contentResources.fileName),
                 },
             ];
 
@@ -130,7 +132,7 @@ describe('Action: content', () => {
                     type: contentActions.REQUEST_CONTENT,
                     jobName: contentResources.jobName,
                     jobId: contentResources.jobId,
-                    fileLabel: 'UNKNOWN',
+                    fileName: 'UNKNOWN',
                     fileId: contentResources.fileId,
                 },
                 {
@@ -163,7 +165,7 @@ describe('Action: content', () => {
                     type: contentActions.REQUEST_CONTENT,
                     jobName: contentResources.jobName,
                     jobId: contentResources.jobId,
-                    fileLabel: 'UNKNOWN',
+                    fileName: 'UNKNOWN',
                     fileId: contentResources.fileId,
                 },
                 {
@@ -190,6 +192,22 @@ describe('Action: content', () => {
                 .then(() => {
                     expect(store.getActions()).toEqual(expectedActions);
                 });
+        });
+    });
+
+    describe('removeContent', () => {
+        it('Should create an action to remove content at a given index', () => {
+            const index = 1;
+            const expectedAction = { type: contentActions.REMOVE_CONTENT, index };
+            expect(contentActions.removeContent(index)).toEqual(expectedAction);
+        });
+    });
+
+    describe('changeSelectedContent', () => {
+        it('Should create an action to change the selectedContent to a given index', () => {
+            const index = 4;
+            const expectedAction = { type: contentActions.CHANGE_SELECTED_CONTENT, newSelectedContent: index };
+            expect(contentActions.changeSelectedContent(index)).toEqual(expectedAction);
         });
     });
 });

@@ -8,40 +8,46 @@
  * Copyright IBM Corporation 2016, 2019
  */
 
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import {
     REQUEST_CONTENT,
     RECEIVE_CONTENT,
     INVALIDATE_CONTENT,
+    REMOVE_CONTENT,
+    CHANGE_SELECTED_CONTENT,
 } from '../actions/content';
 
 const INITIAL_CONTENT_STATE = Map({
-    content: null,
+    content: List(),
     isFetching: false,
-    label: '',
+    selectedContent: 0, // Index of the current active tab content
 });
-
-const CONTENT_UNABLE_TO_RETRIEVE_MESSAGE = 'Unable to retrieve content';
-const FETCH_CONTENT_LOADING_MESSAGE = 'Loading:';
 
 export default function content(state = INITIAL_CONTENT_STATE, action) {
     switch (action.type) {
         case REQUEST_CONTENT:
             return state.merge({
                 isFetching: true,
-                label: `${FETCH_CONTENT_LOADING_MESSAGE} ${action.fileLabel}`,
             });
         case RECEIVE_CONTENT:
             return state.merge({
-                label: `${action.jobName} - ${action.jobId} - ${action.fileLabel}`,
-                content: action.content,
+                content: state.get('content').push({
+                    label: action.fileLabel,
+                    content: action.content,
+                }),
                 isFetching: false,
+            });
+        case REMOVE_CONTENT:
+            return state.merge({
+                content: state.get('content').delete(action.index),
+            });
+        case CHANGE_SELECTED_CONTENT:
+            return state.merge({
+                selectedContent: action.newSelectedContent,
             });
         case INVALIDATE_CONTENT:
             return state.merge({
                 isFetching: false,
-                label: CONTENT_UNABLE_TO_RETRIEVE_MESSAGE,
-                content: CONTENT_UNABLE_TO_RETRIEVE_MESSAGE,
             });
         default:
             return state;
