@@ -98,7 +98,7 @@ describe('Action: content', () => {
                     type: contentActions.REQUEST_CONTENT,
                     jobName: contentResources.jobName,
                     jobId: contentResources.jobId,
-                    fileLabel: '',
+                    fileName: '',
                     fileId: contentResources.fileId,
                 },
                 {
@@ -132,7 +132,7 @@ describe('Action: content', () => {
                     type: contentActions.REQUEST_CONTENT,
                     jobName: contentResources.jobName,
                     jobId: contentResources.jobId,
-                    fileLabel: '',
+                    fileName: '',
                     fileId: contentResources.fileId,
                 },
                 {
@@ -165,7 +165,7 @@ describe('Action: content', () => {
                     type: contentActions.REQUEST_CONTENT,
                     jobName: contentResources.jobName,
                     jobId: contentResources.jobId,
-                    fileLabel: '',
+                    fileName: '',
                     fileId: contentResources.fileId,
                 },
                 {
