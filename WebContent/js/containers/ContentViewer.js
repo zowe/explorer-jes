@@ -17,6 +17,7 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import ClearIcon from '@material-ui/icons/Clear';
+import queryString from 'query-string';
 import { fetchJobFileNoName, removeContent, changeSelectedContent } from '../actions/content';
 
 export class ContentViewer extends React.Component {
@@ -33,9 +34,9 @@ export class ContentViewer extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { locationQuery, content, dispatch } = this.props;
+        const { locationSearch, content, dispatch } = this.props;
         const { content: newContent } = nextProps;
-        if (locationQuery && locationQuery !== nextProps.locationQuery) {
+        if (locationSearch && locationSearch !== nextProps.locationSearch) {
             window.location.reload();
         }
         if (newContent.size > content.size) {
@@ -44,9 +45,10 @@ export class ContentViewer extends React.Component {
     }
 
     editorReady = () => {
-        const { locationQuery, dispatch } = this.props;
-        if (locationQuery) {
-            dispatch(fetchJobFileNoName(locationQuery.jobName, locationQuery.jobId, locationQuery.fileId));
+        const { locationSearch, dispatch } = this.props;
+        if (locationSearch) {
+            const urlQueryParams = queryString.parse(locationSearch);
+            dispatch(fetchJobFileNoName(urlQueryParams.jobName, urlQueryParams.jobId, urlQueryParams.fileId));
         }
     };
 
@@ -96,7 +98,6 @@ export class ContentViewer extends React.Component {
                 id="content-viewer"
                 className="card-component"
                 style={{ marginBottom: 0 }}
-                expanded={true}
             >
                 <CardHeader
                     subheader={this.renderTabs()}
@@ -121,11 +122,7 @@ ContentViewer.propTypes = {
     dispatch: PropTypes.func.isRequired,
     selectedContent: PropTypes.number.isRequired,
     locationHost: PropTypes.string,
-    locationQuery: PropTypes.shape({
-        jobName: PropTypes.string.isRequired,
-        jobId: PropTypes.string.isRequired,
-        fileId: PropTypes.string.isRequired,
-    }),
+    locationSearch: PropTypes.string,
 };
 
 function mapStateToProps(state) {

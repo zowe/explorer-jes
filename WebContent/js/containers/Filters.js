@@ -61,10 +61,14 @@ export class Filters extends React.Component {
             if (Object.keys(urlQueryParams).length > 0) {
                 const queryFilters = {};
                 Object.keys(urlQueryParams).forEach(filter => {
-                    queryFilters[filter] = urlQueryParams[filter].toUpperCase();
+                    if (['owner', 'prefix', 'jobId', 'status'].indexOf(filter) > -1) {
+                        queryFilters[filter] = urlQueryParams[filter].toUpperCase();
+                    }
                 });
-                dispatch(setFilters(queryFilters));
-                dispatch(fetchJobs(queryFilters));
+                if (Object.keys(queryFilters).length > 0) {
+                    dispatch(setFilters(queryFilters));
+                    dispatch(fetchJobs(queryFilters));
+                }
             }
         }
 
@@ -213,7 +217,7 @@ export class Filters extends React.Component {
                             id="filters-apply-button"
                             variant="contained"
                             color="primary"
-                            primary={true}
+                            primary={'true'}
                             type="submit"
                         >
                         APPLY
