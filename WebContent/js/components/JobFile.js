@@ -11,7 +11,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Map } from 'immutable';
-import DescriptionIcon from 'material-ui/svg-icons/action/description';
+import Description from '@material-ui/icons/Description';
 import { fetchJobFile } from '../actions/content';
 
 const JobFile = props => {
@@ -22,7 +22,7 @@ const JobFile = props => {
                 className="content-link"
                 onClick={() => { dispatch(fetchJobFile(job.get('jobName'), job.get('jobId'), file.label, file.id)); }}
             >
-                <DescriptionIcon className="node-icon" />
+                <Description className="node-icon" />
                 <span>{file.label}</span>
             </span>
         </li>);

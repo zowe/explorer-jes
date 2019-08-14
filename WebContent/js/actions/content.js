@@ -87,7 +87,7 @@ function getFileNameFromJob(jobName, jobId, fileId) {
 export function fetchJobFileNoName(jobName, jobId, fileId) {
     return dispatch => {
         const contentPath = `jobs/${jobName}/${jobId}/files/${fileId}/content`;
-        dispatch(requestContent(jobName, jobId, 'UNKNOWN', fileId));
+        dispatch(requestContent(jobName, jobId, '', fileId));
         return atlasFetch(contentPath, { credentials: 'include' })
             .then(response => {
                 if (response.ok) {

@@ -11,7 +11,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import JobTree from '../JobTree';
 import ConnectedContentViewer from '../ContentViewer';
 import ConnectedSnackbar from '../../components/Snackbar';

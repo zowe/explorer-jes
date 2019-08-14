@@ -11,7 +11,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import Snackbar from 'material-ui/Snackbar';
+import Snackbar from '@material-ui/core/Snackbar';
 import { List } from 'immutable';
 import { popMessage } from '../actions/snackbarNotifications';
 
