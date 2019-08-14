@@ -15,7 +15,7 @@ import { Map } from 'immutable';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Route, HashRouter } from 'react-router-dom';
+import { Route, HashRouter, Switch } from 'react-router-dom';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { createLogger } from 'redux-logger';
@@ -45,9 +45,11 @@ ReactDOM.render(
     <MuiThemeProvider theme={theme}>
         <Provider store={store}>
             <HashRouter>
-                <Route path="/" component={JobsView} />
-                <Route path="/jobs" component={JobsView} />
-                <Route path="/viewer" component={FullScreenView} />
+                <Switch>
+                    <Route exact={true} path="/" component={JobsView} />
+                    <Route path="/jobs" component={JobsView} />
+                    <Route path="/viewer" component={FullScreenView} />
+                </Switch>
             </HashRouter>
         </Provider>
     </MuiThemeProvider>

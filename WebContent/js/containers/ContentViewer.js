@@ -15,6 +15,7 @@ import OrionEditor from 'orion-editor-component';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
+import queryString from 'query-string';
 import { fetchJobFileNoName } from '../actions/content';
 
 export class ContentViewer extends React.Component {
@@ -28,8 +29,8 @@ export class ContentViewer extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { locationQuery } = this.props;
-        if (locationQuery && locationQuery !== nextProps.locationQuery) {
+        const { locationSearch } = this.props;
+        if (locationSearch && locationSearch !== nextProps.locationSearch) {
             window.location.reload();
         }
     }
@@ -39,9 +40,10 @@ export class ContentViewer extends React.Component {
     };
 
     editorReady = () => {
-        const { locationQuery, dispatch } = this.props;
-        if (locationQuery) {
-            dispatch(fetchJobFileNoName(locationQuery.jobName, locationQuery.jobId, locationQuery.fileId));
+        const { locationSearch, dispatch } = this.props;
+        if (locationSearch) {
+            const urlQueryParams = queryString.parse(locationSearch);
+            dispatch(fetchJobFileNoName(urlQueryParams.jobName, urlQueryParams.jobId, urlQueryParams.fileId));
         }
     };
 
@@ -53,7 +55,6 @@ export class ContentViewer extends React.Component {
                 id="content-viewer"
                 className="card-component"
                 style={{ marginBottom: 0 }}
-                expanded={true}
             >
                 <CardHeader
                     subheader={label || 'Content Viewer'}
@@ -77,11 +78,7 @@ ContentViewer.propTypes = {
     content: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
     locationHost: PropTypes.string,
-    locationQuery: PropTypes.shape({
-        jobName: PropTypes.string.isRequired,
-        jobId: PropTypes.string.isRequired,
-        fileId: PropTypes.string.isRequired,
-    }),
+    locationSearch: PropTypes.string,
 };
 
 function mapStateToProps(state) {
@@ -89,8 +86,6 @@ function mapStateToProps(state) {
     return {
         label: contentRoot.get('label'),
         content: contentRoot.get('content'),
-        edit: contentRoot.get('edit'),
-        checksum: contentRoot.get('checksum'),
         isFetching: contentRoot.get('isFetching'),
     };
 }

@@ -27,8 +27,8 @@ const NO_JOBS_FOUND_MESSAGE = 'No jobs found';
 
 class JobNodeTree extends React.Component {
     componentWillReceiveProps(nextProps) {
-        const { owner, dispatch } = this.props;
-        if (owner === LOADING_MESSAGE && nextProps.owner && nextProps.owner !== LOADING_MESSAGE) {
+        const { owner, dispatch, isFetching } = this.props;
+        if (!isFetching && owner === LOADING_MESSAGE && nextProps.owner && nextProps.owner !== LOADING_MESSAGE) {
             dispatch(fetchJobs(nextProps));
         }
     }

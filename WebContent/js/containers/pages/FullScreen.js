@@ -30,7 +30,7 @@ class FullScreenViewer extends React.Component {
             return (
                 <div className="row group">
                     <div className="component col col-12">
-                        <ConentViewer locationQuery={location.query} locationHost={location.host} />
+                        <ConentViewer locationSearch={location.search} />
                     </div>
                     <Snackbar />
                 </div>
@@ -48,12 +48,7 @@ FullScreenViewer.propTypes = {
     validated: PropTypes.bool.isRequired,
     isValidating: PropTypes.bool.isRequired,
     location: PropTypes.shape({
-        query: PropTypes.shape({
-            jobName: PropTypes.string.isRequired,
-            jobId: PropTypes.string.isRequired,
-            fileId: PropTypes.string.isRequired,
-        }),
-        host: PropTypes.string.isRequired,
+        search: PropTypes.string,
     }),
 };
 
