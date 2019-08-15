@@ -23,18 +23,30 @@ const INITIAL_CONTENT_STATE = Map({
     selectedContent: 0, // Index of the current active tab content
 });
 
+function getIndexOfContentFromLabel(contentList, label) {
+    return contentList.indexOf(
+        contentList.filter(contentItem => {
+            return contentItem.label === label;
+        }).first());
+}
+
 export default function content(state = INITIAL_CONTENT_STATE, action) {
     switch (action.type) {
         case REQUEST_CONTENT:
             return state.merge({
+                content: state.get('content').push({
+                    label: action.fileLabel,
+                    content: '',
+                }),
                 isFetching: true,
             });
         case RECEIVE_CONTENT:
             return state.merge({
-                content: state.get('content').push({
-                    label: action.fileLabel,
-                    content: action.content,
-                }),
+                content: state.get('content').set(getIndexOfContentFromLabel(state.get('content'), action.fileLabel),
+                    {
+                        label: action.fileLabel,
+                        content: action.content,
+                    }),
                 isFetching: false,
             });
         case REMOVE_CONTENT:

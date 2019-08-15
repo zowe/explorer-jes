@@ -24,7 +24,7 @@ export const fileLabel2 = 'JESJCL';
 
 export const requestedContent =
     Map({
-        content: List(),
+        content: List([{ label: `${jobId}-${fileLabel}`, content: '' }]),
         isFetching: true,
         selectedContent: 0,
     });
@@ -34,6 +34,13 @@ export const receivedContent =
     Map({
         content: List([{ label: fileLabel, content: 'test' }]),
         isFetching: false,
+        selectedContent: 0,
+    });
+
+export const requestedContentWithExistingContent =
+    Map({
+        content: List([{ label: fileLabel, content: 'test' }, { label: `${jobId}-${fileLabel2}`, content: '' }]),
+        isFetching: true,
         selectedContent: 0,
     });
 

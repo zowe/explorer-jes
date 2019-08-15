@@ -60,10 +60,13 @@ export class ContentViewer extends React.Component {
     handleCloseTab(index) {
         const { selectedContent, dispatch } = this.props;
         dispatch(removeContent(index));
-        if (selectedContent > 1) {
-            dispatch(changeSelectedContent(selectedContent - 1));
-        } else {
-            dispatch(changeSelectedContent(0));
+        // If the one we're closing is not the current selectedContent
+        if (selectedContent !== index - 1) {
+            if (selectedContent > 1) {
+                dispatch(changeSelectedContent(selectedContent - 1));
+            } else {
+                dispatch(changeSelectedContent(0));
+            }
         }
     }
 

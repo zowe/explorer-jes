@@ -36,6 +36,7 @@ describe('Action: content', () => {
                     jobId: contentResources.jobId,
                     fileName: contentResources.fileName,
                     fileId: contentResources.fileId,
+                    fileLabel: `${contentResources.jobId}-${contentResources.fileName}`,
                 },
                 {
                     type: contentActions.RECEIVE_CONTENT,
@@ -67,6 +68,7 @@ describe('Action: content', () => {
                     jobId: contentResources.jobId,
                     fileName: contentResources.fileName,
                     fileId: contentResources.fileId,
+                    fileLabel: `${contentResources.jobId}-${contentResources.fileName}`,
                 },
                 {
                     type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
@@ -100,6 +102,7 @@ describe('Action: content', () => {
                     jobId: contentResources.jobId,
                     fileName: '',
                     fileId: contentResources.fileId,
+                    fileLabel: `${contentResources.jobId}-`,
                 },
                 {
                     type: contentActions.RECEIVE_CONTENT,
@@ -134,6 +137,7 @@ describe('Action: content', () => {
                     jobId: contentResources.jobId,
                     fileName: '',
                     fileId: contentResources.fileId,
+                    fileLabel: `${contentResources.jobId}-`,
                 },
                 {
                     type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
@@ -167,6 +171,7 @@ describe('Action: content', () => {
                     jobId: contentResources.jobId,
                     fileName: '',
                     fileId: contentResources.fileId,
+                    fileLabel: `${contentResources.jobId}-`,
                 },
                 {
                     type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,

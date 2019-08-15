@@ -17,13 +17,14 @@ export const REMOVE_CONTENT = 'REMOVE_CONTENT';
 export const CHANGE_SELECTED_CONTENT = 'CHANGE_SELECTED_CONTENT';
 export const INVALIDATE_CONTENT = 'INVALIDATE_CONTENT';
 
-function requestContent(jobName, jobId, fileName, fileId) {
+function requestContent(jobName, jobId, fileName, fileId, fileLabel) {
     return {
         type: REQUEST_CONTENT,
         jobName,
         jobId,
         fileName,
         fileId,
+        fileLabel,
     };
 }
 
@@ -45,13 +46,13 @@ export function invalidateContent() {
     };
 }
 
-export function getFileLabel(jobId, fileName) {
+export function getFileLabel(jobId, fileName = '') {
     return `${jobId}-${fileName}`;
 }
 
 export function fetchJobFile(jobName, jobId, fileName, fileId) {
     return dispatch => {
-        dispatch(requestContent(jobName, jobId, fileName, fileId));
+        dispatch(requestContent(jobName, jobId, fileName, fileId, getFileLabel(jobId, fileName)));
         return atlasFetch(`jobs/${jobName}/${jobId}/files/${fileId}/content`, { credentials: 'include' })
             .then(response => {
                 if (response.ok) {
@@ -94,7 +95,7 @@ function getFileNameFromJob(jobName, jobId, fileId) {
 export function fetchJobFileNoName(jobName, jobId, fileId) {
     return dispatch => {
         const contentPath = `jobs/${jobName}/${jobId}/files/${fileId}/content`;
-        dispatch(requestContent(jobName, jobId, '', fileId));
+        dispatch(requestContent(jobName, jobId, '', fileId, getFileLabel(jobId)));
         return atlasFetch(contentPath, { credentials: 'include' })
             .then(response => {
                 if (response.ok) {

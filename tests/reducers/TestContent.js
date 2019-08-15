@@ -21,6 +21,7 @@ describe('Reducer: content', () => {
     it('Should handle REQUEST_CONTENT', () => {
         const action = {
             type: contentActions.REQUEST_CONTENT,
+            fileLabel: `${contentResources.jobId}-${contentResources.fileLabel}`,
         };
         expect(content(contentResources.baseContent, action)).toEqual(contentResources.requestedContent);
     });
@@ -36,6 +37,14 @@ describe('Reducer: content', () => {
         expect(content(contentResources.baseContent, action)).toEqual(contentResources.receivedContent);
     });
 
+    it('Should handle REQUEST_CONTENT when we already have existing content in the list', () => {
+        const action = {
+            type: contentActions.REQUEST_CONTENT,
+            fileLabel: `${contentResources.jobId}-${contentResources.fileLabel2}`,
+        };
+        expect(content(contentResources.receivedContent, action)).toEqual(contentResources.requestedContentWithExistingContent);
+    });
+
     it('Should handle RECEIVE_CONTENT when we already have existing content in the list', () => {
         const action = {
             type: contentActions.RECEIVE_CONTENT,
@@ -44,7 +53,7 @@ describe('Reducer: content', () => {
             fileLabel: contentResources.fileLabel2,
             jobId: contentResources.jobId,
         };
-        expect(content(contentResources.receivedContent, action)).toEqual(contentResources.receivedContent2);
+        expect(content(contentResources.requestedContentWithExistingContent, action)).toEqual(contentResources.receivedContent2);
     });
 
     it('Should handle INVALIDATE_CONTENT with baseContent', () => {
