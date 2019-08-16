@@ -37,6 +37,7 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
                 content: state.get('content').push({
                     label: action.fileLabel,
                     content: '',
+                    isFetching: true,
                 }),
                 isFetching: true,
             });
@@ -46,6 +47,7 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
                     {
                         label: action.fileLabel,
                         content: action.content,
+                        isFetching: false,
                     }),
                 isFetching: false,
             });

@@ -17,6 +17,7 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import ClearIcon from '@material-ui/icons/Clear';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import queryString from 'query-string';
 import { fetchJobFileNoName, removeContent, changeSelectedContent } from '../actions/content';
 
@@ -57,16 +58,12 @@ export class ContentViewer extends React.Component {
         dispatch(changeSelectedContent(newTabIndex));
     }
 
-    handleCloseTab(index) {
+    handleCloseTab(removeIndex) {
         const { selectedContent, dispatch } = this.props;
-        dispatch(removeContent(index));
-        // If the one we're closing is not the current selectedContent
-        if (selectedContent !== index - 1) {
-            if (selectedContent > 1) {
-                dispatch(changeSelectedContent(selectedContent - 1));
-            } else {
-                dispatch(changeSelectedContent(0));
-            }
+        dispatch(removeContent(removeIndex));
+        // Do we need to change the selectedContent
+        if (removeIndex <= selectedContent && selectedContent >= 1) {
+            dispatch(changeSelectedContent(selectedContent - 1));
         }
     }
 
@@ -77,11 +74,14 @@ export class ContentViewer extends React.Component {
         if (content.size > 0) {
             return content.map((tabContent, index) => {
                 return (
-                    <div style={index === selectedContent ? selectedTabStyle : unselectedTabStyle} key={tabContent.label}>
-                        <div onClick={() => { this.handleSelectedTabChange(index); }} >
-                            {tabContent.label}
+                    <div style={{ width: 'max-content', display: 'inline-block' }} key={tabContent.label}>
+                        <div style={index === selectedContent ? selectedTabStyle : unselectedTabStyle}>
+                            <div onClick={() => { this.handleSelectedTabChange(index); }} >
+                                {tabContent.label}
+                            </div>
+                            <ClearIcon onClick={() => { this.handleCloseTab(index); }} />
                         </div>
-                        <ClearIcon onClick={() => { this.handleCloseTab(index); }} />
+                        {tabContent.isFetching ? <LinearProgress style={{ width: '100%', height: '2px' }} /> : null}
                     </div>
                 );
             });
@@ -103,8 +103,8 @@ export class ContentViewer extends React.Component {
                 style={{ marginBottom: 0 }}
             >
                 <CardHeader
-                    subheader={this.renderTabs()}
-                    style={{ paddingBottom: 0 }}
+                    subheader={<div>{this.renderTabs()}</div>}
+                    style={{ paddingBottom: 0, backgroundColor: 'white', backgroundClip: 'content-box', whiteSpace: 'nowrap', overflow: 'scroll' }}
                 />
                 <CardContent style={cardTextStyle} >
                     <OrionEditor
