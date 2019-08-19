@@ -56,11 +56,6 @@ describe('Reducer: content', () => {
         expect(content(contentResources.requestedContentWithExistingContent, action)).toEqual(contentResources.receivedContent2);
     });
 
-    it('Should handle INVALIDATE_CONTENT with baseContent', () => {
-        const action = { type: contentActions.INVALIDATE_CONTENT };
-        expect(content(contentResources.baseContent, action)).toEqual(contentResources.invalidatedContent);
-    });
-
     it('Should handle CHANGE_SELECTED_CONTENT', () => {
         const action = { type: contentActions.CHANGE_SELECTED_CONTENT, newSelectedContent: 1 };
         expect(content(contentResources.baseContent, action)).toEqual(contentResources.baseContent.set('selectedContent', 1));

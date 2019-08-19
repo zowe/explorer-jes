@@ -12,14 +12,12 @@ import { Map, List } from 'immutable';
 import {
     REQUEST_CONTENT,
     RECEIVE_CONTENT,
-    INVALIDATE_CONTENT,
     REMOVE_CONTENT,
     CHANGE_SELECTED_CONTENT,
 } from '../actions/content';
 
 const INITIAL_CONTENT_STATE = Map({
     content: List(),
-    isFetching: false,
     selectedContent: 0, // Index of the current active tab content
 });
 
@@ -39,7 +37,6 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
                     content: '',
                     isFetching: true,
                 }),
-                isFetching: true,
             });
         case RECEIVE_CONTENT:
             return state.merge({
@@ -49,7 +46,6 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
                         content: action.content,
                         isFetching: false,
                     }),
-                isFetching: false,
             });
         case REMOVE_CONTENT:
             return state.merge({
@@ -58,10 +54,6 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
         case CHANGE_SELECTED_CONTENT:
             return state.merge({
                 selectedContent: action.newSelectedContent,
-            });
-        case INVALIDATE_CONTENT:
-            return state.merge({
-                isFetching: false,
             });
         default:
             return state;
