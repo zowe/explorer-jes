@@ -61,7 +61,7 @@ export function fetchJobFile(jobName, jobId, fileName, fileId) {
                 return response.json().then(e => { throw Error(e.message); });
             })
             .then(json => {
-                if (json.content) {
+                if ('content' in json) {
                     return dispatch(receiveContent(jobName, jobId, fileName, fileId, json.content, getFileLabel(jobId, fileName)));
                 }
                 throw Error(json.message);
