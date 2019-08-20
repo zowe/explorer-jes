@@ -103,8 +103,8 @@ export class ContentViewer extends React.Component {
                 style={{ marginBottom: 0 }}
             >
                 <CardHeader
-                    subheader={<div>{this.renderTabs()}</div>}
-                    style={{ paddingBottom: 0, backgroundColor: 'white', backgroundClip: 'content-box', whiteSpace: 'nowrap', overflow: 'scroll' }}
+                    subheader={<div style={{ height: '38px' }}>{this.renderTabs()}</div>}
+                    style={{ paddingBottom: 0, whiteSpace: 'nowrap', overflow: 'scroll' }}
                 />
                 <CardContent style={cardTextStyle} >
                     <OrionEditor
