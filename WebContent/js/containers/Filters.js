@@ -33,7 +33,7 @@ const STATUS_TYPES = ['ACTIVE', 'INPUT', 'OUTPUT'];
 export class Filters extends React.Component {
     static renderStatusOptions() {
         return STATUS_TYPES.map(status => {
-            return <MenuItem id={status} key={status} value={status} primaryText={status}>{status}</MenuItem>;
+            return <MenuItem id={status} key={status} value={status}>{status}</MenuItem>;
         });
     }
 
@@ -206,7 +206,7 @@ export class Filters extends React.Component {
                                     value={status}
                                     onChange={this.handleStatusChange}
                                 >
-                                    <MenuItem key="*" value="*" primaryText="*">*</MenuItem>
+                                    <MenuItem key="*" value="*">*</MenuItem>
                                     {Filters.renderStatusOptions()}
                                 </Select>
                             </FormControl>
