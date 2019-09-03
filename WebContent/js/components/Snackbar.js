@@ -60,7 +60,7 @@ class AtlasSnackbar extends React.Component {
                 <Snackbar
                     message={messageValue.get('message')}
                     open={this.state.open}
-                    onRequestClose={this.handleRequestClose}
+                    onClose={this.handleRequestClose}
                 />
             );
         }
