@@ -10,8 +10,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import CircularProgressMui from 'material-ui/CircularProgress';
-import RefreshIconMui from 'material-ui/svg-icons/navigation/refresh';
+import CircularProgressMui from '@material-ui/core/CircularProgress';
+import RefreshIconMui from '@material-ui/icons/Refresh';
 
 export default class RefreshIcon extends React.Component {
     handleSubmit = () => {

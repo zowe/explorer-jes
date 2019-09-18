@@ -13,7 +13,6 @@ import content from './content';
 import jobNodes from './jobNodes';
 import filters from './filters';
 import validation from './validation';
-import realtimeContent from './realtimeContent';
 import snackbarNotifications from './snackbarNotifications';
 
 const REDUCERS = {
@@ -21,6 +20,5 @@ const REDUCERS = {
     jobNodes,
     filters,
     validation,
-    realtimeContent,
     snackbarNotifications };
 export default combineReducers(REDUCERS);

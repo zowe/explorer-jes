@@ -10,106 +10,130 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import { List } from 'immutable';
 import { connect } from 'react-redux';
 import OrionEditor from 'orion-editor-component';
-import { Card, CardHeader, CardText } from 'material-ui/Card';
-import ConnectedRealtimeContentViewer from '../components/RealtimeContentViewer';
-import { fetchJobFileNoName } from '../actions/content';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import ClearIcon from '@material-ui/icons/Clear';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import queryString from 'query-string';
+import { fetchJobFileNoName, removeContent, changeSelectedContent } from '../actions/content';
 
 export class ContentViewer extends React.Component {
     constructor(props) {
         super(props);
         this.editorReady = this.editorReady.bind(this);
+        this.handleSelectedTabChange = this.handleSelectedTabChange.bind(this);
+        this.handleCloseTab = this.handleCloseTab.bind(this);
 
         this.state = {
             height: 0,
+            editorContent: ' ',
         };
     }
 
     componentWillReceiveProps(nextProps) {
-        const { locationQuery } = this.props;
-        if (locationQuery && locationQuery !== nextProps.locationQuery) {
+        const { locationSearch, content, dispatch } = this.props;
+        const { content: newContent } = nextProps;
+        if (locationSearch && locationSearch !== nextProps.locationSearch) {
             window.location.reload();
+        }
+        if (newContent.size > content.size) {
+            dispatch(changeSelectedContent(newContent.size - 1));
         }
     }
 
-    updateUnreadLines = unreadLines => {
-        this.setState({ unreadLines });
-    };
-
     editorReady = () => {
-        const { locationQuery, dispatch } = this.props;
-        if (locationQuery) {
-            dispatch(fetchJobFileNoName(locationQuery.jobName, locationQuery.jobId, locationQuery.fileId));
+        const { locationSearch, dispatch } = this.props;
+        if (locationSearch) {
+            const urlQueryParams = queryString.parse(locationSearch);
+            dispatch(fetchJobFileNoName(urlQueryParams.jobName, urlQueryParams.jobId, urlQueryParams.fileId));
         }
     };
+
+    handleSelectedTabChange(newTabIndex) {
+        const { dispatch } = this.props;
+        dispatch(changeSelectedContent(newTabIndex));
+    }
+
+    handleCloseTab(removeIndex) {
+        const { selectedContent, dispatch } = this.props;
+        dispatch(removeContent(removeIndex));
+        // Do we need to change the selectedContent
+        if (removeIndex <= selectedContent && selectedContent >= 1) {
+            dispatch(changeSelectedContent(selectedContent - 1));
+        }
+    }
+
+    renderTabs() {
+        const { content, selectedContent } = this.props;
+        const unselectedTabStyle = { display: 'flex', float: 'left', alignItems: 'center', padding: '6px', cursor: 'pointer' };
+        const selectedTabStyle = { ...{ color: 'black', backgroundColor: 'white' }, ...unselectedTabStyle };
+        if (content.size > 0) {
+            return content.map((tabContent, index) => {
+                return (
+                    <div style={{ width: 'max-content', display: 'inline-block' }} key={tabContent.label}>
+                        <div style={index === selectedContent ? selectedTabStyle : unselectedTabStyle}>
+                            <div onClick={() => { this.handleSelectedTabChange(index); }} >
+                                {tabContent.label}
+                            </div>
+                            <ClearIcon onClick={() => { this.handleCloseTab(index); }} />
+                        </div>
+                        {tabContent.isFetching ? <LinearProgress style={{ width: '100%', height: '2px' }} /> : null}
+                    </div>
+                );
+            });
+        }
+        return (
+            <div style={{ padding: '6px' }} >
+                Content viewer
+            </div>
+        );
+    }
 
     render() {
-        const { label, sourceId, content, isContentRealtime, dispatch, locationHost } = this.props;
+        const { content, locationHost, selectedContent } = this.props;
         const cardTextStyle = { paddingTop: '0', paddingBottom: '0' };
-        let contentViewer;
-        if (isContentRealtime) {
-            contentViewer = (
-                <ConnectedRealtimeContentViewer
-                    contentURI={`${sourceId}?records=40`}
-                    dispatch={dispatch}
-                    updateUnreadLines={this.updateUnreadLines}
-                />);
-        } else {
-            contentViewer = (
-                <OrionEditor
-                    content={content}
-                    syntax={'text/jclcontext'}
-                    languageFilesHost={locationHost}
-                    readonly={true}
-                    editorReady={this.editorReady}
-                />
-            );
-        }
         return (
             <Card
                 id="content-viewer"
                 className="card-component"
                 style={{ marginBottom: 0 }}
-                containerStyle={{ paddingBottom: 0 }}
-                expanded={true}
             >
                 <CardHeader
-                    title={label || 'Content Viewer'}
+                    subheader={<div style={{ height: '38px' }}>{this.renderTabs()}</div>}
+                    style={{ paddingBottom: 0, whiteSpace: 'nowrap', overflow: 'scroll' }}
                 />
-                <CardText style={cardTextStyle} >
-                    {contentViewer}
-                </CardText>
+                <CardContent style={cardTextStyle} >
+                    <OrionEditor
+                        content={(content.get(selectedContent) && content.get(selectedContent).content) || ' '}
+                        syntax={'text/jclcontext'}
+                        languageFilesHost={locationHost}
+                        readonly={true}
+                        editorReady={this.editorReady}
+                    />
+                </CardContent>
             </Card>
         );
     }
 }
 
 ContentViewer.propTypes = {
-    sourceId: PropTypes.string,
-    label: PropTypes.string,
-    content: PropTypes.string,
-    isContentRealtime: PropTypes.bool,
+    content: PropTypes.instanceOf(List),
     dispatch: PropTypes.func.isRequired,
+    selectedContent: PropTypes.number.isRequired,
     locationHost: PropTypes.string,
-    locationQuery: PropTypes.shape({
-        jobName: PropTypes.string.isRequired,
-        jobId: PropTypes.string.isRequired,
-        fileId: PropTypes.string.isRequired,
-    }),
+    locationSearch: PropTypes.string,
 };
 
 function mapStateToProps(state) {
     const contentRoot = state.get('content');
     return {
-        sourceId: contentRoot.get('sourceId'),
-        label: contentRoot.get('label'),
         content: contentRoot.get('content'),
-        edit: contentRoot.get('edit'),
-        checksum: contentRoot.get('checksum'),
-        isContentHTML: contentRoot.get('isContentHTML'),
-        isContentRealtime: contentRoot.get('isContentRealtime'),
         isFetching: contentRoot.get('isFetching'),
+        selectedContent: contentRoot.get('selectedContent'),
     };
 }
 

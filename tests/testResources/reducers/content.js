@@ -8,44 +8,46 @@
  * Copyright IBM Corporation 2018, 2019
  */
 
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 
 export const baseContent =
     Map({
-        content: null,
-        isFetching: false,
-        label: '',
+        content: List(),
+        selectedContent: 0,
     });
 
 export const jobName = 'DEMOJOB';
 export const jobId = 'JOB1234';
 export const fileLabel = 'SYSOUT';
+export const fileLabel2 = 'JESJCL';
 
 export const requestedContent =
     Map({
-        content: null,
-        isFetching: true,
-        label: `Loading: ${fileLabel}`,
+        content: List([{ label: `${jobId}-${fileLabel}`, content: '', isFetching: true }]),
+        selectedContent: 0,
     });
 
 
 export const receivedContent =
     Map({
-        content: 'test',
-        isFetching: false,
-        label: `${jobName} - ${jobId} - ${fileLabel}`,
+        content: List([{ label: fileLabel, content: 'test', isFetching: false }]),
+        selectedContent: 0,
     });
 
-export const invalidatedContent =
+export const requestedContentWithExistingContent =
     Map({
-        content: 'Unable to retrieve content',
-        isFetching: false,
-        label: 'Unable to retrieve content',
+        content: List([
+            { label: fileLabel, content: 'test', isFetching: false },
+            { label: `${jobId}-${fileLabel2}`, content: '', isFetching: true },
+        ]),
+        selectedContent: 0,
     });
 
-export const toggledContent =
+export const receivedContent2 =
     Map({
-        content: null,
-        isFetching: false,
-        label: '',
+        content: List([
+            { label: fileLabel, content: 'test', isFetching: false },
+            { label: fileLabel2, content: 'test2', isFetching: false },
+        ]),
+        selectedContent: 0,
     });
