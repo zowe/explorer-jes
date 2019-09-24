@@ -14,6 +14,7 @@ import { Map } from 'immutable';
 import LabelIcon from '@material-ui/icons/Label';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { fetchJobFiles, toggleJob, purgeJob } from '../actions/jobNodes';
+import { getJCL } from '../actions/content';
 import JobFile from './JobFile';
 import JobStep from './JobStep';
 
@@ -31,6 +32,11 @@ export default class JobInstance extends React.Component {
     handlePurge(job) {
         const { dispatch } = this.props;
         dispatch(purgeJob(job.get('jobName'), job.get('jobId')));
+    }
+
+    handleGetJCL(job) {
+        const { dispatch } = this.props;
+        dispatch(getJCL(job.get('jobName'), job.get('jobId')));
     }
 
     renderJobStatus() {
@@ -72,6 +78,9 @@ export default class JobInstance extends React.Component {
             <ContextMenu id={job.get('label')}>
                 <MenuItem onClick={() => { this.handlePurge(job); }}>
                     Purge Job
+                </MenuItem>
+                <MenuItem onClick={() => { this.handleGetJCL(job); }}>
+                    Get JCL (SJ)
                 </MenuItem>
             </ContextMenu>
         );

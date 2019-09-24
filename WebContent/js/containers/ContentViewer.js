@@ -18,8 +18,9 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import ClearIcon from '@material-ui/icons/Clear';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Button from '@material-ui/core/Button';
 import queryString from 'query-string';
-import { fetchJobFileNoName, removeContent, changeSelectedContent } from '../actions/content';
+import { fetchJobFileNoName, removeContent, changeSelectedContent, submitJCL } from '../actions/content';
 
 export class ContentViewer extends React.Component {
     constructor(props) {
@@ -27,10 +28,13 @@ export class ContentViewer extends React.Component {
         this.editorReady = this.editorReady.bind(this);
         this.handleSelectedTabChange = this.handleSelectedTabChange.bind(this);
         this.handleCloseTab = this.handleCloseTab.bind(this);
+        this.shouldBeReadOnly = this.shouldBeReadOnly.bind(this);
+        this.renderSubmitButton = this.renderSubmitButton.bind(this);
 
         this.state = {
             height: 0,
             editorContent: ' ',
+            currentContent: '',
         };
     }
 
@@ -44,6 +48,10 @@ export class ContentViewer extends React.Component {
             dispatch(changeSelectedContent(newContent.size - 1));
         }
     }
+
+    getContent = content => {
+        this.setState({ currentContent: content });
+    };
 
     editorReady = () => {
         const { locationSearch, dispatch } = this.props;
@@ -65,6 +73,14 @@ export class ContentViewer extends React.Component {
         if (removeIndex <= selectedContent && selectedContent >= 1) {
             dispatch(changeSelectedContent(selectedContent - 1));
         }
+    }
+
+    shouldBeReadOnly() {
+        const { content, selectedContent } = this.props;
+        if (content.get(selectedContent) && typeof content.get(selectedContent).readOnly !== 'undefined') {
+            return content.get(selectedContent).readOnly;
+        }
+        return true;
     }
 
     renderTabs() {
@@ -93,6 +109,33 @@ export class ContentViewer extends React.Component {
         );
     }
 
+    renderSubmitButton() {
+        const { dispatch } = this.props;
+        if (!this.shouldBeReadOnly()) {
+            return (
+                <Button
+                    id="content-viewer-submit"
+                    variant="contained"
+                    color="primary"
+                    style={{ position: 'absolute', left: '1800px' }}
+                    onClick={() => { dispatch(submitJCL(this.state.currentContent)); }}
+                >
+                SUBMIT
+                </Button>
+            );
+        }
+        return null;
+    }
+
+    renderSubheader() {
+        return (
+            <div style={{ height: '38px' }}>
+                { this.renderTabs() }
+                { this.renderSubmitButton()}
+            </div>
+        );
+    }
+
     render() {
         const { content, locationHost, selectedContent } = this.props;
         const cardTextStyle = { paddingTop: '0', paddingBottom: '0' };
@@ -103,7 +146,7 @@ export class ContentViewer extends React.Component {
                 style={{ marginBottom: 0 }}
             >
                 <CardHeader
-                    subheader={<div style={{ height: '38px' }}>{this.renderTabs()}</div>}
+                    subheader={this.renderSubheader()}
                     style={{ paddingBottom: 0, whiteSpace: 'nowrap', overflow: 'scroll' }}
                 />
                 <CardContent style={cardTextStyle} >
@@ -111,8 +154,9 @@ export class ContentViewer extends React.Component {
                         content={(content.get(selectedContent) && content.get(selectedContent).content) || ' '}
                         syntax={'text/jclcontext'}
                         languageFilesHost={locationHost}
-                        readonly={true}
+                        readonly={this.shouldBeReadOnly()}
                         editorReady={this.editorReady}
+                        passContentToParent={this.getContent}
                     />
                 </CardContent>
             </Card>

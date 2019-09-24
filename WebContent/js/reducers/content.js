@@ -45,6 +45,7 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
                         label: action.fileLabel,
                         content: action.content,
                         isFetching: false,
+                        readOnly: action.readOnly,
                     }),
             });
         case REMOVE_CONTENT:
