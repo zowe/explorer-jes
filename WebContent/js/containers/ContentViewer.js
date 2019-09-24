@@ -28,7 +28,6 @@ export class ContentViewer extends React.Component {
         this.editorReady = this.editorReady.bind(this);
         this.handleSelectedTabChange = this.handleSelectedTabChange.bind(this);
         this.handleCloseTab = this.handleCloseTab.bind(this);
-        this.shouldBeReadOnly = this.shouldBeReadOnly.bind(this);
         this.renderSubmitButton = this.renderSubmitButton.bind(this);
 
         this.state = {
@@ -75,14 +74,6 @@ export class ContentViewer extends React.Component {
         }
     }
 
-    shouldBeReadOnly() {
-        const { content, selectedContent } = this.props;
-        if (content.get(selectedContent) && typeof content.get(selectedContent).readOnly !== 'undefined') {
-            return content.get(selectedContent).readOnly;
-        }
-        return true;
-    }
-
     renderTabs() {
         const { content, selectedContent } = this.props;
         const unselectedTabStyle = { display: 'flex', float: 'left', alignItems: 'center', padding: '6px', cursor: 'pointer' };
@@ -110,8 +101,9 @@ export class ContentViewer extends React.Component {
     }
 
     renderSubmitButton() {
-        const { dispatch } = this.props;
-        if (!this.shouldBeReadOnly()) {
+        const { content, selectedContent, dispatch } = this.props;
+        if (content && content.get(selectedContent) && !content.get(selectedContent).readOnly
+            && !content.get(selectedContent).isFetching) {
             return (
                 <Button
                     id="content-viewer-submit"
@@ -154,7 +146,7 @@ export class ContentViewer extends React.Component {
                         content={(content.get(selectedContent) && content.get(selectedContent).content) || ' '}
                         syntax={'text/jclcontext'}
                         languageFilesHost={locationHost}
-                        readonly={this.shouldBeReadOnly()}
+                        readonly={false}
                         editorReady={this.editorReady}
                         passContentToParent={this.getContent}
                     />
