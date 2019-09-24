@@ -104,12 +104,13 @@ export class ContentViewer extends React.Component {
         const { content, selectedContent, dispatch } = this.props;
         if (content && content.get(selectedContent) && !content.get(selectedContent).readOnly
             && !content.get(selectedContent).isFetching) {
+            const buttonOffset = screen.width - 120;
             return (
                 <Button
                     id="content-viewer-submit"
                     variant="contained"
                     color="primary"
-                    style={{ position: 'absolute', left: '1800px' }}
+                    style={{ position: 'absolute', left: buttonOffset }}
                     onClick={() => { dispatch(submitJCL(this.state.currentContent)); }}
                 >
                 SUBMIT
