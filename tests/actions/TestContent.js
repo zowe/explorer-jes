@@ -286,11 +286,13 @@ describe('Action: content', () => {
         it('Should create a request and receive submitJCL action and push a message action', () => {
             const expectedActions = [{
                 type: contentActions.REQUEST_SUBMIT_JCL,
+                isSubmittingJCL: true,
             },
             {
                 type: contentActions.RECEIVE_SUBMIT_JCL,
                 jobName: contentResources.jobName,
                 jobId: contentResources.jobId,
+                isSubmittingJCL: false,
             },
             {
                 type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
@@ -313,6 +315,11 @@ describe('Action: content', () => {
         it('Should create a request to submit JCL but fail and push message', () => {
             const expectedActions = [{
                 type: contentActions.REQUEST_SUBMIT_JCL,
+                isSubmittingJCL: true,
+            },
+            {
+                type: contentActions.INVALIDATE_SUBMIT_JCL,
+                isSubmittingJCL: false,
             },
             {
                 type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,

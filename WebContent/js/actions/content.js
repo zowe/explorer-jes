@@ -19,6 +19,7 @@ export const INVALIDATE_CONTENT = 'INVALIDATE_CONTENT';
 
 export const REQUEST_SUBMIT_JCL = 'REQUEST_SUBMIT_JCL';
 export const RECEIVE_SUBMIT_JCL = 'RECEIVE_SUBMIT_JCL';
+export const INVALIDATE_SUBMIT_JCL = 'INVALIDATE_SUBMIT_JCL';
 
 function requestContent(jobName, jobId, fileName, fileId, fileLabel) {
     return {
@@ -167,6 +168,7 @@ export function getJCL(jobName, jobId) {
 function requestSubmitJCL() {
     return {
         type: REQUEST_SUBMIT_JCL,
+        isSubmittingJCL: true,
     };
 }
 
@@ -175,6 +177,14 @@ function receiveSubmitJCL(jobName, jobId) {
         type: RECEIVE_SUBMIT_JCL,
         jobName,
         jobId,
+        isSubmittingJCL: false,
+    };
+}
+
+function invalidateSubmitJCL() {
+    return {
+        type: INVALIDATE_SUBMIT_JCL,
+        isSubmittingJCL: false,
     };
 }
 
@@ -199,6 +209,7 @@ export function submitJCL(content) {
                 dispatch(constructAndPushMessage(`${json.jobName}:${json.jobId} Submitted`));
             })
             .catch(e => {
+                dispatch(invalidateSubmitJCL());
                 dispatch(constructAndPushMessage(`${e.message}`));
             });
     };

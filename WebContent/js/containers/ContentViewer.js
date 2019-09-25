@@ -19,6 +19,7 @@ import CardContent from '@material-ui/core/CardContent';
 import ClearIcon from '@material-ui/icons/Clear';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Button from '@material-ui/core/Button';
+import CircularProgressIcon from '@material-ui/core/CircularProgress';
 import queryString from 'query-string';
 import { fetchJobFileNoName, removeContent, changeSelectedContent, submitJCL } from '../actions/content';
 
@@ -29,12 +30,19 @@ export class ContentViewer extends React.Component {
         this.handleSelectedTabChange = this.handleSelectedTabChange.bind(this);
         this.handleCloseTab = this.handleCloseTab.bind(this);
         this.renderSubmitButton = this.renderSubmitButton.bind(this);
+        this.onButtonRef = this.onButtonRef.bind(this);
+        this.updateSubmitJCLButtonOffset = this.updateSubmitJCLButtonOffset.bind(this);
 
         this.state = {
             height: 0,
             editorContent: ' ',
             currentContent: '',
+            submitJCLButtonOffset: window.innerWidth - 120,
         };
+    }
+
+    componentDidMount() {
+        window.addEventListener('resize', this.updateSubmitJCLButtonOffset);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -48,9 +56,21 @@ export class ContentViewer extends React.Component {
         }
     }
 
+    onButtonRef(node) {
+        if (node) {
+            this.buttonRef = node;
+        }
+    }
+
     getContent = content => {
         this.setState({ currentContent: content });
     };
+
+    updateSubmitJCLButtonOffset() {
+        if (this.buttonRef) {
+            this.setState({ submitJCLButtonOffset: window.innerWidth - 120 });
+        }
+    }
 
     editorReady = () => {
         const { locationSearch, dispatch } = this.props;
@@ -101,19 +121,26 @@ export class ContentViewer extends React.Component {
     }
 
     renderSubmitButton() {
-        const { content, selectedContent, dispatch } = this.props;
+        const { content, selectedContent, isSubmittingJCL, dispatch } = this.props;
         if (content && content.get(selectedContent) && !content.get(selectedContent).readOnly
             && !content.get(selectedContent).isFetching) {
-            const buttonOffset = screen.width - 120;
             return (
                 <Button
                     id="content-viewer-submit"
                     variant="contained"
                     color="primary"
-                    style={{ position: 'absolute', left: buttonOffset }}
+                    style={{ position: 'absolute', left: this.state.submitJCLButtonOffset, width: '85px' }}
+                    ref={this.onButtonRef}
                     onClick={() => { dispatch(submitJCL(this.state.currentContent)); }}
                 >
-                SUBMIT
+                    {isSubmittingJCL ?
+                        <CircularProgressIcon
+                            id="loading-icon"
+                            size={20}
+                            style={{ color: 'white' }}
+                        />
+                        :
+                        <div>SUBMIT</div>}
                 </Button>
             );
         }
@@ -163,6 +190,7 @@ ContentViewer.propTypes = {
     selectedContent: PropTypes.number.isRequired,
     locationHost: PropTypes.string,
     locationSearch: PropTypes.string,
+    isSubmittingJCL: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -171,6 +199,7 @@ function mapStateToProps(state) {
         content: contentRoot.get('content'),
         isFetching: contentRoot.get('isFetching'),
         selectedContent: contentRoot.get('selectedContent'),
+        isSubmittingJCL: contentRoot.get('isSubmittingJCL'),
     };
 }
 

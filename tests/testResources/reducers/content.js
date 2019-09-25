@@ -14,6 +14,7 @@ export const baseContent =
     Map({
         content: List(),
         selectedContent: 0,
+        isSubmittingJCL: false,
     });
 
 export const jobName = 'DEMOJOB';
@@ -25,6 +26,7 @@ export const requestedContent =
     Map({
         content: List([{ label: `${jobId}-${fileLabel}`, content: '', isFetching: true }]),
         selectedContent: 0,
+        isSubmittingJCL: false,
     });
 
 
@@ -32,6 +34,7 @@ export const receivedContent =
     Map({
         content: List([{ label: fileLabel, content: 'test', isFetching: false, readOnly: true }]),
         selectedContent: 0,
+        isSubmittingJCL: false,
     });
 
 export const requestedContentWithExistingContent =
@@ -41,6 +44,7 @@ export const requestedContentWithExistingContent =
             { label: `${jobId}-${fileLabel2}`, content: '', isFetching: true },
         ]),
         selectedContent: 0,
+        isSubmittingJCL: false,
     });
 
 export const receivedContent2 =
@@ -50,4 +54,12 @@ export const receivedContent2 =
             { label: fileLabel2, content: 'test2', isFetching: false, readOnly: true },
         ]),
         selectedContent: 0,
+        isSubmittingJCL: false,
+    });
+
+export const requestSubmitJCLContent =
+    Map({
+        content: List(),
+        selectedContent: 0,
+        isSubmittingJCL: true,
     });

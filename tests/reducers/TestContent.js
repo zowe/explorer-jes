@@ -67,4 +67,19 @@ describe('Reducer: content', () => {
         const action = { type: contentActions.REMOVE_CONTENT, index: 0 };
         expect(content(contentResources.receivedContent, action)).toEqual(contentResources.baseContent);
     });
+
+    it('Should handle REQUEST_SUBMIT_JCL', () => {
+        const action = { type: contentActions.REQUEST_SUBMIT_JCL };
+        expect(content(contentResources.baseContent, action)).toEqual(contentResources.requestSubmitJCLContent);
+    });
+
+    it('Should handle RECEIVE_SUBMIT_JCL', () => {
+        const action = { type: contentActions.RECEIVE_SUBMIT_JCL };
+        expect(content(contentResources.requestSubmitJCLContent, action)).toEqual(contentResources.baseContent);
+    });
+
+    it('Should handle INVALIDATE_SUBMIT_JCL', () => {
+        const action = { type: contentActions.INVALIDATE_SUBMIT_JCL };
+        expect(content(contentResources.requestSubmitJCLContent, action)).toEqual(contentResources.baseContent);
+    });
 });

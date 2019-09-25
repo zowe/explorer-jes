@@ -14,11 +14,15 @@ import {
     RECEIVE_CONTENT,
     REMOVE_CONTENT,
     CHANGE_SELECTED_CONTENT,
+    REQUEST_SUBMIT_JCL,
+    RECEIVE_SUBMIT_JCL,
+    INVALIDATE_SUBMIT_JCL,
 } from '../actions/content';
 
 const INITIAL_CONTENT_STATE = Map({
     content: List(),
     selectedContent: 0, // Index of the current active tab content
+    isSubmittingJCL: false,
 });
 
 function getIndexOfContentFromLabel(contentList, label) {
@@ -55,6 +59,18 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
         case CHANGE_SELECTED_CONTENT:
             return state.merge({
                 selectedContent: action.newSelectedContent,
+            });
+        case REQUEST_SUBMIT_JCL:
+            return state.merge({
+                isSubmittingJCL: true,
+            });
+        case RECEIVE_SUBMIT_JCL:
+            return state.merge({
+                isSubmittingJCL: false,
+            });
+        case INVALIDATE_SUBMIT_JCL:
+            return state.merge({
+                isSubmittingJCL: false,
             });
         default:
             return state;
