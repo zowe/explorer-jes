@@ -30,14 +30,14 @@ export const requestedContent =
 
 export const receivedContent =
     Map({
-        content: List([{ label: fileLabel, content: 'test', isFetching: false }]),
+        content: List([{ label: fileLabel, content: 'test', isFetching: false, readOnly: true }]),
         selectedContent: 0,
     });
 
 export const requestedContentWithExistingContent =
     Map({
         content: List([
-            { label: fileLabel, content: 'test', isFetching: false },
+            { label: fileLabel, content: 'test', isFetching: false, readOnly: true },
             { label: `${jobId}-${fileLabel2}`, content: '', isFetching: true },
         ]),
         selectedContent: 0,
@@ -46,8 +46,8 @@ export const requestedContentWithExistingContent =
 export const receivedContent2 =
     Map({
         content: List([
-            { label: fileLabel, content: 'test', isFetching: false },
-            { label: fileLabel2, content: 'test2', isFetching: false },
+            { label: fileLabel, content: 'test', isFetching: false, readOnly: true },
+            { label: fileLabel2, content: 'test2', isFetching: false, readOnly: true },
         ]),
         selectedContent: 0,
     });

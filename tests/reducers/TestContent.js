@@ -33,6 +33,7 @@ describe('Reducer: content', () => {
             jobName: contentResources.jobName,
             fileLabel: contentResources.fileLabel,
             jobId: contentResources.jobId,
+            readOnly: true,
         };
         expect(content(contentResources.baseContent, action)).toEqual(contentResources.receivedContent);
     });
@@ -52,6 +53,7 @@ describe('Reducer: content', () => {
             jobName: contentResources.jobName,
             fileLabel: contentResources.fileLabel2,
             jobId: contentResources.jobId,
+            readOnly: true,
         };
         expect(content(contentResources.requestedContentWithExistingContent, action)).toEqual(contentResources.receivedContent2);
     });

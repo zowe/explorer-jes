@@ -46,6 +46,7 @@ describe('Action: content', () => {
                     fileName: contentResources.fileName,
                     fileId: contentResources.fileId,
                     fileLabel: contentActions.getFileLabel(contentResources.jobId, contentResources.fileName),
+                    readOnly: true,
                 },
             ];
 
@@ -112,6 +113,7 @@ describe('Action: content', () => {
                     fileName: contentResources.fileName,
                     fileId: contentResources.fileId,
                     fileLabel: contentActions.getFileLabel(contentResources.jobId, contentResources.fileName),
+                    readOnly: true,
                 },
             ];
 
@@ -213,6 +215,121 @@ describe('Action: content', () => {
             const index = 4;
             const expectedAction = { type: contentActions.CHANGE_SELECTED_CONTENT, newSelectedContent: index };
             expect(contentActions.changeSelectedContent(index)).toEqual(expectedAction);
+        });
+    });
+
+    describe('getJCL', () => {
+        it('Should create a request and receive action for JCL', () => {
+            const expectedActions = [{
+                type: contentActions.REQUEST_CONTENT,
+                jobName: contentResources.jobName,
+                jobId: contentResources.jobId,
+                fileName: 'JCL',
+                fileId: 0,
+                fileLabel: contentActions.getFileLabel(contentResources.jobId, 'JCL'),
+            },
+            {
+                type: contentActions.RECEIVE_CONTENT,
+                jobName: contentResources.jobName,
+                jobId: contentResources.jobId,
+                fileName: 'JCL',
+                fileId: 0,
+                content: contentResources.jobJCL.content,
+                fileLabel: contentActions.getFileLabel(contentResources.jobId, 'JCL'),
+                readOnly: false,
+            }];
+
+            const store = mockStore();
+
+            nock(BASE_URL)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/JCL/content`)
+                .reply(200, contentResources.jobJCL);
+
+            return store.dispatch(contentActions.getJCL(contentResources.jobName, contentResources.jobId))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
+        });
+
+        it('Should create a request to get JCL but fail and push message and invalidate', () => {
+            const expectedActions = [{
+                type: contentActions.REQUEST_CONTENT,
+                jobName: contentResources.jobName,
+                jobId: contentResources.jobId,
+                fileName: 'JCL',
+                fileId: 0,
+                fileLabel: contentActions.getFileLabel(contentResources.jobId, 'JCL'),
+            },
+            {
+                type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
+                message: Map({
+                    message: `${errorMessage} - ${contentResources.jobName}:${contentResources.jobId}:JCL`,
+                }),
+            },
+            {
+                type: contentActions.INVALIDATE_CONTENT,
+            }];
+            const store = mockStore();
+
+            nock(BASE_URL)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/JCL/content`)
+                .reply(500, { status: 'INTERNAL_SERVER_ERROR', message: errorMessage });
+
+            return store.dispatch(contentActions.getJCL(contentResources.jobName, contentResources.jobId))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
+        });
+    });
+
+    describe('Submit JCL', () => {
+        it('Should create a request and receive submitJCL action and push a message action', () => {
+            const expectedActions = [{
+                type: contentActions.REQUEST_SUBMIT_JCL,
+            },
+            {
+                type: contentActions.RECEIVE_SUBMIT_JCL,
+                jobName: contentResources.jobName,
+                jobId: contentResources.jobId,
+            },
+            {
+                type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
+                message: Map({
+                    message: `${contentResources.jobName}:${contentResources.jobId} Submitted`,
+                }),
+            }];
+            const store = mockStore();
+
+            nock(BASE_URL)
+                .post('/jobs/string')
+                .reply(201, contentResources.submitJCLResponse);
+
+            return store.dispatch(contentActions.submitJCL(contentResources.jobJCL.content))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
+        });
+
+        it('Should create a request to submit JCL but fail and push message', () => {
+            const expectedActions = [{
+                type: contentActions.REQUEST_SUBMIT_JCL,
+            },
+            {
+                type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
+                message: Map({
+                    message: errorMessage,
+                }),
+            }];
+            const store = mockStore();
+
+            nock(BASE_URL)
+                .post('/jobs/string')
+                .reply(500, { status: 'INTERNAL_SERVER_ERROR', message: errorMessage });
+
+            return store.dispatch(contentActions.submitJCL(contentResources.jobJCL.content))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
         });
     });
 });
