@@ -72,6 +72,7 @@ cp -r dist/. "${PAX_WORKSPACE_DIR}/content/app"
 echo "[${SCRIPT_NAME}] copying startup script ..."
 mkdir -p "${PAX_WORKSPACE_DIR}/content/scripts"
 cp -r scripts/jes-explorer-start.sh "${PAX_WORKSPACE_DIR}/content/scripts"
+cp -r scripts/jes-explorer-configure.sh "${PAX_WORKSPACE_DIR}/content/scripts"
 
 # pre-configure server config
 echo "[${SCRIPT_NAME}] update default UI server config ..."

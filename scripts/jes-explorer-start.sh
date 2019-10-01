@@ -45,9 +45,6 @@ if [ -z "$EXPLORER_PLUGIN_BASEURI" ]; then
   exit 0
 fi
 
-# Remove any pre existing plugin files
-rm -rf
-
 # Add explorer plugin to zLUX 
 EXPLORER_PLUGIN_FULLURL="https://${ZOWE_EXPLORER_HOST}:${ZOWE_APIM_GATEWAY_PORT}${EXPLORER_PLUGIN_BASEURI}"
 . $ZOWE_ROOT_DIR/scripts/configure/zowe-install-iframe-plugin.sh \
