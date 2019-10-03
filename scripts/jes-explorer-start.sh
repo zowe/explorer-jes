@@ -13,9 +13,9 @@
 ################################################################################
 # Variables required on shell:
 # - NODE_HOME
-# - ZOWE_ROOT_DIR
+# - ROOT_DIR
 # - ZOWE_EXPLORER_HOST
-# - ZOWE_APIM_GATEWAY_PORT
+# - GATEWAY_PORT
 
 # find node bin
 if [ ! -z "$NODE_HOME" ]; then
@@ -46,13 +46,14 @@ if [ -z "$EXPLORER_PLUGIN_BASEURI" ]; then
 fi
 
 # Add explorer plugin to zLUX 
-EXPLORER_PLUGIN_FULLURL="https://${ZOWE_EXPLORER_HOST}:${ZOWE_APIM_GATEWAY_PORT}${EXPLORER_PLUGIN_BASEURI}"
+EXPLORER_PLUGIN_FULLURL="https://${ZOWE_EXPLORER_HOST}:${GATEWAY_PORT}${EXPLORER_PLUGIN_BASEURI}"
 . $ROOT_DIR/scripts/configure/zowe-install-iframe-plugin.sh \
     "$ROOT_DIR" \
     "${EXPLORER_PLUGIN_ID}" \
     "${EXPLORER_PLUGIN_NAME}" \
     $EXPLORER_PLUGIN_FULLURL \
-    "${ROOT_DIR}/components/jes-explorer/bin/plugin-definition/zlux/images/explorer-JES.png"
+    "${ROOT_DIR}/components/jes-explorer/bin/plugin-definition/zlux/images/explorer-JES.png" \
+    ${ROOT_DIR}/components/jes-explorer/
 
 # get current ui server directory
 SERVER_DIR="${ROOT_DIR}/components/jes-explorer/bin/server/"
@@ -62,8 +63,8 @@ $NODE_BIN $SERVER_DIR/src/index.js \
   --service ${EXPLORER_PLUGIN_NAME} \
 	--path "/ui/v1/explorer-jes" \
 	--port $JES_EXPLORER_UI_PORT \
-	--key  $KEYSTORE_KEY\
-	--cert $KEYSTORE_CERTIFICATE\
-	--pass $KEYSTORE_PASSWORD\
-	--csp "${ZOWE_EXPLORER_HOST}:*"
+	--key  $KEYSTORE_KEY \
+	--cert $KEYSTORE_CERTIFICATE \
+	--pass $KEYSTORE_PASSWORD \
+	--csp "${ZOWE_EXPLORER_HOST}:*" \
 	-v &
