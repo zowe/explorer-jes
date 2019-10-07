@@ -42,6 +42,5 @@ $NODE_BIN $SERVER_DIR/src/index.js \
 	--port $JES_EXPLORER_UI_PORT \
 	--key  $KEYSTORE_KEY \
 	--cert $KEYSTORE_CERTIFICATE \
-	--pass $KEYSTORE_PASSWORD \
 	--csp "${ZOWE_EXPLORER_HOST}:*" \
 	-v &
