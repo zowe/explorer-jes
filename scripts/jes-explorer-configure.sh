@@ -17,7 +17,9 @@
 # - NODE_HOME
 
 # Remove any old config
-rm ${STATIC_DEF_CONFIG_DIR}/jobs-ui.yml
+if [[ -f ${STATIC_DEF_CONFIG_DIR}/jobs-ui.yml ]]; then
+    rm ${STATIC_DEF_CONFIG_DIR}/jobs-ui.yml 
+fi
 
 # Add static definition for jes explorer ui
 cat <<EOF >$STATIC_DEF_CONFIG_DIR/jobs-ui.ebcdic.yml
