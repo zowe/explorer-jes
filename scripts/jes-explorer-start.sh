@@ -30,6 +30,7 @@ else
 fi
 
 cd "$ROOT_DIR/components/jes-explorer/bin"
+EXPLORER_PLUGIN_BASEURI=$($NODE_BIN -e "process.stdout.write(require('./package.json').config.baseuri)")
 EXPLORER_PLUGIN_NAME=$($NODE_BIN -e "process.stdout.write(require('./package.json').config.pluginName)")
 
 # get current ui server directory
@@ -38,7 +39,7 @@ SERVER_DIR="${ROOT_DIR}/components/jes-explorer/bin/server/"
 # start service
 $NODE_BIN $SERVER_DIR/src/index.js \
   --service ${EXPLORER_PLUGIN_NAME} \
-	--path "/ui/v1/explorer-jes" \
+	--path ${EXPLORER_PLUGIN_BASEURI} \
 	--port $JES_EXPLORER_UI_PORT \
 	--key  $KEYSTORE_KEY \
 	--cert $KEYSTORE_CERTIFICATE \
