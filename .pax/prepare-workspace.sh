@@ -62,10 +62,10 @@ cd "${ROOT_DIR}"
 
 # copy explorer-jes to target folder
 echo "[${SCRIPT_NAME}] copying explorer JES backend ..."
-cp README.md "${PAX_WORKSPACE_DIR}/content/"
-cp package.json "${PAX_WORKSPACE_DIR}/content/"
-cp package-lock.json "${PAX_WORKSPACE_DIR}/content/"
 mkdir -p "${PAX_WORKSPACE_DIR}/content/app"
+cp README.md "${PAX_WORKSPACE_DIR}/content/app"
+cp package.json "${PAX_WORKSPACE_DIR}/content/app"
+cp package-lock.json "${PAX_WORKSPACE_DIR}/content/app"
 cp -r dist/. "${PAX_WORKSPACE_DIR}/content/app"
 
 # copy start script to target folder

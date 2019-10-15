@@ -40,8 +40,8 @@ SERVER_DIR="${ROOT_DIR}/components/jes-explorer/bin/server/"
 $NODE_BIN $SERVER_DIR/src/index.js \
   --service ${EXPLORER_PLUGIN_NAME} \
 	--path ${EXPLORER_PLUGIN_BASEURI} \
-	--port $JES_EXPLORER_UI_PORT \
-	--key  $KEYSTORE_KEY \
-	--cert $KEYSTORE_CERTIFICATE \
+	--port ${JES_EXPLORER_UI_PORT} \
+	--key  ${KEYSTORE_KEY} \
+	--cert ${KEYSTORE_CERTIFICATE} \
 	--csp "${ZOWE_EXPLORER_HOST}:*" \
 	-v &
