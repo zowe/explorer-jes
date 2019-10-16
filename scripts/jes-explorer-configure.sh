@@ -16,12 +16,11 @@
 # - ROOT_DIR
 # - NODE_HOME
 
-
 . $ROOT_DIR/scripts/utils/validateNode.sh
+NODE_BIN=${NODE_HOME}/bin/node
 
 EXPLORER_CONFIG="$ROOT_DIR/components/jes-explorer/bin/app/package.json"
 EXPLORER_PLUGIN_BASEURI=$($NODE_BIN -e "process.stdout.write(require('${EXPLORER_CONFIG}').config.baseuri)")
-
 
 # Remove any old config
 if [[ -f ${STATIC_DEF_CONFIG_DIR}/jobs-ui.yml ]]; then
@@ -43,7 +42,6 @@ services:
       - gatewayUrl: ui/v1
         serviceRelativeUrl: $EXPLORER_PLUGIN_BASEURI
 EOF
-
 
 iconv -f IBM-1047 -t IBM-850 ${STATIC_DEF_CONFIG_DIR}/jobs-ui.ebcdic.yml > $STATIC_DEF_CONFIG_DIR/jobs-ui.yml	
 rm ${STATIC_DEF_CONFIG_DIR}/jobs-ui.ebcdic.yml

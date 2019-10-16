@@ -22,12 +22,8 @@
 # - KEYSTORE_PASSWORD
 
 # Find node binary
-if [ ! -z "$NODE_HOME" ]; then
-  NODE_BIN=${NODE_HOME}/bin/node
-else
-  echo "Error: cannot find node bin, JES Explorer UI is not started."
-  exit 1
-fi
+. $ROOT_DIR/scripts/utils/validateNode.sh
+NODE_BIN=${NODE_HOME}/bin/node
 
 cd "$ROOT_DIR/components/jes-explorer/bin"
 EXPLORER_PLUGIN_BASEURI=$($NODE_BIN -e "process.stdout.write(require('./app/package.json').config.baseuri)")
