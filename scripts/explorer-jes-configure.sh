@@ -19,7 +19,7 @@
 . $ROOT_DIR/scripts/utils/validateNode.sh
 NODE_BIN=${NODE_HOME}/bin/node
 
-EXPLORER_CONFIG="$ROOT_DIR/components/jes-explorer/bin/app/package.json"
+EXPLORER_CONFIG="$ROOT_DIR/components/explorer-jes/bin/app/package.json"
 EXPLORER_PLUGIN_BASEURI=$($NODE_BIN -e "process.stdout.write(require('${EXPLORER_CONFIG}').config.baseuri)")
 
 # Remove any old config
