@@ -81,9 +81,7 @@ node('ibm-jenkins-slave-nvm') {
   // we need sonar scan
   pipeline.sonarScan(
     scannerTool     : lib.Constants.DEFAULT_SONARQUBE_SCANNER_TOOL,
-    scannerServer   : lib.Constants.DEFAULT_SONARQUBE_SERVER,
-    allowBranchScan : true,
-    failBuild       : false
+    scannerServer   : lib.Constants.DEFAULT_SONARQUBE_SERVER
   )
 
   // we have pax packaging step
