@@ -16,7 +16,6 @@
 # - ROOT_DIR
 # - NODE_HOME
 
-. $ROOT_DIR/scripts/utils/validateNode.sh
 NODE_BIN=${NODE_HOME}/bin/node
 
 EXPLORER_CONFIG="$ROOT_DIR/components/explorer-jes/bin/app/package.json"

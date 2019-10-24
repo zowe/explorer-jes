@@ -21,8 +21,6 @@
 # - KEYSTORE_CERTIFICATE
 # - KEYSTORE_PASSWORD
 
-# Find node binary
-. $ROOT_DIR/scripts/utils/validateNode.sh
 NODE_BIN=${NODE_HOME}/bin/node
 
 cd "$ROOT_DIR/components/explorer-jes/bin"
