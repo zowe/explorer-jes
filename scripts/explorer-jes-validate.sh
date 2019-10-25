@@ -16,4 +16,4 @@
 # - ROOT_DIR
 # - NODE_HOME
 
-. $ROOT_DIR/scripts/utils/validateNode.sh
+. $ROOT_DIR/scripts/utils/validate-node.sh
