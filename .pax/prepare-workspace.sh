@@ -38,8 +38,8 @@ rm -fr "${PAX_WORKSPACE_DIR}/content"
 mkdir -p "${PAX_WORKSPACE_DIR}/content"
 
 # copy plugin definition files
-echo "[${SCRIPT_NAME}] copying plugin definitions ..."
-cp -r plugin-definition "${PAX_WORKSPACE_DIR}/content"
+# echo "[${SCRIPT_NAME}] copying plugin definitions ..."
+# cp -r plugin-definition "${PAX_WORKSPACE_DIR}/content"
 
 # install peerDependencies
 echo "[${SCRIPT_NAME}] install peer dependencies (explorer-ui-server) ..."
@@ -62,16 +62,17 @@ cd "${ROOT_DIR}"
 
 # copy explorer-jes to target folder
 echo "[${SCRIPT_NAME}] copying explorer JES backend ..."
-cp README.md "${PAX_WORKSPACE_DIR}/content/"
-cp package.json "${PAX_WORKSPACE_DIR}/content/"
-cp package-lock.json "${PAX_WORKSPACE_DIR}/content/"
 mkdir -p "${PAX_WORKSPACE_DIR}/content/app"
+cp README.md "${PAX_WORKSPACE_DIR}/content/app"
+cp package.json "${PAX_WORKSPACE_DIR}/content/app"
+cp package-lock.json "${PAX_WORKSPACE_DIR}/content/app"
 cp -r dist/. "${PAX_WORKSPACE_DIR}/content/app"
 
 # copy start script to target folder
 echo "[${SCRIPT_NAME}] copying startup script ..."
 mkdir -p "${PAX_WORKSPACE_DIR}/content/scripts"
-cp -r scripts/start-explorer-jes-ui-server.sh "${PAX_WORKSPACE_DIR}/content/scripts"
+cp -r scripts/explorer-jes-start.sh "${PAX_WORKSPACE_DIR}/content/scripts"
+cp -r scripts/explorer-jes-configure.sh "${PAX_WORKSPACE_DIR}/content/scripts"
 
 # pre-configure server config
 echo "[${SCRIPT_NAME}] update default UI server config ..."
