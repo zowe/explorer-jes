@@ -82,7 +82,8 @@ node('ibm-jenkins-slave-nvm') {
   pipeline.sonarScan(
     scannerTool     : lib.Constants.DEFAULT_LFJ_SONARCLOUD_SCANNER_TOOL,
     scannerServer   : lib.Constants.DEFAULT_LFJ_SONARCLOUD_SERVER,
-    allowBranchScan : lib.Constants.DEFAULT_LFJ_SONARCLOUD_ALLOW_BRANCH
+    allowBranchScan : lib.Constants.DEFAULT_LFJ_SONARCLOUD_ALLOW_BRANCH,
+    failBuild       : lib.Constants.DEFAULT_LFJ_SONARCLOUD_FAIL_BUILD
   )
 
   // we have pax packaging step
