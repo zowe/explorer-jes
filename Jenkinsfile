@@ -12,7 +12,7 @@
 
 
 node('ibm-jenkins-slave-nvm') {
-  def lib = library("jenkins-library@staging").org.zowe.jenkins_shared_library
+  def lib = library("jenkins-library@users/jack/gradle-sonarcloud").org.zowe.jenkins_shared_library
 
   def pipeline = lib.pipelines.nodejs.NodeJSPipeline.new(this)
 
