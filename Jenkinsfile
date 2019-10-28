@@ -12,7 +12,7 @@
 
 
 node('ibm-jenkins-slave-nvm') {
-  def lib = library("jenkins-library").org.zowe.jenkins_shared_library
+  def lib = library("jenkins-library@staging").org.zowe.jenkins_shared_library
 
   def pipeline = lib.pipelines.nodejs.NodeJSPipeline.new(this)
 
@@ -80,8 +80,9 @@ node('ibm-jenkins-slave-nvm') {
 
   // we need sonar scan
   pipeline.sonarScan(
-    scannerTool     : lib.Constants.DEFAULT_SONARQUBE_SCANNER_TOOL,
-    scannerServer   : lib.Constants.DEFAULT_SONARQUBE_SERVER
+    scannerTool     : lib.Constants.DEFAULT_LFJ_SONARCLOUD_SCANNER_TOOL,
+    scannerServer   : lib.Constants.DEFAULT_LFJ_SONARCLOUD_SERVER,
+    allowBranchScan : lib.Constants.DEFAULT_LFJ_SONARCLOUD_ALLOW_BRANCH
   )
 
   // we have pax packaging step
