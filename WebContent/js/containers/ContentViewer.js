@@ -174,7 +174,7 @@ export class ContentViewer extends React.Component {
                         content={(content.get(selectedContent) && content.get(selectedContent).content) || ' '}
                         syntax={'text/jclcontext'}
                         languageFilesHost={locationHost}
-                        readonly={false}
+                        readonly={content.get(selectedContent) ? content.get(selectedContent).readOnly : true}
                         editorReady={this.editorReady}
                         passContentToParent={this.getContent}
                     />
