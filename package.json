@@ -67,7 +67,7 @@
     "dev": "webpack-dev-server --content-base WebContent --inline --hot",
     "lint": "eslint ./WebContent/js/ ./tests/",
     "testWatch": "mocha --watch --require babel-core/register tests --recursive",
-    "test": "JUNIT_REPORT_PATH=target/report.xml nyc --include 'WebContent/js/actions/**' --include 'WebContent/js/reducers/**' mocha --require babel-core/register tests --recursive --colors --reporter mocha-jenkins-reporter",
+    "test": "JUNIT_REPORT_PATH=target/report.xml nyc mocha --require babel-core/register tests --recursive --colors --reporter mocha-jenkins-reporter",
     "prod": "cross-env NODE_ENV='production' webpack && cp -r ./WebContent/css ./dist/ && cp -r ./WebContent/img ./dist/ && cp ./WebContent/index.html ./dist/ && cp ./WebContent/favicon.ico ./dist/",
     "preCommit": "npm-run-all --aggregate-output --parallel --print-label lint test prod"
   },
@@ -83,7 +83,8 @@
     ],
     "all": true,
     "include": [
-      "WebContent/js"
+      "WebContent/js/actions/**",
+      "WebContent/js/reducers/**"
     ],
     "exclude": [
       "tests",
