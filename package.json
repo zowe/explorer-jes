@@ -83,7 +83,8 @@
     ],
     "all": true,
     "include": [
-      "WebContent/js"
+      "WebContent/js/actions/**",
+      "WebContent/js/reducers/**"
     ],
     "exclude": [
       "tests",
