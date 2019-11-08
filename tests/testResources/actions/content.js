@@ -56,3 +56,17 @@ export const fileList = { items: [
         id: 3,
     },
 ] };
+
+export const jobJCL = { content: '//TESTJOBX JOB (),MSGCLASS=H EXEC PGM=IEFBR14' };
+
+export const submitJCLResponse = {
+    jobId: 'JOB12345',
+    jobName: 'DEMOJOB',
+    owner: 'JORDAN',
+    type: 'JOB',
+    status: 'INPUT',
+    returnCode: null,
+    subsystem: 'JES2',
+    executionClass: 'A',
+    phaseName: 'Job is actively converting',
+};

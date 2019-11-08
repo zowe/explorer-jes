@@ -17,6 +17,10 @@ export const REMOVE_CONTENT = 'REMOVE_CONTENT';
 export const CHANGE_SELECTED_CONTENT = 'CHANGE_SELECTED_CONTENT';
 export const INVALIDATE_CONTENT = 'INVALIDATE_CONTENT';
 
+export const REQUEST_SUBMIT_JCL = 'REQUEST_SUBMIT_JCL';
+export const RECEIVE_SUBMIT_JCL = 'RECEIVE_SUBMIT_JCL';
+export const INVALIDATE_SUBMIT_JCL = 'INVALIDATE_SUBMIT_JCL';
+
 function requestContent(jobName, jobId, fileName, fileId, fileLabel) {
     return {
         type: REQUEST_CONTENT,
@@ -28,7 +32,7 @@ function requestContent(jobName, jobId, fileName, fileId, fileLabel) {
     };
 }
 
-function receiveContent(jobName, jobId, fileName, fileId, content, fileLabel) {
+function receiveContent(jobName, jobId, fileName, fileId, content, fileLabel, readOnly = true) {
     return {
         type: RECEIVE_CONTENT,
         jobName,
@@ -37,6 +41,7 @@ function receiveContent(jobName, jobId, fileName, fileId, content, fileLabel) {
         fileName,
         fileId,
         fileLabel,
+        readOnly,
     };
 }
 
@@ -137,5 +142,75 @@ export function changeSelectedContent(index) {
     return {
         type: CHANGE_SELECTED_CONTENT,
         newSelectedContent: index,
+    };
+}
+
+export function getJCL(jobName, jobId) {
+    return dispatch => {
+        dispatch(requestContent(jobName, jobId, 'JCL', 0, getFileLabel(jobId, 'JCL')));
+        return atlasFetch(`jobs/${jobName}/${jobId}/files/JCL/content`, { credentials: 'include' })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                return response.json().then(e => { throw Error(e.message); });
+            })
+            .then(json => {
+                return dispatch(receiveContent(jobName, jobId, 'JCL', 0, json.content, getFileLabel(jobId, 'JCL'), false));
+            })
+            .catch(e => {
+                dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:JCL`));
+                return dispatch(invalidateContent());
+            });
+    };
+}
+
+function requestSubmitJCL() {
+    return {
+        type: REQUEST_SUBMIT_JCL,
+        isSubmittingJCL: true,
+    };
+}
+
+function receiveSubmitJCL(jobName, jobId) {
+    return {
+        type: RECEIVE_SUBMIT_JCL,
+        jobName,
+        jobId,
+        isSubmittingJCL: false,
+    };
+}
+
+function invalidateSubmitJCL() {
+    return {
+        type: INVALIDATE_SUBMIT_JCL,
+        isSubmittingJCL: false,
+    };
+}
+
+export function submitJCL(content) {
+    return dispatch => {
+        dispatch(requestSubmitJCL());
+        return atlasFetch('jobs/string',
+            {
+                credentials: 'include',
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jcl: content }),
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                return response.json().then(e => { throw Error(e.message); });
+            })
+            .then(json => {
+                dispatch(receiveSubmitJCL(json.jobName, json.jobId));
+                dispatch(constructAndPushMessage(`${json.jobName}:${json.jobId} Submitted`));
+            })
+            .catch(e => {
+                dispatch(invalidateSubmitJCL());
+                dispatch(constructAndPushMessage(`${e.message}`));
+            });
     };
 }
