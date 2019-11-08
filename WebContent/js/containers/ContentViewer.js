@@ -18,8 +18,10 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import ClearIcon from '@material-ui/icons/Clear';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Button from '@material-ui/core/Button';
+import CircularProgressIcon from '@material-ui/core/CircularProgress';
 import queryString from 'query-string';
-import { fetchJobFileNoName, removeContent, changeSelectedContent } from '../actions/content';
+import { fetchJobFileNoName, removeContent, changeSelectedContent, submitJCL } from '../actions/content';
 
 export class ContentViewer extends React.Component {
     constructor(props) {
@@ -27,11 +29,20 @@ export class ContentViewer extends React.Component {
         this.editorReady = this.editorReady.bind(this);
         this.handleSelectedTabChange = this.handleSelectedTabChange.bind(this);
         this.handleCloseTab = this.handleCloseTab.bind(this);
+        this.renderSubmitButton = this.renderSubmitButton.bind(this);
+        this.onButtonRef = this.onButtonRef.bind(this);
+        this.updateSubmitJCLButtonOffset = this.updateSubmitJCLButtonOffset.bind(this);
 
         this.state = {
             height: 0,
             editorContent: ' ',
+            currentContent: '',
+            submitJCLButtonOffset: window.innerWidth - 120,
         };
+    }
+
+    componentDidMount() {
+        window.addEventListener('resize', this.updateSubmitJCLButtonOffset);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -42,6 +53,22 @@ export class ContentViewer extends React.Component {
         }
         if (newContent.size > content.size) {
             dispatch(changeSelectedContent(newContent.size - 1));
+        }
+    }
+
+    onButtonRef(node) {
+        if (node) {
+            this.buttonRef = node;
+        }
+    }
+
+    getContent = content => {
+        this.setState({ currentContent: content });
+    };
+
+    updateSubmitJCLButtonOffset() {
+        if (this.buttonRef) {
+            this.setState({ submitJCLButtonOffset: window.innerWidth - 120 });
         }
     }
 
@@ -93,6 +120,42 @@ export class ContentViewer extends React.Component {
         );
     }
 
+    renderSubmitButton() {
+        const { content, selectedContent, isSubmittingJCL, dispatch } = this.props;
+        if (content && content.get(selectedContent) && !content.get(selectedContent).readOnly
+            && !content.get(selectedContent).isFetching) {
+            return (
+                <Button
+                    id="content-viewer-submit"
+                    variant="contained"
+                    color="primary"
+                    style={{ position: 'absolute', left: this.state.submitJCLButtonOffset, width: '85px' }}
+                    ref={this.onButtonRef}
+                    onClick={() => { dispatch(submitJCL(this.state.currentContent)); }}
+                >
+                    {isSubmittingJCL ?
+                        <CircularProgressIcon
+                            id="loading-icon"
+                            size={20}
+                            style={{ color: 'white' }}
+                        />
+                        :
+                        <div>SUBMIT</div>}
+                </Button>
+            );
+        }
+        return null;
+    }
+
+    renderSubheader() {
+        return (
+            <div style={{ height: '38px' }}>
+                { this.renderTabs() }
+                { this.renderSubmitButton()}
+            </div>
+        );
+    }
+
     render() {
         const { content, locationHost, selectedContent } = this.props;
         const cardTextStyle = { paddingTop: '0', paddingBottom: '0' };
@@ -103,7 +166,7 @@ export class ContentViewer extends React.Component {
                 style={{ marginBottom: 0 }}
             >
                 <CardHeader
-                    subheader={<div style={{ height: '38px' }}>{this.renderTabs()}</div>}
+                    subheader={this.renderSubheader()}
                     style={{ paddingBottom: 0, whiteSpace: 'nowrap', overflow: 'scroll' }}
                 />
                 <CardContent style={cardTextStyle} >
@@ -111,8 +174,9 @@ export class ContentViewer extends React.Component {
                         content={(content.get(selectedContent) && content.get(selectedContent).content) || ' '}
                         syntax={'text/jclcontext'}
                         languageFilesHost={locationHost}
-                        readonly={true}
+                        readonly={content.get(selectedContent) ? content.get(selectedContent).readOnly : true}
                         editorReady={this.editorReady}
+                        passContentToParent={this.getContent}
                     />
                 </CardContent>
             </Card>
@@ -126,6 +190,7 @@ ContentViewer.propTypes = {
     selectedContent: PropTypes.number.isRequired,
     locationHost: PropTypes.string,
     locationSearch: PropTypes.string,
+    isSubmittingJCL: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -134,6 +199,7 @@ function mapStateToProps(state) {
         content: contentRoot.get('content'),
         isFetching: contentRoot.get('isFetching'),
         selectedContent: contentRoot.get('selectedContent'),
+        isSubmittingJCL: contentRoot.get('isSubmittingJCL'),
     };
 }
 
