@@ -210,6 +210,15 @@ describe('Action: content', () => {
         });
     });
 
+
+    describe('updateContent', () => {
+        it('Should create an action to update content', () => {
+            const content = 'hello world new content';
+            const expectedAction = { type: contentActions.UPDATE_CONTENT, content };
+            expect(contentActions.updateContent(content)).toEqual(expectedAction);
+        });
+    });
+
     describe('changeSelectedContent', () => {
         it('Should create an action to change the selectedContent to a given index', () => {
             const index = 4;

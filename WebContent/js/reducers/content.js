@@ -13,6 +13,7 @@ import {
     REQUEST_CONTENT,
     RECEIVE_CONTENT,
     REMOVE_CONTENT,
+    UPDATE_CONTENT,
     CHANGE_SELECTED_CONTENT,
     REQUEST_SUBMIT_JCL,
     RECEIVE_SUBMIT_JCL,
@@ -55,6 +56,15 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
         case REMOVE_CONTENT:
             return state.merge({
                 content: state.get('content').delete(action.index),
+            });
+        case UPDATE_CONTENT:
+            return state.merge({
+                content: state.get('content').set(state.get('selectedContent'), {
+                    label: state.get('content').get(state.get('selectedContent')).label,
+                    content: action.content,
+                    isFetching: false,
+                    readOnly: state.get('content').get(state.get('selectedContent')).readOnly,
+                }),
             });
         case CHANGE_SELECTED_CONTENT:
             return state.merge({

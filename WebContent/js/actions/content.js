@@ -14,6 +14,7 @@ import { constructAndPushMessage } from './snackbarNotifications';
 export const REQUEST_CONTENT = 'REQUEST_CONTENT';
 export const RECEIVE_CONTENT = 'RECEIVE_CONTENT';
 export const REMOVE_CONTENT = 'REMOVE_CONTENT';
+export const UPDATE_CONTENT = 'UPDATE_CONTENT';
 export const CHANGE_SELECTED_CONTENT = 'CHANGE_SELECTED_CONTENT';
 export const INVALIDATE_CONTENT = 'INVALIDATE_CONTENT';
 
@@ -135,6 +136,13 @@ export function removeContent(index) {
     return {
         type: REMOVE_CONTENT,
         index,
+    };
+}
+
+export function updateContent(content) {
+    return {
+        type: UPDATE_CONTENT,
+        content,
     };
 }
 
