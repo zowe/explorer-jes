@@ -12,13 +12,17 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Map, List } from 'immutable';
 import { connect } from 'react-redux';
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import Description from '@material-ui/icons/Description';
 import { fetchJobFile, getFileLabel, changeSelectedContent } from '../actions/content';
+import { atlasFetch } from '../utilities/urlUtils';
+import { constructAndPushMessage } from '../actions/snackbarNotifications';
 
 class JobFile extends React.Component {
     constructor(props) {
         super(props);
         this.openFile = this.openFile.bind(this);
+        this.downloadJobFile = this.downloadJobFile.bind(this);
     }
 
     openFile() {
@@ -36,18 +40,59 @@ class JobFile extends React.Component {
         }
     }
 
-    render() {
-        const { file } = this.props;
+    downloadJobFile() {
+        const { job, file, dispatch } = this.props;
+        atlasFetch(`jobs/${job.get('jobName')}/${job.get('jobId')}/files/${file.id}/content`, { credentials: 'include' })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                return dispatch(constructAndPushMessage('Unable to download file'));
+            })
+            .then(json => {
+                const blob = new Blob([json.content], { type: 'text/plain' });
+                const fileName = `${job.get('jobName')}-${job.get('jobId')}-${file.label}`;
+                if (window.navigator.msSaveOrOpenBlob) {
+                    window.navigator.msSaveBlob(blob, fileName);
+                } else {
+                    const elem = window.document.createElement('a');
+                    elem.href = window.URL.createObjectURL(blob);
+                    elem.download = fileName;
+                    document.body.appendChild(elem);
+                    elem.click();
+                    document.body.removeChild(elem);
+                }
+            });
+    }
+
+    renderJobFileMenu() {
+        const { job, file } = this.props;
         return (
-            <li className="job-file">
-                <span
-                    className="content-link"
-                    onClick={() => { this.openFile(); }}
-                >
-                    <Description className="node-icon" />
-                    <span>{file.label}</span>
-                </span>
-            </li>);
+            <ContextMenu id={`${job.get('jobId')}${file.id}`}>
+                <MenuItem onClick={this.downloadJobFile}>
+                    Download
+                </MenuItem>
+            </ContextMenu>
+        );
+    }
+
+    render() {
+        const { job, file } = this.props;
+        return (
+            <div>
+                <li className="job-file">
+                    <ContextMenuTrigger id={`${job.get('jobId')}${file.id}`}>
+                        <span
+                            className="content-link"
+                            onClick={() => { this.openFile(); }}
+                        >
+                            <Description className="node-icon" />
+                            <span>{file.label}</span>
+                        </span>
+                    </ContextMenuTrigger>
+                </li>
+                {this.renderJobFileMenu()}
+            </div>);
     }
 }
 
