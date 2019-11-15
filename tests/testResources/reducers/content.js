@@ -37,6 +37,15 @@ export const receivedContent =
         isSubmittingJCL: false,
     });
 
+export const updatedContent = 'new updated Content';
+export const receivedContentUpdated =
+    Map({
+        content: List([{ label: fileLabel, content: updatedContent, isFetching: false, readOnly: true }]),
+        selectedContent: 0,
+        isSubmittingJCL: false,
+    });
+
+
 export const requestedContentWithExistingContent =
     Map({
         content: List([

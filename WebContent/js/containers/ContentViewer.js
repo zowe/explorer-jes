@@ -21,7 +21,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Button from '@material-ui/core/Button';
 import CircularProgressIcon from '@material-ui/core/CircularProgress';
 import queryString from 'query-string';
-import { fetchJobFileNoName, removeContent, changeSelectedContent, submitJCL } from '../actions/content';
+import { fetchJobFileNoName, removeContent, updateContent, changeSelectedContent, submitJCL } from '../actions/content';
 
 export class ContentViewer extends React.Component {
     constructor(props) {
@@ -35,7 +35,6 @@ export class ContentViewer extends React.Component {
 
         this.state = {
             height: 0,
-            editorContent: ' ',
             currentContent: '',
             submitJCLButtonOffset: window.innerWidth - 120,
         };
@@ -81,7 +80,10 @@ export class ContentViewer extends React.Component {
     };
 
     handleSelectedTabChange(newTabIndex) {
-        const { dispatch } = this.props;
+        const { selectedContent, content, dispatch } = this.props;
+        if (this.state.currentContent !== content.get(selectedContent).content) {
+            dispatch(updateContent(this.state.currentContent));
+        }
         dispatch(changeSelectedContent(newTabIndex));
     }
 
