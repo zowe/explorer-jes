@@ -68,6 +68,12 @@ describe('Reducer: content', () => {
         expect(content(contentResources.receivedContent, action)).toEqual(contentResources.baseContent);
     });
 
+    it('Should hande UPDATE_CONTENT', () => {
+        const updatedContent = contentResources.updatedContent;
+        const action = { type: contentActions.UPDATE_CONTENT, content: updatedContent };
+        expect(content(contentResources.receivedContent, action)).toEqual(contentResources.receivedContentUpdated);
+    });
+
     it('Should handle REQUEST_SUBMIT_JCL', () => {
         const action = { type: contentActions.REQUEST_SUBMIT_JCL };
         expect(content(contentResources.baseContent, action)).toEqual(contentResources.requestSubmitJCLContent);
