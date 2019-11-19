@@ -70,7 +70,7 @@
     "testWatch": "mocha --watch --require babel-core/register tests --recursive",
     "test": "JUNIT_REPORT_PATH=target/report.xml nyc mocha --require babel-core/register tests --recursive --colors --reporter mocha-jenkins-reporter",
     "prod": "cross-env NODE_ENV='production' webpack && cp -r ./WebContent/css ./dist/ && cp -r ./WebContent/img ./dist/ && cp ./WebContent/index.html ./dist/ && cp ./WebContent/favicon.ico ./dist/",
-    "build": "cross-env NODE_ENV='production' webpack && cp -r ./WebContent/css ./web/ && cp -r ./WebContent/img ./web/images && cp ./WebContent/index.html ./web/ && cp ./WebContent/favicon.ico ./web/",
+    "build": "cross-env NODE_ENV='production' webpack --config webpack.config.iframe.js && cp -r ./WebContent/css ./web/ && cp -r ./WebContent/img ./web/images && cp ./WebContent/index.html ./web/ && cp ./WebContent/favicon.ico ./web/",
     "preCommit": "npm-run-all --aggregate-output --parallel --print-label lint test prod"
   },
   "nyc": {
