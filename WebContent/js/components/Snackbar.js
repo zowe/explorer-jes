@@ -57,9 +57,7 @@ class AtlasSnackbar extends React.Component {
         if (snackbarNotificationsMessages.size > 0) {
             const messageValue = snackbarNotificationsMessages.first();
 
-            if (window.sendJesNotifications) {
-                window.sendJesNotifications(messageValue.get('message'));
-            }
+            window.sendJesNotifications(messageValue.get('message'));
 
             return (
                 <Snackbar
