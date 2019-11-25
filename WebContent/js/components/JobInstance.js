@@ -15,7 +15,7 @@ import { connect } from 'react-redux';
 import LabelIcon from '@material-ui/icons/Label';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { fetchJobFiles, toggleJob, purgeJob } from '../actions/jobNodes';
-import { getJCL, getFileLabel, changeSelectedContent } from '../actions/content';
+import { getJCL, getFileLabel, changeSelectedContent, fetchConcatenatedJobFiles } from '../actions/content';
 import JobFile from './JobFile';
 import JobStep from './JobStep';
 
@@ -28,6 +28,11 @@ class JobInstance extends React.Component {
         } else {
             dispatch(toggleJob(job.get('jobId')));
         }
+    }
+
+    handleOpenAllFiles(job) {
+        const { dispatch } = this.props;
+        dispatch(fetchConcatenatedJobFiles(job.get('jobName'), job.get('jobId')));
     }
 
     handlePurge(job) {
@@ -88,6 +93,9 @@ class JobInstance extends React.Component {
         const { job } = this.props;
         return (
             <ContextMenu id={job.get('label')}>
+                <MenuItem onClick={() => { this.handleOpenAllFiles(job); }}>
+                    Open
+                </MenuItem>
                 <MenuItem onClick={() => { this.handlePurge(job); }}>
                     Purge Job
                 </MenuItem>
