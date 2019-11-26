@@ -79,6 +79,7 @@ describe('Action: content', () => {
                 },
                 {
                     type: contentActions.INVALIDATE_CONTENT,
+                    fileLabel: `${contentResources.jobId}-${contentResources.fileName}`,
                 },
             ];
 
@@ -149,6 +150,7 @@ describe('Action: content', () => {
                 },
                 {
                     type: contentActions.INVALIDATE_CONTENT,
+                    fileLabel: undefined,
                 },
             ];
 
@@ -183,6 +185,7 @@ describe('Action: content', () => {
                 },
                 {
                     type: contentActions.INVALIDATE_CONTENT,
+                    fileLabel: undefined,
                 },
             ];
             const store = mockStore();
@@ -277,6 +280,7 @@ describe('Action: content', () => {
             },
             {
                 type: contentActions.INVALIDATE_CONTENT,
+                fileLabel: contentActions.getFileLabel(contentResources.jobId, 'JCL'),
             }];
             const store = mockStore();
 

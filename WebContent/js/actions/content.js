@@ -46,9 +46,10 @@ function receiveContent(jobName, jobId, fileName, fileId, content, fileLabel, re
     };
 }
 
-export function invalidateContent() {
+export function invalidateContent(fileLabel) {
     return {
         type: INVALIDATE_CONTENT,
+        fileLabel,
     };
 }
 
@@ -58,7 +59,8 @@ export function getFileLabel(jobId, fileName = '') {
 
 export function fetchJobFile(jobName, jobId, fileName, fileId) {
     return dispatch => {
-        dispatch(requestContent(jobName, jobId, fileName, fileId, getFileLabel(jobId, fileName)));
+        const fileLabel = getFileLabel(jobId, fileName);
+        dispatch(requestContent(jobName, jobId, fileName, fileId, fileLabel));
         return atlasFetch(`jobs/${jobName}/${jobId}/files/${fileId}/content`, { credentials: 'include' })
             .then(response => {
                 if (response.ok) {
@@ -68,13 +70,13 @@ export function fetchJobFile(jobName, jobId, fileName, fileId) {
             })
             .then(json => {
                 if ('content' in json) {
-                    return dispatch(receiveContent(jobName, jobId, fileName, fileId, json.content, getFileLabel(jobId, fileName)));
+                    return dispatch(receiveContent(jobName, jobId, fileName, fileId, json.content, fileLabel));
                 }
                 throw Error(json.message);
             })
             .catch(e => {
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileName}`));
-                return dispatch(invalidateContent());
+                return dispatch(invalidateContent(fileLabel));
             });
     };
 }
@@ -155,7 +157,8 @@ export function changeSelectedContent(index) {
 
 export function getJCL(jobName, jobId) {
     return dispatch => {
-        dispatch(requestContent(jobName, jobId, 'JCL', 0, getFileLabel(jobId, 'JCL')));
+        const fileLabel = getFileLabel(jobId, 'JCL');
+        dispatch(requestContent(jobName, jobId, 'JCL', 0, fileLabel));
         return atlasFetch(`jobs/${jobName}/${jobId}/files/JCL/content`, { credentials: 'include' })
             .then(response => {
                 if (response.ok) {
@@ -164,11 +167,11 @@ export function getJCL(jobName, jobId) {
                 return response.json().then(e => { throw Error(e.message); });
             })
             .then(json => {
-                return dispatch(receiveContent(jobName, jobId, 'JCL', 0, json.content, getFileLabel(jobId, 'JCL'), false));
+                return dispatch(receiveContent(jobName, jobId, 'JCL', 0, json.content, fileLabel, false));
             })
             .catch(e => {
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:JCL`));
-                return dispatch(invalidateContent());
+                return dispatch(invalidateContent(fileLabel));
             });
     };
 }
