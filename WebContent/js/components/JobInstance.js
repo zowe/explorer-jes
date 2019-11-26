@@ -21,6 +21,24 @@ import JobStep from './JobStep';
 
 
 class JobInstance extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            singleClickTimeout: 0,
+            preventSingleClick: false,
+        };
+    }
+
+    handleSingleClick(job) {
+        this.state.singleClickTimeout = setTimeout(() => {
+            if (!this.state.preventSingleClick) {
+                this.handleJobToggle(job);
+            }
+            this.setState({ preventSingleClick: false });
+        }, 500);
+    }
+
     handleJobToggle(job) {
         const { dispatch } = this.props;
         if (!job.get('isToggled') && !job.get('files').length > 0) {
@@ -30,9 +48,31 @@ class JobInstance extends React.Component {
         }
     }
 
+    isFileOpen(fileLabel) {
+        const { content } = this.props;
+        return content.filter(x => { return x.label === fileLabel; }).size > 0;
+    }
+
+    findAndSwitchToContent(job, fileLabel) {
+        const { content, dispatch } = this.props;
+        content.forEach(x => {
+            if (x.label === fileLabel) {
+                dispatch(changeSelectedContent(content.indexOf(x)));
+            }
+        });
+    }
+
     handleOpenAllFiles(job) {
         const { dispatch } = this.props;
-        dispatch(fetchConcatenatedJobFiles(job.get('jobName'), job.get('jobId')));
+        const fileLabel = getFileLabel(job.get('jobName'), job.get('jobId'));
+        // Reset the debounce handling
+        clearTimeout(this.state.singleClickTimeout);
+        this.setState({ preventSingleClick: true });
+        if (this.isFileOpen(fileLabel)) {
+            this.findAndSwitchToContent(job, fileLabel);
+        } else {
+            dispatch(fetchConcatenatedJobFiles(job.get('jobName'), job.get('jobId')));
+        }
     }
 
     handlePurge(job) {
@@ -41,20 +81,14 @@ class JobInstance extends React.Component {
     }
 
     handleGetJCL(job) {
-        const { content, dispatch } = this.props;
-        // Is the file already open?
-        if (content.filter(x => { return x.label === getFileLabel(job.get('jobId'), 'JCL'); }).size > 0) {
-            // Find which index the file is open in and change to it
-            content.forEach(x => {
-                if (x.label === getFileLabel(job.get('jobId'), 'JCL')) {
-                    dispatch(changeSelectedContent(content.indexOf(x)));
-                }
-            });
+        const { dispatch } = this.props;
+        const fileLabel = getFileLabel(job.get('jobId'), 'JCL');
+        if (this.isFileOpen(fileLabel)) {
+            this.findAndSwitchToContent(job, fileLabel);
         } else {
             dispatch(getJCL(job.get('jobName'), job.get('jobId')));
         }
     }
-
 
     renderJobStatus() {
         const { job } = this.props;
@@ -113,7 +147,11 @@ class JobInstance extends React.Component {
             <div className="job-instance">
                 <li>
                     <ContextMenuTrigger id={job.get('label')}>
-                        <span className="content-link" onClick={() => { this.handleJobToggle(job); }}>
+                        <span
+                            className="content-link"
+                            onClick={() => { this.handleSingleClick(job); }}
+                            onDoubleClick={() => { this.handleOpenAllFiles(job); }}
+                        >
                             <LabelIcon className="node-icon" />
                             <span className="job-label">
                                 {job.get('label')}
