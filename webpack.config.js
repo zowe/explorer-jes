@@ -11,6 +11,7 @@
 const debug = process.env.NODE_ENV !== 'production';
 const webpack = require('webpack');
 const path = require('path');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
     devtool: debug ? 'inline-sourcemap' : false,
@@ -48,12 +49,13 @@ module.exports = {
             'process.env.REACT_SYNTAX_HIGHLIGHTER_LIGHT_BUILD': true,
             'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
         }),
-        new webpack.optimize.UglifyJsPlugin({
-            mangle: true,
-            sourcemap: false,
-            compress: {
-                screw_ie8: true,
-                warnings: false,
+        new UglifyJsPlugin({
+            sourceMap: true,
+            uglifyOptions: {
+                ecma: 8,
+                compress: {
+                    warnings: false,
+                },
             },
         }),
     ],

@@ -10,15 +10,17 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Map } from 'immutable';
-import LabelIcon from 'material-ui/svg-icons/action/label';
+import { Map, List } from 'immutable';
+import { connect } from 'react-redux';
+import LabelIcon from '@material-ui/icons/Label';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { fetchJobFiles, toggleJob, purgeJob } from '../actions/jobNodes';
+import { getJCL, getFileLabel, changeSelectedContent } from '../actions/content';
 import JobFile from './JobFile';
 import JobStep from './JobStep';
 
 
-export default class JobInstance extends React.Component {
+class JobInstance extends React.Component {
     handleJobToggle(job) {
         const { dispatch } = this.props;
         if (!job.get('isToggled') && !job.get('files').length > 0) {
@@ -32,6 +34,22 @@ export default class JobInstance extends React.Component {
         const { dispatch } = this.props;
         dispatch(purgeJob(job.get('jobName'), job.get('jobId')));
     }
+
+    handleGetJCL(job) {
+        const { content, dispatch } = this.props;
+        // Is the file already open?
+        if (content.filter(x => { return x.label === getFileLabel(job.get('jobId'), 'JCL'); }).size > 0) {
+            // Find which index the file is open in and change to it
+            content.forEach(x => {
+                if (x.label === getFileLabel(job.get('jobId'), 'JCL')) {
+                    dispatch(changeSelectedContent(content.indexOf(x)));
+                }
+            });
+        } else {
+            dispatch(getJCL(job.get('jobName'), job.get('jobId')));
+        }
+    }
+
 
     renderJobStatus() {
         const { job } = this.props;
@@ -73,6 +91,9 @@ export default class JobInstance extends React.Component {
                 <MenuItem onClick={() => { this.handlePurge(job); }}>
                     Purge Job
                 </MenuItem>
+                <MenuItem onClick={() => { this.handleGetJCL(job); }}>
+                    Get JCL (SJ)
+                </MenuItem>
             </ContextMenu>
         );
     }
@@ -104,4 +125,15 @@ export default class JobInstance extends React.Component {
 JobInstance.propTypes = {
     dispatch: PropTypes.func.isRequired,
     job: PropTypes.instanceOf(Map).isRequired,
+    content: PropTypes.instanceOf(List),
 };
+
+function mapStateToProps(state) {
+    const contentRoot = state.get('content');
+    return {
+        content: contentRoot.get('content'),
+    };
+}
+
+const ConnectedJobInstance = connect(mapStateToProps)(JobInstance);
+export default ConnectedJobInstance;

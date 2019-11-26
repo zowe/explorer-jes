@@ -16,7 +16,7 @@ node('ibm-jenkins-slave-dind') {
 
   def pipeline = lib.pipelines.nodejs.NodeJSPipeline.new(this)
 
-  pipeline.admins.add("jackjia")
+  pipeline.admins.add("jackjia", "jcain")
 
   // FIXME: before merge to master, this line should be removed
   // run the build every 3 hours to verify FVT success rate
@@ -148,6 +148,17 @@ node('ibm-jenkins-slave-dind') {
       sh 'docker ps'
       // wait a while to give time for service to be started
       sleep time: 3, unit: 'MINUTES'
+  // we need sonar scan
+  // failBuild set to false whilst investigating https://github.com/zowe/zlux/issues/285
+  pipeline.sonarScan(
+    scannerTool     : lib.Constants.DEFAULT_LFJ_SONARCLOUD_SCANNER_TOOL,
+    scannerServer   : lib.Constants.DEFAULT_LFJ_SONARCLOUD_SERVER,
+    allowBranchScan : lib.Constants.DEFAULT_LFJ_SONARCLOUD_ALLOW_BRANCH,
+    failBuild       : false
+  )
+
+  // we have pax packaging step
+  pipeline.packaging(name: 'explorer-jes')
 
       echo "Starting integration test ..."
       timeout(time: 60, unit: 'MINUTES') {

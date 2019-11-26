@@ -8,44 +8,67 @@
  * Copyright IBM Corporation 2018, 2019
  */
 
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 
 export const baseContent =
     Map({
-        content: null,
-        isFetching: false,
-        label: '',
+        content: List(),
+        selectedContent: 0,
+        isSubmittingJCL: false,
     });
 
 export const jobName = 'DEMOJOB';
 export const jobId = 'JOB1234';
 export const fileLabel = 'SYSOUT';
+export const fileLabel2 = 'JESJCL';
 
 export const requestedContent =
     Map({
-        content: null,
-        isFetching: true,
-        label: `Loading: ${fileLabel}`,
+        content: List([{ label: `${jobId}-${fileLabel}`, content: '', isFetching: true }]),
+        selectedContent: 0,
+        isSubmittingJCL: false,
     });
 
 
 export const receivedContent =
     Map({
-        content: 'test',
-        isFetching: false,
-        label: `${jobName} - ${jobId} - ${fileLabel}`,
+        content: List([{ label: fileLabel, content: 'test', isFetching: false, readOnly: true }]),
+        selectedContent: 0,
+        isSubmittingJCL: false,
     });
 
-export const invalidatedContent =
+export const updatedContent = 'new updated Content';
+export const receivedContentUpdated =
     Map({
-        content: 'Unable to retrieve content',
-        isFetching: false,
-        label: 'Unable to retrieve content',
+        content: List([{ label: fileLabel, content: updatedContent, isFetching: false, readOnly: true }]),
+        selectedContent: 0,
+        isSubmittingJCL: false,
     });
 
-export const toggledContent =
+
+export const requestedContentWithExistingContent =
     Map({
-        content: null,
-        isFetching: false,
-        label: '',
+        content: List([
+            { label: fileLabel, content: 'test', isFetching: false, readOnly: true },
+            { label: `${jobId}-${fileLabel2}`, content: '', isFetching: true },
+        ]),
+        selectedContent: 0,
+        isSubmittingJCL: false,
+    });
+
+export const receivedContent2 =
+    Map({
+        content: List([
+            { label: fileLabel, content: 'test', isFetching: false, readOnly: true },
+            { label: fileLabel2, content: 'test2', isFetching: false, readOnly: true },
+        ]),
+        selectedContent: 0,
+        isSubmittingJCL: false,
+    });
+
+export const requestSubmitJCLContent =
+    Map({
+        content: List(),
+        selectedContent: 0,
+        isSubmittingJCL: true,
     });

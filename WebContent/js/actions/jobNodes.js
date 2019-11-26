@@ -8,7 +8,6 @@
  * Copyright IBM Corporation 2016, 2019
  */
 
-/* global fetch */
 import { atlasFetch } from '../utilities/urlUtils';
 import { constructAndPushMessage } from './snackbarNotifications';
 
