@@ -366,23 +366,18 @@ describe('JES explorer function verification tests', () => {
             it('Set content viewer header to Loading:');
 
             it('Should display job name, id and file name in card header', async () => {
-                const viewer = await driver.findElements(By.css('#content-viewer > div > div > div > span'));
-                const text = await viewer[0].getText();
-                expect(text).to.not.be.empty;
-                expect(text).to.not.equals('Content Viewer');
-                expect(text).to.not.contains('Loading:');
-                const [jobName, id, fileName] = text.split(' - ');
-                expect(jobName).to.be.equal(ZOWE_JOB_NAME);
-                expect(fileName).to.be.equal(jobFileName);
-                expect(id.startsWith('STC')).to.be.true;
+                const viewer = await driver.findElements(By.className('content-tab-label'));
+                const tabLabelText = await viewer[0].getText();
+                expect(tabLabelText).to.contain(jobFileName);
             });
 
             it('Should display file contents in Orion text area', async () => {
                 const textLineDivs = await driver.findElements(By.css('.textviewContent > div'));
-                expect(textLineDivs)
-                    .to.be.an('array')
-                    .that.has.length.gte(1);
+                expect(textLineDivs).to.be.an('array').that.has.length.gte(1);
             });
+
+            // TODO:: Need to add tests for checking tab functionality
+
             describe('Should highlight JESJCL correctly', () => {
                 let elems;
 
@@ -413,6 +408,7 @@ describe('JES explorer function verification tests', () => {
                 });
             });
 
+            // TODO:: Need to add tests for checking read only changes when looking at output file vs SJ
             it('Should be read only', async () => {
                 const textLines = await driver.findElements(By.css('.textviewContent > div > span'));
                 expect(textLines)
@@ -593,6 +589,7 @@ describe('JES explorer function verification tests', () => {
                 fileId: 3,
             };
             await loadUrlWithViewerFilters(driver, testFilters);
+            await driver.sleep(10000);
         });
 
         it('Should handle rendering expected components with viewer route (File Viewer)', async () => {
@@ -605,15 +602,14 @@ describe('JES explorer function verification tests', () => {
 
         it('Should render file name, job name and job id in card header', async () => {
             // expect content viewer to be present
-            expect(await testElementAppearsXTimesByCSS(driver, '#content-viewer > div > div > div > span', 2)).to.be.true;
-            const cardHeader = await driver.findElement(By.css('#content-viewer > div > div > div > span'));
+            expect(await testElementAppearsXTimesByCSS(driver, '.content-tab-label', 1)).to.be.true;
+            const cardHeader = await driver.findElement(By.className('content-tab-label'));
 
             const cardHeaderText = await cardHeader.getText();
             expect(cardHeaderText).to.not.be.undefined;
             expect(cardHeaderText).to.not.be.empty;
 
-            const [jobName, jobId, fileName] = cardHeaderText.split(' - ');
-            expect(jobName).to.be.equal(testFilters.jobName);
+            const [jobId, fileName] = cardHeaderText.split('-');
             expect(jobId).to.be.equal(testFilters.jobId);
             expect(fileName).to.be.equal(testFileName);
         });

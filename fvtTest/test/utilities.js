@@ -242,11 +242,17 @@ async function reloadAndOpenFilterPanel(driver, hasJobs) {
     await element.click();
 }
 
+/**
+ * Get the card header text that sumarises the filters selected
+ * @param {WebDriver} driver selenium-webdriver
+ * @returns Object with key/value pairs of filters
+ *  e.g {owner: ibmuser, prefix: STC*, jobId: *, status: *}
+ */
 async function waitForAndExtractFilters(driver) {
     await driver.sleep(1000);
     await driver.wait(until.elementLocated(By.className('tree-card')), 10000);
-    const filterSpans = await driver.findElements(By.css('.tree-card > div > div > div > span'));
-    const filterText = await filterSpans[1].getText();
+    const filterSpans = await driver.findElements(By.css('.tree-card > div > div > span'));
+    const filterText = await filterSpans[0].getText();
     return parseFilterText(filterText);
 }
 
@@ -261,8 +267,8 @@ async function getAllFilterValues(driver) {
     element = await driver.findElement(By.id('filter-jobId-field'));
     const jobId = await element.getAttribute('value');
 
-    element = await driver.findElements(By.css('#filter-status-field > div > div'));
-    const status = await element[1].getText();
+    element = await driver.findElement(By.id('filter-status-field'));
+    const status = await element.getAttribute('value');
 
     return {
         owner, prefix, jobId, status,
