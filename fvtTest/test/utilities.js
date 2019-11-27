@@ -120,16 +120,9 @@ async function getDriver() {
     return driver;
 }
 
-async function login(driver, username, password) {
-    const alert = await driver.wait(until.alertIsPresent(), 20000);
-    await alert.sendKeys(username + Key.TAB + password);
-    await alert.accept();
-}
-
-async function loadPage(driver, page, username, password) {
+async function loadPage(driver, page) {
     await driver.manage().window().setRect({ width: 1600, height: 800 });
     await driver.get(page);
-    await login(driver, username, password);
     await driver.wait(until.titleIs('JES Explorer'), 2000);
 }
 
@@ -282,7 +275,7 @@ async function getAllFilterValues(driver) {
  */
 async function waitForAndExtractJobs(driver) {
     await driver.sleep(1000);
-    await driver.wait(until.elementLocated(By.className('job-instance')), 10000);
+    await driver.wait(until.elementLocated(By.css('.job-instance > li > div > .content-link')), 10000);
     const jobs = await driver.findElements(By.className('job-instance'));
     return jobs;
 }

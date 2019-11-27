@@ -188,7 +188,9 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
     await reloadAndOpenFilterPanel(driver, jobsInstances.length > 0);
     await testTextInputFieldCanBeModified(driver, 'filter-owner-field', ownerFilter);
     await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', prefixFilter);
-    await setStatusFilter(driver, statusFilter);
+    if (statusFilter) {
+        await setStatusFilter(driver, statusFilter);
+    }
 
     await findAndClickApplyButton(driver);
     const jobs = await waitForAndExtractJobs(driver);
@@ -212,19 +214,20 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
  * @param {string} statusFilter filter status
  * @param {string} jobFileNameFilter filter status
  */
-async function testJobFilesClick(driver, ownerFilter, prefixFilter, statusFilter, jobFileName) {
+async function getJobAndOpenFile(driver, ownerFilter, prefixFilter, statusFilter, jobFileName) {
     await testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter);
-    await driver.sleep(10000); // TODO:: replace with driver wait for element to be visible
-    const fileLinks = await driver.findElements(By.css('.job-instance > ul > li > .content-link'));
+    const fileLinks = await driver.findElements(By.css('.job-instance > ul > div > li > div > .content-link > span'));
 
-    const jobs = await Promise.all(fileLinks.map(async j => { return { text: await j.getText(), job: j }; }));
-    const testJob = jobs.filter(j => { return j.text === jobFileName; });
-
-    if (testJob.length > 0) {
-        await testJob[0].job.click();
+    // Find the jobFileName we're looking for from the list of job files
+    for (const fileLink of fileLinks) {
+        const text = await fileLink.getText();
+        if (text === jobFileName) {
+            await fileLink.click();
+            break;
+        }
     }
-
-    return testJob.length > 0;
+    // TODO:: Can we check that content has rendered first?
+    return true;
 }
 
 const testHighlightColorByClass = (colorClass, elems) => {
@@ -298,7 +301,7 @@ module.exports = {
     testOwnerFilterFetching,
     testStatusFilterFetching,
     testJobFilesLoad,
-    testJobFilesClick,
+    getJobAndOpenFile,
     testJobOwnerFilter,
     testJobPrefixFilter,
     testJobStatusFilter,
