@@ -71,7 +71,7 @@ describe('JES explorer function verification tests', () => {
         // TODO:: Do we need to turn this into a singleton in order to have driver accessible by multiple files in global namespace?
         driver = await getDriver();
         try {
-            await driver.get(`https://${USERNAME}:${PASSWORD}@tvt5003.svl.ibm.com:9554/api/v1/jobs/username`);
+            await driver.get(`https://${USERNAME}:${PASSWORD}@${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}/api/v1/jobs/username`);
             await loadPage(driver, BASE_URL, USERNAME, PASSWORD);
             // Ensure tree and editor have loaded
             await driver.wait(until.elementLocated(By.id('job-list')), 30000);
