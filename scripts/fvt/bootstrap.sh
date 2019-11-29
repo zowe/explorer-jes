@@ -20,15 +20,12 @@ java -Xms16m -Xmx512m \
 EXPLORER_PLUGIN_BASEURI=$(node -e "process.stdout.write(require('./jes_explorer/app/package.json').config.baseuri)")
 EXPLORER_PLUGIN_NAME=$(node -e "process.stdout.write(require('./jes_explorer/app/package.json').config.pluginName)")
 
-pwd
-ls
-
 # starting plugin UI server
 node /app/jes_explorer/server/src/index.js \
     --service $EXPLORER_PLUGIN_NAME \
     --path $EXPLORER_PLUGIN_BASEURI \
     --port 8080 \
-    --key "../server/configs/server.key" \
-    --cert "../server/confids/server.cert" \
+    --key "./jes_explorer/server/configs/server.key" \
+    --cert "./jes_explorer/confids/server.cert" \
     --csp "*:*" \
     -90-09   v
