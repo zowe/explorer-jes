@@ -126,4 +126,23 @@ echo
 
 echo "[${SCRIPT_NAME}] starting application with command:"
 echo "[${SCRIPT_NAME}]   docker run -d -v $PWD/$FVT_WORKSPACE:/app -p $FVT_PROXY_PORT:80 jackjiaibm/ibm-nvm-jre-proxy"
-docker run -d -v $PWD/$FVT_WORKSPACE:/app -p $FVT_PROXY_PORT:80 jackjiaibm/ibm-nvm-jre-proxy
+CONTAINER_ID=$(docker run -d -v $PWD/$FVT_WORKSPACE:/app -p $FVT_PROXY_PORT:80 jackjiaibm/ibm-nvm-jre-proxy)
+echo -n "[${SCRIPT_NAME}] waiting for container ${CONTAINER_ID} to be started: "
+
+touch $PWD/$FVT_WORKSPACE/container_log.last
+# max wait for 1 minute
+for (( counter = 0; counter <= 30; counter++ )); do
+    echo -n .
+    docker logs $CONTAINER_ID > $PWD/$FVT_WORKSPACE/container_log.current 2>&1
+    if cmp --silent $PWD/$FVT_WORKSPACE/container_log.last $PWD/$FVT_WORKSPACE/container_log.current; then
+        # logs are not changing, assume it's fully loaded?
+        break
+    else
+        mv $PWD/$FVT_WORKSPACE/container_log.current $PWD/$FVT_WORKSPACE/container_log.last
+    fi
+    sleep 2
+done
+echo ' done'
+echo "[${SCRIPT_NAME}] container logs started >>>>>>>>"
+cat $PWD/$FVT_WORKSPACE/container_log.current
+echo "[${SCRIPT_NAME}] container logs end <<<<<<<<<<<<"
