@@ -123,7 +123,7 @@ async function getDriver() {
 async function loadPage(driver, page) {
     await driver.manage().window().setRect({ width: 1600, height: 800 });
     await driver.get(page);
-    const pageTitle = await driger.getTitle();
+    const pageTitle = await driver.getTitle();
     console.log(`Page title: ${pageTitle}`);
     await driver.wait(until.titleIs('JES Explorer'), 20000);
 }
