@@ -123,7 +123,7 @@ async function getDriver() {
 async function loadPage(driver, page) {
     await driver.manage().window().setRect({ width: 1600, height: 800 });
     await driver.get(page);
-    await driver.wait(until.titleIs('JES Explorer'), 2000);
+    await driver.wait(until.titleIs('JES Explorer'), 20000);
 }
 
 async function checkJobsOwner(actualJobs, expectedJobs) {
