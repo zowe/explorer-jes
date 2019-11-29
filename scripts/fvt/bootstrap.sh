@@ -26,7 +26,6 @@ node /app/jes_explorer/server/src/index.js \
     --path $EXPLORER_PLUGIN_BASEURI \
     --port 8080 \
     --key "./jes_explorer/server/configs/server.key" \
-    --cert "./jes_explorer/configs/server.cert" \
+    --cert "./jes_explorer/server/configs/server.cert" \
     --csp "*:*" \
     -v
-    
