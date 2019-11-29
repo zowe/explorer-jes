@@ -17,5 +17,17 @@ java -Xms16m -Xmx512m \
     -Dzosmf.ipAddress=$ZOSMF_HOST \
     -jar /app/$API_BOOT_JAR &
 
+EXPLORER_PLUGIN_BASEURI=$($NODE_BIN -e "process.stdout.write(require('./jes_explorer/app/package.json').config.baseuri)")
+EXPLORER_PLUGIN_NAME=$($NODE_BIN -e "process.stdout.write(require('./jes_explorer/app/package.json').config.pluginName)")
+
 # starting plugin UI server
-node /app/jes_explorer/server/src/index.js -C config.json -v
+node /app/jes_explorer/server/src/index.js \
+    --service $EXPLORER_PLUGIN_NAME \
+    --path $EXPLORER_PLUGIN_BASEURI \
+    --port 8080 \
+    --key "./server/configs/server.key" 
+    --cert "./server/confids/server.cert"
+    --csp "*:*"
+    -v
+server/configs/server.cert
+server/configs/server.key
