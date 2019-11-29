@@ -147,18 +147,7 @@ node('ibm-jenkins-slave-dind') {
       // run tests
       sh 'docker ps'
       // wait a while to give time for service to be started
-      sleep time: 3, unit: 'MINUTES'
-  // we need sonar scan
-  // failBuild set to false whilst investigating https://github.com/zowe/zlux/issues/285
-  pipeline.sonarScan(
-    scannerTool     : lib.Constants.DEFAULT_LFJ_SONARCLOUD_SCANNER_TOOL,
-    scannerServer   : lib.Constants.DEFAULT_LFJ_SONARCLOUD_SERVER,
-    allowBranchScan : lib.Constants.DEFAULT_LFJ_SONARCLOUD_ALLOW_BRANCH,
-    failBuild       : false
-  )
-
-  // we have pax packaging step
-  pipeline.packaging(name: 'explorer-jes')
+      sleep time: 1, unit: 'MINUTES'
 
       echo "Starting integration test ..."
       timeout(time: 60, unit: 'MINUTES') {
@@ -189,9 +178,13 @@ npm run test:fvt
   // skip all remaining stages to verify FVT success rate
 
   // // we need sonar scan
+  // we need sonar scan
+  // failBuild set to false whilst investigating https://github.com/zowe/zlux/issues/285
   // pipeline.sonarScan(
-  //   scannerTool     : lib.Constants.DEFAULT_SONARQUBE_SCANNER_TOOL,
-  //   scannerServer   : lib.Constants.DEFAULT_SONARQUBE_SERVER
+  //   scannerTool     : lib.Constants.DEFAULT_LFJ_SONARCLOUD_SCANNER_TOOL,
+  //   scannerServer   : lib.Constants.DEFAULT_LFJ_SONARCLOUD_SERVER,
+  //   allowBranchScan : lib.Constants.DEFAULT_LFJ_SONARCLOUD_ALLOW_BRANCH,
+  //   failBuild       : false
   // )
 
   // // we have pax packaging step
