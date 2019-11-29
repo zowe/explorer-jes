@@ -21,6 +21,7 @@ EXPLORER_PLUGIN_BASEURI=$(node -e "process.stdout.write(require('./jes_explorer/
 EXPLORER_PLUGIN_NAME=$(node -e "process.stdout.write(require('./jes_explorer/app/package.json').config.pluginName)")
 
 pwd
+ls
 
 # starting plugin UI server
 node /app/jes_explorer/server/src/index.js \
@@ -30,4 +31,4 @@ node /app/jes_explorer/server/src/index.js \
     --key "../server/configs/server.key" \
     --cert "../server/confids/server.cert" \
     --csp "*:*" \
-    -v
+    -90-09   v
