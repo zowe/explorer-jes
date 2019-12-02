@@ -24,7 +24,7 @@ EXPLORER_PLUGIN_NAME=$(node -e "process.stdout.write(require('./jes_explorer/app
 node /app/jes_explorer/server/src/index.js \
     --service $EXPLORER_PLUGIN_NAME \
     --path $EXPLORER_PLUGIN_BASEURI \
-    --port 8080 \
+    --port 8546 \
     --key "./jes_explorer/server/configs/server.key" \
     --cert "./jes_explorer/server/configs/server.cert" \
     --csp "*:*" \
