@@ -122,6 +122,7 @@ async function getDriver() {
 
 async function loadPage(driver, page) {
     await driver.manage().window().setRect({ width: 1600, height: 800 });
+    console.log(`Loading page: ${page}`);
     await driver.get(page);
     const pageTitle = await driver.getTitle();
     console.log(`Page title: ${pageTitle}`);
