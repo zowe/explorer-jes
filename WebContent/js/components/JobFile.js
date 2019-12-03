@@ -23,6 +23,7 @@ class JobFile extends React.Component {
         super(props);
         this.openFile = this.openFile.bind(this);
         this.downloadJobFile = this.downloadJobFile.bind(this);
+        this.openInNewWindow = this.openInNewWindow.bind(this);
     }
 
     openFile() {
@@ -65,12 +66,21 @@ class JobFile extends React.Component {
             });
     }
 
+    openInNewWindow() {
+        const { job, file } = this.props;
+        const newWindow = window.open(`/#/viewer?jobName=${job.get('jobName')}&jobId=${job.get('jobId')}&fileId=${file.id}`, '_blank');
+        newWindow.focus();
+    }
+
     renderJobFileMenu() {
         const { job, file } = this.props;
         return (
             <ContextMenu id={`${job.get('jobId')}${file.id}`}>
                 <MenuItem onClick={this.downloadJobFile}>
                     Download
+                </MenuItem>
+                <MenuItem onClick={this.openInNewWindow}>
+                    Open in Fullscreen
                 </MenuItem>
             </ContextMenu>
         );
