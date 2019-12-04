@@ -21,6 +21,7 @@ const {
     COMMENT_CLASS,
     COMMENT_ATTR_CLASS,
     NO_CLASS,
+    submitJob,
 } = require('./utilities');
 
 const {
@@ -45,6 +46,11 @@ const {
     testHighlightColorByClass,
     testAllHighlightColor,
 } = require('./testFunctions');
+
+const {
+    SHORT_JOB,
+    LONG_JOB,
+} = require('./testResources');
 
 require('dotenv').config();
 
@@ -198,6 +204,9 @@ describe('JES explorer function verification tests', () => {
             it.skip('Should handle reloading jobs when clicking refresh icon');
             describe('Job status labels', () => {
                 before(async () => {
+                    // Make sure we have a job in output and active
+                    await submitJob(SHORT_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
+                    await submitJob(LONG_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
                     await reloadAndOpenFilterPanel(driver);
                     expect(await testTextInputFieldCanBeModified(driver, 'filter-owner-field', '*'), 'filter-owner-field wrong').to.be.true;
                     expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', '*'), 'filter-prefix-field wrong').to.be.true;

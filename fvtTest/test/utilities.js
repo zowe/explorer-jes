@@ -1,6 +1,8 @@
 const { Capabilities, Builder } = require('selenium-webdriver');
-const { By, Key, until } = require('selenium-webdriver');
+const { By, until } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
+const fetch = require('node-fetch');
+const https = require('https');
 
 
 const VAR_LANG_CLASS = 'variable-language';
@@ -337,6 +339,31 @@ async function getTextLineElements(driver) {
     return textLineObjs;
 }
 
+async function submitJob(jcl, host, port, username, password) {
+    const agent = new https.Agent({
+        rejectUnauthorized: false,
+    });
+    const b64Credentials = `Basic ${new Buffer(`${username}:${password}`).toString('base64')}`;
+    await fetch(`https://${host}:${port}/api/v1/jobs/string`, {
+        method: 'POST',
+        headers: {
+            authorization: b64Credentials,
+            'Content-Type': 'application/json',
+        },
+        agent,
+        body: JSON.stringify({ jcl }),
+    }).then(
+        response => {
+            if (response.ok) {
+                return response.json();
+            }
+            return response.json().then(e => { throw Error(e.message); });
+        },
+    ).then(
+        responseJson => { console.log(responseJson); },
+    );
+}
+
 module.exports = {
     getDriver,
     loadPage,
@@ -362,4 +389,5 @@ module.exports = {
     COMMENT_ATTR_CLASS,
     NO_CLASS,
     DEFAULT_SEARCH_FILTERS,
+    submitJob,
 };

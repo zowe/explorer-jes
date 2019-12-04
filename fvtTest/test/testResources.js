@@ -1,0 +1,12 @@
+
+const SHORT_JOB = '//TESTJOBS JOB (),MSGCLASS=H\n//STEP1 EXEC PGM=BPXBATCH,PARM=\'sh sleep 10\' ';
+
+const LONG_JOB = '//TESTJOBL JOB (),MSGCLASS=H\n//STEP1 EXEC PGM=BPXBATCH,PARM=\'sh sleep 300\' ';
+
+const JCL_ERROR_JOB = '//TESTJOBL JOB (),MSGCLASS=H\n//STE1 EXEC PGM=BPXBATCH,PARM=\'sh sleep 300\'';
+
+module.exports = {
+    SHORT_JOB,
+    LONG_JOB,
+    JCL_ERROR_JOB,
+};
