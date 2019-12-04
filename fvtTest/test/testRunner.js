@@ -22,6 +22,7 @@ const {
     COMMENT_ATTR_CLASS,
     NO_CLASS,
     submitJob,
+    debugApiCall,
 } = require('./utilities');
 
 const {
@@ -199,7 +200,7 @@ describe('JES explorer function verification tests', () => {
                 it.skip('Should handle closing the filter card when clicking card header');
             });
         });
-        describe('Tree interaction', () => {
+        describe.only('Tree interaction', () => {
             // TODO:: Implement once we have an ID for refresh icon and loading icon
             it.skip('Should handle reloading jobs when clicking refresh icon');
             describe('Job status labels', () => {
@@ -207,6 +208,7 @@ describe('JES explorer function verification tests', () => {
                     // Make sure we have a job in output and active
                     await submitJob(SHORT_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
                     await submitJob(LONG_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
+                    await debugApiCall('jobs?owner=*&prefix=*', SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
                     await reloadAndOpenFilterPanel(driver);
                     expect(await testTextInputFieldCanBeModified(driver, 'filter-owner-field', '*'), 'filter-owner-field wrong').to.be.true;
                     expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', '*'), 'filter-prefix-field wrong').to.be.true;

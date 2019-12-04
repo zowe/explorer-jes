@@ -364,6 +364,30 @@ async function submitJob(jcl, host, port, username, password) {
     );
 }
 
+async function debugApiCall(path, host, port, username, password) {
+    const agent = new https.Agent({
+        rejectUnauthorized: false,
+    });
+    const b64Credentials = `Basic ${new Buffer(`${username}:${password}`).toString('base64')}`;
+    await fetch(`https://${host}:${port}/api/v1/${path}`, {
+        method: 'GET',
+        headers: {
+            authorization: b64Credentials,
+            'Content-Type': 'application/json',
+        },
+        agent,
+    }).then(
+        response => {
+            if (response.ok) {
+                return response.json();
+            }
+            return response.json().then(e => { throw Error(e.message); });
+        },
+    ).then(
+        responseJson => { console.log(responseJson); },
+    );
+}
+
 module.exports = {
     getDriver,
     loadPage,
@@ -390,4 +414,5 @@ module.exports = {
     NO_CLASS,
     DEFAULT_SEARCH_FILTERS,
     submitJob,
+    debugApiCall,
 };
