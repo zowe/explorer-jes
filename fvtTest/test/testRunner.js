@@ -318,7 +318,9 @@ describe('JES explorer function verification tests', () => {
                 });
 
                 it('Should handle rendering multiple jobs files', async () => {
+                    console.log('starting Should handle rendering multiple jobs files');
                     expect(await testJobFilesLoad(driver, '*', `${TEST_JOB_PREFIX}*`, null)).to.be.true;
+                    console.log('finished Should handle rendering multiple jobs files');
                 });
 
                 it('Should handle un rendering job files when clicking an already toggle job', async () => {

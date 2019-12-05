@@ -194,6 +194,8 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
 
     await findAndClickApplyButton(driver);
     const jobs = await waitForAndExtractJobs(driver);
+    console.log(`found jobs: ${jobs}`);
+    console.log(`jobs length: ${jobs.length}`);
     if (jobs.length === 0) return false; // Couldnt find any jobs
 
     let foundFiles = true;
@@ -201,6 +203,7 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
         await job.click();
         await driver.wait(until.elementLocated(By.className('job-file')));
         const jobFiles = await driver.findElements(By.className('job-file'));
+        console.log(`jobFiles: ${jobFiles}`);
         if (jobFiles.length < 1) foundFiles = false;
     }
     return foundFiles;
