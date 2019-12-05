@@ -49,6 +49,7 @@ const {
 } = require('./testFunctions');
 
 const {
+    TEST_JOB_PREFIX,
     SHORT_JOB,
     LONG_JOB,
 } = require('./testResources');
@@ -317,7 +318,7 @@ describe('JES explorer function verification tests', () => {
                 });
 
                 it('Should handle rendering multiple jobs files', async () => {
-                    expect(await testJobFilesLoad(driver, '*', 'IZU*', null)).to.be.true;
+                    expect(await testJobFilesLoad(driver, '*', `${TEST_JOB_PREFIX}*`, null)).to.be.true;
                 });
 
                 it('Should handle un rendering job files when clicking an already toggle job', async () => {
