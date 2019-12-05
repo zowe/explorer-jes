@@ -208,14 +208,14 @@ describe('JES explorer function verification tests', () => {
                     // Make sure we have a job in output and active
                     await submitJob(SHORT_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
                     await submitJob(LONG_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
-                    await debugApiCall('jobs?owner=*&prefix=*', SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
+                    // await debugApiCall('jobs?owner=*&prefix=*', SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
                     await reloadAndOpenFilterPanel(driver);
                     expect(await testTextInputFieldCanBeModified(driver, 'filter-owner-field', '*'), 'filter-owner-field wrong').to.be.true;
                     expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', '*'), 'filter-prefix-field wrong').to.be.true;
                     expect(await testTextInputFieldCanBeModified(driver, 'filter-jobId-field', '*'), 'filter-jobId-field wrong').to.be.true;
                     await findAndClickApplyButton(driver);
                     await driver.sleep(1000);
-                    await driver.wait(until.elementLocated(By.classId('refresh-icon')), 10000);
+                    await driver.wait(until.elementLocated(By.id('refresh-icon')), 10000);
                 });
 
                 it('Should handle showing jobs as ACTIVE', async () => {
