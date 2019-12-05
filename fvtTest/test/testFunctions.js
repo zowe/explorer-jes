@@ -107,7 +107,6 @@ async function testJobInstancesShowsStatus(driver, status) {
     let statusFound = false;
     for (const job of jobs) {
         const text = await job.getText();
-        console.log(`current job: ${text}`);
         if (text.includes(status)) {
             statusFound = true;
             break;

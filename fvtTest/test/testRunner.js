@@ -63,6 +63,7 @@ const {
 const BASE_URL = `https://${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}/ui/v1/explorer-jes`;
 const FILTER_BASE_URL = `${BASE_URL}/#/`;
 const loadUrlWithSearchFilters = loadPageWithFilterOptions(FILTER_BASE_URL, DEFAULT_SEARCH_FILTERS);
+const ZOSMF_JOB_NAME = 'IZUSVR1';
 
 
 describe('JES explorer function verification tests', () => {
@@ -200,7 +201,7 @@ describe('JES explorer function verification tests', () => {
                 it.skip('Should handle closing the filter card when clicking card header');
             });
         });
-        describe.only('Tree interaction', () => {
+        describe('Tree interaction', () => {
             // TODO:: Implement once we have an ID for refresh icon and loading icon
             it.skip('Should handle reloading jobs when clicking refresh icon');
             describe('Job status labels', () => {
@@ -267,8 +268,8 @@ describe('JES explorer function verification tests', () => {
                 });
 
                 describe('Prefix Filter', () => {
-                    it('Should handle fetching jobs based on full prefix (ZOWE_JOB_NAME)', async () => {
-                        expect(await testPrefixFilterFetching(driver, ZOWE_JOB_NAME)).to.be.true;
+                    it('Should handle fetching jobs based on full prefix (ZOSMF_JOB_NAME)', async () => {
+                        expect(await testPrefixFilterFetching(driver, ZOSMF_JOB_NAME)).to.be.true;
                     });
                     it('Should handle fetching jobs based on prefix with asterisk (ZOWE*)', async () => {
                         expect(await testPrefixFilterFetching(driver, 'ZOWE*')).to.be.true;
@@ -331,7 +332,7 @@ describe('JES explorer function verification tests', () => {
                 });
 
                 it('Should handle opening a files content when clicked', async () => {
-                    expect(await testJobFilesLoad(driver, '*', ZOWE_JOB_NAME, null)).to.be.true;
+                    expect(await testJobFilesLoad(driver, '*', ZOSMF_JOB_NAME, null)).to.be.true;
                     const fileLink = await driver.findElements(By.css('.job-instance > ul > div > li > div > .content-link'));
                     expect(fileLink).to.be.an('array').that.has.lengthOf.at.least(1);
                     await fileLink[0].click();
@@ -343,7 +344,7 @@ describe('JES explorer function verification tests', () => {
 
                 // TODO:: Implement once we have IDs for refresh vs loading icon
                 it.skip('Should handle setting refresh icon to loading icon when job file loading', async () => {
-                    expect(await testJobFilesLoad(driver, '*', ZOWE_JOB_NAME, null)).to.be.true;
+                    expect(await testJobFilesLoad(driver, '*', ZOSMF_JOB_NAME, null)).to.be.true;
                     // await findByCssAndClick(driver, '#tree-text-content > svg');
                 });
                 it('Should handle opening a files content unathorised for user and display error message');
@@ -351,7 +352,7 @@ describe('JES explorer function verification tests', () => {
             it('Should handle rendering context menu on right click', async () => {
                 await reloadAndOpenFilterPanel(driver);
                 expect(await testTextInputFieldCanBeModified(driver, 'filter-owner-field', '*'), 'filter-owner-field wrong').to.be.true;
-                expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', ZOWE_JOB_NAME), 'filter-prefix-field wrong').to.be.true;
+                expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', ZOSMF_JOB_NAME), 'filter-prefix-field wrong').to.be.true;
                 await findAndClickApplyButton(driver);
 
                 const jobs = await waitForAndExtractJobs(driver);
@@ -371,7 +372,7 @@ describe('JES explorer function verification tests', () => {
             const jobFileName = 'JESJCL';
 
             before('before editor behavior', async () => {
-                expect(await getJobAndOpenFile(driver, '*', ZOWE_JOB_NAME, null, jobFileName)).to.be.true;
+                expect(await getJobAndOpenFile(driver, '*', ZOSMF_JOB_NAME, null, jobFileName)).to.be.true;
                 await driver.sleep(10000); // TODO:: replace with driver wait for element to be visible
             });
 
@@ -489,10 +490,10 @@ describe('JES explorer function verification tests', () => {
                 });
             });
             describe('Prefix Url Filter', () => {
-                it('Should handle fetching jobs based on full prefix (ZOWE_JOB_NAME)', async () => {
-                    const filters = { prefix: ZOWE_JOB_NAME };
+                it('Should handle fetching jobs based on full prefix (ZOSMF_JOB_NAME)', async () => {
+                    const filters = { prefix: ZOSMF_JOB_NAME };
                     const expectedFilter = { ...DEFAULT_SEARCH_FILTERS, ...filters };
-                    const expectedPrefix = ZOWE_JOB_NAME;
+                    const expectedPrefix = ZOSMF_JOB_NAME;
 
                     await loadUrlWithSearchFilters(driver, filters);
 
@@ -590,8 +591,8 @@ describe('JES explorer function verification tests', () => {
         const testFileName = 'JESJCL';
         let testFilters;
 
-        before('get jobIds list from jobs filtered by ZOWE_JOB_NAME prefix', async () => {
-            const filters = { prefix: ZOWE_JOB_NAME, status: 'ACTIVE' };
+        before('get jobIds list from jobs filtered by ZOSMF_JOB_NAME prefix', async () => {
+            const filters = { prefix: ZOSMF_JOB_NAME, status: 'ACTIVE' };
             await loadUrlWithSearchFilters(driver, filters);
             const jobObjs = await waitForAndExtractParsedJobs(driver);
             expect(jobObjs && jobObjs.length > 0).to.be.true;

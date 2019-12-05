@@ -139,7 +139,7 @@ async function checkJobsOwner(actualJobs, expectedJobs) {
         for (const text of jobTexts) {
             if (!expectedJobs.some(expectedJob => { return text.startsWith(expectedJob); })) {
                 allMatchFlag = false;
-                // console.log(`${text} is not expected owner`);
+                console.log(`${text} is not expected owner`);
                 break;
             }
         }
@@ -158,7 +158,7 @@ const checkJobsAttribute = attr => {
         for (const job of jobObjs) {
             if (!expectedValues.some(val => { return job[attr].includes(val); })) {
                 allMatchFlag = false;
-                // console.log(`${job.text} is not expected status`);
+                console.log(`${job.text} is not expected status`);
                 break;
             }
         }
@@ -180,7 +180,7 @@ async function checkJobsPrefix(actualJobs, expectedPrefix) {
     for (const text of jobTexts) {
         if (!text.startsWith(searchPrefix)) {
             allMatchFlag = false;
-            // console.log(`${text} is not expected prefix`);
+            console.log(`${text} is not expected prefix`);
             break;
         }
     }
@@ -364,6 +364,14 @@ async function submitJob(jcl, host, port, username, password) {
     );
 }
 
+/**
+ * Given a path send a get request and print out the response body
+ * @param {String} path Api request path after api/v1/
+ * @param {String} host hostname
+ * @param {String} port https port
+ * @param {String} username TSO username
+ * @param {String} password TSO password
+ */
 async function debugApiCall(path, host, port, username, password) {
     const agent = new https.Agent({
         rejectUnauthorized: false,
