@@ -214,7 +214,8 @@ describe('JES explorer function verification tests', () => {
                     expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', '*'), 'filter-prefix-field wrong').to.be.true;
                     expect(await testTextInputFieldCanBeModified(driver, 'filter-jobId-field', '*'), 'filter-jobId-field wrong').to.be.true;
                     await findAndClickApplyButton(driver);
-                    await driver.wait(until.elementLocated(By.className('job-instance')), 10000);
+                    await driver.sleep(1000);
+                    await driver.wait(until.elementLocated(By.classId('refresh-icon')), 10000);
                 });
 
                 it('Should handle showing jobs as ACTIVE', async () => {
