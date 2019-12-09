@@ -618,7 +618,7 @@ describe('JES explorer function verification tests', () => {
             expect(await testElementAppearsXTimesByCSS(driver, '#content-viewer', 1)).to.be.true;
         });
 
-        it.only('Should render jobId and fileName in card header', async () => {
+        it('Should render jobId and fileName in card header', async () => {
             // expect content viewer to be present
             expect(await testElementAppearsXTimesByCSS(driver, '.content-tab-label', 1)).to.be.true;
             const cardHeader = await driver.findElement(By.className('content-tab-label'));
