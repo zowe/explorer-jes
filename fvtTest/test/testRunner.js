@@ -318,9 +318,7 @@ describe('JES explorer function verification tests', () => {
                 });
 
                 it('Should handle rendering multiple jobs files', async () => {
-                    console.log('starting Should handle rendering multiple jobs files');
                     expect(await testJobFilesLoad(driver, '*', `${TEST_JOB_PREFIX}*`, null)).to.be.true;
-                    console.log('finished Should handle rendering multiple jobs files');
                 });
 
                 it('Should handle un rendering job files when clicking an already toggle job', async () => {
@@ -605,7 +603,11 @@ describe('JES explorer function verification tests', () => {
                 fileId: 3,
             };
             await loadUrlWithViewerFilters(driver, testFilters);
-            await driver.sleep(10000);
+
+            // wait for content to load
+            const viewer = await driver.findElement(By.css('#embeddedEditor > div > div > .textviewContent'));
+            const text = await viewer.getText();
+            expect(text).to.have.lengthOf.greaterThan(1);
         });
 
         it('Should handle rendering expected components with viewer route (File Viewer)', async () => {
@@ -616,7 +618,7 @@ describe('JES explorer function verification tests', () => {
             expect(await testElementAppearsXTimesByCSS(driver, '#content-viewer', 1)).to.be.true;
         });
 
-        it('Should render file name, job name and job id in card header', async () => {
+        it.only('Should render jobId and fileName in card header', async () => {
             // expect content viewer to be present
             expect(await testElementAppearsXTimesByCSS(driver, '.content-tab-label', 1)).to.be.true;
             const cardHeader = await driver.findElement(By.className('content-tab-label'));

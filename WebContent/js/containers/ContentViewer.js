@@ -110,7 +110,7 @@ export class ContentViewer extends React.Component {
                             </div>
                             <ClearIcon onClick={() => { this.handleCloseTab(index); }} />
                         </div>
-                        {tabContent.isFetching ? <LinearProgress style={{ width: '100%', height: '2px' }} /> : null}
+                        {tabContent.isFetching ? <LinearProgress class="progress-bar" style={{ width: '100%', height: '2px' }} /> : null}
                     </div>
                 );
             });
