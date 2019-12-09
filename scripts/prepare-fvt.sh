@@ -127,6 +127,11 @@ echo
 echo "[${SCRIPT_NAME}] starting application with command:"
 echo "[${SCRIPT_NAME}]   docker run -d -v $PWD/$FVT_WORKSPACE:/app -p $FVT_PROXY_PORT:80 jackjiaibm/ibm-nvm-jre-proxy"
 CONTAINER_ID=$(docker run -d -v $PWD/$FVT_WORKSPACE:/app -p $FVT_PROXY_PORT:80 jackjiaibm/ibm-nvm-jre-proxy)
+if [ -z "$CONTAINER_ID" ]; then 
+  echo "[$SCRIPT_NAME][error] Failed to start docker container"
+  exit 1
+fi
+
 echo -n "[${SCRIPT_NAME}] waiting for container ${CONTAINER_ID} to be started: "
 
 touch $PWD/$FVT_WORKSPACE/container_log.last
