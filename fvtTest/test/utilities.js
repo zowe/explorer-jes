@@ -286,7 +286,7 @@ async function getAllFilterValues(driver) {
  */
 async function waitForAndExtractJobs(driver) {
     await driver.sleep(1000);
-    await driver.wait(until.elementLocated(By.css('.job-instance > li > div > .content-link')), 10000);
+    await driver.wait(until.elementLocated(By.id('refresh-icon')), 10000);
     const jobs = await driver.findElements(By.className('job-instance'));
     return jobs;
 }
