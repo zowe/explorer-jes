@@ -200,7 +200,7 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
     let foundFiles = true;
     for (const job of jobs) {
         await job.click();
-        await driver.wait(until.elementLocated(By.className('job-file')), 10000);
+        await driver.wait(until.elementLocated(By.className('job-file')), 15000);
         const jobFiles = await driver.findElements(By.className('job-file'));
         console.log(`jobFiles: ${jobFiles}`);
         if (jobFiles.length < 1) foundFiles = false;
