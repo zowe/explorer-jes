@@ -542,6 +542,7 @@ describe('JES explorer function verification tests', () => {
                     const expectedFilter = { ...DEFAULT_SEARCH_FILTERS, ...filters };
 
                     await loadUrlWithSearchFilters(driver, filters);
+                    await driver.sleep(5000); // Let page settle and trigger loading of job
 
                     expect(await testFilterDisplayStringValues(driver, expectedFilter)).to.be.true;
                     expect(await testJobIdFilter(driver, [expectedJobId])).to.be.true;
