@@ -75,8 +75,6 @@ const parseFilterText = filterText => {
 const parseJobText = text => {
     const regex = /(.*):([^ ]*) ?\[([^ ]*) ?(.*)\]/;
     const tokens = text.match(regex);
-    console.log(`parseJobText: ${text}`);
-    console.log(tokens);
     let prefix;
     let jobId;
     let status;
@@ -105,7 +103,7 @@ async function getDriver() {
     const options = new firefox.Options();
     options.setPreference('dom.disable_beforeunload', true);
     // use headless mode
-    options.headless();
+    // options.headless();
 
     const capabilities = Capabilities.firefox();
     capabilities.setAcceptInsecureCerts(true);

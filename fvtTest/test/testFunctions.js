@@ -194,7 +194,6 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
 
     await findAndClickApplyButton(driver);
     const jobs = await waitForAndExtractJobs(driver);
-    console.log(`jobs length: ${jobs.length}`);
     if (jobs.length === 0) return false; // Couldnt find any jobs
 
     let foundFiles = true;
@@ -202,7 +201,6 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
         await job.click();
         await driver.wait(until.elementLocated(By.className('job-file')), 15000);
         const jobFiles = await driver.findElements(By.className('job-file'));
-        console.log(`jobFiles: ${jobFiles}`);
         if (jobFiles.length < 1) foundFiles = false;
     }
     return foundFiles;
@@ -280,8 +278,6 @@ const testFilterFormInputValues = async (driver, expectedFilters) => {
 const testJobUrlFilters = checkFunc => {
     return async (driver, expectedVals) => {
         const jobs = await waitForAndExtractJobs(driver);
-        await driver.sleep(20000);
-        console.log(`jobs: ${jobs.length}`);
         const isExpected = await checkFunc(jobs, expectedVals);
         return isExpected;
     };
