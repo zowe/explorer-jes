@@ -75,7 +75,8 @@ const parseFilterText = filterText => {
 const parseJobText = text => {
     const regex = /(.*):([^ ]*) ?\[([^ ]*) ?(.*)\]/;
     const tokens = text.match(regex);
-
+    console.log(`parseJobText: ${text}`);
+    console.log(tokens);
     let prefix;
     let jobId;
     let status;
@@ -204,6 +205,7 @@ function loadPageWithFilterOptions(pageUrl, defaultFilters = {}, config = { chec
         filterObj = { ...defaultFilters, ...filters };
 
         const urlWithQueryParam = attachFilterToUrl(pageUrl, filterObj);
+        console.log(`Loading page: ${urlWithQueryParam}`);
 
         try {
             await driver.get(urlWithQueryParam);

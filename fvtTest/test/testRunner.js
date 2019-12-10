@@ -527,7 +527,7 @@ describe('JES explorer function verification tests', () => {
                     expect(await jobsNotFoundElement.getText()).to.be.equal('No jobs found');
                 });
             });
-            describe('JobId Url Filter', () => {
+            describe.only('JobId Url Filter', () => {
                 let jobIds;
                 before('get jobIds list from jobs filtered by IZUSVR owner', async () => {
                     const filters = { owner: 'IZUSVR' };
@@ -536,7 +536,7 @@ describe('JES explorer function verification tests', () => {
                     jobIds = jobObjs.map(j => { return j.jobId; });
                 });
 
-                it('Should handle setting jobID from url query', async () => {
+                it('Should handle setting jobId from url query', async () => {
                     const expectedJobId = jobIds[0];
                     const filters = { jobId: expectedJobId };
                     const expectedFilter = { ...DEFAULT_SEARCH_FILTERS, ...filters };
