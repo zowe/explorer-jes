@@ -280,6 +280,7 @@ const testFilterFormInputValues = async (driver, expectedFilters) => {
 const testJobUrlFilters = checkFunc => {
     return async (driver, expectedVals) => {
         const jobs = await waitForAndExtractJobs(driver);
+        await driver.sleep(20000);
         console.log(`jobs: ${jobs.length}`);
         const isExpected = await checkFunc(jobs, expectedVals);
         return isExpected;
