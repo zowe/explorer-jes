@@ -184,16 +184,22 @@ async function testStatusFilterFetching(driver, status, potentialStatuses) {
  * @param {string} status filter status
  */
 async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter) {
+    console.log('test job files load');
     const jobsInstances = await driver.findElements(By.className('job-instance'));
     await reloadAndOpenFilterPanel(driver, jobsInstances.length > 0);
+    console.log('reload and open filter panel');
     await testTextInputFieldCanBeModified(driver, 'filter-owner-field', ownerFilter);
+    console.log('set owner field');
     await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', prefixFilter);
+    console.log('set prefix field');
     if (statusFilter) {
         await setStatusFilter(driver, statusFilter);
     }
 
     await findAndClickApplyButton(driver);
+    console.log('find and click apply');
     const jobs = await waitForAndExtractJobs(driver);
+    console.log('extracted jobs');
     if (jobs.length === 1) {
         const text = jobs[0].getText();
         if (text === 'No jobs found') {
@@ -201,14 +207,17 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
             return false; // Couldn't find any jobs
         }
     }
+    console.log('we have some jobs');
 
     let foundFiles = true;
     for (const job of jobs) {
         const jobText = job.getText();
         console.log(`clicking job: ${jobText}`);
         await job.click();
+        console.log('clicked job');
         await driver.wait(until.elementLocated(By.className('job-file')), 15000);
         const jobFiles = await driver.findElements(By.className('job-file'));
+        console.log(`found files: ${jobFiles.length}`);
         if (jobFiles.length < 1) foundFiles = false;
     }
     return foundFiles;
@@ -223,24 +232,32 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
  * @param {string} jobFileNameFilter filter status
  */
 async function getJobAndOpenFile(driver, ownerFilter, prefixFilter, statusFilter, jobFileName) {
+    console.log('get job and open file');
     await testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter);
     const fileLinks = await driver.findElements(By.css('.job-instance > ul > div > li > div > .content-link'));
+    console.log('got file links');
 
     // Find the jobFileName we're looking for from the list of job files
     for (const fileLink of fileLinks) {
         const text = await fileLink.getText();
+        console.log(`file link text: ${text}`);
         if (text === jobFileName) {
             await fileLink.click();
+            console.log('clicked file link');
             break;
         }
     }
     // Check the job name/prefix is in the content
     for (let i = 0; i < 15; i++) {
         const textviewContent = await driver.findElements(By.className('textviewContent'));
+        console.log('got textviewContent');
         const text = await textviewContent[0].getText(textviewContent);
+        console.log(`text view content: ${text}`);
         if (!text.includes(prefixFilter)) {
             await driver.sleep(1000);
+            console.log('text didnt include prefixFilter, sleeping');
         } else {
+            console.log('text inncluded prexif filter');
             break;
         }
     }
