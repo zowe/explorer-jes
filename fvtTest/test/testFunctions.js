@@ -210,7 +210,7 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
     console.log('we have some jobs');
 
     let foundFiles = true;
-    for (const job of jobs) {
+    for (const job of jobs.slice(0, 2)) {
         const jobText = await job.getText();
         console.log(`clicking job: ${jobText}`);
         await job.click();
