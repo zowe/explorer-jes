@@ -88,6 +88,11 @@ describe('JES explorer function verification tests', () => {
         } catch (e) {
             assert.fail(`Failed to initialise: ${e}`);
         }
+
+        // Make sure we have a job in output and active
+        await submitJob(SHORT_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
+        await submitJob(LONG_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
+        // await debugApiCall('jobs?owner=*&prefix=*', SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
     });
 
     after('Close out', () => {
@@ -206,10 +211,6 @@ describe('JES explorer function verification tests', () => {
             it.skip('Should handle reloading jobs when clicking refresh icon');
             describe('Job status labels', () => {
                 before(async () => {
-                    // Make sure we have a job in output and active
-                    await submitJob(SHORT_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
-                    await submitJob(LONG_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
-                    // await debugApiCall('jobs?owner=*&prefix=*', SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
                     await reloadAndOpenFilterPanel(driver);
                     expect(await testTextInputFieldCanBeModified(driver, 'filter-owner-field', '*'), 'filter-owner-field wrong').to.be.true;
                     expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', '*'), 'filter-prefix-field wrong').to.be.true;
@@ -372,7 +373,7 @@ describe('JES explorer function verification tests', () => {
             const jobFileName = 'JESJCL';
 
             before('before editor behavior', async () => {
-                expect(await getJobAndOpenFile(driver, '*', ZOSMF_JOB_NAME, null, jobFileName)).to.be.true;
+                expect(await getJobAndOpenFile(driver, '*', SHORT_JOB, null, jobFileName)).to.be.true;
             });
 
             it('Should display job name, id and file name in card header', async () => {

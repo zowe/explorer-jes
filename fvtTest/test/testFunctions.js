@@ -211,7 +211,7 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
 
     let foundFiles = true;
     for (const job of jobs) {
-        const jobText = job.getText();
+        const jobText = await job.getText();
         console.log(`clicking job: ${jobText}`);
         await job.click();
         console.log('clicked job');
