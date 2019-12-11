@@ -60,7 +60,6 @@ const {
     ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, ZOWE_JOB_NAME, SERVER_HOST_NAME, SERVER_HTTPS_PORT,
 } = process.env;
 
-
 const BASE_URL = `https://${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}/ui/v1/explorer-jes`;
 const FILTER_BASE_URL = `${BASE_URL}/#/`;
 const loadUrlWithSearchFilters = loadPageWithFilterOptions(FILTER_BASE_URL, DEFAULT_SEARCH_FILTERS);
@@ -374,10 +373,7 @@ describe('JES explorer function verification tests', () => {
 
             before('before editor behavior', async () => {
                 expect(await getJobAndOpenFile(driver, '*', ZOSMF_JOB_NAME, null, jobFileName)).to.be.true;
-                await driver.sleep(10000); // TODO:: replace with driver wait for element to be visible
             });
-
-            it('Set content viewer header to Loading:');
 
             it('Should display job name, id and file name in card header', async () => {
                 const viewer = await driver.findElements(By.className('content-tab-label'));

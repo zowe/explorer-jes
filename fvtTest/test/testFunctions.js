@@ -207,7 +207,7 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
 }
 
 /**
- *
+ * This function currently only supports an exact prefix and JESJCL as the file
  * @param {WebDriver} driver selenium-webdriver
  * @param {string} ownerFilter filter owner
  * @param {string} prefixFilter filter prefix
@@ -216,7 +216,7 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
  */
 async function getJobAndOpenFile(driver, ownerFilter, prefixFilter, statusFilter, jobFileName) {
     await testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter);
-    const fileLinks = await driver.findElements(By.css('.job-instance > ul > div > li > div > .content-link > span'));
+    const fileLinks = await driver.findElements(By.css('.job-instance > ul > div > li > div > .content-link'));
 
     // Find the jobFileName we're looking for from the list of job files
     for (const fileLink of fileLinks) {
@@ -226,7 +226,16 @@ async function getJobAndOpenFile(driver, ownerFilter, prefixFilter, statusFilter
             break;
         }
     }
-    // TODO:: Can we check that content has rendered first?
+    // Check the job name/prefix is in the content
+    for (let i = 0; i < 15; i++) {
+        const textviewContent = await driver.findElements(By.className('textviewContent'));
+        const text = await textviewContent[0].getText(textviewContent);
+        if (!text.includes(prefixFilter)) {
+            await driver.sleep(1000);
+        } else {
+            break;
+        }
+    }
     return true;
 }
 
