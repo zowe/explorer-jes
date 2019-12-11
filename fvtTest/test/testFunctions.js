@@ -199,9 +199,9 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
     await findAndClickApplyButton(driver);
     console.log('find and click apply');
     const jobs = await waitForAndExtractJobs(driver);
-    console.log('extracted jobs');
+    console.log(`extracted jobs, jobs length: ${jobs.length}`);
     if (jobs.length === 1) {
-        const text = jobs[0].getText();
+        const text = await jobs[0].getText();
         if (text === 'No jobs found') {
             console.log('No jobs found');
             return false; // Couldn't find any jobs
