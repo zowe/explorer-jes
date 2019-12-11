@@ -28,16 +28,17 @@ describe('Action: content', () => {
     const errorMessage = 'Internal Server Error';
 
     describe('fetchJobFile', () => {
+        const requestContentAction = {
+            type: contentActions.REQUEST_CONTENT,
+            jobName: contentResources.jobName,
+            jobId: contentResources.jobId,
+            fileName: contentResources.fileName,
+            fileId: contentResources.fileId,
+            fileLabel: `${contentResources.jobId}-${contentResources.fileName}`,
+        };
         it('Should create an action to request and receive content', () => {
             const expectedActions = [
-                {
-                    type: contentActions.REQUEST_CONTENT,
-                    jobName: contentResources.jobName,
-                    jobId: contentResources.jobId,
-                    fileName: contentResources.fileName,
-                    fileId: contentResources.fileId,
-                    fileLabel: `${contentResources.jobId}-${contentResources.fileName}`,
-                },
+                requestContentAction,
                 {
                     type: contentActions.RECEIVE_CONTENT,
                     jobName: contentResources.jobName,
@@ -63,14 +64,7 @@ describe('Action: content', () => {
 
         it('Should create an action to request but not receive due to no response and create error', () => {
             const expectedActions = [
-                {
-                    type: contentActions.REQUEST_CONTENT,
-                    jobName: contentResources.jobName,
-                    jobId: contentResources.jobId,
-                    fileName: contentResources.fileName,
-                    fileId: contentResources.fileId,
-                    fileLabel: `${contentResources.jobId}-${contentResources.fileName}`,
-                },
+                requestContentAction,
                 {
                     type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
                     message: Map({
@@ -92,19 +86,41 @@ describe('Action: content', () => {
                     expect(store.getActions()).toEqual(expectedActions);
                 });
         });
+
+        it('Should create a request and but not receive due to no content in response', () => {
+            const expectedActions = [
+                requestContentAction,
+                {
+                    type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
+                    message: Map({
+                        message: `${contentActions.NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE} - ${contentResources.jobName}:${contentResources.jobId}:${contentResources.fileName}`,
+                    }),
+                },
+                { type: contentActions.INVALIDATE_CONTENT },
+            ];
+            nock(BASE_URL)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/content`)
+                .reply(200, { });
+            const store = mockStore();
+            return store.dispatch(contentActions.fetchJobFile(contentResources.jobName, contentResources.jobId, contentResources.fileName, contentResources.fileId))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
+        });
     });
 
     describe('fetchJobFileNoName', () => {
+        const requestContentAction = {
+            type: contentActions.REQUEST_CONTENT,
+            jobName: contentResources.jobName,
+            jobId: contentResources.jobId,
+            fileName: '',
+            fileId: contentResources.fileId,
+            fileLabel: `${contentResources.jobId}-`,
+        };
         it('Should create a request and receive action', () => {
             const expectedActions = [
-                {
-                    type: contentActions.REQUEST_CONTENT,
-                    jobName: contentResources.jobName,
-                    jobId: contentResources.jobId,
-                    fileName: '',
-                    fileId: contentResources.fileId,
-                    fileLabel: `${contentResources.jobId}-`,
-                },
+                requestContentAction,
                 {
                     type: contentActions.RECEIVE_CONTENT,
                     jobName: contentResources.jobName,
@@ -133,23 +149,14 @@ describe('Action: content', () => {
 
         it('Should create a request but not receive action due to no file content', () => {
             const expectedActions = [
-                {
-                    type: contentActions.REQUEST_CONTENT,
-                    jobName: contentResources.jobName,
-                    jobId: contentResources.jobId,
-                    fileName: '',
-                    fileId: contentResources.fileId,
-                    fileLabel: `${contentResources.jobId}-`,
-                },
+                requestContentAction,
                 {
                     type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
                     message: Map({
                         message: `${errorMessage} - ${contentResources.jobName}:${contentResources.jobId}:${contentResources.fileId}`,
                     }),
                 },
-                {
-                    type: contentActions.INVALIDATE_CONTENT,
-                },
+                { type: contentActions.INVALIDATE_CONTENT },
             ];
 
             const store = mockStore();
@@ -167,14 +174,7 @@ describe('Action: content', () => {
             const nodeURI = `jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/content`;
             const nodeNameURI = `jobs/${contentResources.jobName}/${contentResources.jobId}/files`;
             const expectedActions = [
-                {
-                    type: contentActions.REQUEST_CONTENT,
-                    jobName: contentResources.jobName,
-                    jobId: contentResources.jobId,
-                    fileName: '',
-                    fileId: contentResources.fileId,
-                    fileLabel: `${contentResources.jobId}-`,
-                },
+                requestContentAction,
                 {
                     type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
                     message: Map({
@@ -196,6 +196,86 @@ describe('Action: content', () => {
                 .reply(500, { status: 'INTERNAL_SERVER_ERROR', message: errorMessage });
 
             return store.dispatch(contentActions.fetchJobFileNoName(contentResources.jobName, contentResources.jobId, contentResources.fileId))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
+        });
+    });
+
+    describe('fetchConcatenatedJobFiles', () => {
+        const requestContentAction = {
+            type: contentActions.REQUEST_CONTENT,
+            jobName: contentResources.jobName,
+            jobId: contentResources.jobId,
+            fileName: contentResources.jobId,
+            fileId: contentResources.jobId,
+            fileLabel: `${contentResources.jobName}-${contentResources.jobId}`,
+        };
+        it('Should create a request and receive content action', () => {
+            const expectedActions = [
+                requestContentAction,
+                {
+                    type: contentActions.RECEIVE_CONTENT,
+                    jobName: contentResources.jobName,
+                    jobId: contentResources.jobId,
+                    content: contentResources.jobFileContents,
+                    fileName: contentResources.jobId,
+                    fileId: contentResources.jobId,
+                    fileLabel: contentActions.getFileLabel(contentResources.jobName, contentResources.jobId),
+                    readOnly: true,
+                },
+            ];
+            nock(BASE_URL)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/content`)
+                .reply(200, contentResources.jobFileFetchResponse);
+            const store = mockStore();
+            return store.dispatch(contentActions.fetchConcatenatedJobFiles(contentResources.jobName, contentResources.jobId))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
+        });
+
+        it('Should create a request and but not receive due to invalid response', () => {
+            const expectedActions = [
+                requestContentAction,
+                {
+                    type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
+                    message: Map({
+                        message: `${errorMessage} - ${contentResources.jobName}:${contentResources.jobId}:`,
+                    }),
+                },
+                {
+                    type: contentActions.INVALIDATE_CONTENT,
+                },
+            ];
+            nock(BASE_URL)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/content`)
+                .reply(500, { status: 'INTERNAL_SERVER_ERROR', message: errorMessage });
+            const store = mockStore();
+            return store.dispatch(contentActions.fetchConcatenatedJobFiles(contentResources.jobName, contentResources.jobId))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
+        });
+
+        it('Should create a request and but not receive due to no content in response', () => {
+            const expectedActions = [
+                requestContentAction,
+                {
+                    type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
+                    message: Map({
+                        message: `${contentActions.NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE} - ${contentResources.jobName}:${contentResources.jobId}:`,
+                    }),
+                },
+                {
+                    type: contentActions.INVALIDATE_CONTENT,
+                },
+            ];
+            nock(BASE_URL)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/content`)
+                .reply(200, { });
+            const store = mockStore();
+            return store.dispatch(contentActions.fetchConcatenatedJobFiles(contentResources.jobName, contentResources.jobId))
                 .then(() => {
                     expect(store.getActions()).toEqual(expectedActions);
                 });
@@ -228,25 +308,27 @@ describe('Action: content', () => {
     });
 
     describe('getJCL', () => {
+        const requestContentAction = {
+            type: contentActions.REQUEST_CONTENT,
+            jobName: contentResources.jobName,
+            jobId: contentResources.jobId,
+            fileName: 'JCL',
+            fileId: 0,
+            fileLabel: contentActions.getFileLabel(contentResources.jobId, 'JCL'),
+        };
         it('Should create a request and receive action for JCL', () => {
-            const expectedActions = [{
-                type: contentActions.REQUEST_CONTENT,
-                jobName: contentResources.jobName,
-                jobId: contentResources.jobId,
-                fileName: 'JCL',
-                fileId: 0,
-                fileLabel: contentActions.getFileLabel(contentResources.jobId, 'JCL'),
-            },
-            {
-                type: contentActions.RECEIVE_CONTENT,
-                jobName: contentResources.jobName,
-                jobId: contentResources.jobId,
-                fileName: 'JCL',
-                fileId: 0,
-                content: contentResources.jobJCL.content,
-                fileLabel: contentActions.getFileLabel(contentResources.jobId, 'JCL'),
-                readOnly: false,
-            }];
+            const expectedActions = [
+                requestContentAction,
+                {
+                    type: contentActions.RECEIVE_CONTENT,
+                    jobName: contentResources.jobName,
+                    jobId: contentResources.jobId,
+                    fileName: 'JCL',
+                    fileId: 0,
+                    content: contentResources.jobJCL.content,
+                    fileLabel: contentActions.getFileLabel(contentResources.jobId, 'JCL'),
+                    readOnly: false,
+                }];
 
             const store = mockStore();
 
@@ -261,23 +343,17 @@ describe('Action: content', () => {
         });
 
         it('Should create a request to get JCL but fail and push message and invalidate', () => {
-            const expectedActions = [{
-                type: contentActions.REQUEST_CONTENT,
-                jobName: contentResources.jobName,
-                jobId: contentResources.jobId,
-                fileName: 'JCL',
-                fileId: 0,
-                fileLabel: contentActions.getFileLabel(contentResources.jobId, 'JCL'),
-            },
-            {
-                type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
-                message: Map({
-                    message: `${errorMessage} - ${contentResources.jobName}:${contentResources.jobId}:JCL`,
-                }),
-            },
-            {
-                type: contentActions.INVALIDATE_CONTENT,
-            }];
+            const expectedActions = [
+                requestContentAction,
+                {
+                    type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
+                    message: Map({
+                        message: `${errorMessage} - ${contentResources.jobName}:${contentResources.jobId}:JCL`,
+                    }),
+                },
+                {
+                    type: contentActions.INVALIDATE_CONTENT,
+                }];
             const store = mockStore();
 
             nock(BASE_URL)
