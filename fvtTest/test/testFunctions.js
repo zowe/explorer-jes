@@ -189,9 +189,9 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
     await reloadAndOpenFilterPanel(driver, jobsInstances.length > 0);
     console.log('reload and open filter panel');
     await testTextInputFieldCanBeModified(driver, 'filter-owner-field', ownerFilter);
-    console.log('set owner field');
+    console.log(`set owner field ${ownerFilter}`);
     await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', prefixFilter);
-    console.log('set prefix field');
+    console.log(`set prefix field ${prefixFilter}`);
     if (statusFilter) {
         await setStatusFilter(driver, statusFilter);
     }
@@ -233,7 +233,11 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
  */
 async function getJobAndOpenFile(driver, ownerFilter, prefixFilter, statusFilter, jobFileName) {
     console.log('get job and open file');
-    await testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter);
+    if (!await testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)) {
+        // Unable to get job files to load
+        console.log('Unable to get job files to load');
+        return false;
+    }
     const fileLinks = await driver.findElements(By.css('.job-instance > ul > div > li > div > .content-link'));
     console.log('got file links');
 

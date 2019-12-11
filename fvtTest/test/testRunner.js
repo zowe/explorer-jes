@@ -373,7 +373,7 @@ describe('JES explorer function verification tests', () => {
             const jobFileName = 'JESJCL';
 
             before('before editor behavior', async () => {
-                expect(await getJobAndOpenFile(driver, '*', SHORT_JOB, null, jobFileName)).to.be.true;
+                expect(await getJobAndOpenFile(driver, '*', `${TEST_JOB_PREFIX}S`, null, jobFileName)).to.be.true;
             });
 
             it('Should display job name, id and file name in card header', async () => {
