@@ -8,23 +8,33 @@ The issues for the JES explorer are tracked under the Zowe Zlux repository, http
 
 ### Install Dependencies
 
+Configure your npm registry to pickup Zowe dependencies
 ```
+npm config set registry https://zowe.jfrog.io/zowe/api/npm/npm-release/
 npm install
 ```
 
 ### Build for Development
+
+Modify the host variable in WebContent/js/utilities/urlUtils.js to a host and port that has the Zowe Jobs API server available
 
 ```
 npm run dev 
 ```
 
 Then you can visit http://localhost:8080 to test.
+When testing you may see errors with API calls do to CORS (Cross origin resource sharing), to work around this you may disable CORS checking in your browser for local development. 
 
 
 ### Build for Production
 
 ```
 npm run prod
+```
+
+### Prepare for commit (Run linting, tests and production build)
+```
+npm run preCommit
 ```
 
 ### Prepare PAX Packaging Workspace
