@@ -107,6 +107,7 @@ async function getDriver() {
 
     const capabilities = Capabilities.firefox();
     capabilities.setAcceptInsecureCerts(true);
+    capabilities.setAlertBehavior('accept');
 
     // configure ServiceBuilder
     const service = new firefox.ServiceBuilder();
