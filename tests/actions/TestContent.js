@@ -97,7 +97,10 @@ describe('Action: content', () => {
                         message: `${contentActions.NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE} - ${contentResources.jobName}:${contentResources.jobId}:${contentResources.fileName}`,
                     }),
                 },
-                { type: contentActions.INVALIDATE_CONTENT },
+                {
+                    type: contentActions.INVALIDATE_CONTENT,
+                    fileLabel: `${contentResources.jobId}-${contentResources.fileName}`,
+                },
             ];
             nock(BASE_URL)
                 .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/content`)
@@ -252,6 +255,7 @@ describe('Action: content', () => {
                 },
                 {
                     type: contentActions.INVALIDATE_CONTENT,
+                    fileLabel: undefined,
                 },
             ];
             nock(BASE_URL)
@@ -275,6 +279,7 @@ describe('Action: content', () => {
                 },
                 {
                     type: contentActions.INVALIDATE_CONTENT,
+                    fileLabel: undefined,
                 },
             ];
             nock(BASE_URL)

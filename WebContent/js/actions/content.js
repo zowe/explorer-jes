@@ -82,10 +82,7 @@ export function fetchJobFile(jobName, jobId, fileName, fileId) {
                 return checkResponse(response);
             })
             .then(json => {
-                if ('content' in json) {
-                    return dispatch(receiveContent(jobName, jobId, fileName, fileId, json.content, fileLabel));
-                }
-                throw Error(json.message);
+                return dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, getFileLabel(jobId, fileName), json);
             })
             .catch(e => {
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileName}`));
@@ -96,13 +93,14 @@ export function fetchJobFile(jobName, jobId, fileName, fileId) {
 
 export function fetchConcatenatedJobFiles(jobName, jobId) {
     return dispatch => {
-        dispatch(requestContent(jobName, jobId, jobId, jobId, getFileLabel(jobName, jobId)));
+        const fileLabel = getFileLabel(jobName, jobId);
+        dispatch(requestContent(jobName, jobId, jobId, jobId, fileLabel));
         return atlasFetch(`jobs/${jobName}/${jobId}/files/content`, { credentials: 'include' })
             .then(response => {
                 return checkResponse(response);
             })
             .then(json => {
-                return dispatchReceiveContent(dispatch, jobName, jobId, jobId, jobId, getFileLabel(jobName, jobId), json);
+                return dispatchReceiveContent(dispatch, jobName, jobId, jobId, jobId, fileLabel, json);
             })
             .catch(e => {
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:`));
