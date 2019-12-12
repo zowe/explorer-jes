@@ -215,7 +215,7 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
         console.log(`clicking job: ${jobText}`);
         await job.click();
         console.log('clicked job');
-        await driver.wait(until.elementLocated(By.className('job-file')), 15000);
+        await driver.wait(until.elementLocated(By.className('job-file')), 20000);
         const jobFiles = await driver.findElements(By.className('job-file'));
         console.log(`found files: ${jobFiles.length}`);
         if (jobFiles.length < 1) foundFiles = false;
