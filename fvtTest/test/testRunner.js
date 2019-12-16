@@ -372,9 +372,8 @@ describe('JES explorer function verification tests', function () {
         describe('Editor behaviour', () => {
             const jobFileName = 'JESJCL';
 
-            before('before editor behavior', async () => {
+            it('Should open a file when clicking on it', async () => {
                 expect(await getJobAndOpenFile(driver, '*', `${TEST_JOB_PREFIX}S`, null, jobFileName)).to.be.true;
-                await driver.sleep(10000); // Buffer incase anything hasn't finished loading yet
             });
 
             it('Should display job name, id and file name in card header', async () => {

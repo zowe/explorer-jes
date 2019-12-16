@@ -218,10 +218,7 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
         console.log(`clicking job: ${jobText}`);
         await job.click();
         console.log(`clicked job ${new Date().toLocaleString()}`);
-        await driver.wait(until.elementLocated(By.id('loading-icon')), 20000);
-        console.log(`located loading icon ${new Date().toLocaleString()}`);
-        await driver.wait(until.elementLocated(By.id('refresh-icon')), 20000);
-        console.log(`located refresh icon ${new Date().toLocaleString()}`);
+
         await driver.wait(until.elementLocated(By.className('job-file')), 20000);
         console.log(`located job-files ${new Date().toLocaleString()}`);
         const jobFiles = await driver.findElements(By.className('job-file'));
