@@ -22,7 +22,6 @@ const {
     COMMENT_ATTR_CLASS,
     NO_CLASS,
     submitJob,
-    debugApiCall,
 } = require('./utilities');
 
 const {
@@ -65,8 +64,8 @@ const FILTER_BASE_URL = `${BASE_URL}/#/`;
 const loadUrlWithSearchFilters = loadPageWithFilterOptions(FILTER_BASE_URL, DEFAULT_SEARCH_FILTERS);
 const ZOSMF_JOB_NAME = 'IZUSVR1';
 
-
-describe('JES explorer function verification tests', () => {
+// eslint-disable-next-line
+describe('JES explorer function verification tests', function () {
     let driver;
     this.retries(3);
 
