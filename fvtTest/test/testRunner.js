@@ -68,6 +68,7 @@ const ZOSMF_JOB_NAME = 'IZUSVR1';
 
 describe('JES explorer function verification tests', () => {
     let driver;
+    this.retries(3);
 
     before('Initialise', async () => {
         expect(USERNAME, 'USERNAME is not defined').to.not.be.empty;
