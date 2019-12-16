@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 const { By, until } = require('selenium-webdriver');
 const { expect } = require('chai');
 
@@ -211,14 +212,20 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
 
     let foundFiles = true;
     // TODO:: Currently slicing to just one element of array to avoid not being able to click a job that isn't in the viewport
+    /* eslint-disable-next-line no-restricted-syntax */
     for (const job of jobs.slice(0, 1)) {
         const jobText = await job.getText();
         console.log(`clicking job: ${jobText}`);
         await job.click();
-        console.log('clicked job');
+        console.log(`clicked job ${new Date().toLocaleString()}`);
+        await driver.wait(until.elementLocated(By.id('loading-icon')), 20000);
+        console.log(`located loading icon ${new Date().toLocaleString()}`);
+        await driver.wait(until.elementLocated(By.id('refresh-icon')), 20000);
+        console.log(`located refresh icon ${new Date().toLocaleString()}`);
         await driver.wait(until.elementLocated(By.className('job-file')), 20000);
+        console.log(`located job-files ${new Date().toLocaleString()}`);
         const jobFiles = await driver.findElements(By.className('job-file'));
-        console.log(`found files: ${jobFiles.length}`);
+        console.log(`found files: ${jobFiles.length} ${new Date().toLocaleString()}`);
         if (jobFiles.length < 1) foundFiles = false;
     }
     return foundFiles;
