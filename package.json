@@ -1,13 +1,13 @@
 {
   "name": "explorer-jes",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "dependencies": {
     "@material-ui/core": "^1.5.1",
     "@material-ui/icons": "^1.1.0",
     "babel-polyfill": "^6.16.0",
     "file-loader": "^0.11.2",
     "immutable": "^3.8.1",
-    "orion-editor-component": "0.0.10",
+    "orion-editor-component": "0.0.11",
     "prop-types": "^15.5.10",
     "query-string": "^6.8.2",
     "react": "^16.4.2",
@@ -26,7 +26,7 @@
     "whatwg-fetch": "^2.0.3"
   },
   "peerDependencies": {
-    "explorer-ui-server": "0.2.10"
+    "explorer-ui-server": "0.2.11"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
@@ -96,7 +96,7 @@
   },
   "repository": "zowe/explorer-jes",
   "publishConfig": {
-    "registry": "https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-local-release/"
+    "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
   },
   "description": "JES Explorer",
   "author": "IBM",

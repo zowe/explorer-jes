@@ -22,6 +22,8 @@ export const REQUEST_SUBMIT_JCL = 'REQUEST_SUBMIT_JCL';
 export const RECEIVE_SUBMIT_JCL = 'RECEIVE_SUBMIT_JCL';
 export const INVALIDATE_SUBMIT_JCL = 'INVALIDATE_SUBMIT_JCL';
 
+export const NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE = 'No Content in response from API';
+
 function requestContent(jobName, jobId, fileName, fileId, fileLabel) {
     return {
         type: REQUEST_CONTENT,
@@ -46,9 +48,10 @@ function receiveContent(jobName, jobId, fileName, fileId, content, fileLabel, re
     };
 }
 
-export function invalidateContent() {
+export function invalidateContent(fileLabel) {
     return {
         type: INVALIDATE_CONTENT,
+        fileLabel,
     };
 }
 
@@ -56,24 +59,51 @@ export function getFileLabel(jobId, fileName = '') {
     return `${jobId}-${fileName}`;
 }
 
+function checkResponse(response) {
+    if (response.ok) {
+        return response.json();
+    }
+    return response.json().then(e => { throw Error(e.message); });
+}
+
+function dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, fileLabel, json) {
+    if ('content' in json) {
+        return dispatch(receiveContent(jobName, jobId, fileName, fileId, json.content, fileLabel));
+    }
+    throw Error(json.message || NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE);
+}
+
 export function fetchJobFile(jobName, jobId, fileName, fileId) {
     return dispatch => {
-        dispatch(requestContent(jobName, jobId, fileName, fileId, getFileLabel(jobId, fileName)));
+        const fileLabel = getFileLabel(jobId, fileName);
+        dispatch(requestContent(jobName, jobId, fileName, fileId, fileLabel));
         return atlasFetch(`jobs/${jobName}/${jobId}/files/${fileId}/content`, { credentials: 'include' })
             .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                return response.json().then(e => { throw Error(e.message); });
+                return checkResponse(response);
             })
             .then(json => {
-                if ('content' in json) {
-                    return dispatch(receiveContent(jobName, jobId, fileName, fileId, json.content, getFileLabel(jobId, fileName)));
-                }
-                throw Error(json.message);
+                return dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, getFileLabel(jobId, fileName), json);
             })
             .catch(e => {
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileName}`));
+                return dispatch(invalidateContent(fileLabel));
+            });
+    };
+}
+
+export function fetchConcatenatedJobFiles(jobName, jobId) {
+    return dispatch => {
+        const fileLabel = getFileLabel(jobName, jobId);
+        dispatch(requestContent(jobName, jobId, jobId, jobId, fileLabel));
+        return atlasFetch(`jobs/${jobName}/${jobId}/files/content`, { credentials: 'include' })
+            .then(response => {
+                return checkResponse(response);
+            })
+            .then(json => {
+                return dispatchReceiveContent(dispatch, jobName, jobId, jobId, jobId, fileLabel, json);
+            })
+            .catch(e => {
+                dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:`));
                 return dispatch(invalidateContent());
             });
     };
@@ -104,10 +134,7 @@ export function fetchJobFileNoName(jobName, jobId, fileId) {
         dispatch(requestContent(jobName, jobId, '', fileId, getFileLabel(jobId)));
         return atlasFetch(contentPath, { credentials: 'include' })
             .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                return response.json().then(e => { throw Error(e.message); });
+                return checkResponse(response);
             })
             .then(json => {
                 if (json.content) {
@@ -123,7 +150,7 @@ export function fetchJobFileNoName(jobName, jobId, fileId) {
                             throw Error(e);
                         });
                 }
-                throw Error(json.message);
+                throw Error(json.message || NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE);
             })
             .catch(e => {
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileId}`));
@@ -155,20 +182,18 @@ export function changeSelectedContent(index) {
 
 export function getJCL(jobName, jobId) {
     return dispatch => {
-        dispatch(requestContent(jobName, jobId, 'JCL', 0, getFileLabel(jobId, 'JCL')));
+        const fileLabel = getFileLabel(jobId, 'JCL');
+        dispatch(requestContent(jobName, jobId, 'JCL', 0, fileLabel));
         return atlasFetch(`jobs/${jobName}/${jobId}/files/JCL/content`, { credentials: 'include' })
             .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                return response.json().then(e => { throw Error(e.message); });
+                return checkResponse(response);
             })
             .then(json => {
-                return dispatch(receiveContent(jobName, jobId, 'JCL', 0, json.content, getFileLabel(jobId, 'JCL'), false));
+                return dispatch(receiveContent(jobName, jobId, 'JCL', 0, json.content, fileLabel, false));
             })
             .catch(e => {
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:JCL`));
-                return dispatch(invalidateContent());
+                return dispatch(invalidateContent(fileLabel));
             });
     };
 }
@@ -207,10 +232,7 @@ export function submitJCL(content) {
                 body: JSON.stringify({ jcl: content }),
             })
             .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                return response.json().then(e => { throw Error(e.message); });
+                return checkResponse(response);
             })
             .then(json => {
                 dispatch(receiveSubmitJCL(json.jobName, json.jobId));
