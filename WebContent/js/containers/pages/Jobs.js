@@ -20,6 +20,7 @@ import { validateUser } from '../../actions/validation';
 class JobsView extends React.Component {
     componentWillMount() {
         const { dispatch, validated } = this.props;
+
         if (!validated) {
             dispatch(validateUser());
         }

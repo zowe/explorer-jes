@@ -22,6 +22,7 @@ import Button from '@material-ui/core/Button';
 import CircularProgressIcon from '@material-ui/core/CircularProgress';
 import queryString from 'query-string';
 import { fetchJobFileNoName, removeContent, updateContent, changeSelectedContent, submitJCL } from '../actions/content';
+import { updateTitle } from '../actions/windowTitle';
 
 export class ContentViewer extends React.Component {
     constructor(props) {
@@ -85,14 +86,25 @@ export class ContentViewer extends React.Component {
             dispatch(updateContent(this.state.currentContent));
         }
         dispatch(changeSelectedContent(newTabIndex));
+        dispatch(updateTitle(content.get(newTabIndex).label));
     }
 
     handleCloseTab(removeIndex) {
-        const { selectedContent, dispatch } = this.props;
+        const { selectedContent, content, dispatch } = this.props;
         dispatch(removeContent(removeIndex));
         // Do we need to change the selectedContent
         if (removeIndex <= selectedContent && selectedContent >= 1) {
             dispatch(changeSelectedContent(selectedContent - 1));
+
+            // If current content is removed, update title
+            if (removeIndex === selectedContent) {
+                dispatch(updateTitle(content.get(selectedContent - 1).label));
+            }
+        }
+
+        // Clear title if all tabs are cleared
+        if (content.size === 1) {
+            dispatch(updateTitle());
         }
     }
 

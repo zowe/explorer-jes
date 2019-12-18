@@ -14,11 +14,13 @@ import jobNodes from './jobNodes';
 import filters from './filters';
 import validation from './validation';
 import snackbarNotifications from './snackbarNotifications';
+import windowTitle from './windowTitle';
 
 const REDUCERS = {
     content,
     jobNodes,
     filters,
     validation,
-    snackbarNotifications };
+    snackbarNotifications,
+    windowTitle };
 export default combineReducers(REDUCERS);
