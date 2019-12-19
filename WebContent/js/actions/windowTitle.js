@@ -30,7 +30,7 @@ export function updateTitle(title = DEFAULT_TITLE) {
         document.title = title;
 
         if (title === DEFAULT_TITLE) {
-            return dispatch(resetTitle(title));
+            return dispatch(resetTitle());
         }
         return dispatch(setTitle(title));
     };
