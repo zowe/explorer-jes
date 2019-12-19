@@ -17,6 +17,7 @@ import Description from '@material-ui/icons/Description';
 import { fetchJobFile, getFileLabel, changeSelectedContent } from '../actions/content';
 import { atlasFetch } from '../utilities/urlUtils';
 import { constructAndPushMessage } from '../actions/snackbarNotifications';
+import { updateTitle } from '../actions/windowTitle';
 
 class JobFile extends React.Component {
     constructor(props) {
@@ -38,6 +39,7 @@ class JobFile extends React.Component {
         } else {
             dispatch(fetchJobFile(job.get('jobName'), job.get('jobId'), file.label, file.id));
         }
+        dispatch(updateTitle(`${job.get('jobId')}-${file.label}`));
     }
 
     downloadJobFile() {
