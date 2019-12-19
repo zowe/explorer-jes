@@ -18,6 +18,7 @@ import {
     REQUEST_SUBMIT_JCL,
     RECEIVE_SUBMIT_JCL,
     INVALIDATE_SUBMIT_JCL,
+    INVALIDATE_CONTENT,
 } from '../actions/content';
 
 const INITIAL_CONTENT_STATE = Map({
@@ -81,6 +82,10 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
         case INVALIDATE_SUBMIT_JCL:
             return state.merge({
                 isSubmittingJCL: false,
+            });
+        case INVALIDATE_CONTENT:
+            return state.merge({
+                content: state.get('content').delete(getIndexOfContentFromLabel(state.get('content'), action.fileLabel)),
             });
         default:
             return state;
