@@ -48,9 +48,10 @@ function receiveContent(jobName, jobId, fileName, fileId, content, fileLabel, re
     };
 }
 
-export function invalidateContent() {
+export function invalidateContent(fileLabel) {
     return {
         type: INVALIDATE_CONTENT,
+        fileLabel,
     };
 }
 
@@ -74,7 +75,8 @@ function dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, file
 
 export function fetchJobFile(jobName, jobId, fileName, fileId) {
     return dispatch => {
-        dispatch(requestContent(jobName, jobId, fileName, fileId, getFileLabel(jobId, fileName)));
+        const fileLabel = getFileLabel(jobId, fileName);
+        dispatch(requestContent(jobName, jobId, fileName, fileId, fileLabel));
         return atlasFetch(`jobs/${jobName}/${jobId}/files/${fileId}/content`, { credentials: 'include' })
             .then(response => {
                 return checkResponse(response);
@@ -84,20 +86,21 @@ export function fetchJobFile(jobName, jobId, fileName, fileId) {
             })
             .catch(e => {
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileName}`));
-                return dispatch(invalidateContent());
+                return dispatch(invalidateContent(fileLabel));
             });
     };
 }
 
 export function fetchConcatenatedJobFiles(jobName, jobId) {
     return dispatch => {
-        dispatch(requestContent(jobName, jobId, jobId, jobId, getFileLabel(jobName, jobId)));
+        const fileLabel = getFileLabel(jobName, jobId);
+        dispatch(requestContent(jobName, jobId, jobId, jobId, fileLabel));
         return atlasFetch(`jobs/${jobName}/${jobId}/files/content`, { credentials: 'include' })
             .then(response => {
                 return checkResponse(response);
             })
             .then(json => {
-                return dispatchReceiveContent(dispatch, jobName, jobId, jobId, jobId, getFileLabel(jobName, jobId), json);
+                return dispatchReceiveContent(dispatch, jobName, jobId, jobId, jobId, fileLabel, json);
             })
             .catch(e => {
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:`));
@@ -179,17 +182,18 @@ export function changeSelectedContent(index) {
 
 export function getJCL(jobName, jobId) {
     return dispatch => {
-        dispatch(requestContent(jobName, jobId, 'JCL', 0, getFileLabel(jobId, 'JCL')));
+        const fileLabel = getFileLabel(jobId, 'JCL');
+        dispatch(requestContent(jobName, jobId, 'JCL', 0, fileLabel));
         return atlasFetch(`jobs/${jobName}/${jobId}/files/JCL/content`, { credentials: 'include' })
             .then(response => {
                 return checkResponse(response);
             })
             .then(json => {
-                return dispatch(receiveContent(jobName, jobId, 'JCL', 0, json.content, getFileLabel(jobId, 'JCL'), false));
+                return dispatch(receiveContent(jobName, jobId, 'JCL', 0, json.content, fileLabel, false));
             })
             .catch(e => {
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:JCL`));
-                return dispatch(invalidateContent());
+                return dispatch(invalidateContent(fileLabel));
             });
     };
 }

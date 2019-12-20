@@ -73,6 +73,7 @@ describe('Action: content', () => {
                 },
                 {
                     type: contentActions.INVALIDATE_CONTENT,
+                    fileLabel: `${contentResources.jobId}-${contentResources.fileName}`,
                 },
             ];
 
@@ -96,7 +97,10 @@ describe('Action: content', () => {
                         message: `${contentActions.NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE} - ${contentResources.jobName}:${contentResources.jobId}:${contentResources.fileName}`,
                     }),
                 },
-                { type: contentActions.INVALIDATE_CONTENT },
+                {
+                    type: contentActions.INVALIDATE_CONTENT,
+                    fileLabel: `${contentResources.jobId}-${contentResources.fileName}`,
+                },
             ];
             nock(BASE_URL)
                 .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/content`)
@@ -156,7 +160,11 @@ describe('Action: content', () => {
                         message: `${errorMessage} - ${contentResources.jobName}:${contentResources.jobId}:${contentResources.fileId}`,
                     }),
                 },
-                { type: contentActions.INVALIDATE_CONTENT },
+                {
+                    type: contentActions.INVALIDATE_CONTENT,
+                    fileLabel: undefined,
+                },
+
             ];
 
             const store = mockStore();
@@ -183,6 +191,7 @@ describe('Action: content', () => {
                 },
                 {
                     type: contentActions.INVALIDATE_CONTENT,
+                    fileLabel: undefined,
                 },
             ];
             const store = mockStore();
@@ -246,6 +255,7 @@ describe('Action: content', () => {
                 },
                 {
                     type: contentActions.INVALIDATE_CONTENT,
+                    fileLabel: undefined,
                 },
             ];
             nock(BASE_URL)
@@ -269,6 +279,7 @@ describe('Action: content', () => {
                 },
                 {
                     type: contentActions.INVALIDATE_CONTENT,
+                    fileLabel: undefined,
                 },
             ];
             nock(BASE_URL)
@@ -343,17 +354,24 @@ describe('Action: content', () => {
         });
 
         it('Should create a request to get JCL but fail and push message and invalidate', () => {
-            const expectedActions = [
-                requestContentAction,
-                {
-                    type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
-                    message: Map({
-                        message: `${errorMessage} - ${contentResources.jobName}:${contentResources.jobId}:JCL`,
-                    }),
-                },
-                {
-                    type: contentActions.INVALIDATE_CONTENT,
-                }];
+            const expectedActions = [{
+                type: contentActions.REQUEST_CONTENT,
+                jobName: contentResources.jobName,
+                jobId: contentResources.jobId,
+                fileName: 'JCL',
+                fileId: 0,
+                fileLabel: contentActions.getFileLabel(contentResources.jobId, 'JCL'),
+            },
+            {
+                type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
+                message: Map({
+                    message: `${errorMessage} - ${contentResources.jobName}:${contentResources.jobId}:JCL`,
+                }),
+            },
+            {
+                type: contentActions.INVALIDATE_CONTENT,
+                fileLabel: contentActions.getFileLabel(contentResources.jobId, 'JCL'),
+            }];
             const store = mockStore();
 
             nock(BASE_URL)
