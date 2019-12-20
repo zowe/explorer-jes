@@ -16,6 +16,7 @@ WebContent/app.min.js
 *.war
 bin
 dist
+web
 .scannerwork
 .DS_Store
 
