@@ -33,7 +33,7 @@ const STATUS_TYPES = ['ACTIVE', 'INPUT', 'OUTPUT'];
 export class Filters extends React.Component {
     static renderStatusOptions() {
         return STATUS_TYPES.map(status => {
-            return <MenuItem id={status} key={status} value={status}>{status}</MenuItem>;
+            return <MenuItem id={`status-${status}`} key={status} value={status}>{status}</MenuItem>;
         });
     }
 
@@ -198,10 +198,10 @@ export class Filters extends React.Component {
                             />
                             <FormControl
                                 style={{ width: '50%' }}
+                                id="filter-status-field"
                             >
                                 <InputLabel>Status</InputLabel>
                                 <Select
-                                    id="filter-status-field"
                                     label="Status"
                                     value={status}
                                     onChange={this.handleStatusChange}

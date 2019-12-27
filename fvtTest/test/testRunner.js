@@ -291,15 +291,14 @@ describe('JES explorer function verification tests', function () {
                 });
 
                 describe('Status Filter', () => {
-                    // TODO: restore after we figure out job with Active status and cancelled return code
-                    it.skip('Should handle fetching only ACTIVE jobs', async () => {
+                    it('Should handle fetching only ACTIVE jobs', async () => {
                         expect(await testStatusFilterFetching(driver, 'ACTIVE', ['ACTIVE'])).to.be.true;
                     });
                     // TODO:: Can't guarantee we will have jobs in INPUT state so skip until we can
                     it.skip('Should handle fetching only INPUT jobs', async () => {
                         expect(await testStatusFilterFetching(driver, 'INPUT')).to.be.true;
                     });
-                    it.skip('Should handle fetching only OUTPUT jobs', async () => {
+                    it('Should handle fetching only OUTPUT jobs', async () => {
                         expect(await testStatusFilterFetching(driver, 'OUTPUT', ['ABEND', 'OUTPUT', 'CC', 'CANCELED', 'JCL', 'SYS'])).to.be.true;
                     });
                 });
@@ -458,8 +457,7 @@ describe('JES explorer function verification tests', function () {
                     expect(await testFilterFormInputValues(driver, expectedFilter)).to.be.true;
                 });
 
-                // raised github issue #84 against explorer-jes repo, remove skip after that resolution
-                it.skip('Should handle a none recognised query parameter gracefully (still load page)', async () => {
+                it('Should handle a none recognised query parameter gracefully (still load page)', async () => {
                     const expectedFilter = {
                         owner: 'IZU*',
                         prefix: 'pre*',
