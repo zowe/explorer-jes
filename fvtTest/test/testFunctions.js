@@ -143,13 +143,18 @@ async function testColourOfStatus(driver, statusText, expectedColour) {
  *
  * @param {WebDriver} driver selenium-webdriver
  * @param {string} prefix filter prefix
+ * @param {boolean} noJobsFound if we expect no jobs to be found
  */
-async function testPrefixFilterFetching(driver, prefix) {
+async function testPrefixFilterFetching(driver, prefix, noJobsFound) {
     await testTextInputFieldCanBeModified(driver, 'filter-owner-field', '*');
     await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', prefix);
     await findAndClickApplyButton(driver);
 
     const jobs = await waitForAndExtractJobs(driver);
+    if (noJobsFound && jobs.length === 1) {
+        const jobText = await jobs[0].getText();
+        return jobText === 'No jobs found';
+    }
     return checkJobsPrefix(jobs, prefix);
 }
 
@@ -163,6 +168,11 @@ async function testOwnerFilterFetching(driver, owner, potentialJobs) {
     await testTextInputFieldCanBeModified(driver, 'filter-owner-field', owner);
     await findAndClickApplyButton(driver);
     const jobs = await waitForAndExtractJobs(driver);
+
+    if (potentialJobs.length === 0) {
+        const jobText = await jobs[0].getText();
+        return jobText === 'No jobs found';
+    }
     return checkJobsOwner(jobs, potentialJobs);
 }
 

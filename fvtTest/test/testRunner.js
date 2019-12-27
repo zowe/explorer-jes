@@ -64,6 +64,7 @@ const FILTER_BASE_URL = `${BASE_URL}/#/`;
 const loadUrlWithSearchFilters = loadPageWithFilterOptions(FILTER_BASE_URL, DEFAULT_SEARCH_FILTERS);
 const ZOSMF_JOB_NAME = 'IZUSVR1';
 
+// Need to use unnamed function so we can specify the retries
 // eslint-disable-next-line
 describe('JES explorer function verification tests', function () {
     let driver;
@@ -275,9 +276,8 @@ describe('JES explorer function verification tests', function () {
                     it('Should handle fetching jobs based on prefix with asterisk (ZOWE*)', async () => {
                         expect(await testPrefixFilterFetching(driver, 'ZOWE*')).to.be.true;
                     });
-                    // TODO:: remove skip flag and rework test once we have message in the tree showing no jobs found
-                    it.skip('Should handle fetching no jobs based on crazy prefix (1ZZZZZZ1)', async () => {
-                        expect(await testPrefixFilterFetching(driver, '1ZZZZZZ1')).to.be.true;
+                    it('Should handle fetching no jobs based on crazy prefix (1ZZZZZZ1)', async () => {
+                        expect(await testPrefixFilterFetching(driver, '1ZZZZZZ1', true)).to.be.true;
                     });
                 });
 
@@ -285,8 +285,7 @@ describe('JES explorer function verification tests', function () {
                     it('Should handle fetching jobs based on owner filter set to ZOWESVR owner (IZUSVR)', async () => {
                         expect(await testOwnerFilterFetching(driver, 'IZUSVR', ['IZU', 'ZOWE', 'ZWE'])).to.be.true;
                     });
-                    // TODO:: remove skip flag and rework test once we have message in the tree showing no jobs found
-                    it.skip('Should handle fetching no jobs based on crazy owner (1ZZZZZZ1)', async () => {
+                    it('Should handle fetching no jobs based on crazy owner (1ZZZZZZ1)', async () => {
                         expect(await testOwnerFilterFetching(driver, '1ZZZZZZ1', [])).to.be.true;
                     });
                 });
@@ -343,10 +342,9 @@ describe('JES explorer function verification tests', function () {
                     expect(text).to.have.lengthOf.greaterThan(1);
                 });
 
-                // TODO:: Implement once we have IDs for refresh vs loading icon
-                it.skip('Should handle setting refresh icon to loading icon when job file loading', async () => {
+                it('Should handle setting refresh icon to loading icon when job file loading', async () => {
                     expect(await testJobFilesLoad(driver, '*', ZOSMF_JOB_NAME, null)).to.be.true;
-                    // await findByCssAndClick(driver, '#tree-text-content > svg');
+                    expect(await testElementAppearsXTimesById(driver, 'refresh-icon', 1)).to.be.true;
                 });
                 it('Should handle opening a files content unathorised for user and display error message');
             });
@@ -585,6 +583,7 @@ describe('JES explorer function verification tests', function () {
             });
         });
     });
+
     describe('JES explorer spool file in url query (explorer-jes/#/viewer)', () => {
         const VIEWER_BASE_URL = `${BASE_URL}/#/viewer`;
         const loadUrlWithViewerFilters = loadPageWithFilterOptions(VIEWER_BASE_URL, {}, { checkJobsLoaded: false });
