@@ -104,7 +104,7 @@ class JobInstance extends React.Component {
             }
             return (<div style={statusStyleActive}> [{job.get('returnCode')}]</div>);
         } else if (job.get('status')) {
-            return <div style={statusStyleActive}>[{job.get('status')}]</div>;
+            return <div style={statusStyleActive}> [{job.get('status')}]</div>;
         }
         return null;
     }
