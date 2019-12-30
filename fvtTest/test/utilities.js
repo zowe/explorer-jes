@@ -34,7 +34,7 @@ async function getDriver() {
     const options = new firefox.Options();
     options.setPreference('dom.disable_beforeunload', true);
     // use headless mode
-    // options.headless();
+    options.headless();
 
     const capabilities = Capabilities.firefox();
     capabilities.setAcceptInsecureCerts(true);
