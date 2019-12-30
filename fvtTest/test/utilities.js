@@ -95,7 +95,6 @@ const parseJobText = text => {
 
 const parseJob = async job => {
     const text = await job.getText();
-    console.log(text);
     return parseJobText(text);
 };
 

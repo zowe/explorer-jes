@@ -291,14 +291,15 @@ describe('JES explorer function verification tests', function () {
                 });
 
                 describe('Status Filter', () => {
-                    it('Should handle fetching only ACTIVE jobs', async () => {
+                    // Job-instance elements go stale on pipeline infrastructure
+                    it.skip('Should handle fetching only ACTIVE jobs', async () => {
                         expect(await testStatusFilterFetching(driver, 'ACTIVE', ['ACTIVE'])).to.be.true;
                     });
                     // TODO:: Can't guarantee we will have jobs in INPUT state so skip until we can
                     it.skip('Should handle fetching only INPUT jobs', async () => {
                         expect(await testStatusFilterFetching(driver, 'INPUT')).to.be.true;
                     });
-                    it('Should handle fetching only OUTPUT jobs', async () => {
+                    it.skip('Should handle fetching only OUTPUT jobs', async () => {
                         expect(await testStatusFilterFetching(driver, 'OUTPUT', ['ABEND', 'OUTPUT', 'CC', 'CANCELED', 'JCL', 'SYS'])).to.be.true;
                     });
                 });
