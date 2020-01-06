@@ -25,13 +25,11 @@ class FullScreenViewer extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { title } = this.props;
+        const { title } = this.props; // title from content state
 
-        // Set HTML title if it was changed
+        // Update HTML title if it was changed
         if (prevProps.title !== this.props.title) {
-            if (document.title !== title) {
-                document.title = title;
-            }
+            document.title = title;
         }
     }
 
