@@ -338,7 +338,7 @@ describe('JES explorer function verification tests', function () {
             it('Should handle purging a job');
             it('Should handle closing context menu when clicking elsewhere on screen');
         });
-        describe('Editor behaviour', () => {
+        describe.skip('Editor behaviour', () => {
             const jobFileName = 'JESJCL';
 
             it('Should open a file when clicking on it', async () => {

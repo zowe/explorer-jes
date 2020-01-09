@@ -73,10 +73,10 @@
     "dev": "webpack-dev-server --content-base WebContent --inline --hot",
     "lint": "eslint ./WebContent/js/ ./tests/",
     "testWatch": "mocha --watch --require babel-core/register tests --recursive",
-    "test": "JUNIT_REPORT_PATH=target/report.xml nyc mocha --require babel-core/register tests --recursive --colors --reporter mocha-jenkins-reporter",
+    "test": "JUNIT_REPORT_PATH=target/report.xml nyc mocha --require babel-core/register tests/UnitTests --recursive --colors --reporter mocha-jenkins-reporter",
     "prod": "cross-env NODE_ENV='production' webpack && cp -r ./WebContent/css ./dist/ && cp -r ./WebContent/img ./dist/ && cp ./WebContent/index.html ./dist/ && cp ./WebContent/favicon.ico ./dist/",
     "preCommit": "npm-run-all --aggregate-output --parallel --print-label lint test prod",
-    "test:fvt": "JUNIT_REPORT_PATH=target/report-fvt.xml mocha --timeout 999999 --colors fvtTest/test --recursive  --reporter mocha-jenkins-reporter"
+    "test:fvt": "JUNIT_REPORT_PATH=target/report-fvt.xml mocha --timeout 999999 --colors tests/FVTTests --recursive  --reporter mocha-jenkins-reporter"
   },
   "nyc": {
     "reporter": [

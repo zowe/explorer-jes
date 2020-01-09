@@ -13,8 +13,8 @@ import nock from 'nock';
 import thunk from 'redux-thunk';
 import expect from 'expect';
 import { Map } from 'immutable';
-import * as contentActions from '../../WebContent/js/actions/content';
-import * as snackbarNotifications from '../../WebContent/js/actions/snackbarNotifications';
+import * as contentActions from '../../../WebContent/js/actions/content';
+import * as snackbarNotifications from '../../../WebContent/js/actions/snackbarNotifications';
 import { LOCAL_HOST_ENDPOINT as BASE_URL } from '../testResources/hostConstants';
 import * as contentResources from '../testResources/actions/content';
 

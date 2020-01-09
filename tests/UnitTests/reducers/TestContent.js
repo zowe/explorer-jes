@@ -9,8 +9,8 @@
  */
 
 import expect from 'expect';
-import content from '../../WebContent/js/reducers/content';
-import * as contentActions from '../../WebContent/js/actions/content';
+import content from '../../../WebContent/js/reducers/content';
+import * as contentActions from '../../../WebContent/js/actions/content';
 import * as contentResources from '../testResources/reducers/content';
 
 describe('Reducer: content', () => {
