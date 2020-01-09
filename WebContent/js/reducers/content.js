@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2019
+ * Copyright IBM Corporation 2016, 2020
  */
 
 import { Map, List } from 'immutable';
@@ -21,10 +21,13 @@ import {
     INVALIDATE_CONTENT,
 } from '../actions/content';
 
+export const DEFAULT_TITLE = 'JES Explorer';
+
 const INITIAL_CONTENT_STATE = Map({
     content: List(),
     selectedContent: 0, // Index of the current active tab content
     isSubmittingJCL: false,
+    title: DEFAULT_TITLE,
 });
 
 function getIndexOfContentFromLabel(contentList, label) {
@@ -46,6 +49,7 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
             });
         case RECEIVE_CONTENT:
             return state.merge({
+                title: `${DEFAULT_TITLE} [${action.fileLabel}]`,
                 content: state.get('content').set(getIndexOfContentFromLabel(state.get('content'), action.fileLabel),
                     {
                         label: action.fileLabel,
@@ -56,6 +60,7 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
             });
         case REMOVE_CONTENT:
             return state.merge({
+                title: `${DEFAULT_TITLE}`,
                 content: state.get('content').delete(action.index),
             });
         case UPDATE_CONTENT:

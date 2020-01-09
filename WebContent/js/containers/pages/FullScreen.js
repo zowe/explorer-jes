@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2019
+ * Copyright IBM Corporation 2016, 2020
  */
 
 import React from 'react';
@@ -21,6 +21,15 @@ class FullScreenViewer extends React.Component {
         const { dispatch, validated } = this.props;
         if (!validated) {
             dispatch(validateUser());
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const { title } = this.props; // title from content state
+
+        // Update HTML title if it was changed
+        if (prevProps.title !== this.props.title) {
+            document.title = title;
         }
     }
 
@@ -50,13 +59,16 @@ FullScreenViewer.propTypes = {
     location: PropTypes.shape({
         search: PropTypes.string,
     }),
+    title: PropTypes.string.isRequired,
 };
 
 function mapStateToProps(state) {
     const validationRoot = state.get('validation');
+    const contentRoot = state.get('content');
     return {
         validated: validationRoot.get('validated'),
         isValidating: validationRoot.get('isValidating'),
+        title: contentRoot.get('title'),
     };
 }
 

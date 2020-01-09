@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2019
+ * Copyright IBM Corporation 2016, 2020
  */
 
 import { atlasFetch } from '../utilities/urlUtils';
@@ -66,9 +66,9 @@ function checkResponse(response) {
     return response.json().then(e => { throw Error(e.message); });
 }
 
-function dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, fileLabel, json) {
+function dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, fileLabel, json, readOnly = true) {
     if ('content' in json) {
-        return dispatch(receiveContent(jobName, jobId, fileName, fileId, json.content, fileLabel));
+        return dispatch(receiveContent(jobName, jobId, fileName, fileId, json.content, fileLabel, readOnly));
     }
     throw Error(json.message || NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE);
 }
@@ -142,7 +142,7 @@ export function fetchJobFileNoName(jobName, jobId, fileId) {
                         .then(
                             fileName => {
                                 if (fileName) {
-                                    return dispatch(receiveContent(jobName, jobId, fileName, fileId, json.content, getFileLabel(jobId, fileName)));
+                                    return dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, getFileLabel(jobId, fileName), json);
                                 }
                                 throw Error(fileName);
                             },
@@ -189,7 +189,7 @@ export function getJCL(jobName, jobId) {
                 return checkResponse(response);
             })
             .then(json => {
-                return dispatch(receiveContent(jobName, jobId, 'JCL', 0, json.content, fileLabel, false));
+                return dispatchReceiveContent(dispatch, jobName, jobId, 'JCL', 0, fileLabel, json, false);
             })
             .catch(e => {
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:JCL`));
