@@ -18,9 +18,6 @@ node('ibm-jenkins-slave-dind') {
 
   pipeline.admins.add("jackjia", "jcain")
 
-  // FIXME: before merge to master, this line should be removed
-  // run the build every 3 hours to verify FVT success rate
-  pipeline.addBuildOption(pipelineTriggers([cron('H */3 * * *')]))
   // extend build history for fvt test branch
   pipeline.branches.addMap([
     name         : 'merge-fvt-tests',
