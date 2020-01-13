@@ -171,34 +171,31 @@ npm run test:fvt
     junit         : "target/*.xml",
   )
 
-  // FIXME: before merge to master, this change should be reverted
-  // skip all remaining stages to verify FVT success rate
-
-  // // we need sonar scan
   // we need sonar scan
-  // failBuild set to false whilst investigating https://github.com/zowe/zlux/issues/285
-  // pipeline.sonarScan(
-  //   scannerTool     : lib.Constants.DEFAULT_LFJ_SONARCLOUD_SCANNER_TOOL,
-  //   scannerServer   : lib.Constants.DEFAULT_LFJ_SONARCLOUD_SERVER,
-  //   allowBranchScan : lib.Constants.DEFAULT_LFJ_SONARCLOUD_ALLOW_BRANCH,
-  //   failBuild       : false
-  // )
+  we need sonar scan
+  failBuild set to false whilst investigating https://github.com/zowe/zlux/issues/285
+  pipeline.sonarScan(
+    scannerTool     : lib.Constants.DEFAULT_LFJ_SONARCLOUD_SCANNER_TOOL,
+    scannerServer   : lib.Constants.DEFAULT_LFJ_SONARCLOUD_SERVER,
+    allowBranchScan : lib.Constants.DEFAULT_LFJ_SONARCLOUD_ALLOW_BRANCH,
+    failBuild       : false
+  )
 
-  // // we have pax packaging step
-  // pipeline.packaging(name: 'explorer-jes')
+  // we have pax packaging step
+  pipeline.packaging(name: 'explorer-jes')
 
-  // // define we need publish stage
-  // pipeline.publish(
-  //   operation: {
-  //     echo "Default npm publish will be skipped."
-  //   },
-  //   artifacts: [
-  //     '.pax/explorer-jes.pax'
-  //   ]
-  // )
+  // define we need publish stage
+  pipeline.publish(
+    operation: {
+      echo "Default npm publish will be skipped."
+    },
+    artifacts: [
+      '.pax/explorer-jes.pax'
+    ]
+  )
 
-  // // define we need release stage
-  // pipeline.release()
+  // define we need release stage
+  pipeline.release()
 
   pipeline.end()
 }
