@@ -4,7 +4,17 @@
 
 The issues for the JES explorer are tracked under the Zowe Zlux repository, https://github.com/zowe/zlux and tagged accordingly with the 'explorer-jes' label. Open issues tagged with 'explorer-jes' can be found [here](https://github.com/zowe/zlux/issues?q=is%3Aopen+is%3Aissue+label%3Aexplorer-jes).
 
-## Build 
+# Artifactory Login
+
+This is required for explorer-ui-server and orion editor component
+
+```
+npm config set registry https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-release
+npm login
+<Enter artifactory credentials>
+```
+
+# App Development Workflow 
 
 ### Install Dependencies
 
@@ -57,3 +67,35 @@ sonar.login=<hash>
 Then you can run `sonar-scanner` to start code analysis.
 
 Build pipeline has embedded the SonarQube code analysis stage.
+
+
+# ZLUX App Development Workflow
+
+
+## Download:
+
+```
+cd /path/to/zlux
+git clone https://github.com/zowe/explorer-jes.git
+cd explorer-jes
+npm install
+npm run build
+```
+
+## Registering Plugin with Zowe Desktop 
+### Add Plugin Locator
+Add file `org.zowe.explorer-jes.json` to `/path/to/zlux-app-server/plugins`
+
+```
+{
+    "identifier": "org.zowe.explorer-jes",
+    "pluginLocation": "../../explorer-jes"
+}
+```
+
+### Ant Deploy:
+
+```
+cd /path/to/zlux-build
+ant deploy
+```
