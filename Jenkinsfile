@@ -172,8 +172,7 @@ npm run test:fvt
   )
 
   // we need sonar scan
-  we need sonar scan
-  failBuild set to false whilst investigating https://github.com/zowe/zlux/issues/285
+  // failBuild set to false whilst investigating https://github.com/zowe/zlux/issues/285
   pipeline.sonarScan(
     scannerTool     : lib.Constants.DEFAULT_LFJ_SONARCLOUD_SCANNER_TOOL,
     scannerServer   : lib.Constants.DEFAULT_LFJ_SONARCLOUD_SERVER,
