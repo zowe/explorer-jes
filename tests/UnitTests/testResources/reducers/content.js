@@ -9,7 +9,7 @@
  */
 
 import { Map, List } from 'immutable';
-import { DEFAULT_TITLE } from '../../../WebContent/js/reducers/content';
+import { DEFAULT_TITLE } from '../../../../WebContent/js/reducers/content';
 
 export const baseContent =
     Map({
