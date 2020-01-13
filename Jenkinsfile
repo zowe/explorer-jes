@@ -18,12 +18,6 @@ node('ibm-jenkins-slave-dind') {
 
   pipeline.admins.add("jackjia", "jcain")
 
-  // extend build history for fvt test branch
-  pipeline.branches.addMap([
-    name         : 'merge-fvt-tests',
-    buildHistory : 50,
-  ])
-
   // build parameters for FVT test
   pipeline.addBuildParameters(
     string(
