@@ -95,18 +95,27 @@ class JobInstance extends React.Component {
         const statusStyleActive = { display: 'inline' };
         const statusStyleAbend = { color: 'red', display: 'inline' };
         const statusStyleComplete = { color: 'grey', display: 'inline' };
-        if (job.get('returnCode')) {
-            if (job.get('returnCode').toLowerCase().includes('abend') || job.get('returnCode').toLowerCase().includes('jcl error')) {
-                return (<div style={statusStyleAbend}> [{job.get('returnCode')}]</div>);
+        const errorReturnCodes = ['abend', 'jcl error', 'sys fail', 'conv error', 'sec error'];
+        const completeReturnCodes = ['cc', 'canceled'];
+        const jobStatus = job.get('status');
+        if (jobStatus) {
+            if (jobStatus.toLowerCase().includes('output')) {
+                const jobReturnCode = job.get('returnCode');
+                if (jobReturnCode) {
+                    const lowerCaseJobReturnCode = jobReturnCode.toLowerCase();
+                    if (errorReturnCodes.find(errorReturnCode => { return lowerCaseJobReturnCode.includes(errorReturnCode); })) {
+                        return (<div style={statusStyleAbend}> [{jobReturnCode}]</div>);
+                    }
+                    if (completeReturnCodes.find(completeReturnCode => { return lowerCaseJobReturnCode.includes(completeReturnCode); })) {
+                        return (<div style={statusStyleComplete}> [{jobReturnCode}]</div>);
+                    }
+                    return (<div style={statusStyleComplete}> [{jobReturnCode}]</div>);
+                }
+                return (<div style={statusStyleComplete}> [{jobStatus}]</div>);
             }
-            if (job.get('returnCode').toLowerCase().includes('cc') || job.get('returnCode').toLowerCase().includes('canceled')) {
-                return (<div style={statusStyleComplete}> [{job.get('returnCode')}]</div>);
-            }
-            return (<div style={statusStyleActive}> [{job.get('returnCode')}]</div>);
-        } else if (job.get('status')) {
-            return <div style={statusStyleActive}> [{job.get('status')}]</div>;
+            return <div style={statusStyleActive}> [{jobStatus}]</div>;
         }
-        return null;
+        return <div style={statusStyleActive}> []</div>;
     }
 
     renderJobFiles() {
