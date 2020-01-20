@@ -298,6 +298,8 @@ describe('JES explorer function verification tests', function () {
                     expect(jobLink).to.be.an('array').that.has.lengthOf.at.least(1);
                     await jobLink[0].click();
 
+                    await driver.sleep(1000);
+
                     const jobFiles = await driver.findElements(By.className('job-file'));
                     expect(jobFiles).to.be.an('array').that.has.lengthOf(0);
                 });
@@ -332,10 +334,11 @@ describe('JES explorer function verification tests', function () {
                 await driver.sleep(1000); // TODO:: replace with driver wait for element to be visible
                 const contextMenuEntries = await driver.findElements(By.css('.job-instance > nav > div'));
                 const text = await contextMenuEntries[0].getText();
-                expect(text).to.equal('Purge Job');
+                expect(text).to.equal('Open');
             });
             // TODO: check after PURGE API is validated on HSS and ZD&T
             it('Should handle purging a job');
+            it('Should handle getting JCL of job');
             it('Should handle closing context menu when clicking elsewhere on screen');
         });
         describe.skip('Editor behaviour', () => {
