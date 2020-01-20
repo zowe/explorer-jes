@@ -79,7 +79,7 @@
     "test:fvt": "cross-env JUNIT_REPORT_PATH=target/report-fvt.xml mocha --timeout 999999 --colors tests/FVTTests --recursive  --reporter mocha-jenkins-reporter",
     "prod": "cross-env NODE_ENV='production' webpack && cp -r ./WebContent/css ./dist/ && cp -r ./WebContent/img ./dist/ && cp ./WebContent/index.html ./dist/ && cp ./WebContent/favicon.ico ./dist/",
     "build": "npm run clean && cross-env NODE_ENV='production' webpack --config webpack.config.iframe.js --progress --colors && npm run copy-static",
-    "copy-static": "cp ./WebContent/index.html ./web/ && cp ./WebContent/favicon.ico ./web/ && cp -r ./WebContent/css ./web/css && cp -r ./WebContent/img ./web/images",
+    "copy-static": "cp ./WebContent/index.html ./web/ && cp ./WebContent/favicon.ico ./web/ && cp -r ./WebContent/css ./web/css && cp -r ./WebContent/img ./web/images && cp -r ./WebContent/zlux-hooks ./web/zlux-hooks",
     "clean": "rimraf web",
     "preCommit": "npm-run-all --aggregate-output --parallel --print-label lint test prod"
   },

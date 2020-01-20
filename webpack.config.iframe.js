@@ -14,8 +14,6 @@ const webpack = require('webpack');
 const path = require('path');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-console.log(process.env.NODE_ENV);
-
 module.exports = {
     devtool: debug ? 'source-map' : false,
     entry: path.join(__dirname, 'WebContent/js/index.js'),

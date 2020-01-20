@@ -29,7 +29,7 @@ class AtlasSnackbar extends React.Component {
         if (nextProps.snackbarNotificationsMessages.first() &&
             snackbarNotificationsMessages.first() !== nextProps.snackbarNotificationsMessages.first()) {
             const messageValue = nextProps.snackbarNotificationsMessages.first();
-            window.sendJesNotifications(messageValue.get('message'));
+            window.sendJesNotificationsToZlux(messageValue.get('message'));
             this.registerMessageWithSnackbar();
         }
     }
