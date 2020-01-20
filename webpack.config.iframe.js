@@ -8,13 +8,16 @@
  * Copyright IBM Corporation 2018, 2019
  */
 
-const debug = process.env.NODE_ENV !== 'production';
+const REACT_APP_ENVIRONMENT = process.env.NODE_ENV;
+const debug = REACT_APP_ENVIRONMENT !== 'production';
 const webpack = require('webpack');
 const path = require('path');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
+console.log(process.env.NODE_ENV);
+
 module.exports = {
-    devtool: debug ? 'inline-sourcemap' : false,
+    devtool: debug ? 'source-map' : false,
     entry: path.join(__dirname, 'WebContent/js/index.js'),
     module: {
         rules: [
@@ -47,7 +50,7 @@ module.exports = {
     plugins: debug ? [] : [
         new webpack.DefinePlugin({
             'process.env.REACT_SYNTAX_HIGHLIGHTER_LIGHT_BUILD': true,
-            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+            'process.env.NODE_ENV': JSON.stringify(REACT_APP_ENVIRONMENT),
         }),
         new UglifyJsPlugin({
             sourceMap: true,

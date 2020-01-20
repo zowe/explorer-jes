@@ -64,6 +64,7 @@
     "redux-mock-store": "^1.1.4",
     "rewire": "^2.5.2 ",
     "selenium-webdriver": "^4.0.0-alpha.1",
+    "rimraf": "^3.0.0",
     "style-loader": "^0.18.2",
     "uglifyjs-webpack-plugin": "1.3.0",
     "webpack": "^3.12.0",
@@ -71,13 +72,15 @@
   },
   "scripts": {
     "dev": "webpack-dev-server --content-base WebContent --inline --hot",
-    "start": "npm run dev",
+    "start": "npm run build && cross-env NODE_ENV='development' webpack --config webpack.config.iframe.js --progress --colors --watch ",
     "lint": "eslint ./WebContent/js/ ./tests/UnitTests",
     "testWatch": "mocha --watch --require babel-core/register tests --recursive",
     "test": "cross-env JUNIT_REPORT_PATH=target/report.xml nyc mocha --require babel-core/register tests/UnitTests --recursive --colors --reporter mocha-jenkins-reporter",
     "test:fvt": "cross-env JUNIT_REPORT_PATH=target/report-fvt.xml mocha --timeout 999999 --colors tests/FVTTests --recursive  --reporter mocha-jenkins-reporter",
     "prod": "cross-env NODE_ENV='production' webpack && cp -r ./WebContent/css ./dist/ && cp -r ./WebContent/img ./dist/ && cp ./WebContent/index.html ./dist/ && cp ./WebContent/favicon.ico ./dist/",
-    "build": "cross-env NODE_ENV='production' webpack --config webpack.config.iframe.js && cp -r ./WebContent/css ./web/ && cp -r ./WebContent/img ./web/images && cp ./WebContent/index.html ./web/ && cp ./WebContent/favicon.ico ./web/",
+    "build": "npm run clean && cross-env NODE_ENV='production' webpack --config webpack.config.iframe.js --progress --colors && npm run copy-static",
+    "copy-static": "cp ./WebContent/index.html ./web/ && cp ./WebContent/favicon.ico ./web/ && cp -r ./WebContent/css ./web/css && cp -r ./WebContent/img ./web/images",
+    "clean": "rimraf web",
     "preCommit": "npm-run-all --aggregate-output --parallel --print-label lint test prod"
   },
   "nyc": {
