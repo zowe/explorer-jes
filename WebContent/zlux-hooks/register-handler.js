@@ -7,16 +7,21 @@
 
   Copyright Contributors to the Zowe Project.
 */
+if (exports) {
+    const ZoweZLUX_tempExports = exports;
+}
+var exports = { __esModule: true };
 
 function handleMessageAdded(message) {
 
 }
+
 function handleMessageRemoved(id) {
 }
 
 async function sendJesNotificationsToZlux(message) {
     if (window.ZoweZLUX) {
-        ZoweZLUX.notificationManager.addMessageHandler(this).then(res => {
+        ZoweZLUX.notificationManager.addMessageHandler(window).then(res => {
             ZoweZLUX.notificationManager
                 .createNotification('JES Explorer', message, 1, 'org.zowe.explorer-jes')
                 .then(async notificationObj => {
