@@ -34,7 +34,7 @@ const ZOSMF_JOB_NAME = 'IZUSVR1';
 
 // Need to use unnamed function so we can specify the retries
 // eslint-disable-next-line
-describe('JES explorer home view with filters in url query', function () {
+describe('JES explorer home view with filter parameters in url query', function () {
     let driver;
     this.retries(3);
 
@@ -103,8 +103,8 @@ describe('JES explorer home view with filters in url query', function () {
                 expect(await testJobPrefixFilter(driver, expectedPrefix)).to.be.true;
             });
 
-            it('Should handle fetching jobs based on prefix with asterisk (ZOWE*)', async () => {
-                const expectedPrefix = 'ZOWE*';
+            it('Should handle fetching jobs based on prefix with asterisk (IZU*)', async () => {
+                const expectedPrefix = 'IZU*';
                 const filters = { prefix: expectedPrefix };
                 const expectedFilter = { ...DEFAULT_SEARCH_FILTERS, ...filters };
 
@@ -179,7 +179,7 @@ describe('JES explorer home view with filters in url query', function () {
             it('Should handle fetching only OUTPUT jobs', async () => {
                 const filters = { status: 'OUTPUT' };
                 const expectedFilter = { ...DEFAULT_SEARCH_FILTERS, ...filters };
-                const expectedStatus = ['ABEND', 'OUTPUT', 'CC', 'CANCELED', 'JCL', 'SYS'];
+                const expectedStatus = ['ABEND', 'OUTPUT', 'CC', 'CANCELED', 'JCL', 'SYS', 'SEC'];
 
                 await loadUrlWithSearchFilters(driver, filters);
                 expect(await testFilterDisplayStringValues(driver, expectedFilter)).to.be.true;

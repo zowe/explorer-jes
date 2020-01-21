@@ -244,8 +244,8 @@ describe('JES explorer function verification tests', function () {
                     it('Should handle fetching jobs based on full prefix (ZOSMF_JOB_NAME)', async () => {
                         expect(await testPrefixFilterFetching(driver, ZOSMF_JOB_NAME)).to.be.true;
                     });
-                    it('Should handle fetching jobs based on prefix with asterisk (ZOWE*)', async () => {
-                        expect(await testPrefixFilterFetching(driver, 'ZOWE*')).to.be.true;
+                    it('Should handle fetching jobs based on prefix with asterisk (IZU*)', async () => {
+                        expect(await testPrefixFilterFetching(driver, 'IZU*')).to.be.true;
                     });
                     it('Should handle fetching no jobs based on crazy prefix (1ZZZZZZ1)', async () => {
                         expect(await testPrefixFilterFetching(driver, '1ZZZZZZ1', true)).to.be.true;
@@ -271,7 +271,7 @@ describe('JES explorer function verification tests', function () {
                         expect(await testStatusFilterFetching(driver, 'INPUT')).to.be.true;
                     });
                     it.skip('Should handle fetching only OUTPUT jobs', async () => {
-                        expect(await testStatusFilterFetching(driver, 'OUTPUT', ['ABEND', 'OUTPUT', 'CC', 'CANCELED', 'JCL', 'SYS'])).to.be.true;
+                        expect(await testStatusFilterFetching(driver, 'OUTPUT', ['ABEND', 'OUTPUT', 'CC', 'CANCELED', 'JCL', 'SYS', 'SEC'])).to.be.true;
                     });
                 });
 
