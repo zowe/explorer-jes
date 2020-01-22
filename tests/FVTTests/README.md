@@ -1,10 +1,7 @@
 # Explorer-JES-fvt
 
 ## Work in progress
-
-1. Not all tests are implemented
-2. Not all tests are listed
-3. No Jenkins file to control build process
+Theses tests are still a work in progress and a large number are skipped due to timing issues with build infrastructure. Lint checking is disable for tests under the FVTTests directory.
 
 ### Requirements
 
@@ -27,9 +24,4 @@ ZOWE_JOB_NAME=ZOWESVR \
 SERVER_HOST_NAME=zosHost.com \
 SERVER_HTTPS_PORT=7554 \
 npm test
-```
-
-### Run Linter:
-```
-npm run lint
 ```

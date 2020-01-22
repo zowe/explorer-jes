@@ -28,6 +28,15 @@ npm run dev
 
 Then you can visit http://localhost:8080 to test.
 
+### Run unit tests
+
+```
+npm run test
+```
+
+### Run fvt/selenium tests
+
+See [README](/tests/FVTTests/README.md)
 
 ### Build for Production
 
