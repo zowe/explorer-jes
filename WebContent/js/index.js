@@ -24,13 +24,8 @@ import rootReducer from './reducers';
 import JobsView from './containers/pages/Jobs';
 import FullScreenView from './containers/pages/FullScreen';
 
-let store;
-const environment = process.env.NODE_ENV;
-if (environment === 'production') {
-    store = applyMiddleware(thunk, createLogger())(createStore)(rootReducer, Map({}));
-} else {
-    store = applyMiddleware(thunk)(createStore)(rootReducer, Map({}));
-}
+const store = applyMiddleware(thunk, createLogger())(createStore)(rootReducer, Map({}));
+
 const theme = createMuiTheme({
     overrides: {
         MuiCard: {
