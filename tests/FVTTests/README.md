@@ -23,5 +23,5 @@ ZOWE_PASSWORD=12345678 \
 ZOWE_JOB_NAME=ZOWESVR \
 SERVER_HOST_NAME=zosHost.com \
 SERVER_HTTPS_PORT=7554 \
-npm test
+npm run test:fvt
 ```
