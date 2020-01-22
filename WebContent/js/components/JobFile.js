@@ -97,7 +97,7 @@ class JobFile extends React.Component {
                             onClick={() => { this.openFile(); }}
                         >
                             <Description className="node-icon" />
-                            <span>{file.label}</span>
+                            <span className="job-file-label">{file.label}</span>
                         </span>
                     </ContextMenuTrigger>
                 </li>

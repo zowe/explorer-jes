@@ -9,8 +9,8 @@
  */
 
 import expect from 'expect';
-import snackbarNotifications from '../../WebContent/js/reducers/snackbarNotifications';
-import * as snackbarNotificationsActions from '../../WebContent/js/actions/snackbarNotifications';
+import snackbarNotifications from '../../../WebContent/js/reducers/snackbarNotifications';
+import * as snackbarNotificationsActions from '../../../WebContent/js/actions/snackbarNotifications';
 import * as snackbarNotificationsActionsResources from '../testResources/actions/snackbarNotifications';
 import * as snackbarNotificationsReducersResources from '../testResources/reducers/snackbarNotifications';
 

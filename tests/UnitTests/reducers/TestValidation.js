@@ -9,8 +9,8 @@
  */
 
 import expect from 'expect';
-import validation from '../../WebContent/js/reducers/validation';
-import * as validationActions from '../../WebContent/js/actions/validation';
+import validation from '../../../WebContent/js/reducers/validation';
+import * as validationActions from '../../../WebContent/js/actions/validation';
 import * as validationResources from '../testResources/reducers/validation';
 
 describe('Reducer: validation', () => {

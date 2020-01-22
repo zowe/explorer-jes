@@ -4,14 +4,12 @@
 
 The issues for the JES explorer are tracked under the Zowe Zlux repository, https://github.com/zowe/zlux and tagged accordingly with the 'explorer-jes' label. Open issues tagged with 'explorer-jes' can be found [here](https://github.com/zowe/zlux/issues?q=is%3Aopen+is%3Aissue+label%3Aexplorer-jes).
 
-# Artifactory Login
+# Configure NPM Registry
 
-This is required for explorer-ui-server and orion editor component
+This is required for explorer-ui-server and orion editor component because they are published only on Zowe Artifactory.
 
 ```
-npm config set registry https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-release
-npm login
-<Enter artifactory credentials>
+npm config set registry https://zowe.jfrog.io/zowe/api/npm/npm-release
 ```
 
 # App Development Workflow 
@@ -30,6 +28,15 @@ npm run dev
 
 Then you can visit http://localhost:8080 to test.
 
+### Run unit tests
+
+```
+npm run test
+```
+
+### Run fvt/selenium tests
+
+See [README](/tests/FVTTests/README.md)
 
 ### Build for Production
 

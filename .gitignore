@@ -1,9 +1,9 @@
-node_modules
-coverage
+node_modules/
+coverage/
 etc
 target
 node
-.nyc_output
+.nyc_output/
 .settings
 .externalToolBuilders
 .apt_generated
@@ -19,6 +19,8 @@ dist
 web
 .scannerwork
 .DS_Store
+.history/
+.env
 
 # pax workspace
 .pax/*
@@ -26,3 +28,6 @@ web
 !.pax/pre-packaging.sh
 !.pax/post-packaging.sh
 !.pax/prepare-workspace.sh
+
+# fvt tmp folder
+.fvt
