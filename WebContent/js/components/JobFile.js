@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 
 import PropTypes from 'prop-types';
@@ -68,7 +68,8 @@ class JobFile extends React.Component {
 
     openInNewWindow() {
         const { job, file } = this.props;
-        const newWindow = window.open(`/#/viewer?jobName=${job.get('jobName')}&jobId=${job.get('jobId')}&fileId=${file.id}`, '_blank');
+        const baseURI = `${window.location.origin}${window.location.pathname}`;
+        const newWindow = window.open(`${baseURI}#/viewer?jobName=${job.get('jobName')}&jobId=${job.get('jobId')}&fileId=${file.id}`, '_blank');
         newWindow.focus();
     }
 
