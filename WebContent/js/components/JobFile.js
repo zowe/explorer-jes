@@ -68,7 +68,8 @@ class JobFile extends React.Component {
 
     openInNewWindow() {
         const { job, file } = this.props;
-        const newWindow = window.open(`/#/viewer?jobName=${job.get('jobName')}&jobId=${job.get('jobId')}&fileId=${file.id}`, '_blank');
+        const newWindow = window.open(`${window.location.origin}${window.location.pathname}`
+            + `#/viewer?jobName=${job.get('jobName')}&jobId=${job.get('jobId')}&fileId=${file.id}`, '_blank');
         newWindow.focus();
     }
 
