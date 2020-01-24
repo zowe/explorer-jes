@@ -75,26 +75,26 @@ describe('JES explorer function verification tests', function () {
 
     describe('JES explorer home view', () => {
         it('Should handle rendering expected components (Navigator[filters+tree] & File Viewer)');
-        describe('Component resizing', () => {
+        describe.only('Component resizing', () => {
             afterEach(async () => {
                 await driver.manage().window().setRect({ width: 1600, height: 800 });
             });
             const browserHeaderHeight = 74;
             const jobTreeTitleHeight = 53;
-            it('Should handle resizing of tree card component', async () => {
+            it('Should handle resizing of tree card component (tree-text-content)', async () => {
                 expect(await testWindowHeightChangeForcesComponentHeightChange(
                     driver, 'tree-text-content', browserHeaderHeight + jobTreeTitleHeight)).to.be.true;
             });
-            it('Should handle resizing just the tree', async () => {
+            it('Should handle resizing just the tree (full-height-tree)', async () => {
                 const filterCardHeight = 48;
                 expect(await testWindowHeightChangeForcesComponentHeightChange(
                     driver, 'full-height-tree', browserHeaderHeight + jobTreeTitleHeight + filterCardHeight)).to.be.true;
             });
-            it('Should handle resizing of editor card component', async () => {
+            it('Should handle resizing of editor card component (content-viewer)', async () => {
                 expect(await testWindowHeightChangeForcesComponentHeightChange(
                     driver, 'content-viewer', browserHeaderHeight)).to.be.true;
             });
-            it('Should handle resizing just the editor text area', async () => {
+            it('Should handle resizing just the editor text area (embeddedEditor)', async () => {
                 const contentViewerHeaderHeight = 54;
                 expect(await testWindowHeightChangeForcesComponentHeightChange(
                     driver, 'embeddedEditor', browserHeaderHeight + contentViewerHeaderHeight)).to.be.true;
