@@ -38,7 +38,8 @@
                 "--timeout",
                 "999999",
                 "--colors",
-                "${workspaceFolder}/fvtTest/test"
+                "${workspaceFolder}/tests/FVTTests/test",
+                "--recursive"
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"

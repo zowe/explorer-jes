@@ -55,10 +55,13 @@ async function testWindowHeightChangeForcesComponentHeightChange(driver, compone
     let allResized = true;
     for (let i = 300; i <= 1000 && allResized; i += 100) {
         await driver.manage().window().setRect({ width: 1600, height: i });
+        await driver.sleep(500); // let the dom update after resize
         const contentViewer = await driver.findElement(By.id(component));
         const height = await contentViewer.getCssValue('height');
         const heightInt = parseInt(height.substr(0, height.length - 2), 10);
-        if (heightInt + browserOffSet !== i) allResized = false;
+        if (heightInt + browserOffSet !== i) {
+            allResized = false;
+        }
     }
     return allResized;
 }

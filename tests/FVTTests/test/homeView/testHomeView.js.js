@@ -79,20 +79,25 @@ describe('JES explorer function verification tests', function () {
             afterEach(async () => {
                 await driver.manage().window().setRect({ width: 1600, height: 800 });
             });
-            // TODO:: replace offset with constant
-            it.skip('Should handle resizing of tree card component', async () => {
-                expect(await testWindowHeightChangeForcesComponentHeightChange(driver, 'tree-text-content', 126)).to.be.true;
+            const browserHeaderHeight = 74;
+            const jobTreeTitleHeight = 53;
+            it('Should handle resizing of tree card component', async () => {
+                expect(await testWindowHeightChangeForcesComponentHeightChange(
+                    driver, 'tree-text-content', browserHeaderHeight + jobTreeTitleHeight)).to.be.true;
             });
-            // TODO:: change overflow of job-list to scroll so we can check this correctly
-            it.skip('Should handle resizing just the tree', async () => {
-                expect(await testWindowHeightChangeForcesComponentHeightChange(driver, 'job-list', 126 + 104)).to.be.true;
+            it('Should handle resizing just the tree', async () => {
+                const filterCardHeight = 48;
+                expect(await testWindowHeightChangeForcesComponentHeightChange(
+                    driver, 'full-height-tree', browserHeaderHeight + jobTreeTitleHeight + filterCardHeight)).to.be.true;
             });
-            // TODO:: need to remove browser offset from orion editor component in Content Viewer
-            it.skip('Should handle resizing of editor card component', async () => {
-                expect(await testWindowHeightChangeForcesComponentHeightChange(driver, 'content-viewer', 126)).to.be.true;
+            it('Should handle resizing of editor card component', async () => {
+                expect(await testWindowHeightChangeForcesComponentHeightChange(
+                    driver, 'content-viewer', browserHeaderHeight)).to.be.true;
             });
-            it.skip('Should handle resizing just the editor text area', async () => {
-                expect(await testWindowHeightChangeForcesComponentHeightChange(driver, 'embeddedEditor', 126 + 8)).to.be.true;
+            it('Should handle resizing just the editor text area', async () => {
+                const contentViewerHeaderHeight = 54;
+                expect(await testWindowHeightChangeForcesComponentHeightChange(
+                    driver, 'embeddedEditor', browserHeaderHeight + contentViewerHeaderHeight)).to.be.true;
             });
         });
 

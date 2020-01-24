@@ -44,7 +44,7 @@ export default class FulleHeightTree extends React.Component {
         const { overrideHeight, children } = this.props;
         return (
             <div
-                className="node"
+                id="full-height-tree"
                 ref={this.onDivRef}
                 style={{ overflow: 'scroll', height: overrideHeight || this.state.height }}
             >
