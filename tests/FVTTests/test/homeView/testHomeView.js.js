@@ -75,7 +75,7 @@ describe('JES explorer function verification tests', function () {
 
     describe('JES explorer home view', () => {
         it('Should handle rendering expected components (Navigator[filters+tree] & File Viewer)');
-        describe.only('Component resizing', () => {
+        describe('Component resizing', () => {
             afterEach(async () => {
                 await driver.manage().window().setRect({ width: 1600, height: 800 });
             });
@@ -95,12 +95,12 @@ describe('JES explorer function verification tests', function () {
                     driver, 'content-viewer', browserHeaderHeight)).to.be.true;
             });
             it('Should handle resizing just the editor text area (embeddedEditor)', async () => {
-                const contentViewer = await driver.findElement(By.id('content-viewer-header'));
-                const height = await contentViewer.getCssValue('height');
-                const contentViewerHeaderHeight = parseInt(height.substr(0, height.length - 2), 10);
-                console.log(`header height: ${contentViewerHeaderHeight + 16}`);
+                const contentViewerHeader = await driver.findElement(By.id('content-viewer-header'));
+                const contentViewerHeaderHeight = await contentViewerHeader.getCssValue('height');
+                const contentViewerHeaderHeightInt = parseInt(contentViewerHeaderHeight.substr(0, contentViewerHeaderHeight.length - 2), 10);
+                const contentViewerHeaderPadding = 16;
                 expect(await testWindowHeightChangeForcesComponentHeightChange(
-                    driver, 'embeddedEditor', browserHeaderHeight + contentViewerHeaderHeight + 16)).to.be.true;
+                    driver, 'embeddedEditor', browserHeaderHeight + contentViewerHeaderHeightInt + contentViewerHeaderPadding)).to.be.true;
             });
         });
 

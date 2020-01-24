@@ -61,9 +61,6 @@ async function testWindowHeightChangeForcesComponentHeightChange(driver, compone
         const heightInt = parseInt(height.substr(0, height.length - 2), 10);
         if (heightInt + browserOffSet !== i) {
             allResized = false;
-            console.log(`component height: ${heightInt}`);
-            console.log(`browser offset: ${browserOffSet}`);
-            console.log(`expected height: ${i}`);
         }
     }
     return allResized;
