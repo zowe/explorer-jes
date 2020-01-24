@@ -95,9 +95,12 @@ describe('JES explorer function verification tests', function () {
                     driver, 'content-viewer', browserHeaderHeight)).to.be.true;
             });
             it('Should handle resizing just the editor text area (embeddedEditor)', async () => {
-                const contentViewerHeaderHeight = 54;
+                const contentViewer = await driver.findElement(By.id('content-viewer-header'));
+                const height = await contentViewer.getCssValue('height');
+                const contentViewerHeaderHeight = parseInt(height.substr(0, height.length - 2), 10);
+                console.log(`header height: ${contentViewerHeaderHeight + 16}`);
                 expect(await testWindowHeightChangeForcesComponentHeightChange(
-                    driver, 'embeddedEditor', browserHeaderHeight + contentViewerHeaderHeight)).to.be.true;
+                    driver, 'embeddedEditor', browserHeaderHeight + contentViewerHeaderHeight + 16)).to.be.true;
             });
         });
 
