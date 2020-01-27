@@ -41,21 +41,23 @@ class JobNodeTree extends React.Component {
     }
 
     renderJobs() {
-        const { jobs, dispatch } = this.props;
+        const { jobs, isFetching, dispatch } = this.props;
         if (jobs && jobs.size >= 1) {
             return jobs.map(job => {
                 return (
                     <JobInstance key={job.get('label')} job={job} dispatch={dispatch} />
                 );
             });
+        } else if (!isFetching) {
+            return (
+                <div className="job-instance">
+                    <li>
+                        <ErrorIcon className="node-icon" />
+                        <span className="job-label">{NO_JOBS_FOUND_MESSAGE}</span>
+                    </li>
+                </div>);
         }
-        return (
-            <div className="job-instance">
-                <li>
-                    <ErrorIcon className="node-icon" />
-                    <span className="job-label">{NO_JOBS_FOUND_MESSAGE}</span>
-                </li>
-            </div>);
+        return null;
     }
 
     render() {

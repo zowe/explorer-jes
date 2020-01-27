@@ -9,7 +9,7 @@
  */
 
 import expect from 'expect';
-import * as snackbarNotifications from '../../WebContent/js/actions/snackbarNotifications';
+import * as snackbarNotifications from '../../../WebContent/js/actions/snackbarNotifications';
 import * as snackbarNotificationsResources from '../testResources/actions/snackbarNotifications';
 
 describe('Action: snackbarNotifiactions', () => {

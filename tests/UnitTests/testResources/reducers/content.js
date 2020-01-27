@@ -5,16 +5,18 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018, 2019
+ * Copyright IBM Corporation 2018, 2020
  */
 
 import { Map, List } from 'immutable';
+import { DEFAULT_TITLE } from '../../../../WebContent/js/reducers/content';
 
 export const baseContent =
     Map({
         content: List(),
         selectedContent: 0,
         isSubmittingJCL: false,
+        title: DEFAULT_TITLE,
     });
 
 export const jobName = 'DEMOJOB';
@@ -27,6 +29,7 @@ export const requestedContent =
         content: List([{ label: `${jobId}-${fileLabel}`, content: '', isFetching: true }]),
         selectedContent: 0,
         isSubmittingJCL: false,
+        title: `${DEFAULT_TITLE}`,
     });
 
 
@@ -35,6 +38,7 @@ export const receivedContent =
         content: List([{ label: fileLabel, content: 'test', isFetching: false, readOnly: true }]),
         selectedContent: 0,
         isSubmittingJCL: false,
+        title: `${DEFAULT_TITLE} [${fileLabel}]`,
     });
 
 export const updatedContent = 'new updated Content';
@@ -43,6 +47,7 @@ export const receivedContentUpdated =
         content: List([{ label: fileLabel, content: updatedContent, isFetching: false, readOnly: true }]),
         selectedContent: 0,
         isSubmittingJCL: false,
+        title: `${DEFAULT_TITLE} [${fileLabel}]`,
     });
 
 
@@ -54,6 +59,7 @@ export const requestedContentWithExistingContent =
         ]),
         selectedContent: 0,
         isSubmittingJCL: false,
+        title: `${DEFAULT_TITLE} [${fileLabel}]`,
     });
 
 export const receivedContent2 =
@@ -64,6 +70,7 @@ export const receivedContent2 =
         ]),
         selectedContent: 0,
         isSubmittingJCL: false,
+        title: `${DEFAULT_TITLE} [${fileLabel2}]`,
     });
 
 export const requestSubmitJCLContent =
@@ -71,4 +78,5 @@ export const requestSubmitJCLContent =
         content: List(),
         selectedContent: 0,
         isSubmittingJCL: true,
+        title: `${DEFAULT_TITLE}`,
     });

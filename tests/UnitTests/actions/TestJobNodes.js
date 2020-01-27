@@ -16,8 +16,8 @@ import nock from 'nock';
 import expect from 'expect';
 import rewire from 'rewire';
 import { fromJS, Map } from 'immutable';
-import * as JobNodes from '../../WebContent/js/actions/jobNodes';
-import * as snackbar from '../../WebContent/js/actions/snackbarNotifications';
+import * as JobNodes from '../../../WebContent/js/actions/jobNodes';
+import * as snackbar from '../../../WebContent/js/actions/snackbarNotifications';
 import { LOCAL_HOST_ENDPOINT as BASE_URL } from '../testResources/hostConstants';
 
 import * as jobNodesResources from '../testResources/actions/jobNodesResources';
@@ -29,7 +29,7 @@ describe('Action: jobNodes', () => {
     });
 
     // Use Rewire to export private functions
-    const rewiredJobNodes = rewire('../../WebContent/js/actions/jobNodes');
+    const rewiredJobNodes = rewire('../../../WebContent/js/actions/jobNodes');
 
     const middlewares = [thunk];
     const mockStore = configureMockStore(middlewares);

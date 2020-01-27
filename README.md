@@ -4,7 +4,15 @@
 
 The issues for the JES explorer are tracked under the Zowe Zlux repository, https://github.com/zowe/zlux and tagged accordingly with the 'explorer-jes' label. Open issues tagged with 'explorer-jes' can be found [here](https://github.com/zowe/zlux/issues?q=is%3Aopen+is%3Aissue+label%3Aexplorer-jes).
 
-## Build 
+# Configure NPM Registry
+
+This is required for explorer-ui-server and orion editor component because they are published only on Zowe Artifactory.
+
+```
+npm config set registry https://zowe.jfrog.io/zowe/api/npm/npm-release
+```
+
+# App Development Workflow 
 
 ### Install Dependencies
 
@@ -25,6 +33,15 @@ npm run dev
 Then you can visit http://localhost:8080 to test.
 When testing you may see errors with API calls do to CORS (Cross origin resource sharing), to work around this you may disable CORS checking in your browser for local development. 
 
+### Run unit tests
+
+```
+npm run test
+```
+
+### Run fvt/selenium tests
+
+See [README](/tests/FVTTests/README.md)
 
 ### Build for Production
 
@@ -67,3 +84,35 @@ sonar.login=<hash>
 Then you can run `sonar-scanner` to start code analysis.
 
 Build pipeline has embedded the SonarQube code analysis stage.
+
+
+# ZLUX App Development Workflow
+
+
+## Download:
+
+```
+cd /path/to/zlux
+git clone https://github.com/zowe/explorer-jes.git
+cd explorer-jes
+npm install
+npm run build
+```
+
+## Registering Plugin with Zowe Desktop 
+### Add Plugin Locator
+Add file `org.zowe.explorer-jes.json` to `/path/to/zlux-app-server/plugins`
+
+```
+{
+    "identifier": "org.zowe.explorer-jes",
+    "pluginLocation": "../../explorer-jes"
+}
+```
+
+### Ant Deploy:
+
+```
+cd /path/to/zlux-build
+ant deploy
+```

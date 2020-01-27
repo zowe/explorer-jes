@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2019
+ * Copyright IBM Corporation 2016, 2020
  */
 
 import PropTypes from 'prop-types';
@@ -28,6 +28,8 @@ class AtlasSnackbar extends React.Component {
         const { snackbarNotificationsMessages } = this.props;
         if (nextProps.snackbarNotificationsMessages.first() &&
             snackbarNotificationsMessages.first() !== nextProps.snackbarNotificationsMessages.first()) {
+            const messageValue = nextProps.snackbarNotificationsMessages.first();
+            window.sendJesNotificationsToZlux(messageValue.get('message'));
             this.registerMessageWithSnackbar();
         }
     }

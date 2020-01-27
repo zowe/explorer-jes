@@ -9,8 +9,8 @@
  */
 
 import expect from 'expect';
-import JobNodes from '../../WebContent/js/reducers/jobNodes';
-import * as jobNodesActions from '../../WebContent/js/actions/jobNodes';
+import JobNodes from '../../../WebContent/js/reducers/jobNodes';
+import * as jobNodesActions from '../../../WebContent/js/actions/jobNodes';
 import * as jobNodesResources from '../testResources/reducers/jobNodesResources';
 import * as jobNodesActionResources from '../testResources/actions/jobNodesResources';
 import * as filtersResources from '../testResources/actions/filters';

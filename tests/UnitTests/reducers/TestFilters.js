@@ -9,8 +9,8 @@
  */
 
 import expect from 'expect';
-import filter from '../../WebContent/js/reducers/filters';
-import * as filterActions from '../../WebContent/js/actions/filters';
+import filter from '../../../WebContent/js/reducers/filters';
+import * as filterActions from '../../../WebContent/js/actions/filters';
 import * as filterResources from '../testResources/reducers/filters';
 
 describe('Reducer: filters', () => {

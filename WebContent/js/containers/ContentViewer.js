@@ -103,14 +103,14 @@ export class ContentViewer extends React.Component {
         if (content.size > 0) {
             return content.map((tabContent, index) => {
                 return (
-                    <div style={{ width: 'max-content', display: 'inline-block' }} key={tabContent.label}>
+                    <div className="content-tab" style={{ width: 'max-content', display: 'inline-block' }} key={tabContent.label}>
                         <div style={index === selectedContent ? selectedTabStyle : unselectedTabStyle}>
-                            <div onClick={() => { this.handleSelectedTabChange(index); }} >
+                            <div className="content-tab-label" onClick={() => { this.handleSelectedTabChange(index); }} >
                                 {tabContent.label}
                             </div>
                             <ClearIcon onClick={() => { this.handleCloseTab(index); }} />
                         </div>
-                        {tabContent.isFetching ? <LinearProgress style={{ width: '100%', height: '2px' }} /> : null}
+                        {tabContent.isFetching ? <LinearProgress class="progress-bar" style={{ width: '100%', height: '2px' }} /> : null}
                     </div>
                 );
             });
@@ -168,6 +168,7 @@ export class ContentViewer extends React.Component {
                 style={{ marginBottom: 0 }}
             >
                 <CardHeader
+                    id="content-viewer-header"
                     subheader={this.renderSubheader()}
                     style={{ paddingBottom: 0, whiteSpace: 'nowrap', overflow: 'scroll' }}
                 />

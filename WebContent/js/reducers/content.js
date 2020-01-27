@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2019
+ * Copyright IBM Corporation 2016, 2020
  */
 
 import { Map, List } from 'immutable';
@@ -18,12 +18,16 @@ import {
     REQUEST_SUBMIT_JCL,
     RECEIVE_SUBMIT_JCL,
     INVALIDATE_SUBMIT_JCL,
+    INVALIDATE_CONTENT,
 } from '../actions/content';
+
+export const DEFAULT_TITLE = 'JES Explorer';
 
 const INITIAL_CONTENT_STATE = Map({
     content: List(),
     selectedContent: 0, // Index of the current active tab content
     isSubmittingJCL: false,
+    title: DEFAULT_TITLE,
 });
 
 function getIndexOfContentFromLabel(contentList, label) {
@@ -45,6 +49,7 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
             });
         case RECEIVE_CONTENT:
             return state.merge({
+                title: `${DEFAULT_TITLE} [${action.fileLabel}]`,
                 content: state.get('content').set(getIndexOfContentFromLabel(state.get('content'), action.fileLabel),
                     {
                         label: action.fileLabel,
@@ -55,6 +60,7 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
             });
         case REMOVE_CONTENT:
             return state.merge({
+                title: `${DEFAULT_TITLE}`,
                 content: state.get('content').delete(action.index),
             });
         case UPDATE_CONTENT:
@@ -81,6 +87,10 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
         case INVALIDATE_SUBMIT_JCL:
             return state.merge({
                 isSubmittingJCL: false,
+            });
+        case INVALIDATE_CONTENT:
+            return state.merge({
+                content: state.get('content').delete(getIndexOfContentFromLabel(state.get('content'), action.fileLabel)),
             });
         default:
             return state;

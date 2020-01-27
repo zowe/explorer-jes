@@ -11,12 +11,58 @@
  */
 
 
-node('ibm-jenkins-slave-nvm') {
+node('ibm-jenkins-slave-dind') {
   def lib = library("jenkins-library").org.zowe.jenkins_shared_library
 
   def pipeline = lib.pipelines.nodejs.NodeJSPipeline.new(this)
 
   pipeline.admins.add("jackjia", "jcain")
+
+  // build parameters for FVT test
+  pipeline.addBuildParameters(
+    string(
+      name: 'FVT_API_ARTIFACT',
+      description: 'Jobs API artifact download pattern',
+      defaultValue: 'libs-release-local/org/zowe/explorer/jobs/jobs-zowe-server-package/*/jobs-zowe-server-package-*.zip',
+      trim: true,
+      required: true
+    ),
+    string(
+      name: 'FVT_ZOSMF_HOST',
+      description: 'z/OSMF server for integration test',
+      defaultValue: 'river.zowe.org',
+      trim: true,
+      required: true
+    ),
+    string(
+      name: 'FVT_ZOSMF_PORT',
+      description: 'z/OSMF port for integration test',
+      defaultValue: '10443',
+      trim: true,
+      required: true
+    ),
+    credentials(
+      name: 'FVT_ZOSMF_CREDENTIAL',
+      description: 'The SSH credential used to connect to z/OSMF for integration test',
+      credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
+      defaultValue: 'ssh-zdt-test-image-guest',
+      required: true
+    ),
+    string(
+      name: 'FVT_JOBNAME',
+      description: 'Job name for integration test',
+      defaultValue: 'ZOWESVR',
+      trim: true,
+      required: true
+    ),
+    string(
+      name: 'FVT_SERVER_HOSTNAME',
+      description: 'Server hostname for integration test',
+      defaultValue: 'fvt-test-server',
+      trim: true,
+      required: true
+    )
+  )
 
   pipeline.setup(
     packageName: 'org.zowe.explorer-jes',
@@ -46,7 +92,10 @@ node('ibm-jenkins-slave-nvm') {
       usernamePasswordCredential : lib.Constants.DEFAULT_LFJ_NPM_PRIVATE_REGISTRY_CREDENTIAL,
     ],
     // FIXME: ideally this should set to false (using default by remove this line)
-    ignoreAuditFailure            : true
+    ignoreAuditFailure            : true,
+    // FIXME: npm version in ibm-jenkins-slave-dind is too old, doesn't support "npm ci"
+    alwaysUseNpmInstall           : true
+
   )
 
   // we have a custom build command
@@ -76,6 +125,44 @@ node('ibm-jenkins-slave-nvm') {
     htmlReports   : [
       [dir: "coverage/lcov-report", files: "index.html", name: "Report: Code Coverage"],
     ],
+  )
+
+  pipeline.test(
+    name          : 'Integration',
+    operation     : {
+      echo "Preparing server for integration test ..."
+      ansiColor('xterm') {
+        // prepare environtment for integration test
+        sh "./scripts/prepare-fvt.sh \"${params.FVT_API_ARTIFACT}\" \"${params.FVT_ZOSMF_HOST}\" \"${params.FVT_ZOSMF_PORT}\""
+      }
+      // run tests
+      sh 'docker ps'
+      // wait a while to give time for service to be started
+      sleep time: 1, unit: 'MINUTES'
+
+      echo "Starting integration test ..."
+      timeout(time: 60, unit: 'MINUTES') {
+        withCredentials([
+          usernamePassword(
+            credentialsId: params.FVT_ZOSMF_CREDENTIAL,
+            passwordVariable: 'PASSWORD',
+            usernameVariable: 'USERNAME'
+          )
+        ]) {
+          ansiColor('xterm') {
+            sh """
+ZOWE_USERNAME=${USERNAME} \
+ZOWE_PASSWORD=${PASSWORD} \
+ZOWE_JOB_NAME=${params.FVT_JOBNAME} \
+SERVER_HOST_NAME=${params.FVT_SERVER_HOSTNAME} \
+SERVER_HTTPS_PORT=7554 \
+npm run test:fvt
+"""
+          }
+        }
+      }
+    },
+    junit         : "target/*.xml",
   )
 
   // we need sonar scan

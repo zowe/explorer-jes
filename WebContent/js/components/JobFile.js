@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 
 import PropTypes from 'prop-types';
@@ -23,6 +23,7 @@ class JobFile extends React.Component {
         super(props);
         this.openFile = this.openFile.bind(this);
         this.downloadJobFile = this.downloadJobFile.bind(this);
+        this.openInNewWindow = this.openInNewWindow.bind(this);
     }
 
     openFile() {
@@ -65,12 +66,22 @@ class JobFile extends React.Component {
             });
     }
 
+    openInNewWindow() {
+        const { job, file } = this.props;
+        const baseURI = `${window.location.origin}${window.location.pathname}`;
+        const newWindow = window.open(`${baseURI}#/viewer?jobName=${job.get('jobName')}&jobId=${job.get('jobId')}&fileId=${file.id}`, '_blank');
+        newWindow.focus();
+    }
+
     renderJobFileMenu() {
         const { job, file } = this.props;
         return (
             <ContextMenu id={`${job.get('jobId')}${file.id}`}>
                 <MenuItem onClick={this.downloadJobFile}>
                     Download
+                </MenuItem>
+                <MenuItem onClick={this.openInNewWindow}>
+                    Open in Fullscreen
                 </MenuItem>
             </ContextMenu>
         );
@@ -87,7 +98,7 @@ class JobFile extends React.Component {
                             onClick={() => { this.openFile(); }}
                         >
                             <Description className="node-icon" />
-                            <span>{file.label}</span>
+                            <span className="job-file-label">{file.label}</span>
                         </span>
                     </ContextMenuTrigger>
                 </li>

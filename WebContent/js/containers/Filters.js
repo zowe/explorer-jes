@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2019
+ * Copyright IBM Corporation 2016, 2020
  */
 
 import PropTypes from 'prop-types';
@@ -33,7 +33,7 @@ const STATUS_TYPES = ['ACTIVE', 'INPUT', 'OUTPUT'];
 export class Filters extends React.Component {
     static renderStatusOptions() {
         return STATUS_TYPES.map(status => {
-            return <MenuItem id={status} key={status} value={status}>{status}</MenuItem>;
+            return <MenuItem id={`status-${status}`} key={status} value={status}>{status}</MenuItem>;
         });
     }
 
@@ -74,14 +74,20 @@ export class Filters extends React.Component {
 
         function receiveMessage(event) {
             const data = event.data;
+            let messageData;
             if (data && data.dispatchType && data.dispatchData) {
                 switch (data.dispatchType) {
                     case 'launch':
                     case 'message': {
-                        const messageData = data.dispatchType === 'launch'
-                            ? data.dispatchData.launchMetadata.data
-                            : data.dispatchData.data;
-                        if (messageData.owner && messageData.jobId) {
+                        if (data.dispatchType === 'launch') {
+                            if (data.dispatchData.launchMetadata) {
+                                messageData = data.dispatchData.launchMetadata.data;
+                            }
+                        } else {
+                            messageData = data.dispatchData.data;
+                        }
+
+                        if (messageData && messageData.owner && messageData.jobId) {
                             dispatch(setFilters(messageData));
                             dispatch(fetchJobs(messageData));
                         }
@@ -198,10 +204,10 @@ export class Filters extends React.Component {
                             />
                             <FormControl
                                 style={{ width: '50%' }}
+                                id="filter-status-field"
                             >
                                 <InputLabel>Status</InputLabel>
                                 <Select
-                                    id="filter-status-field"
                                     label="Status"
                                     value={status}
                                     onChange={this.handleStatusChange}
