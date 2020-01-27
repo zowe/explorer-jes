@@ -5,9 +5,9 @@ const chai = require('chai');
 chai.use(require('chai-things'));
 require('geckodriver');
 
+const { getDriver, checkDriver } = require('explorer-fvt-utilities');
+
 const {
-    getDriver,
-    checkDriver,
     waitForAndExtractParsedJobs,
     loadPageWithFilterOptions,
     getTextLineElements,

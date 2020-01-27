@@ -5,9 +5,9 @@ const chai = require('chai');
 chai.use(require('chai-things'));
 require('geckodriver');
 
+const { getDriver, checkDriver } = require('explorer-fvt-utilities');
+
 const {
-    getDriver,
-    checkDriver,
     findAndClickApplyButton,
     reloadAndOpenFilterPanel,
     waitForAndExtractJobs,
@@ -44,7 +44,7 @@ const {
 require('dotenv').config();
 
 const {
-    ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, ZOWE_JOB_NAME, SERVER_HOST_NAME, SERVER_HTTPS_PORT,
+    ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT,
 } = process.env;
 
 const BASE_URL = `https://${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}/ui/v1/explorer-jes`;
