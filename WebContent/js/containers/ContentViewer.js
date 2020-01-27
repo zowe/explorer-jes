@@ -168,6 +168,7 @@ export class ContentViewer extends React.Component {
                 style={{ marginBottom: 0 }}
             >
                 <CardHeader
+                    id="content-viewer-header"
                     subheader={this.renderSubheader()}
                     style={{ paddingBottom: 0, whiteSpace: 'nowrap', overflow: 'scroll' }}
                 />
