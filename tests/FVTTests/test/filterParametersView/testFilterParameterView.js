@@ -3,7 +3,7 @@ const { By } = require('selenium-webdriver');
 const { expect } = require('chai');
 const chai = require('chai');
 chai.use(require('chai-things'));
-require('geckodriver');
+
 
 const {
     checkDriver,

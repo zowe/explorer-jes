@@ -156,6 +156,7 @@ ZOWE_PASSWORD=${PASSWORD} \
 ZOWE_JOB_NAME=${params.FVT_JOBNAME} \
 SERVER_HOST_NAME=${params.FVT_SERVER_HOSTNAME} \
 SERVER_HTTPS_PORT=7554 \
+TEST_BROWSER=firefox \
 npm run test:fvt
 """
           }

@@ -3,6 +3,8 @@ const firefox = require('selenium-webdriver/firefox');
 
 const { assert } = require('chai');
 
+require('geckodriver');
+
 async function getFirefoxDriver() {
     // configure Options
     const options = new firefox.Options();
