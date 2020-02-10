@@ -6,7 +6,6 @@ chai.use(require('chai-things'));
 require('geckodriver');
 
 const {
-    getDriver,
     checkDriver,
     waitForAndExtractParsedJobs,
     loadPageWithFilterOptions,
@@ -19,8 +18,10 @@ const {
     testAllHighlightColor,
 } = require('../testFunctions');
 
+const { getDriver } = require('../driver');
+
 const {
-    ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT,
+    ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT, TEST_BROWSER,
 } = process.env;
 
 const BASE_URL = `https://${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}/ui/v1/explorer-jes`;
@@ -31,15 +32,15 @@ const ZOSMF_JOB_NAME = 'IZUSVR1';
 
 // Need to use unnamed function so we can specify the retries
 // eslint-disable-next-line
-describe('JES explorer spool file in url query (explorer-jes/#/viewer)', function () {
-    const loadUrlWithViewerFilters = loadPageWithFilterOptions(VIEWER_BASE_URL, {}, { checkJobsLoaded: false });
+describe('JES explorer spool file in url query (explorer-jes/#/viewer)', async function () {
+    const loadUrlWithViewerFilters = await loadPageWithFilterOptions(VIEWER_BASE_URL, {}, { checkJobsLoaded: false });
     let testFilters;
     let driver;
     this.retries(3);
 
     before('Initialise', async () => {
-        driver = await getDriver();
-        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT);
+        driver = await getDriver(TEST_BROWSER);
+        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT, TEST_BROWSER);
     });
 
     after('Close out', async () => {

@@ -6,7 +6,6 @@ chai.use(require('chai-things'));
 require('geckodriver');
 
 const {
-    getDriver,
     checkDriver,
     waitForAndExtractParsedJobs,
     loadPageWithFilterOptions,
@@ -23,8 +22,10 @@ const {
     testFilterFormInputValues,
 } = require('../testFunctions');
 
+const { getDriver } = require('../driver');
+
 const {
-    ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT,
+    ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT, TEST_BROWSER,
 } = process.env;
 
 const BASE_URL = `https://${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}/ui/v1/explorer-jes`;
@@ -39,8 +40,8 @@ describe('JES explorer home view with filter parameters in url query', function 
     this.retries(3);
 
     before('Initialise', async () => {
-        driver = await getDriver();
-        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT);
+        driver = await getDriver(TEST_BROWSER);
+        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT, TEST_BROWSER);
     });
 
     after('Close out', async () => {
