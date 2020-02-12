@@ -1,3 +1,13 @@
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright IBM Corporation 2020
+ */
+
 /* eslint-disable no-unused-expressions */
 const { By, until } = require('selenium-webdriver');
 const { expect } = require('chai');
@@ -5,7 +15,13 @@ const chai = require('chai');
 chai.use(require('chai-things'));
 require('geckodriver');
 
-const { getDriver, checkDriver } = require('explorer-fvt-utilities');
+const {
+    getDriver,
+    checkDriver,
+    testElementAppearsXTimesById,
+    testWindowHeightChangeForcesComponentHeightChange,
+    testTextInputFieldCanBeModified,
+} = require('explorer-fvt-utilities');
 
 const {
     findAndClickApplyButton,
@@ -21,11 +37,8 @@ const {
 } = require('../utilities');
 
 const {
-    testElementAppearsXTimesById,
-    testWindowHeightChangeForcesComponentHeightChange,
     testJobInstancesShowsStatus,
     testColourOfStatus,
-    testTextInputFieldCanBeModified,
     testTextInputFieldValue,
     testPrefixFilterFetching,
     testOwnerFilterFetching,
@@ -52,7 +65,7 @@ const ZOSMF_JOB_NAME = 'IZUSVR1';
 
 // Need to use unnamed function so we can specify the retries
 // eslint-disable-next-line
-describe('JES explorer function verification tests', function () {
+describe.only('JES explorer function verification tests', function () {
     let driver;
     this.retries(3);
 
