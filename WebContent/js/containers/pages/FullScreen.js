@@ -14,16 +14,9 @@ import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ConentViewer from '../ContentViewer';
 import Snackbar from '../../components/Snackbar';
-import { validateUser } from '../../actions/validation';
+import LoginDialog from '../../components/dialogs/LoginDialog';
 
 class FullScreenViewer extends React.Component {
-    componentWillMount() {
-        const { dispatch, validated } = this.props;
-        if (!validated) {
-            dispatch(validateUser());
-        }
-    }
-
     componentDidUpdate(prevProps) {
         const { title } = this.props; // title from content state
 
@@ -34,7 +27,7 @@ class FullScreenViewer extends React.Component {
     }
 
     render() {
-        const { validated, isValidating, location } = this.props;
+        const { validated, location } = this.props;
         if (validated) {
             return (
                 <div className="row group">
@@ -45,17 +38,12 @@ class FullScreenViewer extends React.Component {
                 </div>
             );
         }
-        if (isValidating) {
-            return (<CircularProgress />);
-        }
-        return (<div className="vertical-horizontal-center">Unable to Authenticate</div>);
+        return <LoginDialog />;
     }
 }
 
 FullScreenViewer.propTypes = {
-    dispatch: PropTypes.func.isRequired,
     validated: PropTypes.bool.isRequired,
-    isValidating: PropTypes.bool.isRequired,
     location: PropTypes.shape({
         search: PropTypes.string,
     }),
