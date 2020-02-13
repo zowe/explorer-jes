@@ -6,7 +6,7 @@ The issues for the JES explorer are tracked under the Zowe Zlux repository, http
 
 # Configure NPM Registry
 
-This is required for explorer-ui-server and orion editor component because they are published only on Zowe Artifactory.
+This is required for explorer-ui-server, orion-editor-component and explorer-fvt-utilities. These modules are only published on Zowe Artifactory.
 
 ```
 npm config set registry https://zowe.jfrog.io/zowe/api/npm/npm-release
