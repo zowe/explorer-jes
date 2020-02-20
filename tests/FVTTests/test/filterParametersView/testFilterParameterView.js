@@ -15,7 +15,10 @@ const chai = require('chai');
 chai.use(require('chai-things'));
 require('geckodriver');
 
-const { getDriver, checkDriver } = require('explorer-fvt-utilities');
+const {
+    getDriver,
+    checkDriver,
+    testElementAppearsXTimesByCSS } = require('explorer-fvt-utilities');
 
 const {
     waitForAndExtractParsedJobs,
@@ -24,7 +27,6 @@ const {
 } = require('../utilities');
 
 const {
-    testElementAppearsXTimesByCSS,
     testJobOwnerFilter,
     testJobPrefixFilter,
     testJobStatusFilter,

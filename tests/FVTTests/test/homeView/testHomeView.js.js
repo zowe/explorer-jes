@@ -65,7 +65,7 @@ const ZOSMF_JOB_NAME = 'IZUSVR1';
 
 // Need to use unnamed function so we can specify the retries
 // eslint-disable-next-line
-describe.only('JES explorer function verification tests', function () {
+describe('JES explorer function verification tests', function () {
     let driver;
     this.retries(3);
 
@@ -135,18 +135,15 @@ describe.only('JES explorer function verification tests', function () {
                     expect(expandIcon).to.be.an('array').that.has.lengthOf(1);
                 });
 
-                // Updating to newer react means the filter form is in the DOM now but the parent component has a height of 0 to hide it
-                it.skip('Should not render filter-form before expansion', async () => {
-                    const filterForm = await driver.findElements(By.id('filter-form'));
-                    expect(filterForm).to.be.an('array').that.has.lengthOf(0);
+                it('Should not render filter-form before expansion', async () => {
+                    expect(await testElementAppearsXTimesById(driver, 'filter-form', 0), 'filter-form is visible').to.be.true;
                 });
 
-                // Same as filter-form, need a way of checking if element is visible
-                it.skip('Should not render filter-input-fields before expansion', async () => {
-                    expect(await testElementAppearsXTimesById(driver, 'filter-owner-field', 0), 'filter-owner-field wrong').to.be.true;
-                    expect(await testElementAppearsXTimesById(driver, 'filter-prefix-field', 0), 'filter-prefix-field wrong').to.be.true;
-                    expect(await testElementAppearsXTimesById(driver, 'filter-jobId-field', 0), 'filter-jobId-field wrong').to.be.true;
-                    expect(await testElementAppearsXTimesById(driver, 'filter-status-field', 0), 'filter-status-field wrong').to.be.true;
+                it('Should not render filter-input-fields before expansion', async () => {
+                    expect(await testElementAppearsXTimesById(driver, 'filter-owner-field', 0), 'filter-owner-field is visible').to.be.true;
+                    expect(await testElementAppearsXTimesById(driver, 'filter-prefix-field', 0), 'filter-prefix-field is visible').to.be.true;
+                    expect(await testElementAppearsXTimesById(driver, 'filter-jobId-field', 0), 'filter-jobId-field is visible').to.be.true;
+                    expect(await testElementAppearsXTimesById(driver, 'filter-status-field', 0), 'filter-status-field is visible').to.be.true;
                 });
 
                 it('Should render filter-form after card click', async () => {
