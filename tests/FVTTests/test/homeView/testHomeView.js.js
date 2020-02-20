@@ -1,3 +1,13 @@
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright IBM Corporation 2020
+ */
+
 /* eslint-disable no-unused-expressions */
 const { By, until } = require('selenium-webdriver');
 const { expect } = require('chai');
@@ -8,6 +18,12 @@ require('geckodriver');
 const {
     getDriver,
     checkDriver,
+    testElementAppearsXTimesById,
+    testWindowHeightChangeForcesComponentHeightChange,
+    testTextInputFieldCanBeModified,
+} = require('explorer-fvt-utilities');
+
+const {
     findAndClickApplyButton,
     reloadAndOpenFilterPanel,
     waitForAndExtractJobs,
@@ -21,11 +37,8 @@ const {
 } = require('../utilities');
 
 const {
-    testElementAppearsXTimesById,
-    testWindowHeightChangeForcesComponentHeightChange,
     testJobInstancesShowsStatus,
     testColourOfStatus,
-    testTextInputFieldCanBeModified,
     testTextInputFieldValue,
     testPrefixFilterFetching,
     testOwnerFilterFetching,
@@ -44,7 +57,7 @@ const {
 require('dotenv').config();
 
 const {
-    ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, ZOWE_JOB_NAME, SERVER_HOST_NAME, SERVER_HTTPS_PORT,
+    ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT,
 } = process.env;
 
 const BASE_URL = `https://${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}/ui/v1/explorer-jes`;
@@ -122,18 +135,15 @@ describe('JES explorer function verification tests', function () {
                     expect(expandIcon).to.be.an('array').that.has.lengthOf(1);
                 });
 
-                // Updating to newer react means the filter form is in the DOM now but the parent component has a height of 0 to hide it
-                it.skip('Should not render filter-form before expansion', async () => {
-                    const filterForm = await driver.findElements(By.id('filter-form'));
-                    expect(filterForm).to.be.an('array').that.has.lengthOf(0);
+                it('Should not render filter-form before expansion', async () => {
+                    expect(await testElementAppearsXTimesById(driver, 'filter-form', 0), 'filter-form is visible').to.be.true;
                 });
 
-                // Same as filter-form, need a way of checking if element is visible
-                it.skip('Should not render filter-input-fields before expansion', async () => {
-                    expect(await testElementAppearsXTimesById(driver, 'filter-owner-field', 0), 'filter-owner-field wrong').to.be.true;
-                    expect(await testElementAppearsXTimesById(driver, 'filter-prefix-field', 0), 'filter-prefix-field wrong').to.be.true;
-                    expect(await testElementAppearsXTimesById(driver, 'filter-jobId-field', 0), 'filter-jobId-field wrong').to.be.true;
-                    expect(await testElementAppearsXTimesById(driver, 'filter-status-field', 0), 'filter-status-field wrong').to.be.true;
+                it('Should not render filter-input-fields before expansion', async () => {
+                    expect(await testElementAppearsXTimesById(driver, 'filter-owner-field', 0), 'filter-owner-field is visible').to.be.true;
+                    expect(await testElementAppearsXTimesById(driver, 'filter-prefix-field', 0), 'filter-prefix-field is visible').to.be.true;
+                    expect(await testElementAppearsXTimesById(driver, 'filter-jobId-field', 0), 'filter-jobId-field is visible').to.be.true;
+                    expect(await testElementAppearsXTimesById(driver, 'filter-status-field', 0), 'filter-status-field is visible').to.be.true;
                 });
 
                 it('Should render filter-form after card click', async () => {
