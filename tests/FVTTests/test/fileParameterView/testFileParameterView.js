@@ -52,7 +52,7 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
 
     before('Initialise', async () => {
         driver = await getDriver();
-        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT);
+        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT, '/api/v1/jobs/username');
     });
 
     after('Close out', async () => {

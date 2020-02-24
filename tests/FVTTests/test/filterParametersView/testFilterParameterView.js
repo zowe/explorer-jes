@@ -52,7 +52,7 @@ describe('JES explorer home view with filter parameters in url query', function 
 
     before('Initialise', async () => {
         driver = await getDriver();
-        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT);
+        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT, '/api/v1/jobs/username');
     });
 
     after('Close out', async () => {
