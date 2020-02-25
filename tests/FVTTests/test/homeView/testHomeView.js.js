@@ -72,7 +72,7 @@ describe('JES explorer function verification tests', function () {
     before('Initialise', async () => {
         // TODO:: Do we need to turn this into a singleton in order to have driver accessible by multiple files in global namespace?
         driver = await getDriver();
-        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT);
+        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT, '/api/v1/jobs/username');
 
         // Make sure we have a job in output and active
         await submitJob(SHORT_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
