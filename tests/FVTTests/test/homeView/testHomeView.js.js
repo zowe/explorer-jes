@@ -187,13 +187,16 @@ describe('JES explorer function verification tests', function () {
                     expect(await testTextInputFieldValue(driver, 'filter-jobId-field', '*'), 'filter-jobId-field wrong').to.be.true;
                 });
 
-                // Element is rendered with new react version, need to check if visibile now
-                it.skip('Should handle closing the filter card when clicking apply', async () => {
+                it('Should handle closing the filter card when clicking apply', async () => {
                     await findAndClickApplyButton(driver);
                     expect(await testElementAppearsXTimesById(driver, 'filter-form', 0)).to.be.true;
                 });
-                // Same as above
-                it.skip('Should handle closing the filter card when clicking card header');
+
+                it('Should handle closing the filter card when clicking card header', async () => {
+                    const headerElement = await driver.findElement(By.id('filter-view-header'));
+                    await headerElement.click();
+                    expect(await testElementAppearsXTimesById(driver, 'filter-form', 0)).to.be.true;
+                });
             });
         });
         describe('Tree interaction', () => {
