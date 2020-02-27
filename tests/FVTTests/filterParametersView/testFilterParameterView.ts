@@ -9,8 +9,9 @@
  */
 
 /* eslint-disable no-unused-expressions */
-const { By } = require('selenium-webdriver');
-const { expect } = require('chai');
+import { By } from 'selenium-webdriver';
+import { expect } from 'chai';
+
 const chai = require('chai');
 chai.use(require('chai-things'));
 require('geckodriver');

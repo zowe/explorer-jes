@@ -9,14 +9,14 @@
  */
 
 /* eslint-disable no-await-in-loop */
-const { By, until } = require('selenium-webdriver');
-const { expect } = require('chai');
+import { By, until } from 'selenium-webdriver';
+import { expect } from 'chai';
 
-const {
+import {
     testTextInputFieldCanBeModified,
-} = require('explorer-fvt-utilities');
+} from 'explorer-fvt-utilities';
 
-const {
+import {
     findAndClickApplyButton,
     waitForAndExtractJobs,
     waitForAndExtractFilters,
@@ -31,7 +31,7 @@ const {
     textHighlightColors,
     NO_CLASS,
     textColorClasses,
-} = require('./utilities');
+} from './utilities';
 
 /**
  *
@@ -39,7 +39,7 @@ const {
  * @param {string} id html id
  * @param {string} expectedValue expected text field value
  */
-async function testTextInputFieldValue(driver, id, expectedValue) {
+export async function testTextInputFieldValue(driver, id, expectedValue) {
     try {
         const element = await driver.findElement(By.id(id));
         const val = await element.getAttribute('value');
@@ -55,7 +55,7 @@ async function testTextInputFieldValue(driver, id, expectedValue) {
  * @param {WebDriver} driver selenium-webdirver
  * @param {string} status status to be checked e.g ACTIVE, ABEND, etc.
  */
-async function testJobInstancesShowsStatus(driver, status) {
+export async function testJobInstancesShowsStatus(driver, status) {
     await driver.wait(until.elementLocated(By.className('job-instance')));
     const jobs = await driver.findElements(By.className('job-instance'));
     let statusFound = false;
@@ -75,7 +75,7 @@ async function testJobInstancesShowsStatus(driver, status) {
  * @param {string} statusText status to check colour of
  * @param {string} expectedColour rgb color we're expecting e.g 'rgb(128, 128, 128)'
  */
-async function testColourOfStatus(driver, statusText, expectedColour) {
+export async function testColourOfStatus(driver, statusText, expectedColour) {
     // TODO:: When better classname available to get label change the way we get elements
     await driver.findElements(By.css('.job-instance > li > div > span > span > div'));
     const statuses = await driver.findElements(By.css('.job-instance > li > div > span > span > div'));
@@ -98,7 +98,7 @@ async function testColourOfStatus(driver, statusText, expectedColour) {
  * @param {string} prefix filter prefix
  * @param {boolean} noJobsFound if we expect no jobs to be found
  */
-async function testPrefixFilterFetching(driver, prefix, noJobsFound) {
+export async function testPrefixFilterFetching(driver, prefix, noJobsFound) {
     await testTextInputFieldCanBeModified(driver, 'filter-owner-field', '*');
     await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', prefix);
     await findAndClickApplyButton(driver);
@@ -117,7 +117,7 @@ async function testPrefixFilterFetching(driver, prefix, noJobsFound) {
  * @param {string} prefix filter owner
  * @param {Array<String>} potentialJobs job prefixes that could be present in fetch
  */
-async function testOwnerFilterFetching(driver, owner, potentialJobs) {
+export async function testOwnerFilterFetching(driver, owner, potentialJobs) {
     await testTextInputFieldCanBeModified(driver, 'filter-owner-field', owner);
     await findAndClickApplyButton(driver);
     const jobs = await waitForAndExtractJobs(driver);
@@ -130,7 +130,7 @@ async function testOwnerFilterFetching(driver, owner, potentialJobs) {
 }
 
 
-async function testStatusFilterFetching(driver, status, potentialStatuses) {
+export async function testStatusFilterFetching(driver, status, potentialStatuses) {
     await testTextInputFieldCanBeModified(driver, 'filter-owner-field', '*');
     await setStatusFilter(driver, `status-${status}`);
     await findAndClickApplyButton(driver);
@@ -147,7 +147,7 @@ async function testStatusFilterFetching(driver, status, potentialStatuses) {
  * @param {string} prefix filter prefix
  * @param {string} status filter status
  */
-async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter) {
+export async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter) {
     const jobsInstances = await driver.findElements(By.className('job-instance'));
     await reloadAndOpenFilterPanel(driver, jobsInstances.length > 0);
     await testTextInputFieldCanBeModified(driver, 'filter-owner-field', ownerFilter);
@@ -185,7 +185,7 @@ async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)
  * @param {string} statusFilter filter status
  * @param {string} jobFileNameFilter filter status
  */
-async function getJobAndOpenFile(driver, ownerFilter, prefixFilter, statusFilter, jobFileName) {
+export async function getJobAndOpenFile(driver, ownerFilter, prefixFilter, statusFilter, jobFileName) {
     if (!await testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter)) {
         // Unable to get job files to load
         console.log('Unable to get job files to load');
@@ -216,7 +216,7 @@ async function getJobAndOpenFile(driver, ownerFilter, prefixFilter, statusFilter
     return true;
 }
 
-const testHighlightColorByClass = (colorClass, elems) => {
+export const testHighlightColorByClass = (colorClass, elems) => {
     const colorVal = textHighlightColors[colorClass];
 
     let classStr = colorClass;
@@ -225,7 +225,7 @@ const testHighlightColorByClass = (colorClass, elems) => {
     }
 
     const colorArray = [
-        ...new Set(
+        new Set(
             elems
                 .filter(e => {
                     return e.elemCss === classStr;
@@ -239,7 +239,7 @@ const testHighlightColorByClass = (colorClass, elems) => {
     return testColor;
 };
 
-const testAllHighlightColor = elems => {
+export const testAllHighlightColor = elems => {
     let testHighlights = true;
     textColorClasses.forEach(colorClass => {
         testHighlights = testHighlights && testHighlightColorByClass(colorClass, elems);
@@ -248,12 +248,12 @@ const testAllHighlightColor = elems => {
     return testHighlights;
 };
 
-const testFilterDisplayStringValues = async (driver, expectedFilters) => {
+export const testFilterDisplayStringValues = async (driver, expectedFilters) => {
     const actualFilters = await waitForAndExtractFilters(driver);
     return compareFilters(actualFilters, expectedFilters);
 };
 
-const testFilterFormInputValues = async (driver, expectedFilters) => {
+export const testFilterFormInputValues = async (driver, expectedFilters) => {
     const element = await driver.findElement(By.id('filter-view'));
     await element.click();
     const actualFilters = await getAllFilterValues(driver);
@@ -269,27 +269,7 @@ const testJobUrlFilters = checkFunc => {
     };
 };
 
-const testJobOwnerFilter = testJobUrlFilters(checkJobsOwner);
-const testJobPrefixFilter = testJobUrlFilters(checkJobsPrefix);
-const testJobStatusFilter = testJobUrlFilters(checkJobsStatus);
-const testJobIdFilter = testJobUrlFilters(checkJobsId);
-
-
-module.exports = {
-    testJobInstancesShowsStatus,
-    testColourOfStatus,
-    testTextInputFieldValue,
-    testPrefixFilterFetching,
-    testOwnerFilterFetching,
-    testStatusFilterFetching,
-    testJobFilesLoad,
-    getJobAndOpenFile,
-    testJobOwnerFilter,
-    testJobPrefixFilter,
-    testJobStatusFilter,
-    testJobIdFilter,
-    testFilterDisplayStringValues,
-    testFilterFormInputValues,
-    testHighlightColorByClass,
-    testAllHighlightColor,
-};
+export const testJobOwnerFilter = testJobUrlFilters(checkJobsOwner);
+export const testJobPrefixFilter = testJobUrlFilters(checkJobsPrefix);
+export const testJobStatusFilter = testJobUrlFilters(checkJobsStatus);
+export const testJobIdFilter = testJobUrlFilters(checkJobsId);

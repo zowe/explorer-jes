@@ -9,21 +9,22 @@
  */
 
 /* eslint-disable no-unused-expressions */
-const { By, until } = require('selenium-webdriver');
-const { expect } = require('chai');
-const chai = require('chai');
-chai.use(require('chai-things'));
-require('geckodriver');
-
-const {
+import {
     getDriver,
     checkDriver,
     testElementAppearsXTimesById,
     testWindowHeightChangeForcesComponentHeightChange,
     testTextInputFieldCanBeModified,
-} = require('explorer-fvt-utilities');
+} from 'explorer-fvt-utilities';
 
-const {
+import { By, until } from 'selenium-webdriver';
+import { expect } from 'chai';
+
+const chai = require('chai');
+chai.use(require('chai-things'));
+require('geckodriver');
+
+import {
     findAndClickApplyButton,
     reloadAndOpenFilterPanel,
     waitForAndExtractJobs,
@@ -34,9 +35,9 @@ const {
     COMMENT_ATTR_CLASS,
     NO_CLASS,
     submitJob,
-} = require('../utilities');
+} from '../utilities';
 
-const {
+import {
     testJobInstancesShowsStatus,
     testColourOfStatus,
     testTextInputFieldValue,
@@ -46,13 +47,13 @@ const {
     testJobFilesLoad,
     getJobAndOpenFile,
     testHighlightColorByClass,
-} = require('../testFunctions');
+} from '../testFunctions';
 
-const {
+import {
     TEST_JOB_PREFIX,
     SHORT_JOB,
     LONG_JOB,
-} = require('../testResources');
+} from '../testResources';
 
 require('dotenv').config();
 
@@ -72,7 +73,7 @@ describe('JES explorer function verification tests', function () {
     before('Initialise', async () => {
         // TODO:: Do we need to turn this into a singleton in order to have driver accessible by multiple files in global namespace?
         driver = await getDriver();
-        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT, '/api/v1/jobs/username');
+        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, parseInt(SERVER_HTTPS_PORT), '/api/v1/jobs/username');
 
         // Make sure we have a job in output and active
         await submitJob(SHORT_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
@@ -147,7 +148,7 @@ describe('JES explorer function verification tests', function () {
                 });
 
                 it('Should render filter-form after card click', async () => {
-                    await reloadAndOpenFilterPanel(driver);
+                    await reloadAndOpenFilterPanel(driver, false);
                     const filterForm = await driver.findElements(By.id('filter-form'));
                     expect(filterForm).to.be.an('array').that.has.lengthOf(1);
                 });
@@ -155,7 +156,7 @@ describe('JES explorer function verification tests', function () {
 
             describe('Post expansion', () => {
                 beforeEach(async () => {
-                    await reloadAndOpenFilterPanel(driver);
+                    await reloadAndOpenFilterPanel(driver, false);
                 });
 
                 it('Should render filter-input-fields after expansion', async () => {
@@ -204,7 +205,7 @@ describe('JES explorer function verification tests', function () {
             it.skip('Should handle reloading jobs when clicking refresh icon');
             describe('Job status labels', () => {
                 before(async () => {
-                    await reloadAndOpenFilterPanel(driver);
+                    await reloadAndOpenFilterPanel(driver, false);
                     expect(await testTextInputFieldCanBeModified(driver, 'filter-owner-field', '*'), 'filter-owner-field wrong').to.be.true;
                     expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', '*'), 'filter-prefix-field wrong').to.be.true;
                     expect(await testTextInputFieldCanBeModified(driver, 'filter-jobId-field', '*'), 'filter-jobId-field wrong').to.be.true;
@@ -258,15 +259,15 @@ describe('JES explorer function verification tests', function () {
             });
             describe('Job filtering', () => {
                 beforeEach(async () => {
-                    await reloadAndOpenFilterPanel(driver);
+                    await reloadAndOpenFilterPanel(driver, false);
                 });
 
                 describe('Prefix Filter', () => {
                     it('Should handle fetching jobs based on full prefix (ZOSMF_JOB_NAME)', async () => {
-                        expect(await testPrefixFilterFetching(driver, ZOSMF_JOB_NAME)).to.be.true;
+                        expect(await testPrefixFilterFetching(driver, ZOSMF_JOB_NAME, false)).to.be.true;
                     });
                     it('Should handle fetching jobs based on prefix with asterisk (IZU*)', async () => {
-                        expect(await testPrefixFilterFetching(driver, 'IZU*')).to.be.true;
+                        expect(await testPrefixFilterFetching(driver, 'IZU*', false)).to.be.true;
                     });
                     it('Should handle fetching no jobs based on crazy prefix (1ZZZZZZ1)', async () => {
                         expect(await testPrefixFilterFetching(driver, '1ZZZZZZ1', true)).to.be.true;
@@ -289,7 +290,7 @@ describe('JES explorer function verification tests', function () {
                     });
                     // TODO:: Can't guarantee we will have jobs in INPUT state so skip until we can
                     it.skip('Should handle fetching only INPUT jobs', async () => {
-                        expect(await testStatusFilterFetching(driver, 'INPUT')).to.be.true;
+                        //expect(await testStatusFilterFetching(driver, 'INPUT')).to.be.true;
                     });
                     it.skip('Should handle fetching only OUTPUT jobs', async () => {
                         expect(await testStatusFilterFetching(driver, 'OUTPUT', ['ABEND', 'OUTPUT', 'CC', 'CANCELED', 'JCL', 'SYS', 'SEC'])).to.be.true;
@@ -343,7 +344,7 @@ describe('JES explorer function verification tests', function () {
                 it('Should handle opening a files content unathorised for user and display error message');
             });
             it('Should handle rendering context menu on right click', async () => {
-                await reloadAndOpenFilterPanel(driver);
+                await reloadAndOpenFilterPanel(driver, false);
                 expect(await testTextInputFieldCanBeModified(driver, 'filter-owner-field', '*'), 'filter-owner-field wrong').to.be.true;
                 expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', ZOSMF_JOB_NAME), 'filter-prefix-field wrong').to.be.true;
                 await findAndClickApplyButton(driver);
