@@ -8,11 +8,9 @@
  * Copyright IBM Corporation 2020
  */
 
- import { By, until, WebElement, WebElementPromise } from 'selenium-webdriver';
+import { By, until } from 'selenium-webdriver';
 import fetch from 'node-fetch';
 import https = require('https');
-import { string } from 'prop-types';
-
 
 export const VAR_LANG_CLASS = 'variable-language';
 export const COMMENT_STR_CLASS = 'cm-string';
@@ -81,7 +79,7 @@ export const parseFilterText = filterText => {
     };
 };
 
-interface ParsedJobText {
+export interface ParsedJobText {
     text :string;
     prefix :string;
     jobId :string;
@@ -109,7 +107,7 @@ export const parseJobText = (text) :ParsedJobText => {
     };
 };
 
-const parseJob = async job => {
+const parseJob = async (job) :Promise<ParsedJobText> => {
     const text = await job.getText();
     return parseJobText(text);
 };
@@ -280,9 +278,9 @@ export async function waitForAndExtractJobs(driver) {
  *
  * @param {WebDriver} driver selenium-webdriver
  */
-export async function waitForAndExtractParsedJobs(driver) {
+export async function waitForAndExtractParsedJobs(driver) :Promise<ParsedJobText[]> {
     const jobs = await waitForAndExtractJobs(driver);
-    const jobObjs = await Promise.all(jobs.map(parseJob));
+    const jobObjs :ParsedJobText[] = await Promise.all(jobs.map(parseJob));
     return jobObjs;
 }
 
@@ -300,8 +298,13 @@ export async function setStatusFilter(driver, statusIdSelection) {
     await driver.sleep(1000); // wait for css transition
 }
 
+export interface EditorElementTextLine {
+    text :string;
+    css :string;
+    color :string;
+}
 
-export async function getTextLineElements(driver) {
+export async function getTextLineElements(driver) :Promise<EditorElementTextLine[]> {
     await driver.wait(until.elementLocated(By.css('.textviewContent > div > span')));
     const textLineSpans = await driver.findElements(By.css('.textviewContent > div > span'));
 

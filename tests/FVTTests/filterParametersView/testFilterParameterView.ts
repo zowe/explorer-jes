@@ -16,25 +16,26 @@ const chai = require('chai');
 chai.use(require('chai-things'));
 require('geckodriver');
 
-const {
+import {
     getDriver,
     checkDriver,
-    testElementAppearsXTimesByCSS } = require('explorer-fvt-utilities');
+    testElementAppearsXTimesByCSS 
+} from 'explorer-fvt-utilities';
 
-const {
+import {
     waitForAndExtractParsedJobs,
     loadPageWithFilterOptions,
     DEFAULT_SEARCH_FILTERS,
-} = require('../utilities');
+} from '../utilities';
 
-const {
+import {
     testJobOwnerFilter,
     testJobPrefixFilter,
     testJobStatusFilter,
     testJobIdFilter,
     testFilterDisplayStringValues,
     testFilterFormInputValues,
-} = require('../testFunctions');
+} from '../testFunctions';
 
 const {
     ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT,
@@ -53,7 +54,7 @@ describe('JES explorer home view with filter parameters in url query', function 
 
     before('Initialise', async () => {
         driver = await getDriver();
-        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT, '/api/v1/jobs/username');
+        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, parseInt(SERVER_HTTPS_PORT), '/api/v1/jobs/username');
     });
 
     after('Close out', async () => {

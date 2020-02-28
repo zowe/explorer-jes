@@ -29,8 +29,8 @@ import {
     compareFilters,
     getAllFilterValues,
     textHighlightColors,
-    NO_CLASS,
     textColorClasses,
+    EditorElementTextLine,
 } from './utilities';
 
 /**
@@ -216,27 +216,15 @@ export async function getJobAndOpenFile(driver, ownerFilter, prefixFilter, statu
     return true;
 }
 
-export const testHighlightColorByClass = (colorClass, elems) => {
-    const colorVal = textHighlightColors[colorClass];
+export const testHighlightColorByClass = (colorClass :string, elements :EditorElementTextLine[]) => {
+    const expectedColorValue = textHighlightColors[colorClass];
+    let className = colorClass || '';
 
-    let classStr = colorClass;
-    if (colorClass === NO_CLASS) {
-        classStr = '';
-    }
-
-    const colorArray = [
-        new Set(
-            elems
-                .filter(e => {
-                    return e.elemCss === classStr;
-                })
-                .map(e => {
-                    return e.elemColor;
-                }),
-        )];
-    let testColor = colorArray.length === 1;
-    testColor = testColor && colorArray[0] === colorVal;
-    return testColor;
+    const elementsMatchingCurrentClass = elements.filter(element => { return element.css === className });
+    const elementColors :string[] = elementsMatchingCurrentClass.map(element => { return element.color });
+    const elementsNotMatchingExpected :string[] = elementColors.filter(elementcolor => { return elementcolor !== expectedColorValue; });
+    
+    return elementsNotMatchingExpected.length === 0;
 };
 
 export const testAllHighlightColor = elems => {
