@@ -9,28 +9,31 @@
  */
 
 /* eslint-disable no-unused-expressions */
-const { By } = require('selenium-webdriver');
-const { expect } = require('chai');
+import { By } from 'selenium-webdriver';
+import { expect } from 'chai';
+
 const chai = require('chai');
 chai.use(require('chai-things'));
 require('geckodriver');
 
-const {
+import {
     getDriver,
     checkDriver,
     testElementAppearsXTimesByCSS,
-} = require('explorer-fvt-utilities');
+} from 'explorer-fvt-utilities';
 
-const {
+import {
     waitForAndExtractParsedJobs,
+    ParsedJobText,
     loadPageWithFilterOptions,
     getTextLineElements,
+    EditorElementTextLine,
     DEFAULT_SEARCH_FILTERS,
-} = require('../utilities');
+} from '../utilities';
 
-const {
+import {
     testAllHighlightColor,
-} = require('../testFunctions');
+} from'../testFunctions';
 
 const {
     ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT,
@@ -52,7 +55,7 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
 
     before('Initialise', async () => {
         driver = await getDriver();
-        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT, '/api/v1/jobs/username');
+        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, parseInt(SERVER_HTTPS_PORT), '/api/v1/jobs/username');
     });
 
     after('Close out', async () => {
@@ -65,7 +68,7 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
     before('get jobIds list from jobs filtered by ZOSMF_JOB_NAME prefix', async () => {
         const filters = { prefix: ZOSMF_JOB_NAME, status: 'ACTIVE' };
         await loadUrlWithSearchFilters(driver, filters);
-        const jobObjs = await waitForAndExtractParsedJobs(driver);
+        const jobObjs :ParsedJobText[] = await waitForAndExtractParsedJobs(driver);
         expect(jobObjs && jobObjs.length > 0).to.be.true;
         testFilters = {
             jobName: jobObjs[0].prefix,
@@ -104,7 +107,7 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
     });
 
     it('Should handle rendering file contents in Orion editor', async () => {
-        const textElems = await getTextLineElements(driver);
+        const textElems :EditorElementTextLine[] = await getTextLineElements(driver);
         expect(textElems).to.be.an('array').that.has.lengthOf.at.least(1);
         expect(testAllHighlightColor(textElems)).to.be.true;
     });
