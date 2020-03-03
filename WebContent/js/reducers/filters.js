@@ -5,11 +5,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2019
+ * Copyright IBM Corporation 2016, 2020
  */
 
 import { Record } from 'immutable';
-import { TOGGLE_FILTERS, SET_FILTERS, RESET_FILTERS, REQUEST_USER_ID, RECEIVE_USER_ID } from '../actions/filters';
+import { TOGGLE_FILTERS, SET_FILTERS, RESET_FILTERS } from '../actions/filters';
 
 export const LOADING_MESSAGE = 'Loading...';
 
@@ -19,7 +19,6 @@ const FilterRecord = Record({
     status: '',
     jobId: '*',
     isToggled: false,
-    userId: '',
 });
 
 const INITIAL_STATE = new FilterRecord();
@@ -32,17 +31,9 @@ export default function content(state = INITIAL_STATE, action) {
             return state.merge(action.filters);
         case RESET_FILTERS: {
             const isToggled = state.get('isToggled');
-            const userId = state.get('userId');
-            return new FilterRecord({ isToggled, owner: userId, userId });
-        } case REQUEST_USER_ID:
-            return state.merge({
-                owner: LOADING_MESSAGE,
-            });
-        case RECEIVE_USER_ID:
-            return state.merge({
-                userId: action.userId,
-                owner: action.userId,
-            });
+            const owner = action.username.toUpperCase();
+            return new FilterRecord({ isToggled, owner });
+        }
         default:
             return state;
     }
