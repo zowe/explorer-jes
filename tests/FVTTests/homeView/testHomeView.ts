@@ -11,13 +11,12 @@
 /* eslint-disable no-unused-expressions */
 import {
     getDriver,
-    checkDriver,
+    setApimlAuthTokenCookie,
     testElementAppearsXTimesById,
     testWindowHeightChangeForcesComponentHeightChange,
     testTextInputFieldCanBeModified,
 } from 'explorer-fvt-utilities';
-
-import { By, until } from 'selenium-webdriver';
+import { By, until, WebDriver } from 'selenium-webdriver';
 import { expect } from 'chai';
 
 const chai = require('chai');
@@ -61,19 +60,19 @@ const {
     ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT,
 } = process.env;
 
-const BASE_URL = `https://${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}/ui/v1/explorer-jes`;
+const BASE_URL = `https://${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}`;
+const BASE_URL_WITH_PATH = `${BASE_URL}/ui/v1/explorer-jes`;
 const ZOSMF_JOB_NAME = 'IZUSVR1';
 
 // Need to use unnamed function so we can specify the retries
 // eslint-disable-next-line
 describe('JES explorer function verification tests', function () {
-    let driver;
+    let driver :WebDriver;
     this.retries(3);
 
     before('Initialise', async () => {
-        // TODO:: Do we need to turn this into a singleton in order to have driver accessible by multiple files in global namespace?
         driver = await getDriver();
-        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, parseInt(SERVER_HTTPS_PORT), '/api/v1/jobs/username');
+        await setApimlAuthTokenCookie(driver, USERNAME, PASSWORD, `${BASE_URL}/api/v1/gateway/auth/login`, BASE_URL_WITH_PATH);
 
         // Make sure we have a job in output and active
         await submitJob(SHORT_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
