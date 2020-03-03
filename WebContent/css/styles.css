@@ -45,14 +45,14 @@ body {
     display: inline-block;
 }
 
-.node ul {
+#full-height-tree ul {
     list-style: none;
     padding-left: 10px;
     margin: 0;
     white-space: nowrap;
 }
 
-.node span {
+#full-height-tree span {
     display: inline-block;
     line-height: 24px;
     vertical-align: middle;

@@ -162,6 +162,7 @@ export class Filters extends React.Component {
                 expanded={this.state.toggled}
             >
                 <ExpansionPanelSummary
+                    id="filter-view-header"
                     expandIcon={<ExpandMoreIcon />}
                     onClick={() => { this.toggleFilters(); }}
                 >

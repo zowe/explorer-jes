@@ -1,13 +1,30 @@
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright IBM Corporation 2020
+ */
+
 /* eslint-disable no-unused-expressions */
-const { By, until } = require('selenium-webdriver');
-const { expect } = require('chai');
+import {
+    getDriver,
+    checkDriver,
+    testElementAppearsXTimesById,
+    testWindowHeightChangeForcesComponentHeightChange,
+    testTextInputFieldCanBeModified,
+} from 'explorer-fvt-utilities';
+
+import { By, until } from 'selenium-webdriver';
+import { expect } from 'chai';
+
 const chai = require('chai');
 chai.use(require('chai-things'));
 require('geckodriver');
 
-const {
-    getDriver,
-    checkDriver,
+import {
     findAndClickApplyButton,
     reloadAndOpenFilterPanel,
     waitForAndExtractJobs,
@@ -18,14 +35,11 @@ const {
     COMMENT_ATTR_CLASS,
     NO_CLASS,
     submitJob,
-} = require('../utilities');
+} from '../utilities';
 
-const {
-    testElementAppearsXTimesById,
-    testWindowHeightChangeForcesComponentHeightChange,
+import {
     testJobInstancesShowsStatus,
     testColourOfStatus,
-    testTextInputFieldCanBeModified,
     testTextInputFieldValue,
     testPrefixFilterFetching,
     testOwnerFilterFetching,
@@ -33,18 +47,18 @@ const {
     testJobFilesLoad,
     getJobAndOpenFile,
     testHighlightColorByClass,
-} = require('../testFunctions');
+} from '../testFunctions';
 
-const {
+import {
     TEST_JOB_PREFIX,
     SHORT_JOB,
     LONG_JOB,
-} = require('../testResources');
+} from '../testResources';
 
 require('dotenv').config();
 
 const {
-    ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, ZOWE_JOB_NAME, SERVER_HOST_NAME, SERVER_HTTPS_PORT,
+    ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT,
 } = process.env;
 
 const BASE_URL = `https://${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}/ui/v1/explorer-jes`;
@@ -59,7 +73,7 @@ describe('JES explorer function verification tests', function () {
     before('Initialise', async () => {
         // TODO:: Do we need to turn this into a singleton in order to have driver accessible by multiple files in global namespace?
         driver = await getDriver();
-        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT);
+        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, parseInt(SERVER_HTTPS_PORT), '/api/v1/jobs/username');
 
         // Make sure we have a job in output and active
         await submitJob(SHORT_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
@@ -79,20 +93,28 @@ describe('JES explorer function verification tests', function () {
             afterEach(async () => {
                 await driver.manage().window().setRect({ width: 1600, height: 800 });
             });
-            // TODO:: replace offset with constant
-            it.skip('Should handle resizing of tree card component', async () => {
-                expect(await testWindowHeightChangeForcesComponentHeightChange(driver, 'tree-text-content', 126)).to.be.true;
+            const browserHeaderHeight = 74;
+            const jobTreeTitleHeight = 53;
+            it('Should handle resizing of tree card component (tree-text-content)', async () => {
+                expect(await testWindowHeightChangeForcesComponentHeightChange(
+                    driver, 'tree-text-content', browserHeaderHeight + jobTreeTitleHeight)).to.be.true;
             });
-            // TODO:: change overflow of job-list to scroll so we can check this correctly
-            it.skip('Should handle resizing just the tree', async () => {
-                expect(await testWindowHeightChangeForcesComponentHeightChange(driver, 'job-list', 126 + 104)).to.be.true;
+            it('Should handle resizing just the tree (full-height-tree)', async () => {
+                const filterCardHeight = 48;
+                expect(await testWindowHeightChangeForcesComponentHeightChange(
+                    driver, 'full-height-tree', browserHeaderHeight + jobTreeTitleHeight + filterCardHeight)).to.be.true;
             });
-            // TODO:: need to remove browser offset from orion editor component in Content Viewer
-            it.skip('Should handle resizing of editor card component', async () => {
-                expect(await testWindowHeightChangeForcesComponentHeightChange(driver, 'content-viewer', 126)).to.be.true;
+            it('Should handle resizing of editor card component (content-viewer)', async () => {
+                expect(await testWindowHeightChangeForcesComponentHeightChange(
+                    driver, 'content-viewer', browserHeaderHeight)).to.be.true;
             });
-            it.skip('Should handle resizing just the editor text area', async () => {
-                expect(await testWindowHeightChangeForcesComponentHeightChange(driver, 'embeddedEditor', 126 + 8)).to.be.true;
+            it('Should handle resizing just the editor text area (embeddedEditor)', async () => {
+                const contentViewerHeader = await driver.findElement(By.id('content-viewer-header'));
+                const contentViewerHeaderHeight = await contentViewerHeader.getCssValue('height');
+                const contentViewerHeaderHeightInt = parseInt(contentViewerHeaderHeight.substr(0, contentViewerHeaderHeight.length - 2), 10);
+                const contentViewerHeaderPadding = 16;
+                expect(await testWindowHeightChangeForcesComponentHeightChange(
+                    driver, 'embeddedEditor', browserHeaderHeight + contentViewerHeaderHeightInt + contentViewerHeaderPadding)).to.be.true;
             });
         });
 
@@ -114,22 +136,19 @@ describe('JES explorer function verification tests', function () {
                     expect(expandIcon).to.be.an('array').that.has.lengthOf(1);
                 });
 
-                // Updating to newer react means the filter form is in the DOM now but the parent component has a height of 0 to hide it
-                it.skip('Should not render filter-form before expansion', async () => {
-                    const filterForm = await driver.findElements(By.id('filter-form'));
-                    expect(filterForm).to.be.an('array').that.has.lengthOf(0);
+                it('Should not render filter-form before expansion', async () => {
+                    expect(await testElementAppearsXTimesById(driver, 'filter-form', 0), 'filter-form is visible').to.be.true;
                 });
 
-                // Same as filter-form, need a way of checking if element is visible
-                it.skip('Should not render filter-input-fields before expansion', async () => {
-                    expect(await testElementAppearsXTimesById(driver, 'filter-owner-field', 0), 'filter-owner-field wrong').to.be.true;
-                    expect(await testElementAppearsXTimesById(driver, 'filter-prefix-field', 0), 'filter-prefix-field wrong').to.be.true;
-                    expect(await testElementAppearsXTimesById(driver, 'filter-jobId-field', 0), 'filter-jobId-field wrong').to.be.true;
-                    expect(await testElementAppearsXTimesById(driver, 'filter-status-field', 0), 'filter-status-field wrong').to.be.true;
+                it('Should not render filter-input-fields before expansion', async () => {
+                    expect(await testElementAppearsXTimesById(driver, 'filter-owner-field', 0), 'filter-owner-field is visible').to.be.true;
+                    expect(await testElementAppearsXTimesById(driver, 'filter-prefix-field', 0), 'filter-prefix-field is visible').to.be.true;
+                    expect(await testElementAppearsXTimesById(driver, 'filter-jobId-field', 0), 'filter-jobId-field is visible').to.be.true;
+                    expect(await testElementAppearsXTimesById(driver, 'filter-status-field', 0), 'filter-status-field is visible').to.be.true;
                 });
 
                 it('Should render filter-form after card click', async () => {
-                    await reloadAndOpenFilterPanel(driver);
+                    await reloadAndOpenFilterPanel(driver, false);
                     const filterForm = await driver.findElements(By.id('filter-form'));
                     expect(filterForm).to.be.an('array').that.has.lengthOf(1);
                 });
@@ -137,7 +156,7 @@ describe('JES explorer function verification tests', function () {
 
             describe('Post expansion', () => {
                 beforeEach(async () => {
-                    await reloadAndOpenFilterPanel(driver);
+                    await reloadAndOpenFilterPanel(driver, false);
                 });
 
                 it('Should render filter-input-fields after expansion', async () => {
@@ -169,13 +188,16 @@ describe('JES explorer function verification tests', function () {
                     expect(await testTextInputFieldValue(driver, 'filter-jobId-field', '*'), 'filter-jobId-field wrong').to.be.true;
                 });
 
-                // Element is rendered with new react version, need to check if visibile now
-                it.skip('Should handle closing the filter card when clicking apply', async () => {
+                it('Should handle closing the filter card when clicking apply', async () => {
                     await findAndClickApplyButton(driver);
                     expect(await testElementAppearsXTimesById(driver, 'filter-form', 0)).to.be.true;
                 });
-                // Same as above
-                it.skip('Should handle closing the filter card when clicking card header');
+
+                it('Should handle closing the filter card when clicking card header', async () => {
+                    const headerElement = await driver.findElement(By.id('filter-view-header'));
+                    await headerElement.click();
+                    expect(await testElementAppearsXTimesById(driver, 'filter-form', 0)).to.be.true;
+                });
             });
         });
         describe('Tree interaction', () => {
@@ -183,7 +205,7 @@ describe('JES explorer function verification tests', function () {
             it.skip('Should handle reloading jobs when clicking refresh icon');
             describe('Job status labels', () => {
                 before(async () => {
-                    await reloadAndOpenFilterPanel(driver);
+                    await reloadAndOpenFilterPanel(driver, false);
                     expect(await testTextInputFieldCanBeModified(driver, 'filter-owner-field', '*'), 'filter-owner-field wrong').to.be.true;
                     expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', '*'), 'filter-prefix-field wrong').to.be.true;
                     expect(await testTextInputFieldCanBeModified(driver, 'filter-jobId-field', '*'), 'filter-jobId-field wrong').to.be.true;
@@ -237,15 +259,15 @@ describe('JES explorer function verification tests', function () {
             });
             describe('Job filtering', () => {
                 beforeEach(async () => {
-                    await reloadAndOpenFilterPanel(driver);
+                    await reloadAndOpenFilterPanel(driver, false);
                 });
 
                 describe('Prefix Filter', () => {
                     it('Should handle fetching jobs based on full prefix (ZOSMF_JOB_NAME)', async () => {
-                        expect(await testPrefixFilterFetching(driver, ZOSMF_JOB_NAME)).to.be.true;
+                        expect(await testPrefixFilterFetching(driver, ZOSMF_JOB_NAME, false)).to.be.true;
                     });
                     it('Should handle fetching jobs based on prefix with asterisk (IZU*)', async () => {
-                        expect(await testPrefixFilterFetching(driver, 'IZU*')).to.be.true;
+                        expect(await testPrefixFilterFetching(driver, 'IZU*', false)).to.be.true;
                     });
                     it('Should handle fetching no jobs based on crazy prefix (1ZZZZZZ1)', async () => {
                         expect(await testPrefixFilterFetching(driver, '1ZZZZZZ1', true)).to.be.true;
@@ -268,7 +290,7 @@ describe('JES explorer function verification tests', function () {
                     });
                     // TODO:: Can't guarantee we will have jobs in INPUT state so skip until we can
                     it.skip('Should handle fetching only INPUT jobs', async () => {
-                        expect(await testStatusFilterFetching(driver, 'INPUT')).to.be.true;
+                        //expect(await testStatusFilterFetching(driver, 'INPUT')).to.be.true;
                     });
                     it.skip('Should handle fetching only OUTPUT jobs', async () => {
                         expect(await testStatusFilterFetching(driver, 'OUTPUT', ['ABEND', 'OUTPUT', 'CC', 'CANCELED', 'JCL', 'SYS', 'SEC'])).to.be.true;
@@ -322,7 +344,7 @@ describe('JES explorer function verification tests', function () {
                 it('Should handle opening a files content unathorised for user and display error message');
             });
             it('Should handle rendering context menu on right click', async () => {
-                await reloadAndOpenFilterPanel(driver);
+                await reloadAndOpenFilterPanel(driver, false);
                 expect(await testTextInputFieldCanBeModified(driver, 'filter-owner-field', '*'), 'filter-owner-field wrong').to.be.true;
                 expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', ZOSMF_JOB_NAME), 'filter-prefix-field wrong').to.be.true;
                 await findAndClickApplyButton(driver);

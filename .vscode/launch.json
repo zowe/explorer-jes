@@ -37,8 +37,11 @@
             "args": [
                 "--timeout",
                 "999999",
+                "--require",
+                "ts-node/register",
+                "${workspaceFolder}/tests/FVTTests/**/*.ts",
                 "--colors",
-                "${workspaceFolder}/fvtTest/test"
+                "--recursive"
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
