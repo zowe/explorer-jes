@@ -138,7 +138,7 @@ node('ibm-jenkins-slave-dind') {
       // run tests
       sh 'docker ps'
       // wait a while to give time for service to be started
-      sleep time: 1, unit: 'MINUTES'
+      sleep time: 4, unit: 'MINUTES'
 
       echo "Starting integration test ..."
       timeout(time: 60, unit: 'MINUTES') {
