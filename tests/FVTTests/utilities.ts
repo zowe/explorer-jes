@@ -1,86 +1,41 @@
-const { Capabilities, Builder } = require('selenium-webdriver');
-const { By, until } = require('selenium-webdriver');
-const { assert } = require('chai');
-const firefox = require('selenium-webdriver/firefox');
-const fetch = require('node-fetch');
-const https = require('https');
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright IBM Corporation 2020
+ */
 
+import { By, until } from 'selenium-webdriver';
+import fetch from 'node-fetch';
+import https = require('https');
 
-const VAR_LANG_CLASS = 'variable-language';
-const COMMENT_STR_CLASS = 'cm-string';
-const COMMENT_CLASS = 'comment';
-const COMMENT_ATTR_CLASS = 'cm-attribute';
-const NO_CLASS = 'none';
+export const VAR_LANG_CLASS = 'variable-language';
+export const COMMENT_STR_CLASS = 'cm-string';
+export const COMMENT_CLASS = 'comment';
+export const COMMENT_ATTR_CLASS = 'cm-attribute';
+export const NO_CLASS = 'none';
 
-const textHighlightColors = {};
+export const textHighlightColors = {};
 textHighlightColors[VAR_LANG_CLASS] = 'rgb(127, 0, 85)';
 textHighlightColors[COMMENT_STR_CLASS] = 'rgb(0, 0, 255)';
 textHighlightColors[COMMENT_CLASS] = 'rgb(53, 125, 33)';
 textHighlightColors[COMMENT_ATTR_CLASS] = 'rgb(127, 0, 127)';
 textHighlightColors[NO_CLASS] = 'rgb(51, 51, 51)';
 
-const textColorClasses = Object.keys(textHighlightColors);
+export const textColorClasses = Object.keys(textHighlightColors);
 
 // specify defaults
-const DEFAULT_SEARCH_FILTERS = {
+export const DEFAULT_SEARCH_FILTERS = {
     owner: '*',
     prefix: '*',
     jobId: '*',
     status: '*',
 };
 
-async function getDriver() {
-    // configure Options
-    const options = new firefox.Options();
-    options.setPreference('dom.disable_beforeunload', true);
-    // use headless mode
-    options.headless();
-
-    const capabilities = Capabilities.firefox();
-    capabilities.setAcceptInsecureCerts(true);
-    capabilities.setAlertBehavior('accept');
-
-    // configure ServiceBuilder
-    const service = new firefox.ServiceBuilder();
-
-    // build driver using options and service
-    let driver = await new Builder()
-        .forBrowser('firefox')
-        .withCapabilities(capabilities);
-    driver = driver.setFirefoxOptions(options).setFirefoxService(service);
-    driver = driver.build();
-
-    return driver;
-}
-
-async function loadPage(driver, page) {
-    await driver.manage().window().setRect({ width: 1600, height: 800 });
-    console.log(`Loading page: ${page}`);
-    await driver.get(page);
-    const pageTitle = await driver.getTitle();
-    console.log(`Page title: ${pageTitle}`);
-    await driver.wait(until.titleIs('JES Explorer'), 20000);
-}
-
-async function checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT) {
-    assert.isNotEmpty(USERNAME, 'USERNAME is not defined');
-    assert.isNotEmpty(PASSWORD, 'PASSWORD is not defined');
-    assert.isNotEmpty(SERVER_HOST_NAME, 'SERVER_HOST_NAME is not defined');
-    assert.isNotEmpty(SERVER_HTTPS_PORT, 'SERVER_HTTPS_PORT is not defined');
-    try {
-        await driver.get(`https://${USERNAME}:${PASSWORD}@${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}/api/v1/jobs/username`);
-        await loadPage(driver, BASE_URL, USERNAME, PASSWORD);
-        // Ensure tree and editor have loaded
-        await driver.wait(until.elementLocated(By.id('job-list')), 30000);
-        await driver.wait(until.elementLocated(By.id('embeddedEditor')), 30000);
-        await driver.sleep(5000);
-    } catch (e) {
-        assert.fail(`Failed to initialise: ${e}`);
-    }
-}
-
-
-const compareFilters = (filter1, filter2) => {
+export const compareFilters = (filter1, filter2) => {
     const filterKeys = ['owner', 'prefix', 'jobId', 'status'];
 
     let isMatch = true;
@@ -101,7 +56,7 @@ const compareFilters = (filter1, filter2) => {
     return isMatch;
 };
 
-const parseFilterText = filterText => {
+export const parseFilterText = filterText => {
     const regex = /Owner= ?([^ ]*) ?Prefix= ?([^ ]*) ?JobId= ?([^ ]*) ?Status= ?([^ ]*) ?/;
     const tokens = filterText.match(regex);
     let owner;
@@ -124,7 +79,14 @@ const parseFilterText = filterText => {
     };
 };
 
-const parseJobText = text => {
+export interface ParsedJobText {
+    text :string;
+    prefix :string;
+    jobId :string;
+    status :string;
+}
+
+export const parseJobText = (text) :ParsedJobText => {
     const regex = /(.*):([^ ]*) ?\[([^ ]*) ?(.*)\]/;
     const tokens = text.match(regex);
     let prefix;
@@ -145,15 +107,15 @@ const parseJobText = text => {
     };
 };
 
-const parseJob = async job => {
+const parseJob = async (job) :Promise<ParsedJobText> => {
     const text = await job.getText();
     return parseJobText(text);
 };
 
-async function checkJobsOwner(actualJobs, expectedJobs) {
+export async function checkJobsOwner(actualJobs, expectedJobs) {
     if (expectedJobs.length >= 1) {
         let allMatchFlag = true;
-        const jobTexts = await Promise.all(actualJobs.map(j => { return j.getText(); }));
+        const jobTexts :string[] = await Promise.all(actualJobs.map(j => { return j.getText(); }));
 
         for (const text of jobTexts) {
             if (!expectedJobs.some(expectedJob => { return text.startsWith(expectedJob); })) {
@@ -169,10 +131,10 @@ async function checkJobsOwner(actualJobs, expectedJobs) {
     return actualJobs.length === 0;
 }
 
-const checkJobsAttribute = attr => {
+export const checkJobsAttribute = attr => {
     return async (actualJobs, expectedValues) => {
         let allMatchFlag = true;
-        const jobObjs = await Promise.all(actualJobs.map(parseJob));
+        const jobObjs :ParsedJobText[] = await Promise.all(actualJobs.map(parseJob));
 
         for (const job of jobObjs) {
             if (!expectedValues.some(val => { return job[attr].includes(val); })) {
@@ -185,16 +147,16 @@ const checkJobsAttribute = attr => {
     };
 };
 
-const checkJobsStatus = checkJobsAttribute('status');
-const checkJobsId = checkJobsAttribute('jobId');
+export const checkJobsStatus = checkJobsAttribute('status');
+export const checkJobsId = checkJobsAttribute('jobId');
 
 
-async function checkJobsPrefix(actualJobs, expectedPrefix) {
+export async function checkJobsPrefix(actualJobs, expectedPrefix) {
     let allMatchFlag = true;
     if (expectedPrefix === '') return actualJobs.length === 0;
 
     const searchPrefix = expectedPrefix.endsWith('*') ? expectedPrefix.substr(0, expectedPrefix.length - 1) : expectedPrefix;
-    const jobTexts = await Promise.all(actualJobs.map(j => { return j.getText(); }));
+    const jobTexts :string[] = await Promise.all(actualJobs.map(j => { return j.getText(); }));
 
     for (const text of jobTexts) {
         if (!text.startsWith(searchPrefix)) {
@@ -206,7 +168,7 @@ async function checkJobsPrefix(actualJobs, expectedPrefix) {
     return allMatchFlag;
 }
 
-function attachFilterToUrl(pageUrl, filters) {
+export function attachFilterToUrl(pageUrl, filters) {
     const filterArr = Object.keys(filters).reduce((arr, p) => {
         arr.push(`${p}=${filters[p]}`);
         return arr;
@@ -217,7 +179,7 @@ function attachFilterToUrl(pageUrl, filters) {
     return urlWithQueryParam;
 }
 
-function loadPageWithFilterOptions(pageUrl, defaultFilters = {}, config = { checkJobsLoaded: true }) {
+export function loadPageWithFilterOptions(pageUrl, defaultFilters = {}, config = { checkJobsLoaded: true }) {
     return async (driver, filters) => {
         let filterObj = filters;
         filterObj = { ...defaultFilters, ...filters };
@@ -244,7 +206,7 @@ function loadPageWithFilterOptions(pageUrl, defaultFilters = {}, config = { chec
  *
  * @param {WebDriver} driver selenium-webdriver
  */
-async function findAndClickApplyButton(driver) {
+export async function findAndClickApplyButton(driver) {
     const applyButton = await driver.findElement(By.id('filters-apply-button'));
     await driver.wait(until.elementIsVisible(applyButton), 10000);
     await applyButton.click();
@@ -256,7 +218,7 @@ async function findAndClickApplyButton(driver) {
  *
  * @param {WebDriver} driver selenium-webdriver
  */
-async function reloadAndOpenFilterPanel(driver, hasJobs) {
+export async function reloadAndOpenFilterPanel(driver, hasJobs) {
     await driver.navigate().refresh();
     await driver.wait(until.elementLocated(By.id('filter-view')), 10000);
     await driver.sleep(1000);
@@ -273,7 +235,7 @@ async function reloadAndOpenFilterPanel(driver, hasJobs) {
  * @returns Object with key/value pairs of filters
  *  e.g {owner: ibmuser, prefix: STC*, jobId: *, status: *}
  */
-async function waitForAndExtractFilters(driver) {
+export async function waitForAndExtractFilters(driver) {
     await driver.sleep(1000);
     await driver.wait(until.elementLocated(By.className('tree-card')), 10000);
     const filterSpans = await driver.findElements(By.css('.tree-card > div > div > span'));
@@ -282,7 +244,7 @@ async function waitForAndExtractFilters(driver) {
 }
 
 
-async function getAllFilterValues(driver) {
+export async function getAllFilterValues(driver) {
     let element = await driver.findElement(By.id('filter-owner-field'));
     const owner = await element.getAttribute('value');
 
@@ -304,7 +266,7 @@ async function getAllFilterValues(driver) {
  *
  * @param {WebDriver} driver selenium-webdriver
  */
-async function waitForAndExtractJobs(driver) {
+export async function waitForAndExtractJobs(driver) {
     await driver.sleep(1000);
     await driver.wait(until.elementLocated(By.id('refresh-icon')), 10000);
     const jobs = await driver.findElements(By.className('job-instance'));
@@ -316,9 +278,9 @@ async function waitForAndExtractJobs(driver) {
  *
  * @param {WebDriver} driver selenium-webdriver
  */
-async function waitForAndExtractParsedJobs(driver) {
+export async function waitForAndExtractParsedJobs(driver) :Promise<ParsedJobText[]> {
     const jobs = await waitForAndExtractJobs(driver);
-    const jobObjs = await Promise.all(jobs.map(parseJob));
+    const jobObjs :ParsedJobText[] = await Promise.all(jobs.map(parseJob));
     return jobObjs;
 }
 
@@ -327,7 +289,7 @@ async function waitForAndExtractParsedJobs(driver) {
  * @param {WebDriver} driver selenium-webdriver
  * @param {string} statusIdSelection id of status field in status dropdown
  */
-async function setStatusFilter(driver, statusIdSelection) {
+export async function setStatusFilter(driver, statusIdSelection) {
     const statusSelector = await driver.findElement(By.id('filter-status-field'));
     await statusSelector.click();
     await driver.wait(until.elementLocated(By.id(statusIdSelection)));
@@ -336,8 +298,13 @@ async function setStatusFilter(driver, statusIdSelection) {
     await driver.sleep(1000); // wait for css transition
 }
 
+export interface EditorElementTextLine {
+    text :string;
+    css :string;
+    color :string;
+}
 
-async function getTextLineElements(driver) {
+export async function getTextLineElements(driver) :Promise<EditorElementTextLine[]> {
     await driver.wait(until.elementLocated(By.css('.textviewContent > div > span')));
     const textLineSpans = await driver.findElements(By.css('.textviewContent > div > span'));
 
@@ -359,7 +326,7 @@ async function getTextLineElements(driver) {
     return textLineObjs;
 }
 
-async function submitJob(jcl, host, port, username, password) {
+export async function submitJob(jcl, host, port, username, password) {
     const agent = new https.Agent({
         rejectUnauthorized: false,
     });
@@ -392,7 +359,7 @@ async function submitJob(jcl, host, port, username, password) {
  * @param {String} username TSO username
  * @param {String} password TSO password
  */
-async function debugApiCall(path, host, port, username, password) {
+export async function debugApiCall(path, host, port, username, password) {
     const agent = new https.Agent({
         rejectUnauthorized: false,
     });
@@ -415,33 +382,3 @@ async function debugApiCall(path, host, port, username, password) {
         responseJson => { console.log(responseJson); },
     );
 }
-
-module.exports = {
-    getDriver,
-    checkDriver,
-    loadPage,
-    findAndClickApplyButton,
-    reloadAndOpenFilterPanel,
-    waitForAndExtractJobs,
-    waitForAndExtractParsedJobs,
-    waitForAndExtractFilters,
-    setStatusFilter,
-    textColorClasses,
-    textHighlightColors,
-    getTextLineElements,
-    loadPageWithFilterOptions,
-    checkJobsOwner,
-    checkJobsStatus,
-    checkJobsId,
-    checkJobsPrefix,
-    getAllFilterValues,
-    compareFilters,
-    VAR_LANG_CLASS,
-    COMMENT_STR_CLASS,
-    COMMENT_CLASS,
-    COMMENT_ATTR_CLASS,
-    NO_CLASS,
-    DEFAULT_SEARCH_FILTERS,
-    submitJob,
-    debugApiCall,
-};

@@ -1,27 +1,41 @@
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright IBM Corporation 2020
+ */
+
 /* eslint-disable no-unused-expressions */
-const { By } = require('selenium-webdriver');
-const { expect } = require('chai');
+import { By } from 'selenium-webdriver';
+import { expect } from 'chai';
+
 const chai = require('chai');
 chai.use(require('chai-things'));
 require('geckodriver');
 
-const {
+import {
     getDriver,
     checkDriver,
+    testElementAppearsXTimesByCSS 
+} from 'explorer-fvt-utilities';
+
+import {
     waitForAndExtractParsedJobs,
     loadPageWithFilterOptions,
     DEFAULT_SEARCH_FILTERS,
-} = require('../utilities');
+} from '../utilities';
 
-const {
-    testElementAppearsXTimesByCSS,
+import {
     testJobOwnerFilter,
     testJobPrefixFilter,
     testJobStatusFilter,
     testJobIdFilter,
     testFilterDisplayStringValues,
     testFilterFormInputValues,
-} = require('../testFunctions');
+} from '../testFunctions';
 
 const {
     ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT,
@@ -40,7 +54,7 @@ describe('JES explorer home view with filter parameters in url query', function 
 
     before('Initialise', async () => {
         driver = await getDriver();
-        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT);
+        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, parseInt(SERVER_HTTPS_PORT), '/api/v1/jobs/username');
     });
 
     after('Close out', async () => {

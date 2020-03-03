@@ -1,25 +1,39 @@
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright IBM Corporation 2020
+ */
+
 /* eslint-disable no-unused-expressions */
-const { By } = require('selenium-webdriver');
-const { expect } = require('chai');
+import { By } from 'selenium-webdriver';
+import { expect } from 'chai';
+
 const chai = require('chai');
 chai.use(require('chai-things'));
 require('geckodriver');
 
-const {
+import {
     getDriver,
     checkDriver,
+    testElementAppearsXTimesByCSS,
+} from 'explorer-fvt-utilities';
+
+import {
     waitForAndExtractParsedJobs,
+    ParsedJobText,
     loadPageWithFilterOptions,
     getTextLineElements,
+    EditorElementTextLine,
     DEFAULT_SEARCH_FILTERS,
-    textColorClasses,
-} = require('../utilities');
+} from '../utilities';
 
-const {
-    testElementAppearsXTimesByCSS,
+import {
     testAllHighlightColor,
-    testHighlightColorByClass,
-} = require('../testFunctions');
+} from'../testFunctions';
 
 
 const {
@@ -43,7 +57,7 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
 
     before('Initialise', async () => {
         driver = await getDriver();
-        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT);
+        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, parseInt(SERVER_HTTPS_PORT), '/api/v1/jobs/username');
     });
 
     after('Close out', async () => {
@@ -56,7 +70,7 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
     before('get jobIds list from jobs filtered by ZOSMF_JOB_NAME prefix', async () => {
         const filters = { prefix: ZOSMF_JOB_NAME, status: 'ACTIVE' };
         await loadUrlWithSearchFilters(driver, filters);
-        const jobObjs = await waitForAndExtractParsedJobs(driver);
+        const jobObjs :ParsedJobText[] = await waitForAndExtractParsedJobs(driver);
         expect(jobObjs && jobObjs.length > 0).to.be.true;
 
         const filterObj = [
@@ -115,7 +129,7 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
     });
 
     it('Should handle rendering file contents in Orion editor', async () => {
-        const textElems = await getTextLineElements(driver);
+        const textElems :EditorElementTextLine[] = await getTextLineElements(driver);
         expect(textElems).to.be.an('array').that.has.lengthOf.at.least(1);
         if (testFileName === 'STDOUT') {
             expect(testHighlightColorByClass(textColorClasses[1], textElems)).to.be.true;
