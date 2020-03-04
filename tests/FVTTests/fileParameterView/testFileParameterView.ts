@@ -26,14 +26,8 @@ import {
     waitForAndExtractParsedJobs,
     ParsedJobText,
     loadPageWithFilterOptions,
-    getTextLineElements,
-    EditorElementTextLine,
     DEFAULT_SEARCH_FILTERS,
 } from '../utilities';
-
-import {
-    testAllHighlightColor,
-} from'../testFunctions';
 
 
 const {
@@ -52,7 +46,7 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
     const loadUrlWithViewerFilters = loadPageWithFilterOptions(VIEWER_BASE_URL, {}, { checkJobsLoaded: false });
     let testFilters;
     let driver;
-    let testFileName = 'JESJCL';
+    let testFileName = 'STDOUT';
     this.retries(3);
 
     before('Initialise', async () => {
@@ -73,37 +67,24 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
         const jobObjs :ParsedJobText[] = await waitForAndExtractParsedJobs(driver);
         expect(jobObjs && jobObjs.length > 0).to.be.true;
 
-        const filterObj = [
-            {
-                jobName: jobObjs[0].prefix,
-                jobId: jobObjs[0].jobId,
-                fileId: 3,
-                fileType: 'JESJCL',
-            },
-            {
-                jobName: jobObjs[0].prefix,
-                jobId: jobObjs[0].jobId,
-                fileId: 108,
-                fileType: 'STDOUT',
-            },
-        ];
+        testFilters = {
+            jobName: jobObjs[0].prefix,
+            jobId: jobObjs[0].jobId,
+            fileId: 108,
+        }
 
-        testFilters = { jobName: filterObj[0].jobName, jobId: filterObj[0].jobId, fileId: filterObj[0].fileId };
+        // load driver with specified filter
         await loadUrlWithViewerFilters(driver, testFilters);
-        testFileName = filterObj[0].fileType;
+ 
+    });
 
-        // wait for content to load
+    it('Should handle rendering file contents in Orion editor', async () => {
+        // wait for content to load and check if the file is open correctly with specified strings
         let viewer = await driver.findElement(By.css('#embeddedEditor > div > div > .textviewContent'));
         let text = await viewer.getText();
-        // In certain system, the text will be empty becase the system doens't contain any TESTJCL file
-        if (text.trim() === '') {
-            testFilters = { jobName: filterObj[1].jobName, jobId: filterObj[1].jobId, fileId: filterObj[1].fileId };
-            await loadUrlWithViewerFilters(driver, testFilters);
-            viewer = await driver.findElement(By.css('#embeddedEditor > div > div > .textviewContent'));
-            text = await viewer.getText();
-            testFileName = filterObj[1].fileType;
-        }
         expect(text.trim()).to.have.lengthOf.greaterThan(1);
+        expect(text.trim()).to.have.string('zosmfServer has been launched');
+        
     });
 
     it('Should handle rendering expected components with viewer route (File Viewer)', async () => {
@@ -128,13 +109,4 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
         expect(fileName).to.be.equal(testFileName);
     });
 
-    it('Should handle rendering file contents in Orion editor', async () => {
-        const textElems :EditorElementTextLine[] = await getTextLineElements(driver);
-        expect(textElems).to.be.an('array').that.has.lengthOf.at.least(1);
-        if (testFileName === 'STDOUT') {
-            expect(testHighlightColorByClass(textColorClasses[1], textElems)).to.be.true;
-        } else {
-            expect(testAllHighlightColor(textElems)).to.be.true;
-        }
-    });
 });
