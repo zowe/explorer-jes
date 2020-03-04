@@ -15,6 +15,7 @@ import {
     testElementAppearsXTimesById,
     testWindowHeightChangeForcesComponentHeightChange,
     testTextInputFieldCanBeModified,
+    loadPage,
 } from 'explorer-fvt-utilities';
 
 import { By, until, WebDriver, WebElement } from 'selenium-webdriver';
@@ -201,6 +202,10 @@ describe('JES explorer function verification tests', function () {
             });
         });
         describe('Tree interaction', () => {
+            before('Reset prior to Tree interaction suite', async () => {
+                loadPage(driver, BASE_URL);
+            });
+
             it('Should handle reloading jobs when clicking refresh icon', async () => {
                 const refreshIcon :WebElement = await driver.findElement(By.id('refresh-icon'));
                 await refreshIcon.click();
@@ -208,7 +213,7 @@ describe('JES explorer function verification tests', function () {
                 await driver.wait(until.elementLocated(By.id('refresh-icon')));
                 expect(await testElementAppearsXTimesById(driver, 'refresh-icon', 1)).to.be.true;
             });
-            
+
             describe('Job status labels', () => {
                 before(async () => {
                     await reloadAndOpenFilterPanel(driver, false);
