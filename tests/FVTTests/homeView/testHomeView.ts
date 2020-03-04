@@ -210,7 +210,7 @@ describe('JES explorer function verification tests', function () {
                 const refreshIcon :WebElement = await driver.findElement(By.id('refresh-icon'));
                 await refreshIcon.click();
                 expect(await testElementAppearsXTimesById(driver, 'loading-icon', 1)).to.be.true;
-                await driver.wait(until.elementLocated(By.id('refresh-icon')));
+                await driver.wait(until.elementLocated(By.id('refresh-icon')), 10000);
                 expect(await testElementAppearsXTimesById(driver, 'refresh-icon', 1)).to.be.true;
             });
 
