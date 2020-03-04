@@ -17,7 +17,7 @@ import {
     testTextInputFieldCanBeModified,
 } from 'explorer-fvt-utilities';
 
-import { By, until } from 'selenium-webdriver';
+import { By, until, WebDriver, WebElement } from 'selenium-webdriver';
 import { expect } from 'chai';
 
 const chai = require('chai');
@@ -67,7 +67,7 @@ const ZOSMF_JOB_NAME = 'IZUSVR1';
 // Need to use unnamed function so we can specify the retries
 // eslint-disable-next-line
 describe('JES explorer function verification tests', function () {
-    let driver;
+    let driver :WebDriver;
     this.retries(3);
 
     before('Initialise', async () => {
@@ -201,8 +201,14 @@ describe('JES explorer function verification tests', function () {
             });
         });
         describe('Tree interaction', () => {
-            // TODO:: Implement once we have an ID for refresh icon and loading icon
-            it.skip('Should handle reloading jobs when clicking refresh icon');
+            it('Should handle reloading jobs when clicking refresh icon', async () => {
+                const refreshIcon :WebElement = await driver.findElement(By.id('refresh-icon'));
+                await refreshIcon.click();
+                expect(await testElementAppearsXTimesById(driver, 'loading-icon', 1)).to.be.true;
+                await driver.wait(until.elementLocated(By.id('refresh-icon')));
+                expect(await testElementAppearsXTimesById(driver, 'refresh-icon', 1)).to.be.true;
+            });
+            
             describe('Job status labels', () => {
                 before(async () => {
                     await reloadAndOpenFilterPanel(driver, false);
