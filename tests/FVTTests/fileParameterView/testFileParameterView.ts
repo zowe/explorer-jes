@@ -46,7 +46,6 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
     const loadUrlWithViewerFilters = loadPageWithFilterOptions(VIEWER_BASE_URL, {}, { checkJobsLoaded: false });
     let testFilters;
     let driver;
-    let testFileName = 'STDOUT';
     this.retries(3);
 
     before('Initialise', async () => {
@@ -78,15 +77,6 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
  
     });
 
-    it('Should handle rendering file contents in Orion editor', async () => {
-        // wait for content to load and check if the file is open correctly with specified strings
-        let viewer = await driver.findElement(By.css('#embeddedEditor > div > div > .textviewContent'));
-        let text = await viewer.getText();
-        expect(text.trim()).to.have.lengthOf.greaterThan(1);
-        expect(text.trim()).to.have.string('zosmfServer has been launched');
-        
-    });
-
     it('Should handle rendering expected components with viewer route (File Viewer)', async () => {
         // no tree card component on side
         expect(await testElementAppearsXTimesByCSS(driver, '.tree-card', 0)).to.be.true;
@@ -106,7 +96,18 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
 
         const [jobId, fileName] = cardHeaderText.split('-');
         expect(jobId).to.be.equal(testFilters.jobId);
+        let testFileName = 'STDOUT';
         expect(fileName).to.be.equal(testFileName);
     });
+
+    it('Should handle rendering file contents in Orion editor', async () => {
+        // wait for content to load and check if the file is open correctly with specified strings
+        let viewer = await driver.findElement(By.css('#embeddedEditor > div > div > .textviewContent'));
+        let text = await viewer.getText();
+        text = text.trim();
+        expect(text).to.have.lengthOf.greaterThan(1);
+        expect(text).to.have.string('zosmfServer has been launched');
+    });
+
 
 });
