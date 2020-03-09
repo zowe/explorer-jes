@@ -129,6 +129,7 @@ node('ibm-jenkins-slave-dind') {
 
   pipeline.test(
     name          : 'Integration',
+    timeout       : [time: 20, unit: 'MINUTES'],
     operation     : {
       echo "Preparing server for integration test ..."
       ansiColor('xterm') {
