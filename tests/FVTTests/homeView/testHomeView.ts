@@ -52,6 +52,8 @@ import {
 
 import {
     TEST_JOB_PREFIX,
+    ZOSMF_JOB_PREFIX,
+    ZOSMF_SERVER_JOB_NAME,
     SHORT_JOB,
     LONG_JOB,
 } from '../testResources';
@@ -63,7 +65,6 @@ const {
 } = process.env;
 
 const BASE_URL = `https://${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}/ui/v1/explorer-jes`;
-const ZOSMF_JOB_NAME = 'IZUSVR1';
 
 // Need to use unnamed function so we can specify the retries
 // eslint-disable-next-line
@@ -276,10 +277,10 @@ describe('JES explorer function verification tests', function () {
 
                 describe('Prefix Filter', () => {
                     it('Should handle fetching jobs based on full prefix (ZOSMF_JOB_NAME)', async () => {
-                        expect(await testPrefixFilterFetching(driver, ZOSMF_JOB_NAME, false)).to.be.true;
+                        expect(await testPrefixFilterFetching(driver, ZOSMF_SERVER_JOB_NAME, false)).to.be.true;
                     });
                     it('Should handle fetching jobs based on prefix with asterisk (IZU*)', async () => {
-                        expect(await testPrefixFilterFetching(driver, 'IZU*', false)).to.be.true;
+                        expect(await testPrefixFilterFetching(driver, `${ZOSMF_JOB_PREFIX}*`, false)).to.be.true;
                     });
                     it('Should handle fetching no jobs based on crazy prefix (1ZZZZZZ1)', async () => {
                         expect(await testPrefixFilterFetching(driver, '1ZZZZZZ1', true)).to.be.true;
@@ -317,15 +318,15 @@ describe('JES explorer function verification tests', function () {
 
             describe('Job Files', () => {
                 it('Should handle rendering job files when clicking on a job', async () => {
-                    expect(await testJobFilesLoad(driver, '*', `IZUSVR*`, null)).to.be.true;
+                    expect(await testJobFilesLoad(driver, '*', `${ZOSMF_SERVER_JOB_NAME}`, null)).to.be.true;
                 });
 
                 it('Should handle rendering multiple jobs files', async () => {
-                    expect(await testJobFilesLoad(driver, '*', `IZU*`, null)).to.be.true;
+                    expect(await testJobFilesLoad(driver, '*', `${ZOSMF_JOB_PREFIX}*`, null)).to.be.true;
                 });
 
                 it('Should handle un rendering job files when clicking an already toggle job', async () => {
-                    expect(await testJobFilesLoad(driver, '*', 'IZUSVR*', null)).to.be.true;
+                    expect(await testJobFilesLoad(driver, '*', `${ZOSMF_SERVER_JOB_NAME}`, null)).to.be.true;
 
                     const jobLink = await driver.findElements(By.css('.job-instance > li > div> .content-link'));
                     expect(jobLink).to.be.an('array').that.has.lengthOf.at.least(1);
@@ -338,7 +339,7 @@ describe('JES explorer function verification tests', function () {
                 });
 
                 it('Should handle opening a files content when clicked', async () => {
-                    expect(await testJobFilesLoad(driver, '*', ZOSMF_JOB_NAME, null)).to.be.true;
+                    expect(await testJobFilesLoad(driver, '*', ZOSMF_SERVER_JOB_NAME, null)).to.be.true;
                     const fileLink = await driver.findElements(By.css('.job-instance > ul > div > li > div > .content-link'));
                     expect(fileLink).to.be.an('array').that.has.lengthOf.at.least(1);
                     await fileLink[0].click();
@@ -349,7 +350,7 @@ describe('JES explorer function verification tests', function () {
                 });
 
                 it('Should handle setting refresh icon to loading icon when job file loading', async () => {
-                    expect(await testJobFilesLoad(driver, '*', ZOSMF_JOB_NAME, null)).to.be.true;
+                    expect(await testJobFilesLoad(driver, '*', ZOSMF_SERVER_JOB_NAME, null)).to.be.true;
                     expect(await testElementAppearsXTimesById(driver, 'refresh-icon', 1)).to.be.true;
                 });
                 it('Should handle opening a files content unathorised for user and display error message');
@@ -357,7 +358,7 @@ describe('JES explorer function verification tests', function () {
             it('Should handle rendering context menu on right click', async () => {
                 await reloadAndOpenFilterPanel(driver, false);
                 expect(await testTextInputFieldCanBeModified(driver, 'filter-owner-field', '*'), 'filter-owner-field wrong').to.be.true;
-                expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', ZOSMF_JOB_NAME), 'filter-prefix-field wrong').to.be.true;
+                expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', ZOSMF_SERVER_JOB_NAME), 'filter-prefix-field wrong').to.be.true;
                 await findAndClickApplyButton(driver);
 
                 const jobs = await waitForAndExtractJobs(driver);
