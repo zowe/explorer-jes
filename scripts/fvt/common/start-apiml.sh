@@ -119,33 +119,33 @@ java -Xms32m -Xmx256m \
 echo
 
 ################################################################################
-echo "[${SCRIPT_NAME}] start APIML API Catalog"
-# -Xquickstart \
-java -Xms16m -Xmx512m \
-    -Dibm.serversocket.recover=true \
-    -Dfile.encoding=UTF-8 \
-    -Djava.io.tmpdir=/tmp \
-    -Denvironment.hostname=localhost \
-    -Denvironment.port=${FVT_CATALOG_PORT} \
-    -Denvironment.discoveryLocations=https://localhost:${FVT_DISCOVERY_PORT}/eureka/ \
-    -Denvironment.ipAddress=127.0.0.1 \
-    -Denvironment.preferIpAddress=true -Denvironment.gatewayHostname=localhost \
-    -Denvironment.eurekaUserId=eureka \
-    -Denvironment.eurekaPassword=password \
-    -Dapiml.security.auth.zosmfServiceId=zosmf \
-    -Dapiml.security.ssl.verifySslCertificatesOfServices=false \
-    -Dspring.profiles.include=debug \
-    -Dserver.address=0.0.0.0 \
-    -Dserver.ssl.enabled=true \
-    -Dserver.ssl.keyStore="${KEYSTORE_DIR}/localhost.keystore.p12" \
-    -Dserver.ssl.keyStoreType=PKCS12 \
-    -Dserver.ssl.keyStorePassword=password \
-    -Dserver.ssl.keyAlias=localhost \
-    -Dserver.ssl.keyPassword=password \
-    -Dserver.ssl.trustStore="${KEYSTORE_DIR}/localhost.truststore.p12" \
-    -Dserver.ssl.trustStoreType=PKCS12 \
-    -Dserver.ssl.trustStorePassword=password \
-    -Djava.protocol.handler.pkgs=com.ibm.crypto.provider \
-    -jar "${APIML_ROOT_DIR}/api-catalog-services.jar" \
-    > "${APIML_LOGS_DIR}/api-catalog-services.log"  &
-echo
+# echo "[${SCRIPT_NAME}] start APIML API Catalog"
+# # -Xquickstart \
+# java -Xms16m -Xmx512m \
+#     -Dibm.serversocket.recover=true \
+#     -Dfile.encoding=UTF-8 \
+#     -Djava.io.tmpdir=/tmp \
+#     -Denvironment.hostname=localhost \
+#     -Denvironment.port=${FVT_CATALOG_PORT} \
+#     -Denvironment.discoveryLocations=https://localhost:${FVT_DISCOVERY_PORT}/eureka/ \
+#     -Denvironment.ipAddress=127.0.0.1 \
+#     -Denvironment.preferIpAddress=true -Denvironment.gatewayHostname=localhost \
+#     -Denvironment.eurekaUserId=eureka \
+#     -Denvironment.eurekaPassword=password \
+#     -Dapiml.security.auth.zosmfServiceId=zosmf \
+#     -Dapiml.security.ssl.verifySslCertificatesOfServices=false \
+#     -Dspring.profiles.include=debug \
+#     -Dserver.address=0.0.0.0 \
+#     -Dserver.ssl.enabled=true \
+#     -Dserver.ssl.keyStore="${KEYSTORE_DIR}/localhost.keystore.p12" \
+#     -Dserver.ssl.keyStoreType=PKCS12 \
+#     -Dserver.ssl.keyStorePassword=password \
+#     -Dserver.ssl.keyAlias=localhost \
+#     -Dserver.ssl.keyPassword=password \
+#     -Dserver.ssl.trustStore="${KEYSTORE_DIR}/localhost.truststore.p12" \
+#     -Dserver.ssl.trustStoreType=PKCS12 \
+#     -Dserver.ssl.trustStorePassword=password \
+#     -Djava.protocol.handler.pkgs=com.ibm.crypto.provider \
+#     -jar "${APIML_ROOT_DIR}/api-catalog-services.jar" \
+#     > "${APIML_LOGS_DIR}/api-catalog-services.log"  &
+# echo

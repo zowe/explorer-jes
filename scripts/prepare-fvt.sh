@@ -80,12 +80,14 @@ echo
 ################################################################################
 # prepare UI package
 echo "[${SCRIPT_NAME}] prepare plugin package ..."
+cd "${ROOT_DIR}"
 ./.pax/prepare-workspace.sh
 echo
 
 ################################################################################
 # prepare UI package
 echo "[${SCRIPT_NAME}] copying plugin to target test folder ..."
+cd "${ROOT_DIR}"
 cp -R .pax/content/. "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/"
 cp -R .pax/ascii/. "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/"
 echo
@@ -93,6 +95,7 @@ echo
 ################################################################################
 # download APIML
 echo "[${SCRIPT_NAME}] downloading APIML to target folder ${FVT_APIML_DIR} ..."
+cd "${ROOT_DIR}"
 ./scripts/fvt/common/download-apiml.sh \
   "${FVT_APIML_ARTIFACT}" \
   "${FVT_WORKSPACE}/${FVT_APIML_DIR}"
@@ -101,6 +104,7 @@ echo
 ################################################################################
 # download jobs API
 echo "[${SCRIPT_NAME}] downloading jobs API to target folder ${FVT_DATASETS_API_DIR} ..."
+cd "${ROOT_DIR}"
 ./scripts/fvt/common/download-explorer-api.sh \
   "${FVT_JOBS_API_ARTIFACT}" \
   "${FVT_WORKSPACE}/${FVT_DATASETS_API_DIR}"
@@ -109,6 +113,7 @@ echo
 ################################################################################
 # download jobs API
 echo "[${SCRIPT_NAME}] downloading jobs API to target folder ${FVT_DATASETS_API_DIR} ..."
+cd "${ROOT_DIR}"
 ./scripts/fvt/common/download-artifact.sh \
   "${FVT_JOBS_API_ARTIFACT}" \
   "${FVT_WORKSPACE}/${FVT_DATASETS_API_DIR}" \
@@ -124,12 +129,14 @@ echo
 ################################################################################
 # generate certificates
 echo "[${SCRIPT_NAME}] generating certificates ..."
+cd "${ROOT_DIR}"
 ./scripts/fvt/common/generate-certificates.sh "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}"
 echo
 
 ################################################################################
 # write zosmf config
 echo "[${SCRIPT_NAME}] writing z/OSMF config for APIML ..."
+cd "${ROOT_DIR}"
 ./scripts/fvt/common/prepare-zosmf-config.sh "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}" "$FVT_ZOSMF_HOST" "$FVT_ZOSMF_PORT"
 echo "[${SCRIPT_NAME}] writing jobs API config for APIML ..."
 cat > "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}/jobs-api.yml" << EOF
