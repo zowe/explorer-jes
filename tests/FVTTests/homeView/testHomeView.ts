@@ -317,11 +317,10 @@ describe('JES explorer function verification tests', function () {
 
             describe('Job Files', () => {
                 it('Should handle rendering job files when clicking on a job', async () => {
-                    // TODO:: Is using ZFS safe, we should extract to a constant
-                    expect(await testJobFilesLoad(driver, '*', 'ZFS', null)).to.be.true;
+                    expect(await testJobFilesLoad(driver, '*', `${TEST_JOB_PREFIX}L`, null)).to.be.true;
                 });
-                // TODO:: Can we find a way to scroll more jobs in to view for clicking
-                it.skip('Should handle rendering multiple jobs files', async () => {
+                
+                it('Should handle rendering multiple jobs files', async () => {
                     expect(await testJobFilesLoad(driver, '*', `${TEST_JOB_PREFIX}*`, null)).to.be.true;
                 });
 
