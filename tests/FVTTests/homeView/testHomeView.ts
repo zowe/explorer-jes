@@ -317,15 +317,15 @@ describe('JES explorer function verification tests', function () {
 
             describe('Job Files', () => {
                 it('Should handle rendering job files when clicking on a job', async () => {
-                    expect(await testJobFilesLoad(driver, '*', `${TEST_JOB_PREFIX}L`, null)).to.be.true;
+                    expect(await testJobFilesLoad(driver, '*', `IZUSVR*`, null)).to.be.true;
                 });
-                
+
                 it('Should handle rendering multiple jobs files', async () => {
-                    expect(await testJobFilesLoad(driver, '*', `${TEST_JOB_PREFIX}*`, null)).to.be.true;
+                    expect(await testJobFilesLoad(driver, '*', `IZU*`, null)).to.be.true;
                 });
 
                 it('Should handle un rendering job files when clicking an already toggle job', async () => {
-                    expect(await testJobFilesLoad(driver, '*', 'ZFS', null)).to.be.true;
+                    expect(await testJobFilesLoad(driver, '*', 'IZUSVR*', null)).to.be.true;
 
                     const jobLink = await driver.findElements(By.css('.job-instance > li > div> .content-link'));
                     expect(jobLink).to.be.an('array').that.has.lengthOf.at.least(1);
