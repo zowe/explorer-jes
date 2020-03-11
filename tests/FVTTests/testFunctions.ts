@@ -141,16 +141,23 @@ export async function testStatusFilterFetching(driver, status, potentialStatuses
 }
 
 export async function testJobFilesLoad(driver :WebDriver, ownerFilter :string, prefixFilter :string, statusFilter :string) :Promise<boolean> {
+    console.log(1)
     const jobsInstances = await driver.findElements(By.className('job-instance'));
+    console.log(2)
     await reloadAndOpenFilterPanel(driver, jobsInstances.length > 0);
+    console.log(3)
     await testTextInputFieldCanBeModified(driver, 'filter-owner-field', ownerFilter);
+    console.log(4)
     await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', prefixFilter);
+    console.log(5)
     if (statusFilter) {
         await setStatusFilter(driver, statusFilter);
     }
 
     await findAndClickApplyButton(driver);
+    console.log(6)
     const jobs :WebElement[] = await waitForAndExtractJobs(driver);
+    console.log(7)
     if (jobs.length === 1) {
         const text = await jobs[0].getText();
         if (text === 'No jobs found') {
@@ -158,14 +165,20 @@ export async function testJobFilesLoad(driver :WebDriver, ownerFilter :string, p
             return false; // Couldn't find any jobs
         }
     }
+    console.log(8)
 
     let foundFiles :boolean = true;
     let filesCount :number = 0;
     for (const job of jobs) {
+        console.log(9)
         await job.click();
+        console.log(10)
         await driver.wait(until.elementLocated(By.id('loading-icon')), 10000);
+        console.log(11)
         await driver.wait(until.elementLocated(By.id('refresh-icon')), 20000);
+        console.log(12)
         const jobFiles :WebElement[] = await driver.findElements(By.className('job-file'));
+        console.log(13)
         // If we don't find new files
         if (filesCount === (filesCount + jobFiles.length)) {
             foundFiles = false;
@@ -174,6 +187,7 @@ export async function testJobFilesLoad(driver :WebDriver, ownerFilter :string, p
             filesCount += jobFiles.length;
         }
     }
+    console.log(14)
     return foundFiles;
 }
 
