@@ -21,6 +21,13 @@ node('ibm-jenkins-slave-dind') {
   // build parameters for FVT test
   pipeline.addBuildParameters(
     string(
+      name: 'FVT_APIML_ARTIFACT',
+      description: 'APIML build for integration test',
+      defaultValue: 'libs-release-local/org/zowe/apiml/sdk/zowe-install/*/zowe-install-*.zip',
+      trim: true,
+      required: true
+    ),
+    string(
       name: 'FVT_API_ARTIFACT',
       description: 'Jobs API artifact download pattern',
       defaultValue: 'libs-release-local/org/zowe/explorer/jobs/jobs-zowe-server-package/*/jobs-zowe-server-package-*.zip',
@@ -133,7 +140,7 @@ node('ibm-jenkins-slave-dind') {
       echo "Preparing server for integration test ..."
       ansiColor('xterm') {
         // prepare environtment for integration test
-        sh "./scripts/prepare-fvt.sh \"${params.FVT_API_ARTIFACT}\" \"${params.FVT_ZOSMF_HOST}\" \"${params.FVT_ZOSMF_PORT}\""
+        sh "./scripts/prepare-fvt.sh \"${params.FVT_APIML_ARTIFACT}\" \"${params.FVT_API_ARTIFACT}\" \"${params.FVT_ZOSMF_HOST}\" \"${params.FVT_ZOSMF_PORT}\""
       }
       // run tests
       sh 'docker ps'
