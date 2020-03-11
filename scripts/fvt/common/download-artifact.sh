@@ -39,9 +39,23 @@ TARGET_PARENT_DIR=$(dirname "${TARGET_DIR}")
 
 ################################################################################
 # prepare and download artifact
-echo "[${SCRIPT_NAME}] prepare artifact download spec"
-cd "${TARGET_PARENT_DIR}"
-cat > "dl-spec.json" << EOF
+if [[ $ARTIFACT_PATTERN = https://* ]]; then
+  cd "${TARGET_DIR}"
+  ARTIFACT_FILE=$(basename "${ARTIFACT_PATTERN}")
+  echo "[${SCRIPT_NAME}] download artifact ${ARTIFACT_FILE} from url"
+  curl "${ARTIFACT_PATTERN}" -o "$ARTIFACT_FILE"
+  if [ ! -f "${ARTIFACT_FILE}" ]; then
+    echo "[${SCRIPT_NAME}][Error] failed to download artifact from ${ARTIFACT_PATTERN}" >&2
+    exit 2
+  fi
+  if [ "${ARTIFACT_EXPLODE}" == "true" ]; then
+    unzip "${ARTIFACT_FILE}"
+    rm -f "${ARTIFACT_FILE}"
+  fi
+else
+  cd "${TARGET_PARENT_DIR}"
+  echo "[${SCRIPT_NAME}] prepare artifact download spec"
+  cat > "dl-spec.json" << EOF
 {
   "files": [{
     "pattern": "${ARTIFACT_PATTERN}",
@@ -54,8 +68,9 @@ cat > "dl-spec.json" << EOF
   }]
 }
 EOF
-cat "dl-spec.json"
-echo "[${SCRIPT_NAME}] download artifact to target folder"
-jfrog rt dl --spec=dl-spec.json
-rm -f dl-spec.json
+  cat "dl-spec.json"
+  echo "[${SCRIPT_NAME}] download artifact to target folder"
+  jfrog rt dl --spec=dl-spec.json
+  rm -f dl-spec.json
+fi
 echo
