@@ -61,13 +61,6 @@ node('ibm-jenkins-slave-nvm') {
       defaultValue: 'ZOWESVR',
       trim: true,
       required: true
-    ),
-    string(
-      name: 'FVT_SERVER_HOSTNAME',
-      description: 'Server hostname for integration test',
-      defaultValue: 'fvt-test-server',
-      trim: true,
-      required: true
     )
   )
 
@@ -159,7 +152,7 @@ node('ibm-jenkins-slave-nvm') {
 ZOWE_USERNAME=${USERNAME} \
 ZOWE_PASSWORD=${PASSWORD} \
 ZOWE_JOB_NAME=${params.FVT_JOBNAME} \
-SERVER_HOST_NAME=${params.FVT_SERVER_HOSTNAME} \
+SERVER_HOST_NAME=localhost \
 SERVER_HTTPS_PORT=7554 \
 npm run test:fvt
 """
