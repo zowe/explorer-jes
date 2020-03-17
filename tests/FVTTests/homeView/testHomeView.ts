@@ -15,8 +15,9 @@ import {
     testElementAppearsXTimesById,
     testWindowHeightChangeForcesComponentHeightChange,
     testTextInputFieldCanBeModified,
+    loadPage,
 } from 'explorer-fvt-utilities';
-import { By, until, WebDriver } from 'selenium-webdriver';
+import { By, until, WebDriver, WebElement } from 'selenium-webdriver';
 import { expect } from 'chai';
 
 const chai = require('chai');
