@@ -188,6 +188,7 @@ echo
 # start services
 # NOTE: to kill all processes on Mac
 #        ps aux | grep .fvt | grep -v grep | awk '{print $2}' | xargs kill -9
+cd "${ROOT_DIR}"
 echo "[${SCRIPT_NAME}] starting plugin service ..."
 node ${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/server/src/index.js \
   --service "${EXPLORER_PLUGIN_NAME}" \
