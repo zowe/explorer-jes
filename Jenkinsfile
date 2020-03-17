@@ -122,7 +122,7 @@ node('ibm-jenkins-slave-nvm') {
 
   pipeline.test(
     name          : 'Integration',
-    timeout       : [ time: 20, unit: 'MINUTES' ],
+    timeout       : [ time: 30, unit: 'MINUTES' ],
     operation     : {
       echo "Preparing server for integration test ..."
       ansiColor('xterm') {
@@ -133,22 +133,30 @@ node('ibm-jenkins-slave-nvm') {
       sleep time: 2, unit: 'MINUTES'
 
       echo "Starting integration test ..."
-      withCredentials([
-        usernamePassword(
-          credentialsId: params.FVT_ZOSMF_CREDENTIAL,
-          passwordVariable: 'PASSWORD',
-          usernameVariable: 'USERNAME'
-        )
-      ]) {
-        ansiColor('xterm') {
-          sh """
+      try {
+        withCredentials([
+          usernamePassword(
+            credentialsId: params.FVT_ZOSMF_CREDENTIAL,
+            passwordVariable: 'PASSWORD',
+            usernameVariable: 'USERNAME'
+          )
+        ]) {
+          ansiColor('xterm') {
+            sh """
 ZOWE_USERNAME=${USERNAME} \
 ZOWE_PASSWORD=${PASSWORD} \
 SERVER_HOST_NAME=localhost \
 SERVER_HTTPS_PORT=7554 \
 npm run test:fvt
 """
+          }
         }
+      } catch (e) {
+        echo "Error with integration test: ${e}"
+        throw e
+      } finally {
+        // show logs (the folder should match the folder defined in prepare-fvt.sh)
+        sh "find .fvt/logs -type f | xargs -i sh -c 'echo \">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>\" && cat {}'"
       }
     },
     junit         : "target/*.xml",

@@ -23,7 +23,7 @@ ROOT_DIR=$(cd "$SCRIPT_PWD" && cd .. && pwd)
 FVT_UTILITIES_SCRIPTS_DIR=node_modules/explorer-fvt-utilities/scripts
 FVT_WORKSPACE="${ROOT_DIR}/.fvt"
 FVT_APIML_DIR=api-layer
-FVT_DATASETS_API_DIR=jobs-api
+FVT_JOBS_API_DIR=jobs-api
 FVT_PLUGIN_DIR=jes_explorer
 FVT_KEYSTORE_DIR=keystore
 FVT_CONFIG_DIR=configs
@@ -71,7 +71,7 @@ if [ -d "${FVT_WORKSPACE}" ]; then
   rm -fr "${FVT_WORKSPACE}"
 fi
 mkdir -p "${FVT_WORKSPACE}/${FVT_APIML_DIR}"
-mkdir -p "${FVT_WORKSPACE}/${FVT_DATASETS_API_DIR}"
+mkdir -p "${FVT_WORKSPACE}/${FVT_JOBS_API_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}"
@@ -104,11 +104,11 @@ echo
 
 ################################################################################
 # download jobs API
-echo "[${SCRIPT_NAME}] downloading jobs API to target folder ${FVT_DATASETS_API_DIR} ..."
+echo "[${SCRIPT_NAME}] downloading jobs API to target folder ${FVT_JOBS_API_DIR} ..."
 cd "${ROOT_DIR}"
 ./${FVT_UTILITIES_SCRIPTS_DIR}/download-explorer-api.sh \
   "${FVT_JOBS_API_ARTIFACT}" \
-  "${FVT_WORKSPACE}/${FVT_DATASETS_API_DIR}"
+  "${FVT_WORKSPACE}/${FVT_JOBS_API_DIR}"
 echo
 
 ################################################################################
@@ -199,7 +199,7 @@ java -Xms16m -Xmx512m \
   -Dzosmf.httpsPort=${FVT_ZOSMF_PORT} \
   -Dzosmf.ipAddress="${FVT_ZOSMF_HOST}" \
   -Dspring.main.banner-mode=off \
-  -jar "$(find "${FVT_WORKSPACE}/${FVT_DATASETS_API_DIR}" -name '*-boot.jar')" \
+  -jar "$(find "${FVT_WORKSPACE}/${FVT_JOBS_API_DIR}" -name '*-boot.jar')" \
   > "${FVT_WORKSPACE}/${FVT_LOGS_DIR}/jobs-api.log" &
 echo "[${SCRIPT_NAME}] starting APIML ..."
 cd "${ROOT_DIR}"
