@@ -112,22 +112,6 @@ cd "${ROOT_DIR}"
 echo
 
 ################################################################################
-# download jobs API
-echo "[${SCRIPT_NAME}] downloading jobs API to target folder ${FVT_DATASETS_API_DIR} ..."
-cd "${ROOT_DIR}"
-./${FVT_UTILITIES_SCRIPTS_DIR}/download-artifact.sh \
-  "${FVT_JOBS_API_ARTIFACT}" \
-  "${FVT_WORKSPACE}/${FVT_DATASETS_API_DIR}" \
-  "true"
-cd "${FVT_WORKSPACE}/${FVT_DATASETS_API_DIR}"
-JOBS_API_BOOT_JAR=$(find . -name '*-boot.jar')
-if [ -z "${JOBS_API_BOOT_JAR}" ]; then
-  echo "[${SCRIPT_NAME}][error] failed to find jobs API boot jar."
-  exit 1
-fi
-echo
-
-################################################################################
 # generate certificates
 echo "[${SCRIPT_NAME}] generating certificates ..."
 cd "${ROOT_DIR}"

@@ -11,7 +11,7 @@
  */
 
 
-node('ibm-jenkins-slave-dind') {
+node('ibm-jenkins-slave-nvm') {
   def lib = library("jenkins-library").org.zowe.jenkins_shared_library
 
   def pipeline = lib.pipelines.nodejs.NodeJSPipeline.new(this)
@@ -143,8 +143,6 @@ node('ibm-jenkins-slave-dind') {
         // prepare environtment for integration test
         sh "./scripts/prepare-fvt.sh \"${params.FVT_APIML_ARTIFACT}\" \"${params.FVT_API_ARTIFACT}\" \"${params.FVT_ZOSMF_HOST}\" \"${params.FVT_ZOSMF_PORT}\""
       }
-      // run tests
-      sh 'docker ps'
       // wait a while to give time for service to be started
       sleep time: 2, unit: 'MINUTES'
 
