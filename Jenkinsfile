@@ -54,13 +54,6 @@ node('ibm-jenkins-slave-nvm') {
       credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
       defaultValue: 'ssh-zdt-test-image-guest',
       required: true
-    ),
-    string(
-      name: 'FVT_JOBNAME',
-      description: 'Job name for integration test',
-      defaultValue: 'ZOWESVR',
-      trim: true,
-      required: true
     )
   )
 
@@ -151,7 +144,6 @@ node('ibm-jenkins-slave-nvm') {
           sh """
 ZOWE_USERNAME=${USERNAME} \
 ZOWE_PASSWORD=${PASSWORD} \
-ZOWE_JOB_NAME=${params.FVT_JOBNAME} \
 SERVER_HOST_NAME=localhost \
 SERVER_HTTPS_PORT=7554 \
 npm run test:fvt
