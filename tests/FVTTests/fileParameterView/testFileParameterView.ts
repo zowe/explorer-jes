@@ -26,14 +26,8 @@ import {
     waitForAndExtractParsedJobs,
     ParsedJobText,
     loadPageWithFilterOptions,
-    getTextLineElements,
-    EditorElementTextLine,
     DEFAULT_SEARCH_FILTERS,
 } from '../utilities';
-
-import {
-    testAllHighlightColor,
-} from'../testFunctions';
 
 const {
     ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT,
@@ -65,23 +59,21 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
         }
     });
 
-
     before('get jobIds list from jobs filtered by ZOSMF_JOB_NAME prefix', async () => {
         const filters = { prefix: ZOSMF_JOB_NAME, status: 'ACTIVE' };
         await loadUrlWithSearchFilters(driver, filters);
         const jobObjs :ParsedJobText[] = await waitForAndExtractParsedJobs(driver);
         expect(jobObjs && jobObjs.length > 0).to.be.true;
+
         testFilters = {
             jobName: jobObjs[0].prefix,
             jobId: jobObjs[0].jobId,
-            fileId: 3,
-        };
-        await loadUrlWithViewerFilters(driver, testFilters);
+            fileId: 108,
+        }
 
-        // wait for content to load
-        const viewer = await driver.findElement(By.css('#embeddedEditor > div > div > .textviewContent'));
-        const text = await viewer.getText();
-        expect(text).to.have.lengthOf.greaterThan(1);
+        // load driver with specified filter
+        await loadUrlWithViewerFilters(driver, testFilters);
+ 
     });
 
     it('Should handle rendering expected components with viewer route (File Viewer)', async () => {
@@ -103,13 +95,16 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
 
         const [jobId, fileName] = cardHeaderText.split('-');
         expect(jobId).to.be.equal(testFilters.jobId);
-        const testFileName = 'JESJCL';
+        let testFileName = 'STDOUT';
         expect(fileName).to.be.equal(testFileName);
     });
 
     it('Should handle rendering file contents in Orion editor', async () => {
-        const textElems :EditorElementTextLine[] = await getTextLineElements(driver);
-        expect(textElems).to.be.an('array').that.has.lengthOf.at.least(1);
-        expect(testAllHighlightColor(textElems)).to.be.true;
+        // wait for content to load and check if the file is open correctly with specified strings
+        let viewer = await driver.findElement(By.css('#embeddedEditor > div > div > .textviewContent'));
+        let text = await viewer.getText();
+        text = text.trim();
+        expect(text).to.have.lengthOf.greaterThan(1);
+        expect(text).to.have.string('zosmfServer has been launched');
     });
 });
