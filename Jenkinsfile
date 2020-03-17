@@ -11,7 +11,7 @@
  */
 
 
-node('ibm-jenkins-slave-nvm') {
+node('ibm-jenkins-slave-dind') {
   def lib = library("jenkins-library").org.zowe.jenkins_shared_library
 
   def pipeline = lib.pipelines.nodejs.NodeJSPipeline.new(this)
@@ -53,6 +53,13 @@ node('ibm-jenkins-slave-nvm') {
       description: 'The SSH credential used to connect to z/OSMF for integration test',
       credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
       defaultValue: 'ssh-zdt-test-image-guest',
+      required: true
+    ),
+    string(
+      name: 'FVT_SERVER_HOSTNAME',
+      description: 'Server hostname for integration test',
+      defaultValue: 'fvt-test-server',
+      trim: true,
       required: true
     )
   )
@@ -145,7 +152,7 @@ node('ibm-jenkins-slave-nvm') {
             sh """
 ZOWE_USERNAME=${USERNAME} \
 ZOWE_PASSWORD=${PASSWORD} \
-SERVER_HOST_NAME=localhost \
+SERVER_HOST_NAME=${params.FVT_SERVER_HOSTNAME} \
 SERVER_HTTPS_PORT=7554 \
 npm run test:fvt
 """
