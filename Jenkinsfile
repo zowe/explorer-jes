@@ -136,6 +136,7 @@ node('ibm-jenkins-slave-dind') {
 
   pipeline.test(
     name          : 'Integration',
+    timeout       : [ time: 20, unit: 'MINUTES' ],
     operation     : {
       echo "Preparing server for integration test ..."
       ansiColor('xterm') {
@@ -145,19 +146,18 @@ node('ibm-jenkins-slave-dind') {
       // run tests
       sh 'docker ps'
       // wait a while to give time for service to be started
-      sleep time: 1, unit: 'MINUTES'
+      sleep time: 2, unit: 'MINUTES'
 
       echo "Starting integration test ..."
-      timeout(time: 60, unit: 'MINUTES') {
-        withCredentials([
-          usernamePassword(
-            credentialsId: params.FVT_ZOSMF_CREDENTIAL,
-            passwordVariable: 'PASSWORD',
-            usernameVariable: 'USERNAME'
-          )
-        ]) {
-          ansiColor('xterm') {
-            sh """
+      withCredentials([
+        usernamePassword(
+          credentialsId: params.FVT_ZOSMF_CREDENTIAL,
+          passwordVariable: 'PASSWORD',
+          usernameVariable: 'USERNAME'
+        )
+      ]) {
+        ansiColor('xterm') {
+          sh """
 ZOWE_USERNAME=${USERNAME} \
 ZOWE_PASSWORD=${PASSWORD} \
 ZOWE_JOB_NAME=${params.FVT_JOBNAME} \
@@ -165,7 +165,6 @@ SERVER_HOST_NAME=${params.FVT_SERVER_HOSTNAME} \
 SERVER_HTTPS_PORT=7554 \
 npm run test:fvt
 """
-          }
         }
       }
     },
