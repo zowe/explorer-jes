@@ -200,7 +200,7 @@ java -Xms16m -Xmx512m \
   -Dzosmf.ipAddress="${FVT_ZOSMF_HOST}" \
   -Dspring.main.banner-mode=off \
   -jar "$(find "${FVT_WORKSPACE}/${FVT_DATASETS_API_DIR}" -name '*-boot.jar')" \
-  > "${FVT_WORKSPACE}/${FVT_LOGS_DIR}/files-api.log" &
+  > "${FVT_WORKSPACE}/${FVT_LOGS_DIR}/jobs-api.log" &
 echo "[${SCRIPT_NAME}] starting APIML ..."
 cd "${ROOT_DIR}"
 ./${FVT_UTILITIES_SCRIPTS_DIR}/start-apiml.sh \
