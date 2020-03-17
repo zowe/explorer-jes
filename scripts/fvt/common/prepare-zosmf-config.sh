@@ -43,8 +43,8 @@ services:
   description: IBM z/OS Management Facility REST API service
   catalogUiTileId: zosmf
   instanceBaseUrls:
-  - https://{ZOSMF_HOST}:{ZOSMF_PORT}/zosmf/
-  homePageRelativeUrl: https://{ZOSMF_HOST}:{ZOSMF_PORT}/zosmf/
+  - https://${ZOSMF_HOST}:${ZOSMF_PORT}/zosmf/
+  homePageRelativeUrl: https://${ZOSMF_HOST}:${ZOSMF_PORT}/zosmf/
   routes:
   - gatewayUrl: api/v1
     serviceRelativeUrl: /

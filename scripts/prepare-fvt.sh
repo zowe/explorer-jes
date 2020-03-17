@@ -216,6 +216,7 @@ java -Xms16m -Xmx512m \
   -jar "$(find "${FVT_WORKSPACE}/${FVT_DATASETS_API_DIR}" -name '*-boot.jar')" \
   > "${FVT_WORKSPACE}/${FVT_LOGS_DIR}/files-api.log" &
 echo "[${SCRIPT_NAME}] starting APIML ..."
+cd "${ROOT_DIR}"
 ./scripts/fvt/common/start-apiml.sh \
   "${FVT_WORKSPACE}/${FVT_APIML_DIR}" \
   "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}" \
