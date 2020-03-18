@@ -43,7 +43,7 @@ const {
 
 const BASE_URL = `https://${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}`;
 const BASE_URL_WITH_PATH = `${BASE_URL}/ui/v1/explorer-jes`;
-const FILTER_BASE_URL = `${BASE_URL}/#/`;
+const FILTER_BASE_URL = `${BASE_URL_WITH_PATH}/#/`;
 const loadUrlWithSearchFilters = loadPageWithFilterOptions(FILTER_BASE_URL, DEFAULT_SEARCH_FILTERS);
 const ZOSMF_JOB_NAME = 'IZUSVR1';
 
