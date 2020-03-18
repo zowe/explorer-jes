@@ -354,7 +354,9 @@ describe('JES explorer function verification tests', function () {
                 });
                 it('Should handle opening a files content unathorised for user and display error message');
             });
-            it('Should handle rendering context menu on right click', async () => {
+
+            //TODO:: Too unreliable
+            it.skip('Should handle rendering context menu on right click', async () => {
                 await reloadAndOpenFilterPanel(driver, false);
                 expect(await testTextInputFieldCanBeModified(driver, 'filter-owner-field', '*'), 'filter-owner-field wrong').to.be.true;
                 expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', ZOSMF_JOB_NAME), 'filter-prefix-field wrong').to.be.true;
