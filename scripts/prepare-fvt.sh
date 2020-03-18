@@ -31,6 +31,7 @@ FVT_LOGS_DIR=logs
 
 FVT_API_PORT=10491
 FVT_EXPLORER_UI_PORT=10071
+FVT_DEFAULT_API_GATEWAY_PORT=7554
 
 ################################################################################
 # variables
@@ -61,7 +62,10 @@ if [ -z "$FVT_ZOSMF_HOST" ]; then
   FVT_ZOSMF_HOST=river.zowe.org
 fi
 if [ -z "$FVT_ZOSMF_PORT" ]; then
-  FVT_ZOSMF_PORT=10443
+  FVT_ZOSMF_PORT=443
+fi
+if [ -z "${FVT_GATEWAY_PORT}" ]; then
+  FVT_GATEWAY_PORT="${FVT_DEFAULT_API_GATEWAY_PORT}"
 fi
 
 ################################################################################
@@ -196,8 +200,8 @@ java -Xms16m -Xmx512m \
   -Dserver.ssl.keyStorePassword=password \
   -Dserver.ssl.keyStoreType=PKCS12 \
   -Dserver.compression.enabled=true \
-  -Dzosmf.httpsPort=${FVT_ZOSMF_PORT} \
-  -Dzosmf.ipAddress="${FVT_ZOSMF_HOST}" \
+  -Dgateway.httpsPort=${FVT_GATEWAY_PORT} \
+  -Dgateway.ipAddress="${FVT_ZOSMF_HOST}" \
   -Dspring.main.banner-mode=off \
   -jar "$(find "${FVT_WORKSPACE}/${FVT_JOBS_API_DIR}" -name '*-boot.jar')" \
   > "${FVT_WORKSPACE}/${FVT_LOGS_DIR}/jobs-api.log" &
