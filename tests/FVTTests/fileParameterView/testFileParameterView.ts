@@ -1,31 +1,42 @@
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright IBM Corporation 2020
+ */
+
 /* eslint-disable no-unused-expressions */
-const { By } = require('selenium-webdriver');
-const { expect } = require('chai');
+import { By } from 'selenium-webdriver';
+import { expect } from 'chai';
+
 const chai = require('chai');
 chai.use(require('chai-things'));
 require('geckodriver');
 
-const {
+import {
     getDriver,
-    checkDriver,
-    waitForAndExtractParsedJobs,
-    loadPageWithFilterOptions,
-    getTextLineElements,
-    DEFAULT_SEARCH_FILTERS,
-} = require('../utilities');
-
-const {
+    setApimlAuthTokenCookie,
     testElementAppearsXTimesByCSS,
-    testAllHighlightColor,
-} = require('../testFunctions');
+} from 'explorer-fvt-utilities';
+
+import {
+    waitForAndExtractParsedJobs,
+    ParsedJobText,
+    loadPageWithFilterOptions,
+    DEFAULT_SEARCH_FILTERS,
+} from '../utilities';
 
 const {
     ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT,
 } = process.env;
 
-const BASE_URL = `https://${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}/ui/v1/explorer-jes`;
-const FILTER_BASE_URL = `${BASE_URL}/#/`;
-const VIEWER_BASE_URL = `${BASE_URL}/#/viewer`;
+const BASE_URL = `https://${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}`;
+const BASE_URL_WITH_PATH = `${BASE_URL}/ui/v1/explorer-jes`;
+const FILTER_BASE_URL = `${BASE_URL_WITH_PATH}/#/`;
+const VIEWER_BASE_URL = `${BASE_URL_WITH_PATH}/#/viewer`;
 const loadUrlWithSearchFilters = loadPageWithFilterOptions(FILTER_BASE_URL, DEFAULT_SEARCH_FILTERS);
 const ZOSMF_JOB_NAME = 'IZUSVR1';
 
@@ -39,7 +50,7 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
 
     before('Initialise', async () => {
         driver = await getDriver();
-        await checkDriver(driver, BASE_URL, USERNAME, PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT);
+        await setApimlAuthTokenCookie(driver, USERNAME, PASSWORD, `${BASE_URL}/api/v1/gateway/auth/login`, BASE_URL_WITH_PATH);
     });
 
     after('Close out', async () => {
@@ -48,23 +59,21 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
         }
     });
 
-
     before('get jobIds list from jobs filtered by ZOSMF_JOB_NAME prefix', async () => {
         const filters = { prefix: ZOSMF_JOB_NAME, status: 'ACTIVE' };
         await loadUrlWithSearchFilters(driver, filters);
-        const jobObjs = await waitForAndExtractParsedJobs(driver);
+        const jobObjs :ParsedJobText[] = await waitForAndExtractParsedJobs(driver);
         expect(jobObjs && jobObjs.length > 0).to.be.true;
+
         testFilters = {
             jobName: jobObjs[0].prefix,
             jobId: jobObjs[0].jobId,
-            fileId: 3,
-        };
-        await loadUrlWithViewerFilters(driver, testFilters);
+            fileId: 108,
+        }
 
-        // wait for content to load
-        const viewer = await driver.findElement(By.css('#embeddedEditor > div > div > .textviewContent'));
-        const text = await viewer.getText();
-        expect(text).to.have.lengthOf.greaterThan(1);
+        // load driver with specified filter
+        await loadUrlWithViewerFilters(driver, testFilters);
+ 
     });
 
     it('Should handle rendering expected components with viewer route (File Viewer)', async () => {
@@ -86,13 +95,16 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
 
         const [jobId, fileName] = cardHeaderText.split('-');
         expect(jobId).to.be.equal(testFilters.jobId);
-        const testFileName = 'JESJCL';
+        let testFileName = 'STDOUT';
         expect(fileName).to.be.equal(testFileName);
     });
 
     it('Should handle rendering file contents in Orion editor', async () => {
-        const textElems = await getTextLineElements(driver);
-        expect(textElems).to.be.an('array').that.has.lengthOf.at.least(1);
-        expect(testAllHighlightColor(textElems)).to.be.true;
+        // wait for content to load and check if the file is open correctly with specified strings
+        let viewer = await driver.findElement(By.css('#embeddedEditor > div > div > .textviewContent'));
+        let text = await viewer.getText();
+        text = text.trim();
+        expect(text).to.have.lengthOf.greaterThan(1);
+        expect(text).to.have.string('zosmfServer has been launched');
     });
 });

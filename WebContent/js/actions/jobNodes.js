@@ -5,11 +5,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2019
+ * Copyright IBM Corporation 2016, 2020
  */
 
 import { atlasFetch } from '../utilities/urlUtils';
 import { constructAndPushMessage } from './snackbarNotifications';
+import { checkForValidationFailure } from './validation';
 
 export const TOGGLE_JOB = 'TOGGLE_JOB';
 
@@ -140,6 +141,9 @@ export function fetchJobs(filters) {
     return dispatch => {
         dispatch(requestJobs(filters));
         return atlasFetch(`jobs${getURIQuery(filters)}`, { credentials: 'include' })
+            .then(response => {
+                return dispatch(checkForValidationFailure(response));
+            })
             .then(response => { return response.json(); })
             .then(json => {
                 if (json.items && json.items.constructor === Array) {
@@ -166,6 +170,9 @@ export function fetchJobs(filters) {
 function getJobFiles(jobName, jobId) {
     return dispatch => {
         return atlasFetch(`jobs/${jobName}/${jobId}/files`, { credentials: 'include' })
+            .then(response => {
+                return dispatch(checkForValidationFailure(response));
+            })
             .then(response => { return response.json(); })
             .then(json => {
                 if (json.items && json.items.constructor === Array) {
@@ -203,17 +210,21 @@ export function purgeJob(jobName, jobId) {
                 credentials: 'include',
                 method: 'DELETE',
             },
-        ).then(response => {
-            if (response.ok) {
-                return response.text().then(() => {
-                    dispatch(constructAndPushMessage(`${PURGE_JOB_SUCCESS_MESSAGE} ${jobName}/${jobId}`));
-                    return dispatch(receivePurge(jobName, jobId));
-                });
-            }
-            return response.json().then(json => { throw Error(json && json.message ? json.message : ''); });
-        }).catch(e => {
-            dispatch(constructAndPushMessage(`${PURGE_JOB_FAIL_MESSAGE} ${jobName}/${jobId} : ${e.message}`));
-            dispatch(invalidatePurge(jobName, jobId));
-        });
+        )
+            .then(response => {
+                return dispatch(checkForValidationFailure(response));
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.text().then(() => {
+                        dispatch(constructAndPushMessage(`${PURGE_JOB_SUCCESS_MESSAGE} ${jobName}/${jobId}`));
+                        return dispatch(receivePurge(jobName, jobId));
+                    });
+                }
+                return response.json().then(json => { throw Error(json && json.message ? json.message : ''); });
+            }).catch(e => {
+                dispatch(constructAndPushMessage(`${PURGE_JOB_FAIL_MESSAGE} ${jobName}/${jobId} : ${e.message}`));
+                dispatch(invalidatePurge(jobName, jobId));
+            });
     };
 }
