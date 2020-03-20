@@ -147,7 +147,8 @@ node('ibm-jenkins-slave-dind') {
             passwordVariable: 'PASSWORD',
             usernameVariable: 'USERNAME'
           )
-        ]) {
+        ]) 
+        {
           ansiColor('xterm') {
             sh """
 ZOWE_USERNAME=${USERNAME} \
