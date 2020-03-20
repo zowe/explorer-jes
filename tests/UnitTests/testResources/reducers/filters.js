@@ -5,10 +5,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018, 2019
+ * Copyright IBM Corporation 2018, 2020
  */
 
 import { Record } from 'immutable';
+
+export const DEFAULT_USER = 'JCAIN';
 
 export const BASE_FILTER_RECORD =
     Record({
@@ -17,27 +19,24 @@ export const BASE_FILTER_RECORD =
         status: '',
         jobId: '*',
         isToggled: false,
-        userId: '',
     });
 
 export const USER_SET_FILTER_RECORD =
     Record({
         prefix: '*',
-        owner: 'JCAIN',
+        owner: DEFAULT_USER,
         status: '',
         jobId: '*',
         isToggled: true,
-        userId: 'JCAIN',
     });
 
 export const OWNER_SET_FILTER_RECORD =
     Record({
         prefix: '*',
-        owner: 'JCAIN',
+        owner: DEFAULT_USER,
         status: '',
         jobId: '*',
         isToggled: false,
-        userId: '',
     });
 
 export const TOGGLED_FILTER_RECORD =
@@ -47,7 +46,6 @@ export const TOGGLED_FILTER_RECORD =
         status: '',
         jobId: '*',
         isToggled: true,
-        userId: '',
     });
 
 export const PREFIXED_FILTER_RECORD =
@@ -57,17 +55,15 @@ export const PREFIXED_FILTER_RECORD =
         status: '',
         jobId: '*',
         isToggled: false,
-        userId: '',
     });
 
 export const FULLY_SET_FILTER_RECORD =
     Record({
         prefix: 'test',
-        owner: 'user',
+        owner: DEFAULT_USER,
         status: 'ACTIVE',
         jobId: '*',
         isToggled: true,
-        userId: 'JCAIN',
     });
 
 export const SPECIAL_CHARS_FILTER_RECORD =
@@ -77,7 +73,6 @@ export const SPECIAL_CHARS_FILTER_RECORD =
         status: 'ACTIVE',
         jobId: '*',
         isToggled: true,
-        userId: "!@£$%^&*&^%$£@'test'汉语/漢語Wałęsa æøå",
     });
 
 export const USER_SPECIAL_CHARS_FILTER_RECORD =
@@ -87,15 +82,13 @@ export const USER_SPECIAL_CHARS_FILTER_RECORD =
         status: '',
         jobId: '*',
         isToggled: true,
-        userId: "!@£$%^&*&^%$£@'test'{C}<I>[C]`S`汉语/漢語Wałęsa æøå",
     });
 
 export const LOADING_FILTER_RECORD =
     Record({
         prefix: '*',
-        owner: 'Loading...',
+        owner: '',
         status: '',
         jobId: '*',
         isToggled: false,
-        userId: '',
     });

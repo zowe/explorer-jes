@@ -14,26 +14,50 @@
 # Prepare workspace for integration test
 ################################################################################
 
+################################################################################
 # contants
 SCRIPT_NAME=$(basename "$0")
-BASEDIR=$(dirname "$0")
-FVT_API_ARTIFACT=$1
-FVT_ZOSMF_HOST=$2
-FVT_ZOSMF_PORT=$3
-FVT_WORKSPACE=./.fvt
-PLUGIN_INSTALL_FOLDER=jes_explorer
-API_INSTALL_FOLDER=explorer-jobs-api
-API_STARTUP_SCRIPT=scripts/jobs-api-server-start.sh
-DOCKER_IMAGE=jackjiaibm/ibm-nvm-jre-proxy
-DOCKER_APP_FOLDER=/app
-FVT_PROXY_PORT=7554
 OLD_PWD=$(pwd)
+SCRIPT_PWD=$(cd "$(dirname "$0")" && pwd)
+ROOT_DIR=$(cd "$SCRIPT_PWD" && cd .. && pwd)
+FVT_UTILITIES_SCRIPTS_DIR=node_modules/explorer-fvt-utilities/scripts
+FVT_WORKSPACE="${ROOT_DIR}/.fvt"
+FVT_APIML_DIR=api-layer
+FVT_JOBS_API_DIR=jobs-api
+FVT_PLUGIN_DIR=jes_explorer
+FVT_KEYSTORE_DIR=keystore
+FVT_CONFIG_DIR=configs
+FVT_LOGS_DIR=logs
 
+FVT_API_PORT=10491
+FVT_EXPLORER_UI_PORT=10071
+FVT_DEFAULT_API_GATEWAY_PORT=7554
+FVT_GATEWAY_HOST=localhost
+
+################################################################################
+# variables
+FVT_APIML_ARTIFACT=$1
+FVT_JOBS_API_ARTIFACT=$2
+FVT_ZOSMF_HOST=$3
+FVT_ZOSMF_PORT=$4
+
+################################################################################
+cd "${ROOT_DIR}"
+EXPLORER_PLUGIN_BASEURI=$(node -e "process.stdout.write(require('${ROOT_DIR}/package.json').config.baseuri)")
+EXPLORER_PLUGIN_NAME=$(node -e "process.stdout.write(require('${ROOT_DIR}/package.json').config.pluginName)")
+echo "[${SCRIPT_NAME}] FVT Test for ${EXPLORER_PLUGIN_NAME}"
+echo
+
+################################################################################
 # validate parameters
 # set default values
-if [ -z "$FVT_API_ARTIFACT" ]; then
-  FVT_API_ARTIFACT="libs-release-local/org/zowe/explorer/jobs/jobs-zowe-server-package/*/jobs-zowe-server-package-*.zip"
-  echo "[${SCRIPT_NAME}][warn] API artifact is not defined, using default value."
+if [ -z "$FVT_APIML_ARTIFACT" ]; then
+  FVT_APIML_ARTIFACT="libs-release-local/org/zowe/apiml/sdk/zowe-install/*/zowe-install-*.zip"
+  echo "[${SCRIPT_NAME}][warn] APIML artifact is not defined, using default value."
+fi
+if [ -z "$FVT_JOBS_API_ARTIFACT" ]; then
+  FVT_JOBS_API_ARTIFACT="libs-release-local/org/zowe/explorer/jobs/*/jobs-zowe-server-package-*.zip"
+  echo "[${SCRIPT_NAME}][warn] Jobs API artifact is not defined, using default value."
 fi
 if [ -z "$FVT_ZOSMF_HOST" ]; then
   FVT_ZOSMF_HOST=river.zowe.org
@@ -41,113 +65,156 @@ fi
 if [ -z "$FVT_ZOSMF_PORT" ]; then
   FVT_ZOSMF_PORT=10443
 fi
+if [ -z "${FVT_GATEWAY_PORT}" ]; then
+  FVT_GATEWAY_PORT="${FVT_DEFAULT_API_GATEWAY_PORT}"
+fi
 
+################################################################################
 # prepare pax workspace
 echo "[${SCRIPT_NAME}] cleaning FVT workspace ..."
 if [ -d "${FVT_WORKSPACE}" ]; then
   rm -fr "${FVT_WORKSPACE}"
 fi
-mkdir -p "${FVT_WORKSPACE}/${PLUGIN_INSTALL_FOLDER}"
-mkdir -p "${FVT_WORKSPACE}/${API_INSTALL_FOLDER}"
+mkdir -p "${FVT_WORKSPACE}/${FVT_APIML_DIR}"
+mkdir -p "${FVT_WORKSPACE}/${FVT_JOBS_API_DIR}"
+mkdir -p "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}"
+mkdir -p "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}"
+mkdir -p "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}"
+mkdir -p "${FVT_WORKSPACE}/${FVT_LOGS_DIR}"
 echo
 
+################################################################################
 # prepare UI package
 echo "[${SCRIPT_NAME}] prepare plugin package ..."
+cd "${ROOT_DIR}"
 ./.pax/prepare-workspace.sh
 echo
 
+################################################################################
 # prepare UI package
 echo "[${SCRIPT_NAME}] copying plugin to target test folder ..."
-cp -R .pax/content/. "${FVT_WORKSPACE}/${PLUGIN_INSTALL_FOLDER}/"
-cp -R .pax/ascii/. "${FVT_WORKSPACE}/${PLUGIN_INSTALL_FOLDER}/"
+cd "${ROOT_DIR}"
+cp -R .pax/content/. "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/"
+cp -R .pax/ascii/. "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/"
 echo
 
-# prepare to download API
-echo "[${SCRIPT_NAME}] preparing API artifact download spec ..."
-echo "-e \"s#{API_ARTIFACT}#${FVT_API_ARTIFACT}#g\""
-echo "-e \"s#{API_TARGET}#${FVT_WORKSPACE}/${API_INSTALL_FOLDER}#g\""
-sed -e "s#{API_ARTIFACT}#${FVT_API_ARTIFACT}#g" \
-    -e "s#{API_TARGET}#${FVT_WORKSPACE}/${API_INSTALL_FOLDER}/#g" \
-    scripts/fvt/artifactory-download-spec-api.json.template > ${FVT_WORKSPACE}/artifactory-download-spec-api.json
-cat ${FVT_WORKSPACE}/artifactory-download-spec-api.json
-echo "[${SCRIPT_NAME}] downloading API to target test folder ..."
-jfrog rt dl --spec=${FVT_WORKSPACE}/artifactory-download-spec-api.json
-cd "${FVT_WORKSPACE}"
-API_BOOT_JAR=$(find . -name '*-boot.jar')
-cd "${OLD_PWD}"
-if [ -z "${API_BOOT_JAR}" ]; then
-  echo "[${SCRIPT_NAME}][error] failed to find API boot jar."
-  exit 1
-fi
+################################################################################
+# download APIML
+echo "[${SCRIPT_NAME}] downloading APIML to target folder ${FVT_APIML_DIR} ..."
+cd "${ROOT_DIR}"
+./${FVT_UTILITIES_SCRIPTS_DIR}/download-apiml.sh \
+  "${FVT_APIML_ARTIFACT}" \
+  "${FVT_WORKSPACE}/${FVT_APIML_DIR}"
 echo
 
-# convert encoding of startup script
-# FIXME: we are not using the statup script
-STARTUP=${FVT_WORKSPACE}/${API_INSTALL_FOLDER}/${API_STARTUP_SCRIPT}
-if [ ! -f "${STARTUP}" ]; then
-  echo "[${SCRIPT_NAME}][error] API startup script is missing."
-  exit 1
-fi
-# echo "[${SCRIPT_NAME}] converting encoding of ${STARTUP} ..."
-# iconv -f IBM-1047 -t ISO8859-1 "${STARTUP}" > "${STARTUP}.tmp"
-# mv "${STARTUP}.tmp" "${STARTUP}"
+################################################################################
+# download jobs API
+echo "[${SCRIPT_NAME}] downloading jobs API to target folder ${FVT_JOBS_API_DIR} ..."
+cd "${ROOT_DIR}"
+./${FVT_UTILITIES_SCRIPTS_DIR}/download-explorer-api.sh \
+  "${FVT_JOBS_API_ARTIFACT}" \
+  "${FVT_WORKSPACE}/${FVT_JOBS_API_DIR}"
 echo
 
-# prepare other configurations
-echo "[${SCRIPT_NAME}] copying other configurations ..."
-cp -R scripts/fvt/. "${FVT_WORKSPACE}/"
-
+################################################################################
 # generate certificates
 echo "[${SCRIPT_NAME}] generating certificates ..."
-cd "${FVT_WORKSPACE}/certs"
-./generate.sh
-cd "${OLD_PWD}"
+cd "${ROOT_DIR}"
+./${FVT_UTILITIES_SCRIPTS_DIR}/generate-certificates.sh "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}"
 echo
 
-# update server start configurations
-echo "[${SCRIPT_NAME}] updating application configurations ..."
-sed -e "s|\"port\":.\+,|\"port\": 8546,|g" \
-  -e "s|\"port\":[^,]\+|\"port\": 8546|g" \
-  -e "s|\"key\":[^,]\+,|\"key\": \"/app/certs/server-key.pem\",|g" \
-  -e "s|\"key\":[^,]\+|\"key\": \"/app/certs/server-key.pem\"|g" \
-  -e "s|\"cert\":[^,]\+,|\"cert\": \"/app/certs/server-cert.pem\",|g" \
-  -e "s|\"cert\":[^,]\+|\"cert\": \"/app/certs/server-cert.pem\"|g" \
-  "${FVT_WORKSPACE}/${PLUGIN_INSTALL_FOLDER}/server/configs/config.json" > /tmp/config.json.tmp
-mv /tmp/config.json.tmp "${FVT_WORKSPACE}/${PLUGIN_INSTALL_FOLDER}/server/configs/config.json"
-sed -e "s|{ZOSMF_HOST}|${FVT_ZOSMF_HOST}|g" \
-  -e "s|{ZOSMF_PORT}|${FVT_ZOSMF_PORT}|g" \
-  -e "s|{API_BOOT_JAR}|${API_BOOT_JAR}|g" \
-  "${FVT_WORKSPACE}/.env" > /tmp/.env.tmp
-mv /tmp/.env.tmp "${FVT_WORKSPACE}/.env"
+################################################################################
+# write zosmf config
+echo "[${SCRIPT_NAME}] writing z/OSMF config for APIML ..."
+cd "${ROOT_DIR}"
+./${FVT_UTILITIES_SCRIPTS_DIR}/prepare-zosmf-config.sh "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}" "$FVT_ZOSMF_HOST" "$FVT_ZOSMF_PORT"
+echo "[${SCRIPT_NAME}] writing jobs API config for APIML ..."
+cat > "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}/jobs-api.yml" << EOF
+services:
+- serviceId: jobs
+  title: IBM z/OS Jobs
+  description: IBM z/OS Jobs REST API service
+  catalogUiTileId: jobs
+  instanceBaseUrls:
+  - https://${FVT_GATEWAY_HOST}:${FVT_API_PORT}/
+  homePageRelativeUrl:
+  routedServices:
+  - gatewayUrl: api/v1
+    serviceRelativeUrl: api/v1/jobs
+  apiInfo:
+  - apiId: com.ibm.jobs
+    gatewayUrl: api/v1
+    version: 1.0.0
+    swaggerUrl: https://${FVT_GATEWAY_HOST}:${FVT_API_PORT}/v2/api-docs
+    documentationUrl: https://${FVT_GATEWAY_HOST}:${FVT_API_PORT}/swagger-ui.html
+catalogUiTiles:
+  jobs:
+    title: z/OS Jobs services
+    description: IBM z/OS Jobs REST services
+EOF
+echo "[${SCRIPT_NAME}] writing Explorer Jes UI config for APIML ..."
+cat > "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}/jobs-ui.yml" << EOF
+services:
+- serviceId: explorer-jes
+  title: IBM z/OS Jobs UI
+  description: IBM z/OS Jobs UI service
+  catalogUiTileId:
+  instanceBaseUrls:
+  - https://${FVT_GATEWAY_HOST}:${FVT_EXPLORER_UI_PORT}/
+  homePageRelativeUrl:
+  routedServices:
+  - gatewayUrl: ui/v1
+    serviceRelativeUrl: ${EXPLORER_PLUGIN_BASEURI}
+EOF
+echo
 
+################################################################################
 echo "[${SCRIPT_NAME}] test folder prepared:"
-find .fvt -print
+cd "${FVT_WORKSPACE}"
+find . -print
 echo
 
-echo "[${SCRIPT_NAME}] starting application with command:"
-echo "[${SCRIPT_NAME}]   docker run -d -v $PWD/$FVT_WORKSPACE:/app -p $FVT_PROXY_PORT:80 jackjiaibm/ibm-nvm-jre-proxy"
-CONTAINER_ID=$(docker run -d -v $PWD/$FVT_WORKSPACE:/app -p $FVT_PROXY_PORT:80 jackjiaibm/ibm-nvm-jre-proxy)
-if [ -z "$CONTAINER_ID" ]; then 
-  echo "[$SCRIPT_NAME][error] Failed to start docker container"
-  exit 1
-fi
+################################################################################
+# start services
+# NOTE: to kill all processes on Mac
+#        ps aux | grep .fvt | grep -v grep | awk '{print $2}' | xargs kill -9
+cd "${ROOT_DIR}"
+echo "[${SCRIPT_NAME}] starting plugin service ..."
+node ${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/server/src/index.js \
+  --service "${EXPLORER_PLUGIN_NAME}" \
+  --path "${EXPLORER_PLUGIN_BASEURI}" \
+  --port "${FVT_EXPLORER_UI_PORT}" \
+  --key  "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}/localhost.private.pem" \
+  --cert "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}/localhost.cert.pem" \
+  --csp "localhost:*" \
+  -v \
+  > "${FVT_WORKSPACE}/${FVT_LOGS_DIR}/plugin.log"&
+echo "[${SCRIPT_NAME}] starting jobs api ..."
+# -Xquickstart \
+java -Xms16m -Xmx512m \
+  -Dibm.serversocket.recover=true \
+  -Dfile.encoding=UTF-8 \
+  -Djava.io.tmpdir=/tmp \
+  -Dserver.port=${FVT_API_PORT} \
+  -Dserver.ssl.keyAlias=localhost \
+  -Dserver.ssl.keyStore="${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}/localhost.keystore.p12" \
+  -Dserver.ssl.keyStorePassword=password \
+  -Dserver.ssl.keyStoreType=PKCS12 \
+  -Dserver.compression.enabled=true \
+  -Dgateway.httpsPort=${FVT_GATEWAY_PORT} \
+  -Dgateway.ipAddress=${FVT_GATEWAY_HOST} \
+  -Dspring.main.banner-mode=off \
+  -jar "$(find "${FVT_WORKSPACE}/${FVT_JOBS_API_DIR}" -name '*-boot.jar')" \
+  > "${FVT_WORKSPACE}/${FVT_LOGS_DIR}/jobs-api.log" &
+echo "[${SCRIPT_NAME}] starting APIML ..."
+cd "${ROOT_DIR}"
+./${FVT_UTILITIES_SCRIPTS_DIR}/start-apiml.sh \
+  "${FVT_WORKSPACE}/${FVT_APIML_DIR}" \
+  "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}" \
+  "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}" \
+  "${FVT_WORKSPACE}/${FVT_LOGS_DIR}"
+echo
 
-echo -n "[${SCRIPT_NAME}] waiting for container ${CONTAINER_ID} to be started: "
-
-touch $PWD/$FVT_WORKSPACE/container_log.last
-# max wait for 1 minute
-for (( counter = 0; counter <= 30; counter++ )); do
-    echo -n .
-    docker logs $CONTAINER_ID > $PWD/$FVT_WORKSPACE/container_log.current 2>&1
-    if cmp --silent $PWD/$FVT_WORKSPACE/container_log.last $PWD/$FVT_WORKSPACE/container_log.current; then
-        # logs are not changing, assume it's fully loaded?
-        break
-    else
-        mv $PWD/$FVT_WORKSPACE/container_log.current $PWD/$FVT_WORKSPACE/container_log.last
-    fi
-    sleep 2
-done
-echo ' done'
-echo "[${SCRIPT_NAME}] container logs started >>>>>>>>"
-cat $PWD/$FVT_WORKSPACE/container_log.current
-echo "[${SCRIPT_NAME}] container logs end <<<<<<<<<<<<"
+################################################################################
+echo "[${SCRIPT_NAME}] done."
+exit 0

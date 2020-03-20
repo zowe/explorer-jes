@@ -31,3 +31,7 @@ web
 
 # fvt tmp folder
 .fvt
+
+# apiml cache
+.ehcache*
+*.data

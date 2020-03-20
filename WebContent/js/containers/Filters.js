@@ -25,7 +25,7 @@ import Button from '@material-ui/core/Button';
 import queryString from 'query-string';
 import UpperCaseTextField from '../components/dialogs/UpperCaseTextField';
 
-import { setFilters, resetFilters, initialiseOwnerFilter } from '../actions/filters';
+import { setFilters, resetFilters, setOwnerAndFetchJobs } from '../actions/filters';
 import { fetchJobs } from '../actions/jobNodes';
 
 const STATUS_TYPES = ['ACTIVE', 'INPUT', 'OUTPUT'];
@@ -53,8 +53,8 @@ export class Filters extends React.Component {
         this.isOwnerAndPrefixWild = this.isOwnerAndPrefixWild.bind(this);
     }
 
-    componentWillMount() {
-        const { location, dispatch } = this.props;
+    componentDidMount() {
+        const { location, dispatch, owner, username } = this.props;
         if (location && location.search) {
             const urlQueryParams = queryString.parse(location.search);
 
@@ -70,6 +70,9 @@ export class Filters extends React.Component {
                     dispatch(fetchJobs(queryFilters));
                 }
             }
+        }
+        if (owner === '' && (!location || !location.search || !location.search.includes('owner'))) {
+            dispatch(setOwnerAndFetchJobs(username, this.props));
         }
 
         function receiveMessage(event) {
@@ -100,13 +103,6 @@ export class Filters extends React.Component {
         }
         window.addEventListener('message', e => { receiveMessage(e); }, false);
         window.top.postMessage('iframeload', '*');
-    }
-
-    componentDidMount() {
-        const { owner, location, dispatch } = this.props;
-        if (owner === '' && (!location || !location.search || !location.search.includes('owner'))) {
-            dispatch(initialiseOwnerFilter());
-        }
     }
 
     isOwnerAndPrefixWild() {
@@ -143,8 +139,8 @@ export class Filters extends React.Component {
     }
 
     resetValues() {
-        const { dispatch } = this.props;
-        dispatch(resetFilters());
+        const { username, dispatch } = this.props;
+        dispatch(resetFilters(username));
     }
 
     applyValues(e) {
@@ -253,16 +249,19 @@ Filters.propTypes = {
     location: PropTypes.shape({
         search: PropTypes.string,
     }),
+    username: PropTypes.string.isRequired,
 };
 
 function mapStateToProps(state) {
-    const stateRoot = state.get('filters');
+    const filterRoot = state.get('filters');
+    const validationRoot = state.get('validation');
     return {
-        prefix: stateRoot.get('prefix'),
-        owner: stateRoot.get('owner'),
-        status: stateRoot.get('status'),
-        jobId: stateRoot.get('jobId'),
-        isToggled: stateRoot.get('isToggled'),
+        prefix: filterRoot.get('prefix'),
+        owner: filterRoot.get('owner'),
+        status: filterRoot.get('status'),
+        jobId: filterRoot.get('jobId'),
+        isToggled: filterRoot.get('isToggled'),
+        username: validationRoot.get('username'),
     };
 }
 
