@@ -5,27 +5,29 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018, 2019
+ * Copyright IBM Corporation 2018, 2020
  */
 
 let host = 'tvt5003.svl.ibm.com:7554';
 if (typeof location !== 'undefined') {
     const hostname = location.hostname;
-    if (hostname !== 'localhost') {
+    if (hostname !== 'localhost' || process.env.NODE_ENV === 'production') {
         host = location.host;
     }
 }
-export const SERVER_LOCATION = host;
 
 export function encodeURLComponent(URL) {
     return encodeURIComponent(URL);
 }
 
-export function atlasFetch(endpoint, content) {
-    let server = SERVER_LOCATION;
-
+export function whichServer() {
+    let server = host;
     if (location.hostname === 'tester.test.com') {
         server = 'tester.test.com:7443';
     }
-    return fetch(`https://${server}/api/v1/${endpoint}`, content);
+    return server;
+}
+
+export function atlasFetch(endpoint, content) {
+    return fetch(`https://${whichServer()}/api/v1/${endpoint}`, content);
 }

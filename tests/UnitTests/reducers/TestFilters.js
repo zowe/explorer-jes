@@ -70,39 +70,8 @@ describe('Reducer: filters', () => {
     it('Should handle RESET_FILTERS', () => {
         const action = {
             type: filterActions.RESET_FILTERS,
-            filters: new filterResources.USER_SET_FILTER_RECORD(),
+            username: filterResources.DEFAULT_USER,
         };
         expect(prepareRecord(filter(new filterResources.FULLY_SET_FILTER_RECORD(), action))).toEqual(prepareRecord(new filterResources.USER_SET_FILTER_RECORD()));
-    });
-
-    it('Should handle RESET_FILTERS no userId', () => {
-        const action = {
-            type: filterActions.RESET_FILTERS,
-            filters: new filterResources.OWNER_SET_FILTER_RECORD(),
-        };
-        expect(prepareRecord(filter(new filterResources.OWNER_SET_FILTER_RECORD(), action))).toEqual(prepareRecord(new filterResources.BASE_FILTER_RECORD()));
-    });
-
-    it('Should handle REQUEST_USER_ID and set owner to Loading...', () => {
-        const action = { type: filterActions.REQUEST_USER_ID };
-        expect(prepareRecord(filter(new filterResources.BASE_FILTER_RECORD(), action))).toEqual(prepareRecord(new filterResources.LOADING_FILTER_RECORD()));
-    });
-
-    it('Should handle RECEIVE_USER_ID and set owner and userId', () => {
-        const action = {
-            type: filterActions.RECEIVE_USER_ID,
-            userId: 'JCAIN',
-            owner: 'JCAIN',
-        };
-        expect(prepareRecord(filter(new filterResources.TOGGLED_FILTER_RECORD(), action))).toEqual(prepareRecord(new filterResources.USER_SET_FILTER_RECORD()));
-    });
-
-    it('Should handle RECEIVE_USER_ID and set owner and userId with special chars', () => {
-        const action = {
-            type: filterActions.RECEIVE_USER_ID,
-            userId: "!@£$%^&*&^%$£@'test'{C}<I>[C]`S`汉语/漢語Wałęsa æøå",
-            owner: "!@£$%^&*&^%$£@'test'{C}<I>[C]`S`汉语/漢語Wałęsa æøå",
-        };
-        expect(prepareRecord(filter(new filterResources.TOGGLED_FILTER_RECORD(), action))).toEqual(prepareRecord(new filterResources.USER_SPECIAL_CHARS_FILTER_RECORD()));
     });
 });
