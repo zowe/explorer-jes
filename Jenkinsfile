@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018, 2019
+ * Copyright IBM Corporation 2018, 2020
  */
 
 
@@ -138,6 +138,20 @@ node('ibm-jenkins-slave-dind') {
       }
       // wait a while to give time for service to be started
       sleep time: 2, unit: 'MINUTES'
+
+      withCredentials([
+          usernamePassword(
+            credentialsId: params.FVT_ZOSMF_CREDENTIAL,
+            passwordVariable: 'PASSWORD',
+            usernameVariable: 'USERNAME'
+          )
+        ]) {
+          ansiColor('xterm') {
+            sh """ZOWE_USERNAME=${USERNAME} \
+              ZOWE_PASSWORD=${PASSWORD} \
+              ./scripts/delete-fvt-jobs.sh"""
+          }
+        }
 
       echo "Starting integration test ..."
       try {
