@@ -7,7 +7,7 @@
 #
 # SPDX-License-Identifier: EPL-2.0
 #
-# Copyright IBM Corporation 2018, 2019
+# Copyright IBM Corporation 2018, 2020
 ################################################################################
 
 ################################################################################
@@ -15,11 +15,10 @@
 # - NODE_HOME
 # - ROOT_DIR
 # - ZOWE_EXPLORER_HOST
-# - GATEWAY_PORT
 # - JES_EXPLORER_UI_PORT
 # - KEYSTORE_KEY
 # - KEYSTORE_CERTIFICATE
-# - KEYSTORE_PASSWORD
+# - ZOWE_PREFIX
 
 NODE_BIN=${NODE_HOME}/bin/node
 
