@@ -30,8 +30,19 @@ EXPLORER_PLUGIN_NAME=$($NODE_BIN -e "process.stdout.write(require('./app/package
 # get current ui server directory
 SERVER_DIR="${ROOT_DIR}/components/explorer-jes/bin/server/"
 
+if [ -z "$ZOWE_PREFIX" ]
+then
+  ZOWE_PREFIX="ZWE"
+fi
+if [ -z "$ZOWE_INSTANCE" ]
+then
+    ZOWE_INSTANCE="1"
+fi
+JOB_NAME="${ZOWE_PREFIX}UJ"
+
 # start service
-$NODE_BIN $SERVER_DIR/src/index.js \
+$NODE_BIN --title ${JOB_NAME} \
+	$SERVER_DIR/src/index.js \
   --service ${EXPLORER_PLUGIN_NAME} \
 	--path ${EXPLORER_PLUGIN_BASEURI} \
 	--port ${JES_EXPLORER_UI_PORT} \
