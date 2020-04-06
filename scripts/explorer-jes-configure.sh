@@ -27,7 +27,7 @@ EXPLORER_PLUGIN_NAME=$($NODE_BIN -e "process.stdout.write(require('${EXPLORER_CO
 if [[ $LAUNCH_COMPONENT_GROUPS == *"DESKTOP"* ]]
 then
   # Create desktop app plugin
-  EXPLORER_PLUGIN_FULLURL="https://${ZOWE_EXPLORER_HOST}:${GATEWAY_PORT}${EXPLORER_PLUGIN_BASEURI}"
+  EXPLORER_PLUGIN_FULLURL="https://${ZOWE_IP_ADDRESS}:${GATEWAY_PORT}${EXPLORER_PLUGIN_BASEURI}"
   ${ROOT_DIR}/bin/utils/zowe-install-iframe-plugin.sh \
     "${EXPLORER_PLUGIN_ID}" \
     "${EXPLORER_PLUGIN_NAME}" \
