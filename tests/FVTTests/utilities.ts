@@ -331,7 +331,7 @@ export async function submitJob(jcl, host, port, username, password) {
         rejectUnauthorized: false,
     });
     const b64Credentials = `Basic ${new Buffer(`${username}:${password}`).toString('base64')}`;
-    await fetch(`https://${host}:${port}/api/v1/jobs/string`, {
+    await fetch(`https://${host}:${port}/api/v2/jobs/string`, {
         method: 'POST',
         headers: {
             authorization: b64Credentials,
@@ -353,7 +353,7 @@ export async function submitJob(jcl, host, port, username, password) {
 
 /**
  * Given a path send a get request and print out the response body
- * @param {String} path Api request path after api/v1/
+ * @param {String} path Api request path after api/v2/
  * @param {String} host hostname
  * @param {String} port https port
  * @param {String} username TSO username
@@ -364,7 +364,7 @@ export async function debugApiCall(path, host, port, username, password) {
         rejectUnauthorized: false,
     });
     const b64Credentials = `Basic ${new Buffer(`${username}:${password}`).toString('base64')}`;
-    await fetch(`https://${host}:${port}/api/v1/${path}`, {
+    await fetch(`https://${host}:${port}/api/v2/${path}`, {
         method: 'GET',
         headers: {
             authorization: b64Credentials,

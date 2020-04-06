@@ -56,7 +56,7 @@ if [ -z "$FVT_APIML_ARTIFACT" ]; then
   echo "[${SCRIPT_NAME}][warn] APIML artifact is not defined, using default value."
 fi
 if [ -z "$FVT_JOBS_API_ARTIFACT" ]; then
-  FVT_JOBS_API_ARTIFACT="libs-release-local/org/zowe/explorer/jobs/*/jobs-zowe-server-package-*.zip"
+  FVT_JOBS_API_ARTIFACT="libs-snapshot-local/org/zowe/explorer/jobs/*/jobs-zowe-server-package-*.zip"
   echo "[${SCRIPT_NAME}][warn] Jobs API artifact is not defined, using default value."
 fi
 if [ -z "$FVT_ZOSMF_HOST" ]; then
@@ -139,11 +139,11 @@ services:
   - https://${FVT_GATEWAY_HOST}:${FVT_API_PORT}/
   homePageRelativeUrl:
   routedServices:
-  - gatewayUrl: api/v1
-    serviceRelativeUrl: api/v1/jobs
+  - gatewayUrl: api/v2
+    serviceRelativeUrl: api/v2/jobs
   apiInfo:
   - apiId: com.ibm.jobs
-    gatewayUrl: api/v1
+    gatewayUrl: api/v2
     version: 1.0.0
     swaggerUrl: https://${FVT_GATEWAY_HOST}:${FVT_API_PORT}/v2/api-docs
     documentationUrl: https://${FVT_GATEWAY_HOST}:${FVT_API_PORT}/swagger-ui.html
