@@ -15,7 +15,7 @@ import expect from 'expect';
 import * as validation from '../../../WebContent/js/actions/validation';
 import * as validationResources from '../testResources/actions/validation';
 import {
-    LOCAL_HOST_ENDPOINT,
+    LOCAL_HOST_SERVER_WITH_PROTOCOL,
 } from '../testResources/hostConstants';
 
 describe('Action: validation', () => {
@@ -37,8 +37,8 @@ describe('Action: validation', () => {
                     username: validationResources.testUsername,
                 },
             ];
-            nock(LOCAL_HOST_ENDPOINT)
-                .get('/gateway/auth/query')
+            nock(LOCAL_HOST_SERVER_WITH_PROTOCOL)
+                .get('/api/v1/gateway/auth/query')
                 .reply(200, validationResources.validationQueryResponse);
 
             const store = mockStore();
@@ -58,8 +58,8 @@ describe('Action: validation', () => {
                 },
             ];
 
-            nock(LOCAL_HOST_ENDPOINT)
-                .get('/gateway/auth/query')
+            nock(LOCAL_HOST_SERVER_WITH_PROTOCOL)
+                .get('/api/v1/gateway/auth/query')
                 .reply(401, validationResources.validationQueryInvalidTokenResponse);
 
             const store = mockStore();
@@ -83,8 +83,8 @@ describe('Action: validation', () => {
                 },
             ];
 
-            nock(LOCAL_HOST_ENDPOINT)
-                .post('/gateway/auth/login')
+            nock(LOCAL_HOST_SERVER_WITH_PROTOCOL)
+                .post('/api/v1/gateway/auth/login')
                 .reply(201, '');
 
             const store = mockStore();
@@ -106,8 +106,8 @@ describe('Action: validation', () => {
                 },
             ];
 
-            nock(LOCAL_HOST_ENDPOINT)
-                .post('/gateway/auth/login')
+            nock(LOCAL_HOST_SERVER_WITH_PROTOCOL)
+                .post('/api/v1/gateway/auth/login')
                 .reply(401, validationResources.validationLoginInvalidPasswordResponse);
 
             const store = mockStore();

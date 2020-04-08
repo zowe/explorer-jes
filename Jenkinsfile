@@ -30,7 +30,7 @@ node('ibm-jenkins-slave-dind') {
     string(
       name: 'FVT_API_ARTIFACT',
       description: 'Jobs API artifact download pattern',
-      defaultValue: 'libs-release-local/org/zowe/explorer/jobs/*/jobs-server-zowe-package-*.zip',
+      defaultValue: 'libs-snapshot-local/org/zowe/explorer/jobs/*/jobs-server-zowe-package-*.zip',
       trim: true,
       required: true
     ),
