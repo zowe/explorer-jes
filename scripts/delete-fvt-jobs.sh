@@ -21,7 +21,7 @@ fi
 
 APIML_URL="https://localhost:${FVT_GATEWAY_PORT}"
 APIML_LOGIN_ENDPOINT="${APIML_URL}/api/v1/gateway/auth/login"
-JOBS_API_URL="${APIML_URL}/api/v1/jobs"
+JOBS_API_URL="${APIML_URL}/api/v2/jobs"
 
 APIML_AUTH_TOKEN=$(curl -k -c - -H "Content-Type: application/json" -d "{\"username\":\"${ZOWE_USERNAME}\",\"password\":\"${ZOWE_PASSWORD}\"}" "${APIML_LOGIN_ENDPOINT}" \
  | grep -o "apimlAuthenticationToken.*" \
