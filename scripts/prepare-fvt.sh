@@ -139,11 +139,11 @@ services:
   - https://${FVT_GATEWAY_HOST}:${FVT_API_PORT}/
   homePageRelativeUrl:
   routedServices:
-  - gatewayUrl: api/v1
-    serviceRelativeUrl: api/v1/jobs
+  - gatewayUrl: api/v2
+    serviceRelativeUrl: api/v2/jobs
   apiInfo:
   - apiId: com.ibm.jobs
-    gatewayUrl: api/v1
+    gatewayUrl: api/v2
     version: 1.0.0
     swaggerUrl: https://${FVT_GATEWAY_HOST}:${FVT_API_PORT}/v2/api-docs
     documentationUrl: https://${FVT_GATEWAY_HOST}:${FVT_API_PORT}/swagger-ui.html
