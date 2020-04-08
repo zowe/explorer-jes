@@ -209,9 +209,9 @@ describe('JES explorer function verification tests', function () {
                 await driver.wait(until.elementLocated(By.id('refresh-icon')), 60000);
                 const refreshIcon :WebElement = await driver.findElement(By.id('refresh-icon'));
                 await refreshIcon.click();
-                expect(await testElementAppearsXTimesById(driver, 'loading-icon', 1)).to.be.true;
+                await driver.sleep(1000);
                 await driver.wait(until.elementLocated(By.id('refresh-icon')), 60000);
-                expect(await testElementAppearsXTimesById(driver, 'refresh-icon', 1)).to.be.true;
+                expect(await testElementAppearsXTimesById(driver, 'refresh-icon', 1), 'Failed to see refresh icon after loading icon').to.be.true;
             });
 
             describe('Job status labels', () => {
