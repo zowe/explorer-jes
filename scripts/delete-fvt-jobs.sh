@@ -23,12 +23,20 @@ APIML_URL="https://localhost:${FVT_GATEWAY_PORT}"
 APIML_LOGIN_ENDPOINT="${APIML_URL}/api/v1/gateway/auth/login"
 JOBS_API_URL="${APIML_URL}/api/v2/jobs"
 
+echo "Getting apimlAuthToken"
 APIML_AUTH_TOKEN=$(curl -k -c - -H "Content-Type: application/json" -d "{\"username\":\"${ZOWE_USERNAME}\",\"password\":\"${ZOWE_PASSWORD}\"}" "${APIML_LOGIN_ENDPOINT}" \
  | grep -o "apimlAuthenticationToken.*" \
  | sed 's/^.\{25\}//' )
-JOB_OUTPUT=$(curl -k --cookie "apimlAuthenticationToken=${APIML_AUTH_TOKEN}" "${JOBS_API_URL}?prefix=TESTJOB*&owner=*")
+echo "Got apimlAuthToken"
+
+echo "Getting jobs"
+JOB_OUTPUT=$(curl -v -k --cookie "apimlAuthenticationToken=${APIML_AUTH_TOKEN}" "${JOBS_API_URL}?prefix=TESTJOB*&owner=*")
+echo "Got jobs"
+echo $JOB_OUTPUT
 JOB_NAMES=( $( echo $JOB_OUTPUT | grep -o "TESTJOB.") )
+echo $JOB_NAMES
 JOB_IDS=( $( echo $JOB_OUTPUT | grep -o "JOB.....\b") )
+echo $JOB_IDS
 
 total=${#JOB_IDS[*]}
 echo "Found ${total} jobs to purge"
@@ -36,5 +44,5 @@ for (( i=0; i<total; i++)) do
     jobName=${JOB_NAMES[$i]}
     jobId=${JOB_IDS[$i]}
     echo "Purging: ${JOBS_API_URL}/${jobName}/${jobId}"
-    curl -k -X DELETE --cookie "apimlAuthenticationToken=${APIML_AUTH_TOKEN}" "${JOBS_API_URL}/${jobName}/${jobId}"
+    curl -v -k -X DELETE --cookie "apimlAuthenticationToken=${APIML_AUTH_TOKEN}" "${JOBS_API_URL}/${jobName}/${jobId}"
 done
