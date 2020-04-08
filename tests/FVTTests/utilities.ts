@@ -271,7 +271,7 @@ export async function getAllFilterValues(driver) {
  * @param {WebDriver} driver selenium-webdriver
  */
 export async function waitForAndExtractJobs(driver) {
-    await driver.wait(until.elementLocated(By.id('refresh-icon')), 20000);
+    await driver.wait(until.elementLocated(By.id('refresh-icon')), 60000);
     const jobs = await driver.findElements(By.className('job-instance'));
     return jobs;
 }
