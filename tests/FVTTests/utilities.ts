@@ -193,10 +193,14 @@ export function loadPageWithFilterOptions(pageUrl, defaultFilters = {}, config =
 
             // make sure tree and editor have loaded
             await driver.wait(until.elementLocated(By.id('embeddedEditor')), 30000);
-            if (config.checkJobsLoaded) { await driver.wait(until.elementLocated(By.id('job-list')), 30000); }
+            if (config.checkJobsLoaded) { 
+                await driver.wait(until.elementLocated(By.id('refresh-icon')), 60000);
+                await driver.wait(until.elementLocated(By.id('job-list')), 10000);
+            }
 
             await driver.sleep(5000);
         } catch (e) {
+            console.log('Exception: ' + e)
             throw e;
         }
     };
@@ -267,8 +271,7 @@ export async function getAllFilterValues(driver) {
  * @param {WebDriver} driver selenium-webdriver
  */
 export async function waitForAndExtractJobs(driver) {
-    await driver.sleep(1000);
-    await driver.wait(until.elementLocated(By.id('refresh-icon')), 10000);
+    await driver.wait(until.elementLocated(By.id('refresh-icon')), 20000);
     const jobs = await driver.findElements(By.className('job-instance'));
     return jobs;
 }

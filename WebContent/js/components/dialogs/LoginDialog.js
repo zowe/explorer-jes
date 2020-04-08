@@ -78,7 +78,7 @@ class LoginDialog extends React.Component {
                     fullWidth={true}
                 />
                 <input type="submit" style={{ display: 'none' }} />
-                <div style={{ color: 'red' }}>
+                <div id="login-status-message" style={{ color: 'red' }}>
                     {validationMessage}
                 </div>
             </form>);
@@ -100,6 +100,7 @@ class LoginDialog extends React.Component {
 
         return (
             <Dialog
+                id="login-dialog"
                 open={true}
                 type={'primary'}
             >
