@@ -193,10 +193,14 @@ export function loadPageWithFilterOptions(pageUrl, defaultFilters = {}, config =
 
             // make sure tree and editor have loaded
             await driver.wait(until.elementLocated(By.id('embeddedEditor')), 30000);
-            if (config.checkJobsLoaded) { await driver.wait(until.elementLocated(By.id('job-list')), 30000); }
+            if (config.checkJobsLoaded) { 
+                await driver.wait(until.elementLocated(By.id('refresh-icon')), 60000);
+                await driver.wait(until.elementLocated(By.id('job-list')), 10000);
+            }
 
             await driver.sleep(5000);
         } catch (e) {
+            console.log('Exception: ' + e)
             throw e;
         }
     };
@@ -267,8 +271,7 @@ export async function getAllFilterValues(driver) {
  * @param {WebDriver} driver selenium-webdriver
  */
 export async function waitForAndExtractJobs(driver) {
-    await driver.sleep(1000);
-    await driver.wait(until.elementLocated(By.id('refresh-icon')), 10000);
+    await driver.wait(until.elementLocated(By.id('refresh-icon')), 60000);
     const jobs = await driver.findElements(By.className('job-instance'));
     return jobs;
 }
@@ -331,7 +334,7 @@ export async function submitJob(jcl, host, port, username, password) {
         rejectUnauthorized: false,
     });
     const b64Credentials = `Basic ${new Buffer(`${username}:${password}`).toString('base64')}`;
-    await fetch(`https://${host}:${port}/api/v1/jobs/string`, {
+    await fetch(`https://${host}:${port}/api/v2/jobs/string`, {
         method: 'POST',
         headers: {
             authorization: b64Credentials,
@@ -353,7 +356,7 @@ export async function submitJob(jcl, host, port, username, password) {
 
 /**
  * Given a path send a get request and print out the response body
- * @param {String} path Api request path after api/v1/
+ * @param {String} path Api request path after api/v2/
  * @param {String} host hostname
  * @param {String} port https port
  * @param {String} username TSO username
@@ -364,7 +367,7 @@ export async function debugApiCall(path, host, port, username, password) {
         rejectUnauthorized: false,
     });
     const b64Credentials = `Basic ${new Buffer(`${username}:${password}`).toString('base64')}`;
-    await fetch(`https://${host}:${port}/api/v1/${path}`, {
+    await fetch(`https://${host}:${port}/api/v2/${path}`, {
         method: 'GET',
         headers: {
             authorization: b64Credentials,
