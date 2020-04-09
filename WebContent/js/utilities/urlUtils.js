@@ -29,5 +29,5 @@ export function whichServer() {
 }
 
 export function atlasFetch(endpoint, content) {
-    return fetch(`https://${whichServer()}/api/v1/${endpoint}`, content);
+    return fetch(`https://${whichServer()}/api/v2/${endpoint}`, content);
 }
