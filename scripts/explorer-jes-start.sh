@@ -29,10 +29,6 @@ EXPLORER_PLUGIN_NAME=$($NODE_BIN -e "process.stdout.write(require('./app/package
 # get current ui server directory
 SERVER_DIR="${ROOT_DIR}/components/explorer-jes/bin/server/"
 
-if [ -z "$ZOWE_PREFIX" ]
-then
-  ZOWE_PREFIX="ZWE"
-fi
 JOB_NAME="${ZOWE_PREFIX}UJ"
 
 # start service
