@@ -206,12 +206,12 @@ describe('JES explorer function verification tests', function () {
             });
 
             it('Should handle reloading jobs when clicking refresh icon', async () => {
-                await driver.wait(until.elementLocated(By.id('refresh-icon')), 10000);
+                await driver.wait(until.elementLocated(By.id('refresh-icon')), 60000);
                 const refreshIcon :WebElement = await driver.findElement(By.id('refresh-icon'));
                 await refreshIcon.click();
-                expect(await testElementAppearsXTimesById(driver, 'loading-icon', 1)).to.be.true;
-                await driver.wait(until.elementLocated(By.id('refresh-icon')), 10000);
-                expect(await testElementAppearsXTimesById(driver, 'refresh-icon', 1)).to.be.true;
+                await driver.sleep(1000);
+                await driver.wait(until.elementLocated(By.id('refresh-icon')), 60000);
+                expect(await testElementAppearsXTimesById(driver, 'refresh-icon', 1), 'Failed to see refresh icon after loading icon').to.be.true;
             });
 
             describe('Job status labels', () => {
@@ -222,7 +222,7 @@ describe('JES explorer function verification tests', function () {
                     expect(await testTextInputFieldCanBeModified(driver, 'filter-jobId-field', '*'), 'filter-jobId-field wrong').to.be.true;
                     await findAndClickApplyButton(driver);
                     await driver.sleep(1000);
-                    await driver.wait(until.elementLocated(By.id('refresh-icon')), 10000);
+                    await driver.wait(until.elementLocated(By.id('refresh-icon')), 60000);
                 });
 
                 it('Should handle showing jobs as ACTIVE', async () => {
