@@ -9,7 +9,7 @@
  */
 
 /* eslint-disable no-await-in-loop */
-import { By, until, WebDriver, WebElement } from 'selenium-webdriver';
+import { By, until } from 'selenium-webdriver';
 import { expect } from 'chai';
 
 import {
@@ -140,7 +140,14 @@ export async function testStatusFilterFetching(driver, status, potentialStatuses
     return checkJobsStatus(jobs, potentialStatuses);
 }
 
-export async function testJobFilesLoad(driver :WebDriver, ownerFilter :string, prefixFilter :string, statusFilter :string) :Promise<boolean> {
+/**
+ *
+ * @param {WebDriver} driver selenium-webdriver
+ * @param {string} owner filter owner
+ * @param {string} prefix filter prefix
+ * @param {string} status filter status
+ */
+export async function testJobFilesLoad(driver, ownerFilter, prefixFilter, statusFilter) {
     const jobsInstances = await driver.findElements(By.className('job-instance'));
     await reloadAndOpenFilterPanel(driver, jobsInstances.length > 0);
     await testTextInputFieldCanBeModified(driver, 'filter-owner-field', ownerFilter);
@@ -150,7 +157,7 @@ export async function testJobFilesLoad(driver :WebDriver, ownerFilter :string, p
     }
 
     await findAndClickApplyButton(driver);
-    const jobs :WebElement[] = await waitForAndExtractJobs(driver);
+    const jobs = await waitForAndExtractJobs(driver);
     if (jobs.length === 1) {
         const text = await jobs[0].getText();
         if (text === 'No jobs found') {
@@ -158,22 +165,14 @@ export async function testJobFilesLoad(driver :WebDriver, ownerFilter :string, p
             return false; // Couldn't find any jobs
         }
     }
-    console.log('Total jobs found: ' + jobs.length);
 
-    let foundFiles :boolean = true;
-    let filesCount :number = 0;
-    for (const job of jobs) {
+    let foundFiles = true;
+    // TODO:: Currently slicing to just one element of array to avoid not being able to click a job that isn't in the viewport
+    for (const job of jobs.slice(0, 1)) {
         await job.click();
-        await driver.wait(until.elementLocated(By.id('loading-icon')), 10000);
-        await driver.wait(until.elementLocated(By.id('refresh-icon')), 20000);
-        const jobFiles :WebElement[] = await driver.findElements(By.className('job-file'));
-        // If we don't find new files
-        if (filesCount === (filesCount + jobFiles.length)) {
-            foundFiles = false;
-            break;
-        } else {
-            filesCount += jobFiles.length;
-        }
+        await driver.wait(until.elementLocated(By.className('job-file')), 20000);
+        const jobFiles = await driver.findElements(By.className('job-file'));
+        if (jobFiles.length < 1) foundFiles = false;
     }
     return foundFiles;
 }
