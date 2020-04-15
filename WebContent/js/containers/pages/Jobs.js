@@ -5,52 +5,37 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2019
+ * Copyright IBM Corporation 2016, 2020
  */
 
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import JobTree from '../JobTree';
 import ConnectedContentViewer from '../ContentViewer';
+import LoginDialog from '../../components/dialogs/LoginDialog';
 import ConnectedSnackbar from '../../components/Snackbar';
-import { validateUser } from '../../actions/validation';
 
-class JobsView extends React.Component {
-    componentWillMount() {
-        const { dispatch, validated } = this.props;
-        if (!validated) {
-            dispatch(validateUser());
-        }
-    }
-
-    render() {
-        const { validated, isValidating } = this.props;
-        if (validated) {
-            return (
-                <div className="row group">
-                    <div className="component col col-3">
-                        <JobTree />
-                    </div>
-                    <div className="component col col-9">
-                        <ConnectedContentViewer />
-                    </div>
-                    <ConnectedSnackbar />
+const HomeView = props => {
+    const { validated } = props;
+    if (validated) {
+        return (
+            <div className="row group">
+                <div className="component col col-3">
+                    <JobTree />
                 </div>
-            );
-        }
-        if (isValidating) {
-            return (<CircularProgress />);
-        }
-        return (<div className="vertical-horizontal-center">Unable to Authenticate</div>);
+                <div className="component col col-9">
+                    <ConnectedContentViewer />
+                </div>
+                <ConnectedSnackbar />
+            </div>
+        );
     }
-}
+    return <LoginDialog />;
+};
 
-JobsView.propTypes = {
-    dispatch: PropTypes.func.isRequired,
+HomeView.propTypes = {
     validated: PropTypes.bool.isRequired,
-    isValidating: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -61,5 +46,5 @@ function mapStateToProps(state) {
     };
 }
 
-const ConnectedJobs = connect(mapStateToProps)(JobsView);
-export default ConnectedJobs;
+const ConnectedHomeView = connect(mapStateToProps)(HomeView);
+export default ConnectedHomeView;

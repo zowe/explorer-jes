@@ -10,6 +10,7 @@
 
 import { atlasFetch } from '../utilities/urlUtils';
 import { constructAndPushMessage } from './snackbarNotifications';
+import { checkForValidationFailure } from './validation';
 
 export const REQUEST_CONTENT = 'REQUEST_CONTENT';
 export const RECEIVE_CONTENT = 'RECEIVE_CONTENT';
@@ -79,6 +80,9 @@ export function fetchJobFile(jobName, jobId, fileName, fileId) {
         dispatch(requestContent(jobName, jobId, fileName, fileId, fileLabel));
         return atlasFetch(`jobs/${jobName}/${jobId}/files/${fileId}/content`, { credentials: 'include' })
             .then(response => {
+                return dispatch(checkForValidationFailure(response));
+            })
+            .then(response => {
                 return checkResponse(response);
             })
             .then(json => {
@@ -96,6 +100,9 @@ export function fetchConcatenatedJobFiles(jobName, jobId) {
         const fileLabel = getFileLabel(jobName, jobId);
         dispatch(requestContent(jobName, jobId, jobId, jobId, fileLabel));
         return atlasFetch(`jobs/${jobName}/${jobId}/files/content`, { credentials: 'include' })
+            .then(response => {
+                return dispatch(checkForValidationFailure(response));
+            })
             .then(response => {
                 return checkResponse(response);
             })
@@ -133,6 +140,9 @@ export function fetchJobFileNoName(jobName, jobId, fileId) {
         const contentPath = `jobs/${jobName}/${jobId}/files/${fileId}/content`;
         dispatch(requestContent(jobName, jobId, '', fileId, getFileLabel(jobId)));
         return atlasFetch(contentPath, { credentials: 'include' })
+            .then(response => {
+                return dispatch(checkForValidationFailure(response));
+            })
             .then(response => {
                 return checkResponse(response);
             })
@@ -186,6 +196,9 @@ export function getJCL(jobName, jobId) {
         dispatch(requestContent(jobName, jobId, 'JCL', 0, fileLabel));
         return atlasFetch(`jobs/${jobName}/${jobId}/files/JCL/content`, { credentials: 'include' })
             .then(response => {
+                return dispatch(checkForValidationFailure(response));
+            })
+            .then(response => {
                 return checkResponse(response);
             })
             .then(json => {
@@ -230,6 +243,9 @@ export function submitJCL(content) {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ jcl: content }),
+            })
+            .then(response => {
+                return dispatch(checkForValidationFailure(response));
             })
             .then(response => {
                 return checkResponse(response);
