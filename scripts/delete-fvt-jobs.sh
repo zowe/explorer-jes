@@ -31,18 +31,13 @@ echo "Got apimlAuthToken"
 
 echo "Getting jobs"
 JOB_OUTPUT=$(curl -k --cookie "apimlAuthenticationToken=${APIML_AUTH_TOKEN}" "${JOBS_API_URL}?prefix=TESTJOB*&owner=*")
-echo "Got jobs"
-echo $JOB_OUTPUT
-JOB_NAMES=( $( echo $JOB_OUTPUT | grep -o "TESTJOB.") )
-echo $JOB_NAMES
-JOB_IDS=( $( echo $JOB_OUTPUT | grep -o "JOB.....\b") )
-echo $JOB_IDS
+JOB_LIST=$(echo "$JOB_OUTPUT" | jq -r '.items[] | "\(.jobId),\(.jobName)"')
+JOB_COUNT=$(echo "$JOB_LIST" | wc -l)
+echo "Found $JOB_COUNT jobs to purge"
 
-total=${#JOB_IDS[*]}
-echo "Found ${total} jobs to purge"
-for (( i=0; i<total; i++)) do
-    jobName=${JOB_NAMES[$i]}
-    jobId=${JOB_IDS[$i]}
-    echo "Purging: ${JOBS_API_URL}/${jobName}/${jobId}"
-    curl -k -X DELETE --cookie "apimlAuthenticationToken=${APIML_AUTH_TOKEN}" "${JOBS_API_URL}/${jobName}/${jobId}"
-done
+for line in $JOB_LIST; do
+  jobName=$(echo $line | awk -F, '{print $1;}')
+  jobId=$(echo $line | awk -F, '{print $2;}')
+  echo "Purging: ${JOBS_API_URL}/${jobName}/${jobId}"
+  curl -k -X DELETE --cookie "apimlAuthenticationToken=${APIML_AUTH_TOKEN}" "${JOBS_API_URL}/${jobName}/${jobId}"
+done 
