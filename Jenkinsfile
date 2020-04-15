@@ -157,6 +157,7 @@ SERVER_HOST_NAME=${params.FVT_SERVER_HOSTNAME} \
 SERVER_HTTPS_PORT=7554 \
 npm run test:fvt
 """
+          }
         }
       } catch (e) {
         echo "Error with integration test: ${e}"

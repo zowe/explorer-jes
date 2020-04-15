@@ -65,7 +65,6 @@ const {
 
 const BASE_URL = `https://${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}`;
 const BASE_URL_WITH_PATH = `${BASE_URL}/ui/v1/explorer-jes`;
-const ZOSMF_JOB_NAME = 'IZUSVR1';
 
 // Need to use unnamed function so we can specify the retries
 // eslint-disable-next-line
