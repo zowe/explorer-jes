@@ -30,7 +30,7 @@ APIML_AUTH_TOKEN=$(curl -k -c - -H "Content-Type: application/json" -d "{\"usern
 echo "Got apimlAuthToken"
 
 echo "Getting jobs"
-JOB_OUTPUT=$(curl -v -k --cookie "apimlAuthenticationToken=${APIML_AUTH_TOKEN}" "${JOBS_API_URL}?prefix=TESTJOB*&owner=*")
+JOB_OUTPUT=$(curl -k --cookie "apimlAuthenticationToken=${APIML_AUTH_TOKEN}" "${JOBS_API_URL}?prefix=TESTJOB*&owner=*")
 echo "Got jobs"
 echo $JOB_OUTPUT
 JOB_NAMES=( $( echo $JOB_OUTPUT | grep -o "TESTJOB.") )
@@ -44,5 +44,5 @@ for (( i=0; i<total; i++)) do
     jobName=${JOB_NAMES[$i]}
     jobId=${JOB_IDS[$i]}
     echo "Purging: ${JOBS_API_URL}/${jobName}/${jobId}"
-    curl -v -k -X DELETE --cookie "apimlAuthenticationToken=${APIML_AUTH_TOKEN}" "${JOBS_API_URL}/${jobName}/${jobId}"
+    curl -k -X DELETE --cookie "apimlAuthenticationToken=${APIML_AUTH_TOKEN}" "${JOBS_API_URL}/${jobName}/${jobId}"
 done
