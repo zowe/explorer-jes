@@ -56,7 +56,7 @@ if [ -z "$FVT_APIML_ARTIFACT" ]; then
   echo "[${SCRIPT_NAME}][warn] APIML artifact is not defined, using default value."
 fi
 if [ -z "$FVT_JOBS_API_ARTIFACT" ]; then
-  FVT_JOBS_API_ARTIFACT="libs-release-local/org/zowe/explorer/jobs/*/jobs-zowe-server-package-*.zip"
+  FVT_JOBS_API_ARTIFACT="libs-snapshot-local/org/zowe/explorer/jobs/*/jobs-server-zowe-package-*.zip"
   echo "[${SCRIPT_NAME}][warn] Jobs API artifact is not defined, using default value."
 fi
 if [ -z "$FVT_ZOSMF_HOST" ]; then
@@ -201,8 +201,8 @@ java -Xms16m -Xmx512m \
   -Dserver.ssl.keyStorePassword=password \
   -Dserver.ssl.keyStoreType=PKCS12 \
   -Dserver.compression.enabled=true \
-  -Dgateway.httpsPort=${FVT_GATEWAY_PORT} \
-  -Dgateway.ipAddress=${FVT_GATEWAY_HOST} \
+  -Dconnection.httpsPort=${FVT_GATEWAY_PORT} \
+  -Dconnection.ipAddress=${FVT_GATEWAY_HOST} \
   -Dspring.main.banner-mode=off \
   -jar "$(find "${FVT_WORKSPACE}/${FVT_JOBS_API_DIR}" -name '*-boot.jar')" \
   > "${FVT_WORKSPACE}/${FVT_LOGS_DIR}/jobs-api.log" &
