@@ -61,6 +61,13 @@ node('ibm-jenkins-slave-dind') {
       defaultValue: 'fvt-test-server',
       trim: true,
       required: true
+    ),
+    string(
+      name: 'API_ML_DEBUG_PROFILES',
+      description: 'Debug profiles for API Gateway',
+      defaultValue: '',
+      trim: true,
+      required: true
     )
   )
 
