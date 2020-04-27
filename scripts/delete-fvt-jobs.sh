@@ -31,7 +31,7 @@ echo "Got apimlAuthToken"
 
 echo "Getting jobs"
 JOB_OUTPUT=$(curl -k --cookie "apimlAuthenticationToken=${APIML_AUTH_TOKEN}" "${JOBS_API_URL}?prefix=TESTJOB*&owner=*")
-JOB_LIST=$(echo "$JOB_OUTPUT" | jq -r '.items[] | "\(.jobId),\(.jobName)"')
+JOB_LIST=$(echo "$JOB_OUTPUT" | jq -r '.items[]? | "\(.jobId),\(.jobName)"')
 JOB_COUNT=$(echo "$JOB_LIST" | wc -l)
 echo "Found $JOB_COUNT jobs to purge"
 
