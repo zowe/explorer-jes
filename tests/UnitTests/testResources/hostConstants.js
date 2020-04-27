@@ -11,4 +11,4 @@
 export const LOCAL_HOSTNAME = 'tester.test.com';
 export const LOCAL_HOST_SERVER = `${LOCAL_HOSTNAME}:7443`;
 export const LOCAL_HOST_SERVER_WITH_PROTOCOL = `https://${LOCAL_HOST_SERVER}`;
-export const LOCAL_HOST_ENDPOINT = `${LOCAL_HOST_SERVER_WITH_PROTOCOL}/api/v1/`;
+export const LOCAL_HOST_ENDPOINT = `${LOCAL_HOST_SERVER_WITH_PROTOCOL}/api/v2/`;

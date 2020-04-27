@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018, 2019
+ * Copyright IBM Corporation 2018, 2020
  */
 
 
@@ -30,7 +30,7 @@ node('ibm-jenkins-slave-dind') {
     string(
       name: 'FVT_API_ARTIFACT',
       description: 'Jobs API artifact download pattern',
-      defaultValue: 'libs-release-local/org/zowe/explorer/jobs/*/jobs-server-zowe-package-*.zip',
+      defaultValue: 'libs-snapshot-local/org/zowe/explorer/jobs/*/jobs-server-zowe-package-*.zip',
       trim: true,
       required: true
     ),
@@ -59,6 +59,13 @@ node('ibm-jenkins-slave-dind') {
       name: 'FVT_SERVER_HOSTNAME',
       description: 'Server hostname for integration test',
       defaultValue: 'fvt-test-server',
+      trim: true,
+      required: true
+    ),
+    string(
+      name: 'API_ML_DEBUG_PROFILES',
+      description: 'Debug profiles for API Gateway',
+      defaultValue: 'default',
       trim: true,
       required: true
     )
@@ -139,6 +146,20 @@ node('ibm-jenkins-slave-dind') {
       // wait a while to give time for service to be started
       sleep time: 2, unit: 'MINUTES'
 
+      withCredentials([
+          usernamePassword(
+            credentialsId: params.FVT_ZOSMF_CREDENTIAL,
+            passwordVariable: 'PASSWORD',
+            usernameVariable: 'USERNAME'
+          )
+        ]) {
+          ansiColor('xterm') {
+            sh """ZOWE_USERNAME=${USERNAME} \
+              ZOWE_PASSWORD=${PASSWORD} \
+              ./scripts/delete-fvt-jobs.sh"""
+          }
+        }
+
       echo "Starting integration test ..."
       try {
         withCredentials([
@@ -147,7 +168,8 @@ node('ibm-jenkins-slave-dind') {
             passwordVariable: 'PASSWORD',
             usernameVariable: 'USERNAME'
           )
-        ]) {
+        ]) 
+        {
           ansiColor('xterm') {
             sh """
 ZOWE_USERNAME=${USERNAME} \
