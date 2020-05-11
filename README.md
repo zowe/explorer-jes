@@ -4,6 +4,9 @@
 
 The issues for the JES explorer are tracked under the Zowe Zlux repository, https://github.com/zowe/zlux and tagged accordingly with the 'explorer-jes' label. Open issues tagged with 'explorer-jes' can be found [here](https://github.com/zowe/zlux/issues?q=is%3Aopen+is%3Aissue+label%3Aexplorer-jes).
 
+
+# App Development Workflow 
+
 # Configure NPM Registry
 
 This is required for explorer-ui-server, orion-editor-component and explorer-fvt-utilities. These modules are only published on Zowe Artifactory.
@@ -11,8 +14,6 @@ This is required for explorer-ui-server, orion-editor-component and explorer-fvt
 ```
 npm config set registry https://zowe.jfrog.io/zowe/api/npm/npm-release
 ```
-
-# App Development Workflow 
 
 ### Install Dependencies
 
@@ -86,33 +87,34 @@ Then you can run `sonar-scanner` to start code analysis.
 Build pipeline has embedded the SonarQube code analysis stage.
 
 
-# ZLUX App Development Workflow
+## Build and install as plugin in local zlux development environment
 
+Modify `explorer-jes/Webcontent/index.html`   
+Change relative path for `iframe-adapter.js` & `logger.js` to absolute path.   
+Append with your `API Gateway` `Hostname` and `Port`
 
-## Download:
-
+For example:
 ```
-cd /path/to/zlux
-git clone https://github.com/zowe/explorer-jes.git
+  <script type="text/javascript" src="https://mymainframe.com:7554/ui/v1/zlux/lib/org.zowe.zlux.logger/0.9.0/logger.js"></script>
+  <script type="text/javascript" src="https://mymainframe.com:7554/ui/v1/zlux/ZLUX/plugins/org.zowe.zlux.bootstrap/web/iframe-adapter.js"></script>
+```
+
+Build web folder
+```
 cd explorer-jes
+# root folder
 npm install
+# This will create web folder
 npm run build
 ```
 
-## Registering Plugin with Zowe Desktop 
-### Add Plugin Locator
-Add file `org.zowe.explorer-jes.json` to `/path/to/zlux-app-server/plugins`
+Install as ZLUX App/Plugin
+```
+# install in zlux locally
+cd zlux/zlux-app-server/bin
+./install-app.sh <path-to-explorer-jes>
+```
+`explorer-jes` root already have sample `pluginDefinition.json` & will have `web` folder after `build`.
 
-```
-{
-    "identifier": "org.zowe.explorer-jes",
-    "pluginLocation": "../../explorer-jes"
-}
-```
 
-### Ant Deploy:
 
-```
-cd /path/to/zlux-build
-ant deploy
-```

@@ -7,10 +7,6 @@
 
   Copyright Contributors to the Zowe Project.
 */
-if (exports) {
-    const ZoweZLUX_tempExports = exports;
-}
-var exports = { __esModule: true };
 
 function handleMessageAdded(message) {
 
