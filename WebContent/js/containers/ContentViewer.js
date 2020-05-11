@@ -32,7 +32,10 @@ export class ContentViewer extends React.Component {
         this.renderSubmitButton = this.renderSubmitButton.bind(this);
         this.onButtonRef = this.onButtonRef.bind(this);
         this.updateSubmitJCLButtonOffset = this.updateSubmitJCLButtonOffset.bind(this);
+        this.focusToActiveTab = this.focusToActiveTab.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
 
+        this.fileTabs = [];
         this.state = {
             height: 0,
             currentContent: '',
@@ -51,8 +54,13 @@ export class ContentViewer extends React.Component {
             window.location.reload();
         }
         if (newContent.size > content.size) {
-            dispatch(changeSelectedContent(newContent.size - 1));
+            const newTabIndex = newContent.size - 1;
+            dispatch(changeSelectedContent(newTabIndex));
         }
+    }
+
+    componentDidUpdate() {
+        this.focusToActiveTab();
     }
 
     onButtonRef(node) {
@@ -92,7 +100,22 @@ export class ContentViewer extends React.Component {
         dispatch(removeContent(removeIndex));
         // Do we need to change the selectedContent
         if (removeIndex <= selectedContent && selectedContent >= 1) {
-            dispatch(changeSelectedContent(selectedContent - 1));
+            const newTabIndex = selectedContent - 1;
+            dispatch(changeSelectedContent(newTabIndex));
+        }
+    }
+
+    handleKeyDown(e, index) {
+        if (e.key === 'Enter') { this.handleSelectedTabChange(index); }
+        // if (e.altKey && e.keyCode === 87) { this.handleCloseTab(index); }
+    }
+
+    focusToActiveTab() {
+        const { selectedContent } = this.props;
+        const tab = this.fileTabs[selectedContent];
+        if (tab) {
+            tab.focus();
+            // tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'center' });
         }
     }
 
@@ -104,11 +127,23 @@ export class ContentViewer extends React.Component {
             return content.map((tabContent, index) => {
                 return (
                     <div className="content-tab" style={{ width: 'max-content', display: 'inline-block' }} key={tabContent.label}>
-                        <div style={index === selectedContent ? selectedTabStyle : unselectedTabStyle}>
-                            <div className="content-tab-label" onClick={() => { this.handleSelectedTabChange(index); }} >
+                        <div
+                            style={index === selectedContent ? selectedTabStyle : unselectedTabStyle}
+                        >
+                            <div
+                                className="content-tab-label"
+                                onClick={() => { this.handleSelectedTabChange(index); }}
+                                tabIndex="0"
+                                onKeyDown={e => { return this.handleKeyDown(e, index); }}
+                                ref={fileTab => { this.fileTabs[index] = fileTab; return this.fileTabs[index]; }}
+                            >
                                 {tabContent.label}
                             </div>
-                            <ClearIcon onClick={() => { this.handleCloseTab(index); }} />
+                            <ClearIcon
+                                onClick={() => { this.handleCloseTab(index); }}
+                                tabIndex="0"
+                                onKeyDown={e => { if (e.key === 'Enter') this.handleCloseTab(index); }}
+                            />
                         </div>
                         {tabContent.isFetching ? <LinearProgress class="progress-bar" style={{ width: '100%', height: '2px' }} /> : null}
                     </div>
@@ -170,7 +205,7 @@ export class ContentViewer extends React.Component {
                 <CardHeader
                     id="content-viewer-header"
                     subheader={this.renderSubheader()}
-                    style={{ paddingBottom: 0, whiteSpace: 'nowrap', overflow: 'scroll' }}
+                    style={{ paddingBottom: 0, whiteSpace: 'nowrap', overflowY: 'hidden', overflowX: 'scroll' }}
                 />
                 <CardContent style={cardTextStyle} >
                     <OrionEditor

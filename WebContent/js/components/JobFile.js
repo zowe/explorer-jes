@@ -96,6 +96,8 @@ class JobFile extends React.Component {
                         <span
                             className="content-link"
                             onClick={() => { this.openFile(); }}
+                            onKeyDown={e => { if (e.key === 'Enter') this.openFile(); }}
+                            tabIndex="0"
                         >
                             <Description className="node-icon" />
                             <span className="job-file-label">{file.label}</span>

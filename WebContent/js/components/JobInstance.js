@@ -27,7 +27,10 @@ class JobInstance extends React.Component {
         this.state = {
             singleClickTimeout: 0,
             preventSingleClick: false,
+            keyEnter: 0,
         };
+
+        this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
     handleSingleClick(job) {
@@ -36,7 +39,23 @@ class JobInstance extends React.Component {
                 this.handleJobToggle(job);
             }
             this.setState({ preventSingleClick: false });
+            this.setState({ keyEnter: 0 });
         }, 500);
+    }
+
+    handleKeyDown(e) {
+        const { job } = this.props;
+        if (e.key === 'Enter') {
+            this.setState({ keyEnter: 1 });
+            if (this.state.keyEnter === 0) {
+                this.handleSingleClick(job);
+            } else {
+                this.handleOpenAllFiles(job);
+            }
+        }
+        // else if (e.altKey && e.keyCode === 39) {
+        //     console.log('right click');
+        // }
     }
 
     handleJobToggle(job) {
@@ -68,6 +87,7 @@ class JobInstance extends React.Component {
         // Reset the debounce handling
         clearTimeout(this.state.singleClickTimeout);
         this.setState({ preventSingleClick: true });
+        this.setState({ keyEnter: 0 });
         if (this.isFileOpen(fileLabel)) {
             this.findAndSwitchToContent(job, fileLabel);
         } else {
@@ -160,6 +180,8 @@ class JobInstance extends React.Component {
                             className="content-link"
                             onClick={() => { this.handleSingleClick(job); }}
                             onDoubleClick={() => { this.handleOpenAllFiles(job); }}
+                            tabIndex="0"
+                            onKeyDown={this.handleKeyDown}
                         >
                             <LabelIcon className="node-icon" />
                             <span className="job-label">

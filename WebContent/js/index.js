@@ -24,7 +24,10 @@ import rootReducer from './reducers';
 import JobsView from './containers/pages/Jobs';
 import FullScreenView from './containers/pages/FullScreen';
 
-const store = applyMiddleware(thunk, createLogger())(createStore)(rootReducer, Map({}));
+const store = applyMiddleware(thunk, createLogger())(createStore)(rootReducer, Map({}),
+    //  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+);
+// const store = createStore(rootReducer, Map({}), applyMiddleware(thunk));
 
 const theme = createMuiTheme({
     overrides: {
