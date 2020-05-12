@@ -88,16 +88,20 @@ class JobFile extends React.Component {
     }
 
     render() {
-        const { job, file } = this.props;
+        const { job, file, size, pos } = this.props;
         return (
             <div>
-                <li className="job-file">
+                <li className="job-file" role="none">
                     <ContextMenuTrigger id={`${job.get('jobId')}${file.id}`}>
                         <span
                             className="content-link"
                             onClick={() => { this.openFile(); }}
                             onKeyDown={e => { if (e.key === 'Enter') this.openFile(); }}
                             tabIndex="0"
+                            role="treeitem"
+                            aria-level="2"
+                            aria-setsize={size}
+                            aria-posinset={pos + 1}
                         >
                             <Description className="node-icon" />
                             <span className="job-file-label">{file.label}</span>
@@ -111,6 +115,8 @@ class JobFile extends React.Component {
 
 JobFile.propTypes = {
     job: PropTypes.instanceOf(Map).isRequired,
+    pos: PropTypes.number.isRequired,
+    size: PropTypes.number.isRequired,
     content: PropTypes.instanceOf(List),
     file: PropTypes.shape({
         label: PropTypes.string.isRequired,

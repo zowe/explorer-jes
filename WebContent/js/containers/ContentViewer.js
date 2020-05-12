@@ -126,7 +126,14 @@ export class ContentViewer extends React.Component {
         if (content.size > 0) {
             return content.map((tabContent, index) => {
                 return (
-                    <div className="content-tab" style={{ width: 'max-content', display: 'inline-block' }} key={tabContent.label}>
+                    <div
+                        className="content-tab"
+                        style={{ width: 'max-content', display: 'inline-block' }}
+                        key={tabContent.label}
+                        role="tab"
+                        aria-selected={index === selectedContent ? 'true' : 'false'}
+                        aria-controls="content-viewer-body"
+                    >
                         <div
                             style={index === selectedContent ? selectedTabStyle : unselectedTabStyle}
                         >
@@ -187,7 +194,9 @@ export class ContentViewer extends React.Component {
     renderSubheader() {
         return (
             <div style={{ height: '38px' }}>
-                { this.renderTabs() }
+                <div role="tablist" aria-label="Open Jobs">
+                    { this.renderTabs() }
+                </div>
                 { this.renderSubmitButton()}
             </div>
         );
@@ -207,7 +216,7 @@ export class ContentViewer extends React.Component {
                     subheader={this.renderSubheader()}
                     style={{ paddingBottom: 0, whiteSpace: 'nowrap', overflowY: 'hidden', overflowX: 'scroll' }}
                 />
-                <CardContent style={cardTextStyle} >
+                <CardContent id="content-viewer-body" style={cardTextStyle} role="tabpanel">
                     <OrionEditor
                         content={(content.get(selectedContent) && content.get(selectedContent).content) || ' '}
                         syntax={'text/jclcontext'}

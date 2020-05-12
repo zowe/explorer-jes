@@ -10,7 +10,6 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -172,6 +171,8 @@ export class Filters extends React.Component {
                     Job Filters
                 </ExpansionPanelSummary>
                 <form
+                    role="search"
+                    aria-label="Job Filters"
                     id="filter-form"
                     onSubmit={e => { return this.applyValues(e); }}
                 >

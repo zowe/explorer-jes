@@ -29,12 +29,12 @@ class FullScreenViewer extends React.Component {
         const { validated, location } = this.props;
         if (validated) {
             return (
-                <div className="row group">
-                    <div className="component col col-12">
+                <main className="row group">
+                    <section id="explorer-viewer-full" className="component col col-12">
                         <ConentViewer locationSearch={location.search} />
-                    </div>
+                    </section>
                     <Snackbar />
-                </div>
+                </main>
             );
         }
         return <LoginDialog />;

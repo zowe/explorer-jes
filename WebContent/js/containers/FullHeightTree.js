@@ -11,7 +11,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export default class FulleHeightTree extends React.Component {
+export default class FullHeightTree extends React.Component {
     constructor(props) {
         super(props);
         this.onDivRef = this.onDivRef.bind(this);
@@ -54,7 +54,7 @@ export default class FulleHeightTree extends React.Component {
     }
 }
 
-FulleHeightTree.propTypes = {
+FullHeightTree.propTypes = {
     children: PropTypes.element.isRequired,
     overrideHeight: PropTypes.string,
     offset: PropTypes.number,
