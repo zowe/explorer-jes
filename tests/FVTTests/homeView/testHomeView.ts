@@ -324,7 +324,8 @@ describe('JES explorer function verification tests', function () {
                     expect(await testJobFilesLoad(driver, '*', `${ZOSMF_JOB_PREFIX}*`, null)).to.be.true;
                 });
 
-                it('Should handle un rendering job files when clicking an already toggle job', async () => {
+                //TODO:: Unreliable test, requires investigation
+                it.skip('Should handle un rendering job files when clicking an already toggle job', async () => {
                     expect(await testJobFilesLoad(driver, '*', `${ZOSMF_SERVER_JOB_NAME}`, null)).to.be.true;
 
                     const jobLink = await driver.findElements(By.css('.job-instance > li > div> .content-link'));
