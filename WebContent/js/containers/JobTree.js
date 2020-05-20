@@ -54,8 +54,6 @@ class JobNodeTree extends React.Component {
                     <li
                         role="treeitem"
                         aria-level="1"
-                        aria-setsize="1"
-                        aria-posinset="1"
                     >
                         <ErrorIcon className="node-icon" />
                         <span className="job-label">{NO_JOBS_FOUND_MESSAGE}</span>

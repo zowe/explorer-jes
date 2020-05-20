@@ -186,8 +186,6 @@ class JobInstance extends React.Component {
                             role="treeitem"
                             aria-expanded={job.get('isToggled').toString()}
                             aria-level="1"
-                            aria-setsize={size}
-                            aria-posinset={pos + 1}
                         >
                             <LabelIcon className="node-icon" />
                             <span className="job-label">

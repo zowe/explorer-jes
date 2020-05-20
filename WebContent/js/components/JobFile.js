@@ -100,8 +100,6 @@ class JobFile extends React.Component {
                             tabIndex="0"
                             role="treeitem"
                             aria-level="2"
-                            aria-setsize={size}
-                            aria-posinset={pos + 1}
                         >
                             <Description className="node-icon" />
                             <span className="job-file-label">{file.label}</span>

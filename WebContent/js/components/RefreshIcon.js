@@ -37,6 +37,7 @@ export default class RefreshIcon extends React.Component {
                 size={iconSize}
                 style={iconStyle}
                 onClick={this.handleSubmit}
+                tabIndex="0"
             />);
     }
 }
