@@ -193,10 +193,8 @@ export class ContentViewer extends React.Component {
 
     renderSubheader() {
         return (
-            <div style={{ height: '38px' }}>
-                <div role="tablist" aria-label="Open Jobs">
-                    { this.renderTabs() }
-                </div>
+            <div style={{ height: '38px' }} role="tablist" aria-label="Open Jobs">
+                { this.renderTabs() }
                 { this.renderSubmitButton()}
             </div>
         );
