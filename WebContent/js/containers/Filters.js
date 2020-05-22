@@ -39,7 +39,6 @@ export class Filters extends React.Component {
 
     constructor(props) {
         super(props);
-        this.filterPanelRef = React.createRef();
         this.state = {
             toggled: false,
         };
@@ -166,7 +165,6 @@ export class Filters extends React.Component {
                     id="filter-view-header"
                     expandIcon={<ExpandMoreIcon />}
                     onClick={() => { this.toggleFilters(); }}
-                    ref={this.filterPanelRef}
                 >
                     Job Filters
                 </ExpansionPanelSummary>

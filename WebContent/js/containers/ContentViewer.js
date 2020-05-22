@@ -33,7 +33,7 @@ export class ContentViewer extends React.Component {
         this.onButtonRef = this.onButtonRef.bind(this);
         this.updateSubmitJCLButtonOffset = this.updateSubmitJCLButtonOffset.bind(this);
         this.focusToActiveTab = this.focusToActiveTab.bind(this);
-        this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.handleKeyDownOnContentTabLabel = this.handleKeyDownOnContentTabLabel.bind(this);
 
         this.fileTabs = [];
         this.state = {
@@ -54,8 +54,7 @@ export class ContentViewer extends React.Component {
             window.location.reload();
         }
         if (newContent.size > content.size) {
-            const newTabIndex = newContent.size - 1;
-            dispatch(changeSelectedContent(newTabIndex));
+            dispatch(changeSelectedContent(newContent.size - 1));
         }
     }
 
@@ -100,14 +99,12 @@ export class ContentViewer extends React.Component {
         dispatch(removeContent(removeIndex));
         // Do we need to change the selectedContent
         if (removeIndex <= selectedContent && selectedContent >= 1) {
-            const newTabIndex = selectedContent - 1;
-            dispatch(changeSelectedContent(newTabIndex));
+            dispatch(changeSelectedContent(selectedContent - 1));
         }
     }
 
-    handleKeyDown(e, index) {
+    handleKeyDownOnContentTabLabel(e, index) {
         if (e.key === 'Enter') { this.handleSelectedTabChange(index); }
-        // if (e.altKey && e.keyCode === 87) { this.handleCloseTab(index); }
     }
 
     focusToActiveTab() {
@@ -115,7 +112,6 @@ export class ContentViewer extends React.Component {
         const tab = this.fileTabs[selectedContent];
         if (tab) {
             tab.focus();
-            // tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'center' });
         }
     }
 
@@ -141,7 +137,7 @@ export class ContentViewer extends React.Component {
                                 className="content-tab-label"
                                 onClick={() => { this.handleSelectedTabChange(index); }}
                                 tabIndex="0"
-                                onKeyDown={e => { return this.handleKeyDown(e, index); }}
+                                onKeyDown={e => { return this.handleKeyDownOnContentTabLabel(e, index); }}
                                 ref={fileTab => { this.fileTabs[index] = fileTab; return this.fileTabs[index]; }}
                             >
                                 {tabContent.label}
@@ -193,7 +189,7 @@ export class ContentViewer extends React.Component {
 
     renderSubheader() {
         return (
-            <div style={{ height: '38px' }} role="tablist" aria-label="Open Jobs">
+            <div style={{ height: '38px' }} role="tablist" aria-label="Open Job output files">
                 { this.renderTabs() }
                 { this.renderSubmitButton()}
             </div>

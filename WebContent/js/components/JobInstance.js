@@ -53,9 +53,6 @@ class JobInstance extends React.Component {
                 this.handleOpenAllFiles(job);
             }
         }
-        // else if (e.altKey && e.keyCode === 39) {
-        //     console.log('right click');
-        // }
     }
 
     handleJobToggle(job) {
