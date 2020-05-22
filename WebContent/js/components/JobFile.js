@@ -88,7 +88,7 @@ class JobFile extends React.Component {
     }
 
     render() {
-        const { job, file, size, pos } = this.props;
+        const { job, file } = this.props;
         return (
             <div>
                 <li className="job-file" role="none">
@@ -113,8 +113,6 @@ class JobFile extends React.Component {
 
 JobFile.propTypes = {
     job: PropTypes.instanceOf(Map).isRequired,
-    pos: PropTypes.number.isRequired,
-    size: PropTypes.number.isRequired,
     content: PropTypes.instanceOf(List),
     file: PropTypes.shape({
         label: PropTypes.string.isRequired,

@@ -136,6 +136,7 @@ export class ContentViewer extends React.Component {
                             <div
                                 className="content-tab-label"
                                 onClick={() => { this.handleSelectedTabChange(index); }}
+                                // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
                                 tabIndex="0"
                                 onKeyDown={e => { return this.handleKeyDownOnContentTabLabel(e, index); }}
                                 ref={fileTab => { this.fileTabs[index] = fileTab; return this.fileTabs[index]; }}

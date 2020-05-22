@@ -97,6 +97,7 @@ export class Filters extends React.Component {
                         break;
                     }
                     default:
+                        // eslint-disable-next-line no-console
                         console.warn(`Unknown app2app type=${data.dispatchType}`);
                 }
             }

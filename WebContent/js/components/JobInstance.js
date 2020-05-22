@@ -138,8 +138,8 @@ class JobInstance extends React.Component {
     renderJobFiles() {
         const { job, dispatch } = this.props;
         const files = job.get('files');
-        return files.map((file, index) => {
-            return (<JobFile key={file.id} job={job} dispatch={dispatch} file={file} pos={index} size={files.size} />);
+        return files.map(file => {
+            return (<JobFile key={file.id} job={job} dispatch={dispatch} file={file} />);
         });
     }
 
@@ -168,7 +168,7 @@ class JobInstance extends React.Component {
     }
 
     render() {
-        const { job, pos, size } = this.props;
+        const { job } = this.props;
 
         return (
             <div className="job-instance" role="none">
@@ -203,8 +203,6 @@ class JobInstance extends React.Component {
 JobInstance.propTypes = {
     dispatch: PropTypes.func.isRequired,
     job: PropTypes.instanceOf(Map).isRequired,
-    size: PropTypes.number.isRequired,
-    pos: PropTypes.number.isRequired,
     content: PropTypes.instanceOf(List),
 };
 
