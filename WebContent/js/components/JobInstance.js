@@ -27,7 +27,7 @@ class JobInstance extends React.Component {
         this.state = {
             singleClickTimeout: 0,
             preventSingleClick: false,
-            keyEnter: 0,
+            keyEnterCount: 0,
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -39,17 +39,20 @@ class JobInstance extends React.Component {
                 this.handleJobToggle(job);
             }
             this.setState({ preventSingleClick: false });
-            this.setState({ keyEnter: 0 });
+            this.setState({ keyEnterCount: 0 });
         }, 500);
     }
 
     handleKeyDown(e) {
         const { job } = this.props;
         if (e.key === 'Enter') {
-            this.setState({ keyEnter: 1 });
-            if (this.state.keyEnter === 0) {
+            this.setState({ keyEnterCount: 1 });
+
+            if (this.state.keyEnterCount === 0) {
+                // single click on single enter
                 this.handleSingleClick(job);
             } else {
+                // double click action - on quick multiple presses
                 this.handleOpenAllFiles(job);
             }
         }
@@ -84,7 +87,7 @@ class JobInstance extends React.Component {
         // Reset the debounce handling
         clearTimeout(this.state.singleClickTimeout);
         this.setState({ preventSingleClick: true });
-        this.setState({ keyEnter: 0 });
+        this.setState({ keyEnterCount: 0 });
         if (this.isFileOpen(fileLabel)) {
             this.findAndSwitchToContent(job, fileLabel);
         } else {
