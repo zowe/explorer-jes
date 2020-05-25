@@ -378,14 +378,14 @@ describe('JES explorer function verification tests', function () {
             it('Should handle getting JCL of job');
             it('Should handle closing context menu when clicking elsewhere on screen');
         });
-        describe.only('Editor behaviour', () => {
+        describe('Editor behaviour', () => {
             const jobFileName = 'JESJCL';
 
-            it.only('Should open a file when clicking on it', async () => {
+            it('Should open a file when clicking on it', async () => {
                 expect(await getJobAndOpenFile(driver, '*', `${TEST_JOB_PREFIX}S`, null, jobFileName)).to.be.true;
             });
 
-            it.only('Should display job name, id and file name in card header', async () => {
+            it('Should display job name, id and file name in card header', async () => {
                 const viewer = await driver.findElements(By.className('content-tab-label'));
                 // const viewer = await driver.wait(until.elementLocated(By.className('content-tab-label')), 60000);
                 const tabLabelText = await viewer[0].getText();
