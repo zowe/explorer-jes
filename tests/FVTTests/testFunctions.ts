@@ -192,7 +192,7 @@ export async function getJobAndOpenFile(driver, ownerFilter, prefixFilter, statu
         console.log('Unable to get job files to load');
         return false;
     }
-    const fileLinks = await driver.findElements(By.css('.job-instance > ul > div > li > div > .content-link'));
+    const fileLinks = await driver.findElements(By.css('.job-instance >  li > div > .content-link'));
 
     // Find the jobFileName we're looking for from the list of job files
     for (const fileLink of fileLinks) {

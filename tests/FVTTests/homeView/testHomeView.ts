@@ -341,7 +341,7 @@ describe('JES explorer function verification tests', function () {
 
                 it('Should handle opening a files content when clicked', async () => {
                     expect(await testJobFilesLoad(driver, '*', TEST_JOB_SHORT_NAME, null)).to.be.true;
-                    const fileLink = await driver.findElements(By.css('.job-instance > ul > div > li > div > .content-link'));
+                    const fileLink = await driver.findElements(By.css('.job-instance > li > div > .content-link'));
                     expect(fileLink).to.be.an('array').that.has.lengthOf.at.least(1);
                     await fileLink[0].click();
 
@@ -378,15 +378,16 @@ describe('JES explorer function verification tests', function () {
             it('Should handle getting JCL of job');
             it('Should handle closing context menu when clicking elsewhere on screen');
         });
-        describe('Editor behaviour', () => {
+        describe.only('Editor behaviour', () => {
             const jobFileName = 'JESJCL';
 
-            it('Should open a file when clicking on it', async () => {
+            it.only('Should open a file when clicking on it', async () => {
                 expect(await getJobAndOpenFile(driver, '*', `${TEST_JOB_PREFIX}S`, null, jobFileName)).to.be.true;
             });
 
-            it('Should display job name, id and file name in card header', async () => {
+            it.only('Should display job name, id and file name in card header', async () => {
                 const viewer = await driver.findElements(By.className('content-tab-label'));
+                // const viewer = await driver.wait(until.elementLocated(By.className('content-tab-label')), 60000);
                 const tabLabelText = await viewer[0].getText();
                 expect(tabLabelText).to.contain(jobFileName);
             });
