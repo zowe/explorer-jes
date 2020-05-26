@@ -37,7 +37,7 @@ node('ibm-jenkins-slave-dind') {
     string(
       name: 'FVT_ZOSMF_HOST',
       description: 'z/OSMF server for integration test',
-      defaultValue: 'river.zowe.org',
+      defaultValue: 'zzow01.zowe.marist.cloud',
       trim: true,
       required: true
     ),
@@ -52,7 +52,7 @@ node('ibm-jenkins-slave-dind') {
       name: 'FVT_ZOSMF_CREDENTIAL',
       description: 'The SSH credential used to connect to z/OSMF for integration test',
       credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
-      defaultValue: 'ssh-zdt-test-image-guest',
+      defaultValue: 'ssh-marist-server-zzow01-zowep',
       required: true
     ),
     string(
