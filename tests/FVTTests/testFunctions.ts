@@ -164,7 +164,7 @@ export async function testJobFilesLoad(driver :WebDriver, ownerFilter :string, p
     let filesCount :number = 0;
     for (const job of jobs) {
         await job.click();
-        await driver.wait(until.elementLocated(By.id('loading-icon')), 10000);
+        await driver.sleep(1000); //Sleep to allow for loading
         await driver.wait(until.elementLocated(By.id('refresh-icon')), 20000);
         const jobFiles :WebElement[] = await driver.findElements(By.className('job-file'));
         // If we don't find new files
