@@ -58,8 +58,11 @@ export class ContentViewer extends React.Component {
         }
     }
 
-    componentDidUpdate() {
-        this.focusToActiveTab();
+    componentDidUpdate(prevProp) {
+        const { selectedContent } = this.props;
+        if (selectedContent !== prevProp.selectedContent) {
+            this.focusToActiveTab();
+        }
     }
 
     onButtonRef(node) {
