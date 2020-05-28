@@ -87,7 +87,7 @@ class LoginDialog extends React.Component {
 
         const dialogTitle = !isValidating ?
             (
-                <DialogTitle style={{ 'text-align': 'center' }}>
+                <DialogTitle style={{ textAlign: 'center' }}>
                     <img
                         style={{ width: '100px', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
                         src={ZoweIcon}

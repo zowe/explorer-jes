@@ -117,4 +117,15 @@ cd zlux/zlux-app-server/bin
 `explorer-jes` root already have sample `pluginDefinition.json` & will have `web` folder after `build`.
 
 
+## Enable Redux logs
+Either use Redux Tool Browser Extension in your browser or enable redux logs by setting `enableReduxLogger` variable `true` in your local storage.
+
+Run this in browser console
+```
+window.localStorage.setItem('enableReduxLogger', true);
+```
+
+
+
+
 
