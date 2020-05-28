@@ -118,12 +118,29 @@ cd zlux/zlux-app-server/bin
 
 
 ## Enable Redux logs
-Either use Redux Tool Browser Extension in your browser or enable redux logs by setting `enableReduxLogger` variable `true` in your local storage.
+Either use [Redux Dev Tool Browser Extension](https://github.com/reduxjs/redux-devtools) in your browser 
+Or enable redux logs by setting `enableReduxLogger` variable `true` in your local storage.
 
-Run this in browser console
+### Add Redux Logger
+While explore app is open in browser:
+1. Run this in browser console 
 ```
 window.localStorage.setItem('enableReduxLogger', true);
 ```
+
+2. And refresh browser    
+So as long as this value remains true in browser local storage,       
+you will see redux logs in console.                  
+
+### Remove Redux Logger          
+While explore app is open in browser:      
+1. Run either `window.localStorage.setItem('enableReduxLogger', false)`         
+or `window.localStorage.removeItem('enableReduxLogger')`           
+or clear storage manually in `browser dev tools` under `Application` tab 
+
+2. And refresh browser to stop seeing redux console logs.       
+
+
 
 
 
