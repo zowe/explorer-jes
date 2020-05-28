@@ -32,7 +32,10 @@ export class ContentViewer extends React.Component {
         this.renderSubmitButton = this.renderSubmitButton.bind(this);
         this.onButtonRef = this.onButtonRef.bind(this);
         this.updateSubmitJCLButtonOffset = this.updateSubmitJCLButtonOffset.bind(this);
+        this.focusToActiveTab = this.focusToActiveTab.bind(this);
+        this.handleKeyDownOnContentTabLabel = this.handleKeyDownOnContentTabLabel.bind(this);
 
+        this.fileTabs = [];
         this.state = {
             height: 0,
             currentContent: '',
@@ -52,6 +55,13 @@ export class ContentViewer extends React.Component {
         }
         if (newContent.size > content.size) {
             dispatch(changeSelectedContent(newContent.size - 1));
+        }
+    }
+
+    componentDidUpdate(prevProp) {
+        const { selectedContent } = this.props;
+        if (selectedContent !== prevProp.selectedContent) {
+            this.focusToActiveTab();
         }
     }
 
@@ -96,6 +106,18 @@ export class ContentViewer extends React.Component {
         }
     }
 
+    handleKeyDownOnContentTabLabel(e, index) {
+        if (e.key === 'Enter') { this.handleSelectedTabChange(index); }
+    }
+
+    focusToActiveTab() {
+        const { selectedContent } = this.props;
+        const tab = this.fileTabs[selectedContent];
+        if (tab) {
+            tab.focus();
+        }
+    }
+
     renderTabs() {
         const { content, selectedContent } = this.props;
         const unselectedTabStyle = { display: 'flex', float: 'left', alignItems: 'center', padding: '6px', cursor: 'pointer' };
@@ -103,12 +125,32 @@ export class ContentViewer extends React.Component {
         if (content.size > 0) {
             return content.map((tabContent, index) => {
                 return (
-                    <div className="content-tab" style={{ width: 'max-content', display: 'inline-block' }} key={tabContent.label}>
-                        <div style={index === selectedContent ? selectedTabStyle : unselectedTabStyle}>
-                            <div className="content-tab-label" onClick={() => { this.handleSelectedTabChange(index); }} >
+                    <div
+                        className="content-tab"
+                        style={{ width: 'max-content', display: 'inline-block' }}
+                        key={tabContent.label}
+                        role="tab"
+                        aria-selected={index === selectedContent ? 'true' : 'false'}
+                        aria-controls="content-viewer-body"
+                    >
+                        <div
+                            style={index === selectedContent ? selectedTabStyle : unselectedTabStyle}
+                        >
+                            <div
+                                className="content-tab-label"
+                                onClick={() => { this.handleSelectedTabChange(index); }}
+                                // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+                                tabIndex="0"
+                                onKeyDown={e => { return this.handleKeyDownOnContentTabLabel(e, index); }}
+                                ref={fileTab => { this.fileTabs[index] = fileTab; return this.fileTabs[index]; }}
+                            >
                                 {tabContent.label}
                             </div>
-                            <ClearIcon onClick={() => { this.handleCloseTab(index); }} />
+                            <ClearIcon
+                                onClick={() => { this.handleCloseTab(index); }}
+                                tabIndex="0"
+                                onKeyDown={e => { if (e.key === 'Enter') this.handleCloseTab(index); }}
+                            />
                         </div>
                         {tabContent.isFetching ? <LinearProgress class="progress-bar" style={{ width: '100%', height: '2px' }} /> : null}
                     </div>
@@ -151,7 +193,7 @@ export class ContentViewer extends React.Component {
 
     renderSubheader() {
         return (
-            <div style={{ height: '38px' }}>
+            <div style={{ height: '38px' }} role="tablist" aria-label="Open Job output files">
                 { this.renderTabs() }
                 { this.renderSubmitButton()}
             </div>
@@ -170,9 +212,9 @@ export class ContentViewer extends React.Component {
                 <CardHeader
                     id="content-viewer-header"
                     subheader={this.renderSubheader()}
-                    style={{ paddingBottom: 0, whiteSpace: 'nowrap', overflow: 'scroll' }}
+                    style={{ paddingBottom: 0, whiteSpace: 'nowrap', overflowY: 'hidden', overflowX: 'scroll' }}
                 />
-                <CardContent style={cardTextStyle} >
+                <CardContent id="content-viewer-body" style={cardTextStyle} role="tabpanel">
                     <OrionEditor
                         content={(content.get(selectedContent) && content.get(selectedContent).content) || ' '}
                         syntax={'text/jclcontext'}

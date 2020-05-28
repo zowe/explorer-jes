@@ -27,7 +27,10 @@ class JobInstance extends React.Component {
         this.state = {
             singleClickTimeout: 0,
             preventSingleClick: false,
+            keyEnterCount: 0,
         };
+
+        this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
     handleSingleClick(job) {
@@ -36,7 +39,23 @@ class JobInstance extends React.Component {
                 this.handleJobToggle(job);
             }
             this.setState({ preventSingleClick: false });
+            this.setState({ keyEnterCount: 0 });
         }, 500);
+    }
+
+    handleKeyDown(e) {
+        const { job } = this.props;
+        if (e.key === 'Enter') {
+            this.setState({ keyEnterCount: 1 });
+
+            if (this.state.keyEnterCount === 0) {
+                // single click on single enter
+                this.handleSingleClick(job);
+            } else {
+                // double click action - on quick multiple presses
+                this.handleOpenAllFiles(job);
+            }
+        }
     }
 
     handleJobToggle(job) {
@@ -68,6 +87,7 @@ class JobInstance extends React.Component {
         // Reset the debounce handling
         clearTimeout(this.state.singleClickTimeout);
         this.setState({ preventSingleClick: true });
+        this.setState({ keyEnterCount: 0 });
         if (this.isFileOpen(fileLabel)) {
             this.findAndSwitchToContent(job, fileLabel);
         } else {
@@ -120,7 +140,8 @@ class JobInstance extends React.Component {
 
     renderJobFiles() {
         const { job, dispatch } = this.props;
-        return job.get('files').map(file => {
+        const files = job.get('files');
+        return files.map(file => {
             return (<JobFile key={file.id} job={job} dispatch={dispatch} file={file} />);
         });
     }
@@ -153,13 +174,18 @@ class JobInstance extends React.Component {
         const { job } = this.props;
 
         return (
-            <div className="job-instance">
-                <li>
+            <div className="job-instance" role="none">
+                <li role="none">
                     <ContextMenuTrigger id={job.get('label')}>
                         <span
                             className="content-link"
                             onClick={() => { this.handleSingleClick(job); }}
                             onDoubleClick={() => { this.handleOpenAllFiles(job); }}
+                            tabIndex="0"
+                            onKeyDown={this.handleKeyDown}
+                            role="treeitem"
+                            aria-expanded={job.get('isToggled').toString()}
+                            aria-level="1"
                         >
                             <LabelIcon className="node-icon" />
                             <span className="job-label">
@@ -168,10 +194,10 @@ class JobInstance extends React.Component {
                             </span>
                         </span>
                     </ContextMenuTrigger>
+                    <ul role="group">
+                        {job.get('isToggled') && this.renderJobFiles(job)}
+                    </ul>
                 </li>
-                <ul>
-                    {job.get('isToggled') && this.renderJobFiles(job)}
-                </ul>
                 {this.renderJobInstanceMenu()}
             </div>);
     }

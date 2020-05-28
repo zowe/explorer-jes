@@ -97,6 +97,7 @@ export class Filters extends React.Component {
                         break;
                     }
                     default:
+                        // eslint-disable-next-line no-console
                         console.warn(`Unknown app2app type=${data.dispatchType}`);
                 }
             }
@@ -169,6 +170,8 @@ export class Filters extends React.Component {
                     Job Filters
                 </ExpansionPanelSummary>
                 <form
+                    role="search"
+                    aria-label="Job Filters"
                     id="filter-form"
                     onSubmit={e => { return this.applyValues(e); }}
                 >
@@ -180,6 +183,7 @@ export class Filters extends React.Component {
                             error={owner.trim() === ''}
                             fieldChangedCallback={this.handleOwnerChange}
                             style={{ width: '50%' }}
+                            disabled={!this.state.toggled}
                         />
                         <UpperCaseTextField
                             id="filter-prefix-field"
@@ -188,6 +192,7 @@ export class Filters extends React.Component {
                             error={prefix.trim() === ''}
                             fieldChangedCallback={this.handlePrefixChange}
                             style={{ width: '50%' }}
+                            disabled={!this.state.toggled}
                         />
                         {this.isOwnerAndPrefixWild() ? <label>Owner=* & Prefix=* may take a long time to load, APPLY to proceed</label> : <br />}
                         <div style={{ paddingTop: '5px' }}>
@@ -198,6 +203,7 @@ export class Filters extends React.Component {
                                 error={jobId.trim() === ''}
                                 fieldChangedCallback={this.handleJobIdChange}
                                 style={{ width: '50%' }}
+                                disabled={!this.state.toggled}
                             />
                             <FormControl
                                 style={{ width: '50%' }}
@@ -208,6 +214,7 @@ export class Filters extends React.Component {
                                     label="Status"
                                     value={status}
                                     onChange={this.handleStatusChange}
+                                    disabled={!this.state.toggled}
                                 >
                                     <MenuItem key="*" value="*">*</MenuItem>
                                     {Filters.renderStatusOptions()}
@@ -222,6 +229,7 @@ export class Filters extends React.Component {
                             color="primary"
                             primary={'true'}
                             type="submit"
+                            disabled={!this.state.toggled}
                         >
                         APPLY
                         </Button>
@@ -230,6 +238,7 @@ export class Filters extends React.Component {
                             variant="contained"
                             color="secondary"
                             onClick={this.resetValues}
+                            disabled={!this.state.toggled}
                         >
                         RESET
                         </Button>

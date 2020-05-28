@@ -91,11 +91,15 @@ class JobFile extends React.Component {
         const { job, file } = this.props;
         return (
             <div>
-                <li className="job-file">
+                <li className="job-file" role="none">
                     <ContextMenuTrigger id={`${job.get('jobId')}${file.id}`}>
                         <span
                             className="content-link"
                             onClick={() => { this.openFile(); }}
+                            onKeyDown={e => { if (e.key === 'Enter') this.openFile(); }}
+                            tabIndex="0"
+                            role="treeitem"
+                            aria-level="2"
                         >
                             <Description className="node-icon" />
                             <span className="job-file-label">{file.label}</span>
