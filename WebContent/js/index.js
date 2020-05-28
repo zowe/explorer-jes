@@ -24,13 +24,17 @@ import rootReducer from './reducers';
 import JobsView from './containers/pages/Jobs';
 import FullScreenView from './containers/pages/FullScreen';
 
-// uncomment to enable redux dev tool in development
-const store = applyMiddleware(thunk, createLogger())(createStore)(rootReducer, Map({}),
-    //  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-);
+// redux dev tool extension enabled
+let appMiddleware;
+if (window.localStorage.getItem('enableReduxLogger')) {
+    appMiddleware = applyMiddleware(thunk, createLogger());
+} else {
+    appMiddleware = applyMiddleware(thunk);
+}
 
-// TODO: Need webpack changes to disable console log state changes
-// const store = createStore(rootReducer, Map({}), applyMiddleware(thunk));
+const store = appMiddleware(createStore)(rootReducer, Map({}),
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+);
 
 const theme = createMuiTheme({
     overrides: {

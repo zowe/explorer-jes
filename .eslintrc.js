@@ -21,7 +21,7 @@ module.exports = {
         "jsx-a11y/no-static-element-interactions":0,
         "lines-between-class-members": ["error", "always"],
         "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
-        "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/fvtTest/**/*.*", "**/tests/**/*.*"]}]
+        "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/fvtTest/**/*.*", "**/tests/**/*.*", "webpack.*"]}]
     },
     "env": {
         "browser": true,
