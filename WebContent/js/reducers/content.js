@@ -23,6 +23,12 @@ import {
 
 export const DEFAULT_TITLE = 'JES Explorer';
 
+// content List()
+// label - label of tab in content viewer
+// id - unique id for contant tab
+// content - text content
+// isFetching - boolean value of is content still being fetched
+
 const INITIAL_CONTENT_STATE = Map({
     content: List(),
     selectedContent: 0, // Index of the current active tab content
@@ -30,10 +36,10 @@ const INITIAL_CONTENT_STATE = Map({
     title: DEFAULT_TITLE,
 });
 
-function getIndexOfContentFromLabel(contentList, label) {
+function getIndexOfContentFromId(contentList, label, fileId) {
     return contentList.indexOf(
         contentList.filter(contentItem => {
-            return contentItem.label === label;
+            return contentItem.id === label + fileId;
         }).first());
 }
 
@@ -43,6 +49,7 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
             return state.merge({
                 content: state.get('content').push({
                     label: action.fileLabel,
+                    id: action.fileLabel + action.fileId,
                     content: '',
                     isFetching: true,
                 }),
@@ -50,10 +57,11 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
         case RECEIVE_CONTENT:
             return state.merge({
                 title: `${DEFAULT_TITLE} [${action.fileLabel}]`,
-                content: state.get('content').set(getIndexOfContentFromLabel(state.get('content'), action.fileLabel),
+                content: state.get('content').set(getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId),
                     {
                         label: action.fileLabel,
                         content: action.content,
+                        id: action.fileLabel + action.fileId,
                         isFetching: false,
                         readOnly: action.readOnly,
                     }),
@@ -90,7 +98,7 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
             });
         case INVALIDATE_CONTENT:
             return state.merge({
-                content: state.get('content').delete(getIndexOfContentFromLabel(state.get('content'), action.fileLabel)),
+                content: state.get('content').delete(getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId)),
             });
         default:
             return state;

@@ -49,10 +49,11 @@ function receiveContent(jobName, jobId, fileName, fileId, content, fileLabel, re
     };
 }
 
-export function invalidateContent(fileLabel) {
+export function invalidateContent(fileLabel, fileId) {
     return {
         type: INVALIDATE_CONTENT,
         fileLabel,
+        fileId,
     };
 }
 
@@ -90,7 +91,7 @@ export function fetchJobFile(jobName, jobId, fileName, fileId) {
             })
             .catch(e => {
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileName}`));
-                return dispatch(invalidateContent(fileLabel));
+                return dispatch(invalidateContent(fileLabel, fileId));
             });
     };
 }
