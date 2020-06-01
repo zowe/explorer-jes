@@ -59,10 +59,11 @@ export class ContentViewer extends React.Component {
     }
 
     componentDidUpdate(prevProp) {
-        const { selectedContent } = this.props;
+        const { selectedContent, title } = this.props;
         if (selectedContent !== prevProp.selectedContent) {
             this.focusToActiveTab();
         }
+        document.title = title;
     }
 
     onButtonRef(node) {
@@ -236,6 +237,7 @@ ContentViewer.propTypes = {
     locationHost: PropTypes.string,
     locationSearch: PropTypes.string,
     isSubmittingJCL: PropTypes.bool.isRequired,
+    title: PropTypes.string.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -245,6 +247,7 @@ function mapStateToProps(state) {
         isFetching: contentRoot.get('isFetching'),
         selectedContent: contentRoot.get('selectedContent'),
         isSubmittingJCL: contentRoot.get('isSubmittingJCL'),
+        title: contentRoot.get('title'),
     };
 }
 
