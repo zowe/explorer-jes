@@ -32,6 +32,7 @@ class LoginDialog extends React.Component {
         this.state = {
             username: '',
             password: '',
+            firstLoginAttempted: false,
         };
     }
 
@@ -40,6 +41,21 @@ class LoginDialog extends React.Component {
         if (!forceLogin) {
             dispatch(validateUser());
         }
+    }
+
+    getDialogErrorMessage() {
+        const { validationMessage } = this.props;
+        if (this.state.firstLoginAttempted) {
+            return (
+                <div
+                    id="login-status-message"
+                    style={{ color: 'red' }}
+                    role="status"
+                >
+                    {validationMessage}
+                </div>);
+        }
+        return null;
     }
 
     handleUsernameChange(event) {
@@ -56,11 +72,12 @@ class LoginDialog extends React.Component {
 
     handleLogin = () => {
         const { dispatch } = this.props;
+        this.setState({ firstLoginAttempted: true });
         return dispatch(loginUser(this.state.username, this.state.password));
     }
 
     render() {
-        const { isValidating, validationMessage } = this.props;
+        const { isValidating } = this.props;
         const dialogContent = isValidating ? <CircularProgress /> :
             (<form onSubmit={this.handleLogin} style={{ width: '500px' }}>
                 <TextField
@@ -70,6 +87,7 @@ class LoginDialog extends React.Component {
                     onChange={this.handleUsernameChange}
                     style={{ display: 'block' }}
                     fullWidth={true}
+                    autoFocus={true}
                 />
                 <TextField
                     id="password"
@@ -80,9 +98,7 @@ class LoginDialog extends React.Component {
                     fullWidth={true}
                 />
                 <input type="submit" style={{ display: 'none' }} />
-                <div id="login-status-message" style={{ color: 'red' }}>
-                    {validationMessage}
-                </div>
+                {this.getDialogErrorMessage()}
             </form>);
 
         const dialogAction = !isValidating ? (<Button onClick={this.handleLogin} >Login</Button>) : null;
