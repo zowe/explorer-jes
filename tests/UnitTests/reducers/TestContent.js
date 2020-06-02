@@ -64,7 +64,7 @@ describe('Reducer: content', () => {
 
     it('Should handle CHANGE_SELECTED_CONTENT', () => {
         const action = { type: contentActions.CHANGE_SELECTED_CONTENT, newSelectedContent: 1 };
-        expect(content(contentResources.baseContent, action)).toEqual(contentResources.baseContent.set('selectedContent', 1));
+        expect(content(contentResources.receivedContent2, action)).toEqual(contentResources.receivedContent2.set('selectedContent', 1));
     });
 
     it('Should handle REMOVE_CONTENT', () => {

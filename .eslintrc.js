@@ -7,6 +7,7 @@ module.exports = {
     ],
     "rules": {
         "react/jsx-filename-extension": 0,
+        "react/no-did-update-set-state": 0,
         "indent": ["error", 4,{ "SwitchCase": 1 }],
         "react/jsx-indent": ["error", 4],
         "react/jsx-indent-props": ["error", 4],

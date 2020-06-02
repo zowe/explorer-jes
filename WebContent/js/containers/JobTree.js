@@ -26,10 +26,28 @@ import JobInstance from '../components/JobInstance';
 const NO_JOBS_FOUND_MESSAGE = 'No jobs found';
 
 class JobNodeTree extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            message: null,
+        };
+    }
+
     componentWillReceiveProps(nextProps) {
         const { owner, dispatch, isFetching } = this.props;
         if (!isFetching && owner === LOADING_MESSAGE && nextProps.owner && nextProps.owner !== LOADING_MESSAGE) {
             dispatch(fetchJobs(nextProps));
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const { isFetching: isFetchingCurrent } = this.props;
+        const { isFetching: isFetchingPrev } = prevProps;
+        if (isFetchingCurrent && !isFetchingPrev) {
+            this.setState({ message: 'Jobs loading' });
+        }
+        if (!isFetchingCurrent && isFetchingPrev) {
+            this.setState({ message: 'Jobs loaded' });
         }
     }
 
