@@ -29,7 +29,7 @@ class JobFile extends React.Component {
     openFile() {
         const { content, dispatch, job, file } = this.props;
         // Is the file already open?
-        if (content.filter(x => { return x.label === getFileLabel(job.get('jobId'), file.label); }).size > 0) {
+        if (content.filter(x => { return x.id === file.id; }).size > 0) {
             // Find which index the file is open in and change to it
             content.forEach(x => {
                 if (x.label === getFileLabel(job.get('jobId'), file.label)) {
