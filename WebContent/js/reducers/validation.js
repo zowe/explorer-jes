@@ -21,6 +21,7 @@ const INITIAL_CONTENT_STATE = Map({
     isValidating: false,
     username: '',
     message: '',
+    forceLogin: false,
 });
 
 export default function content(state = INITIAL_CONTENT_STATE, action) {
@@ -34,12 +35,14 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
                 validated: true,
                 username: action.username,
                 isValidating: false,
+                forceLogin: false,
             });
         case INVALIDATE_VALIDATION:
             return state.merge({
                 isValidating: false,
                 validated: false,
                 message: action.message ? action.message : '',
+                forceLogin: true,
             });
         default:
             return state;
