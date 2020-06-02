@@ -22,6 +22,7 @@ import { fetchJobs } from '../actions/jobNodes';
 import { LOADING_MESSAGE } from '../reducers/filters';
 import FullHeightTree from './FullHeightTree';
 import JobInstance from '../components/JobInstance';
+import Announcer from '../components/Announcer';
 
 const NO_JOBS_FOUND_MESSAGE = 'No jobs found';
 
@@ -99,7 +100,7 @@ class JobNodeTree extends React.Component {
                         </ul>
                     </FullHeightTree>
                 </CardContent>
-
+                <Announcer message={this.state.message} />
             </Card>
         );
     }
