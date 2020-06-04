@@ -19,7 +19,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-const copyTask = new CopyWebpackPlugin([{
+const copyArray =
+[{
     from: path.resolve(__dirname, './WebContent/zlux-hooks'),
     to: path.resolve(OUTPUT_FOLDER, 'zlux-hooks'),
 },
@@ -39,7 +40,16 @@ const copyTask = new CopyWebpackPlugin([{
     from: path.resolve(__dirname, './WebContent/favicon.ico'),
     to: path.resolve(OUTPUT_FOLDER),
 },
-]);
+];
+
+if (OUTPUT_FOLDER === 'web') {
+    copyArray.push({
+        from: path.resolve(__dirname, './WebContent/img'),
+        to: path.resolve(OUTPUT_FOLDER, 'images'),
+    });
+}
+
+const copyTask = new CopyWebpackPlugin(copyArray);
 
 const cleanTask = new CleanWebpackPlugin();
 
