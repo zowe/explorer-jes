@@ -129,7 +129,7 @@ export class ContentViewer extends React.Component {
                     <div
                         className="content-tab"
                         style={{ width: 'max-content', display: 'inline-block' }}
-                        key={tabContent.label}
+                        key={tabContent.id}
                         role="tab"
                         aria-selected={index === selectedContent ? 'true' : 'false'}
                         aria-controls="content-viewer-body"
