@@ -42,13 +42,6 @@ const copyArray =
 },
 ];
 
-if (OUTPUT_FOLDER === 'web') {
-    copyArray.push({
-        from: path.resolve(__dirname, './WebContent/img'),
-        to: path.resolve(OUTPUT_FOLDER, 'images'),
-    });
-}
-
 const copyTask = new CopyWebpackPlugin(copyArray);
 
 const cleanTask = new CleanWebpackPlugin();
