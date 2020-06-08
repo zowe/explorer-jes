@@ -83,6 +83,7 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
         case CHANGE_SELECTED_CONTENT:
             return state.merge({
                 selectedContent: action.newSelectedContent,
+                title: `${DEFAULT_TITLE} [${state.get('content').get(action.newSelectedContent).label}]`,
             });
         case REQUEST_SUBMIT_JCL:
             return state.merge({

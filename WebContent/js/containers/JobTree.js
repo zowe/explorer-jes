@@ -22,14 +22,33 @@ import { fetchJobs } from '../actions/jobNodes';
 import { LOADING_MESSAGE } from '../reducers/filters';
 import FullHeightTree from './FullHeightTree';
 import JobInstance from '../components/JobInstance';
+import Announcer from '../components/Announcer';
 
 const NO_JOBS_FOUND_MESSAGE = 'No jobs found';
 
 class JobNodeTree extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            message: null,
+        };
+    }
+
     componentWillReceiveProps(nextProps) {
         const { owner, dispatch, isFetching } = this.props;
         if (!isFetching && owner === LOADING_MESSAGE && nextProps.owner && nextProps.owner !== LOADING_MESSAGE) {
             dispatch(fetchJobs(nextProps));
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const { isFetching: isFetchingCurrent } = this.props;
+        const { isFetching: isFetchingPrev } = prevProps;
+        if (isFetchingCurrent && !isFetchingPrev) {
+            this.setState({ message: 'Jobs loading' });
+        }
+        if (!isFetchingCurrent && isFetchingPrev) {
+            this.setState({ message: 'Jobs loaded' });
         }
     }
 
@@ -81,7 +100,7 @@ class JobNodeTree extends React.Component {
                         </ul>
                     </FullHeightTree>
                 </CardContent>
-
+                <Announcer message={this.state.message} />
             </Card>
         );
     }
