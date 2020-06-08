@@ -26,7 +26,7 @@ import FullScreenView from './containers/pages/FullScreen';
 
 // redux dev tool extension enabled
 let appMiddleware;
-if (window.localStorage.getItem('enableReduxLogger')) {
+if (window.localStorage.getItem('enableReduxLogger') === 'true') {
     appMiddleware = applyMiddleware(thunk, createLogger());
 } else {
     appMiddleware = applyMiddleware(thunk);
