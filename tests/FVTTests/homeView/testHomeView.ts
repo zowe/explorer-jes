@@ -10,19 +10,16 @@
 
 /* eslint-disable no-unused-expressions */
 import {
-    getDriver,
-    setApimlAuthTokenCookie,
     testElementAppearsXTimesById,
     testWindowHeightChangeForcesComponentHeightChange,
     testTextInputFieldCanBeModified,
-    loadPage,
+    loadPage
 } from 'explorer-fvt-utilities';
 import { By, until, WebDriver, WebElement } from 'selenium-webdriver';
 import { expect } from 'chai';
 
 const chai = require('chai');
 chai.use(require('chai-things'));
-require('geckodriver');
 
 import {
     findAndClickApplyButton,
@@ -58,14 +55,10 @@ import {
     TEST_JOB_SHORT_NAME,
 } from '../testResources';
 
-require('dotenv').config();
-
+import {getDriver, TEST_CONFIG} from "../../FVTTests/testConfig";
 const {
-    ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT,
-} = process.env;
-
-const BASE_URL = `https://${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}`;
-const BASE_URL_WITH_PATH = `${BASE_URL}/ui/v1/explorer-jes`;
+    BASE_URL_WITH_PATH, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD
+} = TEST_CONFIG;
 
 // Need to use unnamed function so we can specify the retries
 // eslint-disable-next-line
@@ -75,7 +68,7 @@ describe('JES explorer function verification tests', function () {
 
     before('Initialise', async () => {
         driver = await getDriver();
-        await setApimlAuthTokenCookie(driver, USERNAME, PASSWORD, `${BASE_URL}/api/v1/gateway/auth/login`, BASE_URL_WITH_PATH);
+        // await setApimlAuthTokenCookie(driver, USERNAME, PASSWORD, `${BASE_URL}/api/v1/gateway/auth/login`, BASE_URL_WITH_PATH);
 
         // Make sure we have a job in output and active
         await submitJob(SHORT_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
