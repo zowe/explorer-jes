@@ -110,7 +110,7 @@ node('ibm-jenkins-slave-dind') {
   pipeline.build(
     operation: {
       ansiColor('xterm') {
-        sh "npm run prod"
+        pipeline.nvmShell "npm run prod"
       }
     }
   )
