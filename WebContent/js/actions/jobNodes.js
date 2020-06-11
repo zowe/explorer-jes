@@ -24,11 +24,16 @@ export const RECEIVE_JOB_FILES = 'RECEIVE_JOB_FILES';
 export const INVALIDATE_JOB_FILES = 'INVALIDATE_JOB_FILES';
 export const STOP_REFRESH_ICON = 'STOP_REFRESH_ICON';
 
+export const REQUEST_CANCEL_JOB = 'REQUEST_CANCEL_JOB';
+export const RECEIVE_CANCEL_JOB = 'RECEIVE_CANCEL_JOB';
+export const INVALIDATE_CANCEL_JOB = 'INVALIDATE_CANCEL_JOB';
 export const REQUEST_PURGE_JOB = 'REQUEST_PURGE_JOB';
 export const RECEIVE_PURGE_JOB = 'RECEIVE_PURGE_JOB';
 export const INVALIDATE_PURGE_JOB = 'INVALIDATE_PURGE_JOB';
 
 const NO_JOBS_FOUND_MESSAGE = 'No Jobs found for filter parameters';
+const CANCEL_JOB_SUCCESS_MESSAGE = 'Cancel request succeeded for';
+const CANCEL_JOB_FAIL_MESSAGE = 'Cancel request failed for';
 const PURGE_JOB_SUCCESS_MESSAGE = 'Purge request succeeded for';
 const PURGE_JOB_FAIL_MESSAGE = 'Purge request failed for';
 
@@ -87,6 +92,30 @@ function receiveJobFiles(jobName, jobId, jobFiles) {
 function stopRefreshIcon() {
     return {
         type: STOP_REFRESH_ICON,
+    };
+}
+
+function requestCancel(jobName, jobId) {
+    return {
+        type: REQUEST_CANCEL_JOB,
+        jobName,
+        jobId,
+    };
+}
+
+function receiveCancel(jobName, jobId) {
+    return {
+        type: RECEIVE_CANCEL_JOB,
+        jobName,
+        jobId,
+    };
+}
+
+function invalidateCancel(jobName, jobId) {
+    return {
+        type: INVALIDATE_CANCEL_JOB,
+        jobName,
+        jobId,
     };
 }
 
@@ -199,6 +228,34 @@ export function fetchJobFiles(jobName, jobId) {
         dispatch(requestJobFiles(jobName, jobId));
         dispatch(toggleJob(jobId));
         return dispatch(issueFetchFiles(jobName, jobId));
+    };
+}
+
+export function cancelJob(jobName, jobId) {
+    return dispatch => {
+        dispatch(requestCancel(jobName, jobId));
+        return atlasFetch(`jobs/${jobName}/${jobId}`,
+            {
+                credentials: 'include',
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ command: 'cancel' }),
+            })
+            .then(response => {
+                return dispatch(checkForValidationFailure(response));
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.text().then(() => {
+                        dispatch(constructAndPushMessage(`${CANCEL_JOB_SUCCESS_MESSAGE} ${jobName}/${jobId}`));
+                        return dispatch(receiveCancel(jobName, jobId));
+                    });
+                }
+                return response.json().then(json => { throw Error(json && json.message ? json.message : ''); });
+            }).catch(e => {
+                dispatch(constructAndPushMessage(`${CANCEL_JOB_FAIL_MESSAGE} ${jobName}/${jobId} : ${e.message}`));
+                dispatch(invalidateCancel(jobName, jobId));
+            });
     };
 }
 
