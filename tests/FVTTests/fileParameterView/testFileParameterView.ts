@@ -14,31 +14,19 @@ import { expect } from 'chai';
 
 const chai = require('chai');
 chai.use(require('chai-things'));
-require('geckodriver');
 
 import {
-    getDriver,
-    setApimlAuthTokenCookie,
-    testElementAppearsXTimesByCSS,
+    testElementAppearsXTimesByCSS
 } from 'explorer-fvt-utilities';
 
 import {
     waitForAndExtractParsedJobs,
     ParsedJobText,
     loadPageWithFilterOptions,
-    DEFAULT_SEARCH_FILTERS,
 } from '../utilities';
 
-const {
-    ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT,
-} = process.env;
-
-const BASE_URL = `https://${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}`;
-const BASE_URL_WITH_PATH = `${BASE_URL}/ui/v1/explorer-jes`;
-const FILTER_BASE_URL = `${BASE_URL_WITH_PATH}/#/`;
-const VIEWER_BASE_URL = `${BASE_URL_WITH_PATH}/#/viewer`;
-const loadUrlWithSearchFilters = loadPageWithFilterOptions(FILTER_BASE_URL, DEFAULT_SEARCH_FILTERS);
-const ZOSMF_JOB_NAME = 'IZUSVR1';
+import {getDriver, TEST_CONFIG} from "../../FVTTests/testConfig";
+const {VIEWER_BASE_URL, loadUrlWithSearchFilters, ZOSMF_JOB_NAME} = TEST_CONFIG
 
 // Need to use unnamed function so we can specify the retries
 // eslint-disable-next-line
@@ -50,7 +38,6 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
 
     before('Initialise', async () => {
         driver = await getDriver();
-        await setApimlAuthTokenCookie(driver, USERNAME, PASSWORD, `${BASE_URL}/api/v1/gateway/auth/login`, BASE_URL_WITH_PATH);
     });
 
     after('Close out', async () => {
