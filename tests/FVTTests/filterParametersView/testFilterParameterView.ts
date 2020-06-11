@@ -48,7 +48,6 @@ describe('JES explorer home view with filter parameters in url query', function 
 
     before('Initialise', async () => {
         driver = await getDriver();
-        // await setApimlAuthTokenCookie(driver, USERNAME, PASSWORD, `${BASE_URL}/api/v1/gateway/auth/login`, BASE_URL_WITH_PATH);
     });
 
     after('Close out', async () => {

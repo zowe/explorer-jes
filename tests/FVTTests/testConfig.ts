@@ -1,4 +1,4 @@
-import { getDriver as getBrowserDriver, setApimlAuthTokenCookie  } from 'explorer-fvt-utilities';
+import { getDriver as getBrowserDriver, setApimlAuthTokenCookie } from 'explorer-fvt-utilities';
 import { WebDriver } from 'selenium-webdriver';
 import { DEFAULT_SEARCH_FILTERS, loadPageWithFilterOptions } from './utilities';
 
@@ -13,14 +13,14 @@ const VIEWER_BASE_URL = `${BASE_URL_WITH_PATH}/#/viewer`;
 const loadUrlWithSearchFilters = loadPageWithFilterOptions(FILTER_BASE_URL, DEFAULT_SEARCH_FILTERS);
 const ZOSMF_JOB_NAME = 'IZUSVR1';
 
-export async function getDriver() {
+export async function getDriver():Promise<WebDriver> {
     let driver: WebDriver;
     try {
-      driver = await getBrowserDriver(TEST_BROWSER) as WebDriver;
-      await setApimlAuthTokenCookie(driver, USERNAME, PASSWORD, `${BASE_URL}/api/v1/gateway/auth/login`, BASE_URL_WITH_PATH);
-      return driver;
+        driver = await getBrowserDriver(TEST_BROWSER) as WebDriver;
+        await setApimlAuthTokenCookie(driver, USERNAME, PASSWORD, `${BASE_URL}/api/v1/gateway/auth/login`, BASE_URL_WITH_PATH);
+        return driver;
     } catch (err) {
-      console.error(err);
+        console.error(err);
     }
 };
 

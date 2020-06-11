@@ -68,8 +68,6 @@ describe('JES explorer function verification tests', function () {
 
     before('Initialise', async () => {
         driver = await getDriver();
-        // await setApimlAuthTokenCookie(driver, USERNAME, PASSWORD, `${BASE_URL}/api/v1/gateway/auth/login`, BASE_URL_WITH_PATH);
-
         // Make sure we have a job in output and active
         await submitJob(SHORT_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
         await submitJob(LONG_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);

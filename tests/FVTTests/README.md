@@ -33,3 +33,8 @@ SERVER_HTTPS_PORT=7554 \
 TEST_BROWSER=firefox \
 npm run test:fvt
 ```
+
+if you need to run test in non-headless mode, in file testConfig.ts, pass extra parameter
+```
+getBrowserDriver(TEST_BROWSER, {headless: false})
+```

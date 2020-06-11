@@ -63,12 +63,6 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
  
     });
 
-    after('Close out', async () => {
-        if (driver) {
-            driver.quit();
-        }
-    });
-
     it('Should handle rendering expected components with viewer route (File Viewer)', async () => {
         // no tree card component on side
         expect(await testElementAppearsXTimesByCSS(driver, '.tree-card', 0)).to.be.true;
