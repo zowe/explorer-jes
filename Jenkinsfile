@@ -73,6 +73,7 @@ node('ibm-jenkins-slave-dind') {
 
   pipeline.setup(
     packageName: 'org.zowe.explorer-jes',
+    nodeJsVersion: 'v10.18.1',
     github: [
       email                      : lib.Constants.DEFAULT_GITHUB_ROBOT_EMAIL,
       usernamePasswordCredential : lib.Constants.DEFAULT_GITHUB_ROBOT_CREDENTIAL,
