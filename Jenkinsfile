@@ -73,6 +73,7 @@ node('ibm-jenkins-slave-dind') {
 
   pipeline.setup(
     packageName: 'org.zowe.explorer-jes',
+    nodeJsVersion: 'v10.18.1',
     github: [
       email                      : lib.Constants.DEFAULT_GITHUB_ROBOT_EMAIL,
       usernamePasswordCredential : lib.Constants.DEFAULT_GITHUB_ROBOT_CREDENTIAL,
@@ -109,7 +110,7 @@ node('ibm-jenkins-slave-dind') {
   pipeline.build(
     operation: {
       ansiColor('xterm') {
-        sh "npm run prod"
+        pipeline.nvmShell "npm run prod"
       }
     }
   )
@@ -176,6 +177,7 @@ ZOWE_USERNAME=${USERNAME} \
 ZOWE_PASSWORD=${PASSWORD} \
 SERVER_HOST_NAME=${params.FVT_SERVER_HOSTNAME} \
 SERVER_HTTPS_PORT=7554 \
+TEST_BROWSER=firefox \
 npm run test:fvt
 """
           }
