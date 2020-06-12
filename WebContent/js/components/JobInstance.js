@@ -160,20 +160,26 @@ class JobInstance extends React.Component {
 
     renderJobInstanceMenu() {
         const { job } = this.props;
+        const menuItems = [
+            <MenuItem key="open" onClick={() => { this.handleOpenAllFiles(job); }}>
+                    Open
+            </MenuItem>,
+            <MenuItem key="purge" onClick={() => { this.handlePurge(job); }}>
+            Purge Job
+            </MenuItem>,
+            <MenuItem key="getJCL" onClick={() => { this.handleGetJCL(job); }}>
+                Get JCL (SJ)
+            </MenuItem>,
+        ];
+        if (job.get('status').toLowerCase() === 'active') {
+            menuItems.splice(1, 0,
+                <MenuItem key="cancel" onClick={() => { this.handleCancel(job); }}>
+                    Cancel Job
+                </MenuItem>);
+        }
         return (
             <ContextMenu id={job.get('label')}>
-                <MenuItem onClick={() => { this.handleOpenAllFiles(job); }}>
-                    Open
-                </MenuItem>
-                <MenuItem onClick={() => { this.handleCancel(job); }}>
-                    Cancel Job
-                </MenuItem>
-                <MenuItem onClick={() => { this.handlePurge(job); }}>
-                    Purge Job
-                </MenuItem>
-                <MenuItem onClick={() => { this.handleGetJCL(job); }}>
-                    Get JCL (SJ)
-                </MenuItem>
+                {menuItems}
             </ContextMenu>
         );
     }
