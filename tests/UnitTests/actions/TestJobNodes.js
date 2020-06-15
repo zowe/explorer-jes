@@ -247,4 +247,86 @@ describe('Action: jobNodes', () => {
                 });
         });
     });
+
+    describe('cancelJob', () => {
+        it('Should create an action to request a job cancel and then receive validation', () => {
+            const cancelSuccessMessage = rewiredJobNodes.__get__('CANCEL_JOB_SUCCESS_MESSAGE');
+
+            const expectedActions = [{
+                type: JobNodes.REQUEST_CANCEL_JOB,
+                jobName: jobNodesResources.jobName,
+                jobId: jobNodesResources.jobId,
+            },
+            {
+                type: snackbar.PUSH_NOTIFICATION_MESSAGE,
+                message: Map({
+                    message: `${cancelSuccessMessage} ${jobNodesResources.jobName}/${jobNodesResources.jobId}`,
+                }),
+            },
+            {
+                type: JobNodes.RECEIVE_CANCEL_JOB,
+                jobName: jobNodesResources.jobName,
+                jobId: jobNodesResources.jobId,
+            }];
+
+            const node = new Map();
+            node.set('label', jobNodesResources.jobId);
+
+
+            const store = mockStore(fromJS({
+                treeNodesJobs: {
+                    jobs: node,
+                },
+            }));
+
+            nock(BASE_URL)
+                .put(`/jobs/${jobNodesResources.jobName}/${jobNodesResources.jobId}`)
+                .reply(200, '');
+
+            return store.dispatch(JobNodes.cancelJob(jobNodesResources.jobName, jobNodesResources.jobId))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
+        });
+
+        it('Should create an action to request a job cancel and then invalidate', () => {
+            const cancelFail = rewiredJobNodes.__get__('CANCEL_JOB_FAIL_MESSAGE');
+            const fetchResponseMessage = 'Job Not found';
+            const expectedActions = [{
+                type: JobNodes.REQUEST_CANCEL_JOB,
+                jobName: jobNodesResources.jobName,
+                jobId: jobNodesResources.jobId,
+            },
+            {
+                type: snackbar.PUSH_NOTIFICATION_MESSAGE,
+                message: Map({
+                    message: `${cancelFail} ${jobNodesResources.jobName}/${jobNodesResources.jobId} : ${fetchResponseMessage}`,
+                }),
+            },
+            {
+                type: JobNodes.INVALIDATE_CANCEL_JOB,
+                jobName: jobNodesResources.jobName,
+                jobId: jobNodesResources.jobId,
+            }];
+
+            const node = new Map();
+            node.set('label', jobNodesResources.jobId);
+
+
+            const store = mockStore(fromJS({
+                treeNodesJobs: {
+                    jobs: node,
+                },
+            }));
+
+            nock(BASE_URL)
+                .put(`/jobs/${jobNodesResources.jobName}/${jobNodesResources.jobId}`)
+                .reply(404, { message: fetchResponseMessage });
+
+            return store.dispatch(JobNodes.cancelJob(jobNodesResources.jobName, jobNodesResources.jobId))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
+        });
+    });
 });

@@ -5,6 +5,7 @@ All notable changes to the JES-Explorer will be documented in this file.
 
 ### New features and enhancements
 <!--- - Format: Added support for <xx>. (Issue/PR number) [Doc link if any] [Thanks @contributor] --->
+- Added cancel functionality to the job instance context meu (https://github.com/zowe/zlux/issues/443), Thanks @jordanCain
 ### Bug fixes
 <!--- - Format: Fixed <xx>. (Issue/PR number) [Doc link if any] [Thanks @contributor] --->
 - Added accessibility improvements to support screen readers notifying users of updates such as job tree loading/loaded, switch between spool files and alert when snackbar notifications are presented (https://github.com/zowe/explorer-jes/pull/189), Thanks @jordanCain
