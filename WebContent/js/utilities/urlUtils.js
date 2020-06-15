@@ -9,11 +9,14 @@
  */
 
 let host = 'tvt5003.svl.ibm.com:7554';
+console.log(location)
 if (typeof location !== 'undefined') {
-    const hostname = location.hostname;
-    if (hostname !== 'localhost' || process.env.NODE_ENV === 'production') {
-        host = location.host;
-    }
+    //const hostname = location.hostname;
+    console.log("do we get here?")
+    const hostname = "thishouldntwork.com"
+    //if (hostname !== 'localhost' || process.env.NODE_ENV === 'production') {
+    //    host = location.host;
+    //}
 }
 
 export function encodeURLComponent(URL) {
