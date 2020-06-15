@@ -31,6 +31,10 @@ SERVER_DIR="${ROOT_DIR}/components/explorer-jes/bin/server/"
 
 JOB_NAME="${ZOWE_PREFIX}UJ"
 
+echo "DO we get here?##@@##@@#$"
+
+echo $ZOWE_EXPLORER_FRAME_ANCESTORS
+
 # start service
 _BPX_JOBNAME=${JOB_NAME} $NODE_BIN $SERVER_DIR/src/index.js \
   --service ${EXPLORER_PLUGIN_NAME} \
