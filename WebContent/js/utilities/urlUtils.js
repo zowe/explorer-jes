@@ -9,14 +9,11 @@
  */
 
 let host = 'tvt5003.svl.ibm.com:7554';
-console.log(location)
 if (typeof location !== 'undefined') {
-    //const hostname = location.hostname;
-    console.log("do we get here?")
-    const hostname = "thishouldntwork.com"
-    //if (hostname !== 'localhost' || process.env.NODE_ENV === 'production') {
-    //    host = location.host;
-    //}
+    const hostname = location.hostname;
+    if (hostname !== 'localhost' || process.env.NODE_ENV === 'production') {
+        host = location.host;
+    }
 }
 
 export function encodeURLComponent(URL) {
@@ -24,10 +21,13 @@ export function encodeURLComponent(URL) {
 }
 
 export function whichServer() {
+    console.log("Do we get here?");
+    console.log(location);
     let server = host;
     if (location.hostname === 'tester.test.com') {
         server = 'tester.test.com:7443';
     }
+    server = "thisshouldntwork.com:8080";
     return server;
 }
 
