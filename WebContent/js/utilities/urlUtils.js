@@ -25,7 +25,6 @@ export function whichServer() {
     if (location.hostname === 'tester.test.com') {
         server = 'tester.test.com:7443';
     }
-    server = 'thisshouldntwork.com:8080';
     return server;
 }
 
