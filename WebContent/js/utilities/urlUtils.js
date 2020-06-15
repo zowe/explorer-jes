@@ -21,8 +21,6 @@ export function encodeURLComponent(URL) {
 }
 
 export function whichServer() {
-    console.log("Do we get here?");
-    console.log(location);
     let server = host;
     if (location.hostname === 'tester.test.com') {
         server = 'tester.test.com:7443';
