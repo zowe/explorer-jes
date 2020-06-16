@@ -28,7 +28,7 @@ if [[ $LAUNCH_COMPONENT_GROUPS == *"DESKTOP"* ]]
 then
   # Create desktop app plugin
   # this shouldn't work
-  EXPLORER_PLUGIN_FULLURL="https://test.com:${GATEWAY_PORT}${EXPLORER_PLUGIN_BASEURI}"
+  EXPLORER_PLUGIN_FULLURL="https://waldevgizaud001.dev.rocketsoftware.com:${GATEWAY_PORT}${EXPLORER_PLUGIN_BASEURI}"
   ${ROOT_DIR}/bin/utils/zowe-install-iframe-plugin.sh \
     "${EXPLORER_PLUGIN_ID}" \
     "${EXPLORER_PLUGIN_NAME}" \
