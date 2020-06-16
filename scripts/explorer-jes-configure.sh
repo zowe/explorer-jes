@@ -27,13 +27,24 @@ EXPLORER_PLUGIN_NAME=$($NODE_BIN -e "process.stdout.write(require('${EXPLORER_CO
 if [[ $LAUNCH_COMPONENT_GROUPS == *"DESKTOP"* ]]
 then
   # Create desktop app plugin
-  EXPLORER_PLUGIN_FULLURL="https://${ZOWE_EXPLORER_HOST}:${GATEWAY_PORT}${EXPLORER_PLUGIN_BASEURI}"
-  ${ROOT_DIR}/bin/utils/zowe-install-iframe-plugin.sh \
-    "${EXPLORER_PLUGIN_ID}" \
-    "${EXPLORER_PLUGIN_NAME}" \
-    ${EXPLORER_PLUGIN_FULLURL} \
-    "${WORKSPACE_DIR}/explorer-jes" \
-    "${ROOT_DIR}/components/explorer-jes/bin/app/img/explorer-JES.png"
+  if [ -z "$LINUX_HOST" ]
+  then
+    EXPLORER_PLUGIN_FULLURL="https://${ZOWE_EXPLORER_HOST}:${GATEWAY_PORT}${EXPLORER_PLUGIN_BASEURI}"
+    ${ROOT_DIR}/bin/utils/zowe-install-iframe-plugin.sh \
+      "${EXPLORER_PLUGIN_ID}" \
+      "${EXPLORER_PLUGIN_NAME}" \
+      ${EXPLORER_PLUGIN_FULLURL} \
+      "${WORKSPACE_DIR}/explorer-jes" \
+      "${ROOT_DIR}/components/explorer-jes/bin/app/img/explorer-JES.png"
+  else
+    EXPLORER_PLUGIN_FULLURL="https://${LINUX_HOST}:${GATEWAY_PORT}${EXPLORER_PLUGIN_BASEURI}"
+    ${ROOT_DIR}/bin/utils/zowe-install-iframe-plugin.sh \
+      "${EXPLORER_PLUGIN_ID}" \
+      "${EXPLORER_PLUGIN_NAME}" \
+      ${EXPLORER_PLUGIN_FULLURL} \
+      "${WORKSPACE_DIR}/explorer-jes" \
+      "${ROOT_DIR}/components/explorer-jes/bin/app/img/explorer-JES.png"
+  fi
 fi
 
 # Remove any previous static defintiion config
