@@ -76,7 +76,7 @@ class JobFile extends React.Component {
 
     handleKeyDown(e: Event) {
         if (e.key === 'Enter') {
-            this.openFile();  
+            this.openFile();
         }
     }
 

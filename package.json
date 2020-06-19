@@ -33,7 +33,7 @@
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.7.1",
     "@types/selenium-webdriver": "^4.0.8",
-    "babel-eslint": "^7.2.3",
+    "babel-eslint": "^10.1.0",
     "babel-loader": "^7.0.0",
     "babel-plugin-react-html-attrs": "^2.0.0",
     "babel-plugin-transform-class-properties": "^6.3.13",
