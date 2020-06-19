@@ -24,6 +24,7 @@ class JobFile extends React.Component {
         this.openFile = this.openFile.bind(this);
         this.downloadJobFile = this.downloadJobFile.bind(this);
         this.openInNewWindow = this.openInNewWindow.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
     openFile() {
@@ -73,11 +74,17 @@ class JobFile extends React.Component {
         newWindow.focus();
     }
 
+    handleKeyDown(e: Event) {
+        if (e.key === 'Enter') {
+            this.openFile();  
+        }
+    }
+
     renderJobFileMenu() {
         const { job, file } = this.props;
         return (
-            <ContextMenu id={`${job.get('jobId')}${file.id}`}>
-                <MenuItem onClick={this.downloadJobFile}>
+            <ContextMenu id={`${job.get('jobId')}${file.id}`} style={{ zIndex: '100' }}>
+                <MenuItem onClick={this.downloadJobFile} >
                     Download
                 </MenuItem>
                 <MenuItem onClick={this.openInNewWindow}>
@@ -96,10 +103,11 @@ class JobFile extends React.Component {
                         <span
                             className="content-link"
                             onClick={() => { this.openFile(); }}
-                            onKeyDown={e => { if (e.key === 'Enter') this.openFile(); }}
+                            onKeyDown={this.handleKeyDown}
                             tabIndex="0"
                             role="treeitem"
                             aria-level="2"
+                            aria-haspopup={true}
                         >
                             <Description className="node-icon" />
                             <span className="job-file-label">{file.label}</span>
