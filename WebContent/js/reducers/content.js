@@ -76,7 +76,8 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
                 content: state.get('content').set(state.get('selectedContent'), {
                     label: state.get('content').get(state.get('selectedContent')).label,
                     content: action.content,
-                    isFetching: false,
+                    id: state.get('content').get(state.get('selectedContent')).id,
+                    isFetching: state.get('content').get(state.get('selectedContent')).isFetching,
                     readOnly: state.get('content').get(state.get('selectedContent')).readOnly,
                 }),
             });
