@@ -48,7 +48,7 @@ export const receivedContent =
 export const updatedContent = 'new updated Content';
 export const receivedContentUpdated =
     Map({
-        content: List([{ label: tabLabel, content: updatedContent, isFetching: false, readOnly: true }]),
+        content: List([{ label: tabLabel, id: `${tabLabel}${fileId}`, content: updatedContent, isFetching: false, readOnly: true }]),
         selectedContent: 0,
         isSubmittingJCL: false,
         title: `${DEFAULT_TITLE} [${tabLabel}]`,
