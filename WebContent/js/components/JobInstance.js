@@ -178,7 +178,7 @@ class JobInstance extends React.Component {
                 </MenuItem>);
         }
         return (
-            <ContextMenu id={job.get('label')}>
+            <ContextMenu id={job.get('label')} style={{ zIndex: '100' }}>
                 {menuItems}
             </ContextMenu>
         );
@@ -200,6 +200,7 @@ class JobInstance extends React.Component {
                             role="treeitem"
                             aria-expanded={job.get('isToggled').toString()}
                             aria-level="1"
+                            aria-haspopup={true}
                         >
                             <LabelIcon className="node-icon" />
                             <span className="job-label">
