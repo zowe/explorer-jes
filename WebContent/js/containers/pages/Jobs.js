@@ -20,15 +20,15 @@ const HomeView = props => {
     const { validated } = props;
     if (validated) {
         return (
-            <main className="row group" role="main" aria-label="Home">
-                <section id="explorer-sidebar" className="component col col-3" region="search-jobs" aria-label="Search Jobs">
+            <div className="row group" role="main" aria-label="Home">
+                <div id="explorer-sidebar" className="component col col-3" region="search-jobs" aria-label="Search Jobs">
                     <JobTree />
-                </section>
-                <section id="explorer-viewer-home" className="component col col-9" region="content-viewer" aria-label="Content Viewer">
+                </div>
+                <div id="explorer-viewer-home" className="component col col-9" region="content-viewer" aria-label="Content Viewer">
                     <ConnectedContentViewer />
-                </section>
+                </div>
                 <ConnectedSnackbar />
-            </main>
+            </div>
         );
     }
     return <LoginDialog />;
