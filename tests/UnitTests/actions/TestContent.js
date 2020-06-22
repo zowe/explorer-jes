@@ -74,6 +74,7 @@ describe('Action: content', () => {
                 {
                     type: contentActions.INVALIDATE_CONTENT,
                     fileLabel: `${contentResources.jobId}-${contentResources.fileName}`,
+                    fileId: contentResources.fileId,
                 },
             ];
 
@@ -100,6 +101,7 @@ describe('Action: content', () => {
                 {
                     type: contentActions.INVALIDATE_CONTENT,
                     fileLabel: `${contentResources.jobId}-${contentResources.fileName}`,
+                    fileId: contentResources.fileId,
                 },
             ];
             nock(BASE_URL)
@@ -163,6 +165,7 @@ describe('Action: content', () => {
                 {
                     type: contentActions.INVALIDATE_CONTENT,
                     fileLabel: undefined,
+                    fileId: undefined,
                 },
 
             ];
@@ -192,6 +195,7 @@ describe('Action: content', () => {
                 {
                     type: contentActions.INVALIDATE_CONTENT,
                     fileLabel: undefined,
+                    fileId: undefined,
                 },
             ];
             const store = mockStore();
@@ -256,6 +260,7 @@ describe('Action: content', () => {
                 {
                     type: contentActions.INVALIDATE_CONTENT,
                     fileLabel: undefined,
+                    fileId: undefined,
                 },
             ];
             nock(BASE_URL)
@@ -280,6 +285,7 @@ describe('Action: content', () => {
                 {
                     type: contentActions.INVALIDATE_CONTENT,
                     fileLabel: undefined,
+                    fileId: undefined,
                 },
             ];
             nock(BASE_URL)
@@ -371,6 +377,7 @@ describe('Action: content', () => {
             {
                 type: contentActions.INVALIDATE_CONTENT,
                 fileLabel: contentActions.getFileLabel(contentResources.jobId, 'JCL'),
+                fileId: undefined,
             }];
             const store = mockStore();
 

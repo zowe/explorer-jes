@@ -140,7 +140,7 @@ export async function testStatusFilterFetching(driver, status, potentialStatuses
     return checkJobsStatus(jobs, potentialStatuses);
 }
 
-export async function testJobFilesLoad(driver :WebDriver, ownerFilter :string, prefixFilter :string, statusFilter :string) :Promise<boolean> {
+export async function testJobFilesLoad(driver :WebDriver, ownerFilter :string, prefixFilter :string, statusFilter :string) {
     const jobsInstances = await driver.findElements(By.className('job-instance'));
     await reloadAndOpenFilterPanel(driver, jobsInstances.length > 0);
     await testTextInputFieldCanBeModified(driver, 'filter-owner-field', ownerFilter);
@@ -162,19 +162,18 @@ export async function testJobFilesLoad(driver :WebDriver, ownerFilter :string, p
 
     let foundFiles :boolean = true;
     let filesCount :number = 0;
-    for (const job of jobs) {
+    await Promise.all(jobs.map(async (job) => {
         await job.click();
-        await driver.wait(until.elementLocated(By.id('loading-icon')), 10000);
+        await driver.sleep(1000); //Sleep to allow for loading
         await driver.wait(until.elementLocated(By.id('refresh-icon')), 20000);
         const jobFiles :WebElement[] = await driver.findElements(By.className('job-file'));
         // If we don't find new files
         if (filesCount === (filesCount + jobFiles.length)) {
             foundFiles = false;
-            break;
         } else {
             filesCount += jobFiles.length;
         }
-    }
+    }));
     return foundFiles;
 }
 
@@ -192,28 +191,27 @@ export async function getJobAndOpenFile(driver, ownerFilter, prefixFilter, statu
         console.log('Unable to get job files to load');
         return false;
     }
-    const fileLinks = await driver.findElements(By.css('.job-instance > ul > div > li > div > .content-link'));
+    const jobLinks = await driver.findElements(By.css('.job-instance .content-link'));
+    const jobNames :string[] = await Promise.all(jobLinks.map(j => { return j.getText(); }));
 
+    let filterLinks = []
     // Find the jobFileName we're looking for from the list of job files
-    for (const fileLink of fileLinks) {
-        const text = await fileLink.getText();
-        console.log(`file link text: ${text}`);
-        if (text === jobFileName) {
-            await fileLink.click();
-            break;
-        }
-    }
+    await Promise.all(jobNames.map(async (jobName, idx) => {
+            if(jobName===jobFileName) {
+                console.log('job clicked', idx,  jobFileName );
+                filterLinks.push(jobLinks[idx]);
+                await jobLinks[idx].click();
+                return true;
+            }
+        }));
+
     // Check the job name/prefix is in the content
-    for (let i = 0; i < 15; i++) {
+    await Promise.all(filterLinks.map(async () => {
         const textviewContent = await driver.findElements(By.className('textviewContent'));
         const text = await textviewContent[0].getText(textviewContent);
-        if (!text.includes(prefixFilter)) {
-            await driver.sleep(1000);
-            console.log('text didnt include prefixFilter, sleeping');
-        } else {
-            break;
-        }
-    }
+        return text.includes(prefixFilter);
+    }));
+
     return true;
 }
 

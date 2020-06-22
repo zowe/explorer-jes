@@ -24,15 +24,16 @@ class JobFile extends React.Component {
         this.openFile = this.openFile.bind(this);
         this.downloadJobFile = this.downloadJobFile.bind(this);
         this.openInNewWindow = this.openInNewWindow.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
     openFile() {
         const { content, dispatch, job, file } = this.props;
         // Is the file already open?
-        if (content.filter(x => { return x.label === getFileLabel(job.get('jobId'), file.label); }).size > 0) {
+        if (content.filter(x => { return x.id === getFileLabel(job.get('jobId'), file.label) + file.id; }).size > 0) {
             // Find which index the file is open in and change to it
             content.forEach(x => {
-                if (x.label === getFileLabel(job.get('jobId'), file.label)) {
+                if (x.id === getFileLabel(job.get('jobId'), file.label) + file.id) {
                     dispatch(changeSelectedContent(content.indexOf(x)));
                 }
             });
@@ -73,11 +74,17 @@ class JobFile extends React.Component {
         newWindow.focus();
     }
 
+    handleKeyDown(e: Event) {
+        if (e.key === 'Enter') {
+            this.openFile();
+        }
+    }
+
     renderJobFileMenu() {
         const { job, file } = this.props;
         return (
-            <ContextMenu id={`${job.get('jobId')}${file.id}`}>
-                <MenuItem onClick={this.downloadJobFile}>
+            <ContextMenu id={`${job.get('jobId')}${file.id}`} style={{ zIndex: '100' }}>
+                <MenuItem onClick={this.downloadJobFile} >
                     Download
                 </MenuItem>
                 <MenuItem onClick={this.openInNewWindow}>
@@ -91,11 +98,16 @@ class JobFile extends React.Component {
         const { job, file } = this.props;
         return (
             <div>
-                <li className="job-file">
+                <li className="job-file" role="none">
                     <ContextMenuTrigger id={`${job.get('jobId')}${file.id}`}>
                         <span
                             className="content-link"
                             onClick={() => { this.openFile(); }}
+                            onKeyDown={this.handleKeyDown}
+                            tabIndex="0"
+                            role="treeitem"
+                            aria-level="2"
+                            aria-haspopup={true}
                         >
                             <Description className="node-icon" />
                             <span className="job-file-label">{file.label}</span>

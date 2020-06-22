@@ -24,7 +24,17 @@ import rootReducer from './reducers';
 import JobsView from './containers/pages/Jobs';
 import FullScreenView from './containers/pages/FullScreen';
 
-const store = applyMiddleware(thunk, createLogger())(createStore)(rootReducer, Map({}));
+// redux dev tool extension enabled
+let appMiddleware;
+if (window.localStorage.getItem('enableReduxLogger') === 'true') {
+    appMiddleware = applyMiddleware(thunk, createLogger());
+} else {
+    appMiddleware = applyMiddleware(thunk);
+}
+
+const store = appMiddleware(createStore)(rootReducer, Map({}),
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+);
 
 const theme = createMuiTheme({
     overrides: {

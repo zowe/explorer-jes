@@ -10,19 +10,16 @@
 
 /* eslint-disable no-unused-expressions */
 import {
-    getDriver,
-    setApimlAuthTokenCookie,
     testElementAppearsXTimesById,
     testWindowHeightChangeForcesComponentHeightChange,
     testTextInputFieldCanBeModified,
-    loadPage,
+    loadPage
 } from 'explorer-fvt-utilities';
 import { By, until, WebDriver, WebElement } from 'selenium-webdriver';
 import { expect } from 'chai';
 
 const chai = require('chai');
 chai.use(require('chai-things'));
-require('geckodriver');
 
 import {
     findAndClickApplyButton,
@@ -55,16 +52,13 @@ import {
     ZOSMF_SERVER_JOB_NAME,
     SHORT_JOB,
     LONG_JOB,
+    TEST_JOB_SHORT_NAME,
 } from '../testResources';
 
-require('dotenv').config();
-
+import {getDriver, TEST_CONFIG} from "../../FVTTests/testConfig";
 const {
-    ZOWE_USERNAME: USERNAME, ZOWE_PASSWORD: PASSWORD, SERVER_HOST_NAME, SERVER_HTTPS_PORT,
-} = process.env;
-
-const BASE_URL = `https://${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}`;
-const BASE_URL_WITH_PATH = `${BASE_URL}/ui/v1/explorer-jes`;
+    BASE_URL_WITH_PATH, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD
+} = TEST_CONFIG;
 
 // Need to use unnamed function so we can specify the retries
 // eslint-disable-next-line
@@ -74,8 +68,6 @@ describe('JES explorer function verification tests', function () {
 
     before('Initialise', async () => {
         driver = await getDriver();
-        await setApimlAuthTokenCookie(driver, USERNAME, PASSWORD, `${BASE_URL}/api/v1/gateway/auth/login`, BASE_URL_WITH_PATH);
-
         // Make sure we have a job in output and active
         await submitJob(SHORT_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
         await submitJob(LONG_JOB, SERVER_HOST_NAME, SERVER_HTTPS_PORT, USERNAME, PASSWORD);
@@ -317,16 +309,16 @@ describe('JES explorer function verification tests', function () {
 
             describe('Job Files', () => {
                 it('Should handle rendering job files when clicking on a job', async () => {
-                    expect(await testJobFilesLoad(driver, '*', `${ZOSMF_SERVER_JOB_NAME}`, null)).to.be.true;
+                    expect(await testJobFilesLoad(driver, '*', TEST_JOB_SHORT_NAME, null)).to.be.true;
                 });
 
                 it('Should handle rendering multiple jobs files', async () => {
-                    expect(await testJobFilesLoad(driver, '*', `${ZOSMF_JOB_PREFIX}*`, null)).to.be.true;
+                    expect(await testJobFilesLoad(driver, '*', `${TEST_JOB_PREFIX}*`, null)).to.be.true;
                 });
 
                 //TODO:: Unreliable test, requires investigation
                 it.skip('Should handle un rendering job files when clicking an already toggle job', async () => {
-                    expect(await testJobFilesLoad(driver, '*', `${ZOSMF_SERVER_JOB_NAME}`, null)).to.be.true;
+                    expect(await testJobFilesLoad(driver, '*', `${TEST_JOB_SHORT_NAME}`, null)).to.be.true;
 
                     const jobLink = await driver.findElements(By.css('.job-instance > li > div> .content-link'));
                     expect(jobLink).to.be.an('array').that.has.lengthOf.at.least(1);
@@ -339,8 +331,8 @@ describe('JES explorer function verification tests', function () {
                 });
 
                 it('Should handle opening a files content when clicked', async () => {
-                    expect(await testJobFilesLoad(driver, '*', ZOSMF_SERVER_JOB_NAME, null)).to.be.true;
-                    const fileLink = await driver.findElements(By.css('.job-instance > ul > div > li > div > .content-link'));
+                    expect(await testJobFilesLoad(driver, '*', TEST_JOB_SHORT_NAME, null)).to.be.true;
+                    const fileLink = await driver.findElements(By.css('.job-instance > li > div > .content-link'));
                     expect(fileLink).to.be.an('array').that.has.lengthOf.at.least(1);
                     await fileLink[0].click();
 
@@ -350,7 +342,7 @@ describe('JES explorer function verification tests', function () {
                 });
 
                 it('Should handle setting refresh icon to loading icon when job file loading', async () => {
-                    expect(await testJobFilesLoad(driver, '*', ZOSMF_SERVER_JOB_NAME, null)).to.be.true;
+                    expect(await testJobFilesLoad(driver, '*', TEST_JOB_SHORT_NAME, null)).to.be.true;
                     expect(await testElementAppearsXTimesById(driver, 'refresh-icon', 1)).to.be.true;
                 });
                 it('Should handle opening a files content unathorised for user and display error message');
@@ -360,7 +352,7 @@ describe('JES explorer function verification tests', function () {
             it.skip('Should handle rendering context menu on right click', async () => {
                 await reloadAndOpenFilterPanel(driver, false);
                 expect(await testTextInputFieldCanBeModified(driver, 'filter-owner-field', '*'), 'filter-owner-field wrong').to.be.true;
-                expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', ZOSMF_SERVER_JOB_NAME), 'filter-prefix-field wrong').to.be.true;
+                expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', TEST_JOB_SHORT_NAME), 'filter-prefix-field wrong').to.be.true;
                 await findAndClickApplyButton(driver);
 
                 const jobs = await waitForAndExtractJobs(driver);
@@ -386,6 +378,7 @@ describe('JES explorer function verification tests', function () {
 
             it('Should display job name, id and file name in card header', async () => {
                 const viewer = await driver.findElements(By.className('content-tab-label'));
+                // const viewer = await driver.wait(until.elementLocated(By.className('content-tab-label')), 60000);
                 const tabLabelText = await viewer[0].getText();
                 expect(tabLabelText).to.contain(jobFileName);
             });

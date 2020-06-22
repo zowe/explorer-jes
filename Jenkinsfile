@@ -37,7 +37,7 @@ node('ibm-jenkins-slave-dind') {
     string(
       name: 'FVT_ZOSMF_HOST',
       description: 'z/OSMF server for integration test',
-      defaultValue: 'river.zowe.org',
+      defaultValue: 'zzow01.zowe.marist.cloud',
       trim: true,
       required: true
     ),
@@ -52,7 +52,7 @@ node('ibm-jenkins-slave-dind') {
       name: 'FVT_ZOSMF_CREDENTIAL',
       description: 'The SSH credential used to connect to z/OSMF for integration test',
       credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
-      defaultValue: 'ssh-zdt-test-image-guest',
+      defaultValue: 'ssh-marist-server-zzow01-zowep',
       required: true
     ),
     string(
@@ -73,6 +73,7 @@ node('ibm-jenkins-slave-dind') {
 
   pipeline.setup(
     packageName: 'org.zowe.explorer-jes',
+    nodeJsVersion: 'v10.18.1',
     github: [
       email                      : lib.Constants.DEFAULT_GITHUB_ROBOT_EMAIL,
       usernamePasswordCredential : lib.Constants.DEFAULT_GITHUB_ROBOT_CREDENTIAL,
@@ -109,7 +110,7 @@ node('ibm-jenkins-slave-dind') {
   pipeline.build(
     operation: {
       ansiColor('xterm') {
-        sh "npm run prod"
+        pipeline.nvmShell "npm run prod"
       }
     }
   )
@@ -176,6 +177,7 @@ ZOWE_USERNAME=${USERNAME} \
 ZOWE_PASSWORD=${PASSWORD} \
 SERVER_HOST_NAME=${params.FVT_SERVER_HOSTNAME} \
 SERVER_HTTPS_PORT=7554 \
+TEST_BROWSER=firefox \
 npm run test:fvt
 """
           }

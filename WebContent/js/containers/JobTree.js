@@ -22,14 +22,33 @@ import { fetchJobs } from '../actions/jobNodes';
 import { LOADING_MESSAGE } from '../reducers/filters';
 import FullHeightTree from './FullHeightTree';
 import JobInstance from '../components/JobInstance';
+import Announcer from '../components/Announcer';
 
 const NO_JOBS_FOUND_MESSAGE = 'No jobs found';
 
 class JobNodeTree extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            message: null,
+        };
+    }
+
     componentWillReceiveProps(nextProps) {
         const { owner, dispatch, isFetching } = this.props;
         if (!isFetching && owner === LOADING_MESSAGE && nextProps.owner && nextProps.owner !== LOADING_MESSAGE) {
             dispatch(fetchJobs(nextProps));
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const { isFetching: isFetchingCurrent } = this.props;
+        const { isFetching: isFetchingPrev } = prevProps;
+        if (isFetchingCurrent && !isFetchingPrev) {
+            this.setState({ message: 'Jobs loading' });
+        }
+        if (!isFetchingCurrent && isFetchingPrev) {
+            this.setState({ message: 'Jobs loaded' });
         }
     }
 
@@ -43,15 +62,18 @@ class JobNodeTree extends React.Component {
     renderJobs() {
         const { jobs, isFetching, dispatch } = this.props;
         if (jobs && jobs.size >= 1) {
-            return jobs.map(job => {
+            return jobs.map((job, index) => {
                 return (
-                    <JobInstance key={job.get('label')} job={job} dispatch={dispatch} />
+                    <JobInstance key={job.get('label')} job={job} dispatch={dispatch} pos={index} size={jobs.size} />
                 );
             });
         } else if (!isFetching) {
             return (
-                <div className="job-instance">
-                    <li>
+                <div className="job-instance" role="none">
+                    <li
+                        role="treeitem"
+                        aria-level="1"
+                    >
                         <ErrorIcon className="node-icon" />
                         <span className="job-label">{NO_JOBS_FOUND_MESSAGE}</span>
                     </li>
@@ -73,12 +95,12 @@ class JobNodeTree extends React.Component {
                         dispatch={dispatch}
                     />
                     <FullHeightTree >
-                        <ul id="job-list">
+                        <ul id="job-list" role="tree">
                             {this.renderJobs()}
                         </ul>
                     </FullHeightTree>
                 </CardContent>
-
+                <Announcer message={this.state.message} />
             </Card>
         );
     }

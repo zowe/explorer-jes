@@ -48,6 +48,7 @@ export default class UpperCaseTextField extends React.Component {
             {...props}
             value={this.state.field}
             onChange={this.handleFieldChange}
+            disabled={this.props.disabled}
         />);
     }
 }
@@ -55,5 +56,6 @@ export default class UpperCaseTextField extends React.Component {
 UpperCaseTextField.propTypes = {
     fieldChangedCallback: PropTypes.func,
     value: PropTypes.string,
+    disabled: PropTypes.bool,
 };
 

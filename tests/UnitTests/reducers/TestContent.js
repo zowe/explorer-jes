@@ -22,6 +22,7 @@ describe('Reducer: content', () => {
         const action = {
             type: contentActions.REQUEST_CONTENT,
             fileLabel: `${contentResources.jobId}-${contentResources.fileLabel}`,
+            fileId: contentResources.fileId,
         };
         expect(content(contentResources.baseContent, action)).toEqual(contentResources.requestedContent);
     });
@@ -31,7 +32,8 @@ describe('Reducer: content', () => {
             type: contentActions.RECEIVE_CONTENT,
             content: 'test',
             jobName: contentResources.jobName,
-            fileLabel: contentResources.fileLabel,
+            fileLabel: `${contentResources.jobId}-${contentResources.fileLabel}`,
+            fileId: contentResources.fileId,
             jobId: contentResources.jobId,
             readOnly: true,
         };
@@ -42,6 +44,7 @@ describe('Reducer: content', () => {
         const action = {
             type: contentActions.REQUEST_CONTENT,
             fileLabel: `${contentResources.jobId}-${contentResources.fileLabel2}`,
+            fileId: contentResources.fileId2,
         };
         expect(content(contentResources.receivedContent, action)).toEqual(contentResources.requestedContentWithExistingContent);
     });
@@ -51,7 +54,8 @@ describe('Reducer: content', () => {
             type: contentActions.RECEIVE_CONTENT,
             content: 'test2',
             jobName: contentResources.jobName,
-            fileLabel: contentResources.fileLabel2,
+            fileLabel: `${contentResources.jobId}-${contentResources.fileLabel2}`,
+            fileId: contentResources.fileId2,
             jobId: contentResources.jobId,
             readOnly: true,
         };
@@ -60,7 +64,7 @@ describe('Reducer: content', () => {
 
     it('Should handle CHANGE_SELECTED_CONTENT', () => {
         const action = { type: contentActions.CHANGE_SELECTED_CONTENT, newSelectedContent: 1 };
-        expect(content(contentResources.baseContent, action)).toEqual(contentResources.baseContent.set('selectedContent', 1));
+        expect(content(contentResources.receivedContent2, action)).toEqual(contentResources.receivedContent2.set('selectedContent', 1));
     });
 
     it('Should handle REMOVE_CONTENT', () => {

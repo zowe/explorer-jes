@@ -40,6 +40,6 @@ describe('Reducer: validation', () => {
 
     it('Should handle INVALIDATE_VALIDATION and set validated to false after requested', () => {
         const action = { type: validationActions.INVALIDATE_VALIDATION };
-        expect(validation(validationResources.requestedValidation, action)).toEqual(validationResources.baseValidation);
+        expect(validation(validationResources.requestedValidation, action)).toEqual(validationResources.invalidatedValidationNoUser);
     });
 });
