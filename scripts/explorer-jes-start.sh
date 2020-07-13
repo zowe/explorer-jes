@@ -39,4 +39,7 @@ _BPX_JOBNAME=${JOB_NAME} $NODE_BIN $SERVER_DIR/src/index.js \
 	--key  ${KEYSTORE_KEY} \
 	--cert ${KEYSTORE_CERTIFICATE} \
 	--csp ${ZOWE_EXPLORER_FRAME_ANCESTORS} \
+	--keyring $KEYRING_NAME \
+	--keyring-owner $KEYRING_OWNER \
+	--keyring-label $KEY_ALIAS \
 	-v &
