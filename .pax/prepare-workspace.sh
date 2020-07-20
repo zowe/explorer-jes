@@ -58,8 +58,6 @@ mkdir -p "${PAX_WORKSPACE_DIR}/content/server"
 cp -r node_modules/explorer-ui-server/. "${PAX_WORKSPACE_DIR}/content/server"
 cd "${PAX_WORKSPACE_DIR}/content/server"
 npm install --only=production
-npm run prebuild
-npm install keyring_js
 
 cd "${ROOT_DIR}"
 
