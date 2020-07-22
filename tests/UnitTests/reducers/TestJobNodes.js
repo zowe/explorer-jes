@@ -15,7 +15,7 @@ import * as jobNodesResources from '../testResources/reducers/jobNodesResources'
 import * as jobNodesActionResources from '../testResources/actions/jobNodesResources';
 import * as filtersResources from '../testResources/actions/filters';
 
-describe('Reducer: treeNodesJobs', () => {
+describe('Reducer: jobNodes', () => {
     it('Should return the INITIAL_STATE', () => {
         expect(JobNodes(undefined, {})).toEqual(jobNodesResources.initialState);
     });

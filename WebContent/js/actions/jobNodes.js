@@ -18,6 +18,8 @@ export const REQUEST_JOBS = 'REQUEST_JOBS';
 export const RECEIVE_JOBS = 'RECEIVE_JOBS';
 export const RECEIVE_SINGLE_JOB = 'RECEIVE_SINGLE_JOB';
 export const INVALIDATE_JOBS = 'INVALIDATE_JOBS';
+export const INVERT_JOB_SELECT_STATUS = 'INVERT_JOB_SELECT_STATUS';
+export const UNSELECT_ALL_JOBS = 'UNSELECT_ALL_JOBS';
 
 export const REQUEST_JOB_FILES = 'REQUEST_JOB_FILES';
 export const RECEIVE_JOB_FILES = 'RECEIVE_JOB_FILES';
@@ -35,7 +37,9 @@ const NO_JOBS_FOUND_MESSAGE = 'No Jobs found for filter parameters';
 const CANCEL_JOB_SUCCESS_MESSAGE = 'Cancel request succeeded for';
 const CANCEL_JOB_FAIL_MESSAGE = 'Cancel request failed for';
 const PURGE_JOB_SUCCESS_MESSAGE = 'Purge request succeeded for';
+const PURGE_JOBS_SUCCESS_MESSAGE = 'Purge request succeeded for selected jobs';
 const PURGE_JOB_FAIL_MESSAGE = 'Purge request failed for';
+const PURGE_JOBS_FAIL_MESSAGE = 'Purge request failed for selected jobs';
 
 function requestJobs(filters) {
     return {
@@ -64,6 +68,18 @@ function invalidateJobs() {
     };
 }
 
+export function invertJobSelectStatus(jobId) {
+    return {
+        type: INVERT_JOB_SELECT_STATUS,
+        jobId,
+    };
+}
+
+export function unselectAllJobs() {
+    return {
+        type: UNSELECT_ALL_JOBS,
+    };
+}
 
 export function toggleJob(jobId) {
     return {
@@ -275,6 +291,7 @@ export function purgeJob(jobName, jobId) {
                 if (response.ok) {
                     return response.text().then(() => {
                         dispatch(constructAndPushMessage(`${PURGE_JOB_SUCCESS_MESSAGE} ${jobName}/${jobId}`));
+                        dispatch(unselectAllJobs());
                         return dispatch(receivePurge(jobName, jobId));
                     });
                 }
@@ -282,6 +299,43 @@ export function purgeJob(jobName, jobId) {
             }).catch(e => {
                 dispatch(constructAndPushMessage(`${PURGE_JOB_FAIL_MESSAGE} ${jobName}/${jobId} : ${e.message}`));
                 dispatch(invalidatePurge(jobName, jobId));
+            });
+    };
+}
+
+function getSelectedJobs(jobs) {
+    return jobs.filter(job => { return job.get('isSelected'); });
+}
+
+export function purgeJobs(jobs) {
+    return dispatch => {
+        dispatch(requestPurge());
+        const selectedJobs = getSelectedJobs(jobs);
+        const jobsToPurge = selectedJobs.map(job => {
+            // eslint-disable-next-line quote-props, quotes
+            return { "jobName": job.get('jobName'), "jobId": job.get('jobId') };
+        });
+        return atlasFetch('jobs',
+            {
+                credentials: 'include',
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(jobsToPurge),
+            })
+            .then(response => {
+                return dispatch(checkForValidationFailure(response));
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.text().then(() => {
+                        dispatch(constructAndPushMessage(PURGE_JOBS_SUCCESS_MESSAGE));
+                        return dispatch(receivePurge());
+                    });
+                }
+                return response.json().then(json => { throw Error(json && json.message ? json.message : ''); });
+            }).catch(e => {
+                dispatch(constructAndPushMessage(`${PURGE_JOBS_FAIL_MESSAGE} : ${e.message}`));
+                dispatch(invalidatePurge());
             });
     };
 }

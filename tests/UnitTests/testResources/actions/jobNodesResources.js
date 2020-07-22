@@ -53,7 +53,8 @@ export const jobFetchResponseSingleJobName = { items: [
         returnCode: 'CC 0000',
         subsystem: 'JES2',
         executionClass: 'A',
-        phaseName: 'Job is on the hard copy queue' },
+        phaseName: 'Job is on the hard copy queue',
+    },
 ] };
 
 export const jobName = 'TESTJOB';

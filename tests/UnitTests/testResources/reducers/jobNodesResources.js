@@ -30,6 +30,7 @@ export const receivedJobsState = Map({
                 returnCode: 'CC 0000',
                 status: 'OUTPUT',
                 isToggled: false,
+                isSelected: false,
                 files: List([]),
             }),
             Map({
@@ -39,6 +40,7 @@ export const receivedJobsState = Map({
                 returnCode: 'ABEND S222',
                 status: 'OUTPUT',
                 isToggled: false,
+                isSelected: false,
                 files: List([]),
             }),
             Map({
@@ -48,6 +50,7 @@ export const receivedJobsState = Map({
                 returnCode: 'ABEND S222',
                 status: 'OUTPUT',
                 isToggled: false,
+                isSelected: false,
                 files: List([]),
             }),
         ],
@@ -65,6 +68,7 @@ export const toggledJobState = Map({
                 returnCode: 'CC 0000',
                 status: 'OUTPUT',
                 isToggled: true,
+                isSelected: false,
                 files: List([]),
             }),
             Map({
@@ -74,6 +78,7 @@ export const toggledJobState = Map({
                 returnCode: 'ABEND S222',
                 status: 'OUTPUT',
                 isToggled: false,
+                isSelected: false,
                 files: List([]),
             }),
             Map({
@@ -83,6 +88,7 @@ export const toggledJobState = Map({
                 returnCode: 'ABEND S222',
                 status: 'OUTPUT',
                 isToggled: false,
+                isSelected: false,
                 files: List([]),
             }),
         ],
@@ -100,6 +106,7 @@ export const receivedJobsStateSingleJobName = Map({
                 returnCode: 'CC 0000',
                 status: 'OUTPUT',
                 isToggled: false,
+                isSelected: false,
                 files: List([]),
             }),
         ],
@@ -119,6 +126,7 @@ export const receivedJobFiles = Map({
                 returnCode: 'CC 0000',
                 status: 'OUTPUT',
                 isToggled: false,
+                isSelected: false,
                 files: [
                     {
                         label: 'JESMSGLG',

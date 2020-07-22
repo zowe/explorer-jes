@@ -182,6 +182,9 @@ describe('Action: jobNodes', () => {
                 }),
             },
             {
+                type: JobNodes.UNSELECT_ALL_JOBS,
+            },
+            {
                 type: JobNodes.RECEIVE_PURGE_JOB,
                 jobName: jobNodesResources.jobName,
                 jobId: jobNodesResources.jobId,
