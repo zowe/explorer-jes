@@ -16,6 +16,7 @@ PWD=$(pwd)
 
 cd ./content/server
 npm install
+cd ${PWD}
 
 # display extracted files
 echo "$FUNC content of $PWD...."
