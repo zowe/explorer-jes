@@ -58,7 +58,6 @@ mkdir -p "${PAX_WORKSPACE_DIR}/content/server"
 cp -r node_modules/explorer-ui-server/. "${PAX_WORKSPACE_DIR}/content/server"
 cd "${PAX_WORKSPACE_DIR}/content/server"
 npm install --only=production
-
 cd "${ROOT_DIR}"
 
 # copy explorer-jes to target folder
