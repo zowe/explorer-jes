@@ -45,6 +45,7 @@ mkdir -p "${PAX_WORKSPACE_DIR}/content"
 echo "[${SCRIPT_NAME}] install peer dependencies (explorer-ui-server) ..."
 EXPLORER_UI_SERVER_VERSION=$(node -e "console.log(require('./package.json').peerDependencies['explorer-ui-server'])")
 npm install "explorer-ui-server@${EXPLORER_UI_SERVER_VERSION}" --no-save
+echo "npm install response code: $?"
 
 # build client
 if [ ! -f "dist/app.min.js" ]; then
