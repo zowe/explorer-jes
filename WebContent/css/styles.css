@@ -74,3 +74,22 @@ body {
     cursor: pointer;
     color: #2E77A1;
 }
+.content-link-t {    
+    cursor: pointer;
+    color: darkgreen;
+}
+
+.content-link-s { 
+    cursor: pointer;   
+    color: royalblue;
+}
+
+.content-link-j { 
+    cursor: pointer;   
+    color: darkred;
+}
+
+.content-link-g {    
+    cursor: pointer;
+    color: black;
+}

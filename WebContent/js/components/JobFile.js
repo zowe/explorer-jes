@@ -101,7 +101,7 @@ class JobFile extends React.Component {
                 <li className="job-file" role="none">
                     <ContextMenuTrigger id={`${job.get('jobId')}${file.id}`}>
                         <span
-                            className="content-link"
+                            className={"content-link-" + job.get('jobId').toLowerCase().substring(0,1)}
                             onClick={() => { this.openFile(); }}
                             onKeyDown={this.handleKeyDown}
                             tabIndex="0"

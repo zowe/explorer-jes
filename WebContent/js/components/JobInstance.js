@@ -192,7 +192,7 @@ class JobInstance extends React.Component {
                 <li role="none">
                     <ContextMenuTrigger id={job.get('label')}>
                         <span
-                            className="content-link"
+                            className={"content-link-" + job.get('jobId').toLowerCase().substring(0,1)}
                             onClick={() => { this.handleSingleClick(job); }}
                             onDoubleClick={() => { this.handleOpenAllFiles(job); }}
                             tabIndex="0"
