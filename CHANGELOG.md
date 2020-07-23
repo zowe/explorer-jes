@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to the JES-Explorer will be documented in this file.
 
+## <1.0.3>
+
+### New features and enhancements
+- Added abaility to multi select jobs with cmd/ctrl click and request multiple jobs be purged using this (https://github.com/zowe/zlux/issues/274), Thanks @jordanCain
+
 ## <1.0.2>
 
 ### New features and enhancements
