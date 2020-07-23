@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018, 2019
+ * Copyright IBM Corporation 2018, 2020
  */
 
 import expect from 'expect';
@@ -28,7 +28,7 @@ describe('Reducer: jobNodes', () => {
         expect(JobNodes(jobNodesResources.initialState, action)).toEqual(jobNodesResources.requestedJobsState);
     });
 
-    it('Should handle RECEIVE_JOBS , process job data with only one jobName and set isFetching to false', () => {
+    it('Should handle RECEIVE_JOBS, process job data with only one jobName and set isFetching to false', () => {
         const action = {
             type: jobNodesActions.RECEIVE_JOBS,
             jobs: jobNodesActionResources.jobFetchResponseSingleJobName,
@@ -36,7 +36,7 @@ describe('Reducer: jobNodes', () => {
         expect(JobNodes(jobNodesResources.initialState, action)).toEqual(jobNodesResources.receivedJobsStateSingleJobName);
     });
 
-    it('Should handle RECEIVE_JOBS , process job data with multiple jobNames and set isFetching to false', () => {
+    it('Should handle RECEIVE_JOBS, process job data with multiple jobNames and set isFetching to false', () => {
         const action = {
             type: jobNodesActions.RECEIVE_JOBS,
             jobs: jobNodesActionResources.jobFetchResponse,
@@ -57,6 +57,45 @@ describe('Reducer: jobNodes', () => {
             jobId: jobNodesActionResources.jobId,
         };
         expect(JobNodes(jobNodesResources.receivedJobsState, action)).toEqual(jobNodesResources.toggledJobState);
+    });
+
+    it('Should handle INVERT_JOB_SELECT_STATUS and invert isSelected to true', () => {
+        const action = {
+            type: jobNodesActions.INVERT_JOB_SELECT_STATUS,
+            jobId: jobNodesActionResources.jobId,
+        };
+        expect(JobNodes(jobNodesResources.receivedJobsStateSingleJobName, action)).toEqual(jobNodesResources.selectedSignleJobState);
+    });
+
+    it('Should handle INVERT_JOB_SELECT_STATUS and invert isSelected to false', () => {
+        const action = {
+            type: jobNodesActions.INVERT_JOB_SELECT_STATUS,
+            jobId: jobNodesActionResources.jobId,
+        };
+        expect(JobNodes(jobNodesResources.selectedSignleJobState, action)).toEqual(jobNodesResources.receivedJobsStateSingleJobName);
+    });
+
+    it('Should handle INVERT_JOB_SELECT_STATUS and invert isSelected to true when there are multiple jobs', () => {
+        const action = {
+            type: jobNodesActions.INVERT_JOB_SELECT_STATUS,
+            jobId: jobNodesActionResources.jobId,
+        };
+        expect(JobNodes(jobNodesResources.receivedJobsState, action)).toEqual(jobNodesResources.oneSelectedJobs);
+    });
+
+    it('Should handle UNSELECT_ALL_JOBS and set all jobs isSelected to false', () => {
+        const action = { type: jobNodesActions.UNSELECT_ALL_JOBS };
+        expect(JobNodes(jobNodesResources.allSelectedJobs, action)).toEqual(jobNodesResources.receivedJobsState);
+    });
+
+    it('Should handle UNSELECT_ALL_JOBS and set all jobs isSelected to false when only one job was selected', () => {
+        const action = { type: jobNodesActions.UNSELECT_ALL_JOBS };
+        expect(JobNodes(jobNodesResources.oneSelectedJobs, action)).toEqual(jobNodesResources.receivedJobsState);
+    });
+
+    it('Should handle UNSELECT_ALL_JOBS and set all jobs isSelected to false when already false', () => {
+        const action = { type: jobNodesActions.UNSELECT_ALL_JOBS };
+        expect(JobNodes(jobNodesResources.receivedJobsState, action)).toEqual(jobNodesResources.receivedJobsState);
     });
 
     it('Should handle REQUEST_JOB_FILES and set isFetching to true', () => {

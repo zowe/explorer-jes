@@ -5,8 +5,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018, 2019
+ * Copyright IBM Corporation 2018, 2020
  */
+
+import { List, Map } from 'immutable';
 
 export const jobFetchResponse = { items: [
     {
@@ -57,9 +59,6 @@ export const jobFetchResponseSingleJobName = { items: [
     },
 ] };
 
-export const jobName = 'TESTJOB';
-export const jobId = 'JOB1234';
-
 export const jobFiles = { items: [
     {
         ddName: 'JESMSGLG',
@@ -78,3 +77,24 @@ export const jobFiles = { items: [
         id: 3,
     },
 ] };
+
+export const jobName = 'TESTJOB';
+export const jobId = 'JOB1234';
+export const jobName2 = 'TESTJOB2';
+export const jobId2 = 'JOB12345';
+/**
+ * Unneccessary elements removed from jobs
+ * (label, returnCode, status, isToggled, files)
+ */
+export const jobsStateWithOneJobSelected = List([
+    new Map({
+        jobName,
+        jobId,
+        isSelected: false,
+    }),
+    new Map({
+        jobName: jobName2,
+        jobId: jobId2,
+        isSelected: true,
+    }),
+]);

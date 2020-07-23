@@ -30,6 +30,8 @@ export const REQUEST_CANCEL_JOB = 'REQUEST_CANCEL_JOB';
 export const RECEIVE_CANCEL_JOB = 'RECEIVE_CANCEL_JOB';
 export const INVALIDATE_CANCEL_JOB = 'INVALIDATE_CANCEL_JOB';
 export const REQUEST_PURGE_JOB = 'REQUEST_PURGE_JOB';
+export const REQUEST_PURGE_MULTIPLE_JOBS = 'REQUEST_PURGE_MULTIPLE_JOBS';
+export const RECEIVE_PURGE_MULTIPLE_JOBS = 'RECEIVE_PURGE_MULTIPLE_JOBS';
 export const RECEIVE_PURGE_JOB = 'RECEIVE_PURGE_JOB';
 export const INVALIDATE_PURGE_JOB = 'INVALIDATE_PURGE_JOB';
 
@@ -143,11 +145,23 @@ function requestPurge(jobName, jobId) {
     };
 }
 
+function requestPurgeMultipleJobs() {
+    return {
+        type: REQUEST_PURGE_MULTIPLE_JOBS,
+    };
+}
+
 function receivePurge(jobName, jobId) {
     return {
         type: RECEIVE_PURGE_JOB,
         jobName,
         jobId,
+    };
+}
+
+function receivePurgeMultipleJobs() {
+    return {
+        type: RECEIVE_PURGE_MULTIPLE_JOBS,
     };
 }
 
@@ -309,7 +323,7 @@ function getSelectedJobs(jobs) {
 
 export function purgeJobs(jobs) {
     return dispatch => {
-        dispatch(requestPurge());
+        dispatch(requestPurgeMultipleJobs());
         const selectedJobs = getSelectedJobs(jobs);
         const jobsToPurge = selectedJobs.map(job => {
             // eslint-disable-next-line quote-props, quotes
@@ -329,7 +343,8 @@ export function purgeJobs(jobs) {
                 if (response.ok) {
                     return response.text().then(() => {
                         dispatch(constructAndPushMessage(PURGE_JOBS_SUCCESS_MESSAGE));
-                        return dispatch(receivePurge());
+                        dispatch(unselectAllJobs());
+                        return dispatch(receivePurgeMultipleJobs());
                     });
                 }
                 return response.json().then(json => { throw Error(json && json.message ? json.message : ''); });

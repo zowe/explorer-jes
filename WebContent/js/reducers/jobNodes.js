@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 
 import { Map, List } from 'immutable';
@@ -22,27 +22,6 @@ import {
     INVALIDATE_JOBS,
     STOP_REFRESH_ICON,
 } from '../actions/jobNodes';
-
-/**
-jobs: [
-    {
-        jobName: MYJOB,
-        jobID: JOB1234,
-        label: MYJOB:JOB1234,
-        files: [
-            {
-                label: JESMSG,
-                id: 102,
-            },
-        ]
-        steps: [
-            {
-                label: TODODODODO
-            },
-        ]
-    }
-]
-*/
 
 const INITIAL_STATE = Map({
     jobs: List(),
