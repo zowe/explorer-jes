@@ -18,6 +18,7 @@ import ConnectedContentViewer from '../ContentViewer';
 import LoginDialog from '../../components/dialogs/LoginDialog';
 import ConnectedSnackbar from '../../components/Snackbar';
 import debounce from '../../utilities/debouncer';
+import TopBar from '../../components/TopBar';
 
 const HomeView = props => {
     const { validated } = props;
@@ -76,6 +77,7 @@ const HomeView = props => {
     if (validated) {
         return (
             <div className="row group" role="main" aria-label="Home">
+                <TopBar />
                 <div
                     className={moveMode ? 'action-layer draggable' : 'action-layer'}
                     onMouseUp={onDraggingEnd}
