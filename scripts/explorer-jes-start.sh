@@ -29,7 +29,7 @@ EXPLORER_PLUGIN_BASEURI=$($NODE_BIN -e "process.stdout.write(require('./app/pack
 EXPLORER_PLUGIN_NAME=$($NODE_BIN -e "process.stdout.write(require('./app/package.json').config.pluginName)")
 
 # get current ui server directory
-SERVER_DIR="${ROOT_DIR}/components/explorer-jes/bin/server/"
+SERVER_DIR="${ROOT_DIR}/components/explorer-ui-server"
 
 JOB_NAME="${ZOWE_PREFIX}UJ"
 

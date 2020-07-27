@@ -12,6 +12,4 @@ set -x
 ################################################################################
 
 FUNC=[CreatePax][pre-packaging]
-
-cd ./content/server
-npm install --production
+PWD=$(pwd)
