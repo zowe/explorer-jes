@@ -35,7 +35,7 @@ class JobInstance extends React.Component {
 
     handleSingleClick(e) {
         const { dispatch } = this.props;
-        if (e && e.metaKey) {
+        if (e && (e.metaKey || e.ctrlKey)) {
             this.handleSelectChange();
         } else {
             dispatch(unselectAllJobs());
