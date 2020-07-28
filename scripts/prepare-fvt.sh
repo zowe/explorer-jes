@@ -81,6 +81,7 @@ mkdir -p "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_LOGS_DIR}"
+mkdir -p "${FVT_WORKSPACE}/${FVT_LOGS_DIR}"
 echo
 
 ################################################################################
@@ -182,7 +183,7 @@ echo
 #        ps aux | grep .fvt | grep -v grep | awk '{print $2}' | xargs kill -9
 cd "${ROOT_DIR}"
 echo "[${SCRIPT_NAME}] starting plugin service ..."
-node ${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/server/src/index.js \
+node ${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/../explorer-ui-server/../src/index.js \
   --service "${EXPLORER_PLUGIN_NAME}" \
   --path "${EXPLORER_PLUGIN_BASEURI}" \
   --port "${FVT_EXPLORER_UI_PORT}" \
