@@ -81,7 +81,6 @@ mkdir -p "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_LOGS_DIR}"
-mkdir -p "${FVT_WORKSPACE}/${FVT_LOGS_DIR}"
 echo
 
 ################################################################################

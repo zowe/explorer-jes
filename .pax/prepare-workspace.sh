@@ -31,12 +31,6 @@ echo "[${SCRIPT_NAME}] cleaning PAX workspace ..."
 rm -fr "${PAX_WORKSPACE_DIR}/content"
 mkdir -p "${PAX_WORKSPACE_DIR}/content"
 
-# install peerDependencies
-echo "[${SCRIPT_NAME}] install peer dependencies (explorer-ui-server) ..."
-# EXPLORER_UI_SERVER_VERSION=$(node -e "console.log(require('./package.json').peerDependencies['explorer-ui-server'])")
-# npm install "explorer-ui-server@${EXPLORER_UI_SERVER_VERSION}" --no-save
-npm install explorer-ui-server
-
 # build client
 if [ ! -f "dist/app.min.js" ]; then
   echo "[${SCRIPT_NAME}] building client ..."
