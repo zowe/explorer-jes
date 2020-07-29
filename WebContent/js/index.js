@@ -23,10 +23,11 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import rootReducer from './reducers';
 import JobsView from './containers/pages/Jobs';
 import FullScreenView from './containers/pages/FullScreen';
+import { getStorageItem, ENABLE_REDUX_LOGGER } from './utilities/storageHelper';
 
 // redux dev tool extension enabled
 let appMiddleware;
-if (window.localStorage.getItem('enableReduxLogger') === 'true') {
+if (getStorageItem(ENABLE_REDUX_LOGGER) === 'true') {
     appMiddleware = applyMiddleware(thunk, createLogger());
 } else {
     appMiddleware = applyMiddleware(thunk);

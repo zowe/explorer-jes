@@ -9,13 +9,13 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
 import Switch from '@material-ui/core/Switch';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import styled from 'styled-components';
+import { ENABLE_REDUX_LOGGER, NOTIFICATION_DURATION, getStorageItem, setStorageItem } from '../utilities/storageHelper';
 
 
 const Settings = styled.div`
@@ -42,62 +42,52 @@ const SettingSection = styled.div`
     grid-template-columns: 33% 33% 33%
 `;
 
-export class SettingForm extends React.Component {
+export default class SettingForm extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            enableReduxLogger: (window.localStorage.getItem('enableReduxLogger') === 'true') || false,
-            notificationDuration: parseInt(window.localStorage.getItem('notificationDuration'), 10) || 5000,
+            enableReduxLogger: (getStorageItem(ENABLE_REDUX_LOGGER) === 'true') || false,
+            notificationDuration: parseInt(getStorageItem(NOTIFICATION_DURATION), 10) || 5000,
         };
 
+        this.mapStorageKey = new Map();
+        this.mapStorageKey.set(ENABLE_REDUX_LOGGER, 'enableReduxLogger');
+        this.mapStorageKey.set(NOTIFICATION_DURATION, 'notificationDuration');
+
         this.handleChange = this.handleChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
-    }
-
-    componentDidMount() {
-    }
-
-    componentWillReceiveProps() {
-
-    }
-
-    componentDidUpdate() {
-
-    }
-
-    onSubmit(event) {
-        console.log(this.state);
-        event.preventDefault();
-        return false;
     }
 
     handleChange = ev => {
         let value = ev.target.value;
+        const key = this.mapStorageKey.get(ev.target.name);
+
         if ('checked' in ev.target) {
             value = ev.target.checked;
         }
+
         this.setState({
-            [ev.target.name]: value,
+            [key]: value,
         });
 
-        window.localStorage.setItem(ev.target.name, value);
+        setStorageItem(ev.target.name, value);
     }
 
     render() {
-        const { notificationDuration } = this.state;
+        const { notificationDuration, enableReduxLogger } = this.state;
         return (
             <Settings>
-                <form onSubmit={this.onSubmit}>
+                <h5 style={{ color: 'red' }}>*require reload</h5>
+                <form>
                     <H3>App</H3>
                     <SettingSection>
                         <FormControl>
                             <TextField
                                 select={true}
-                                label="Notification Duration"
+                                label="*Notification Duration"
                                 value={notificationDuration.toString()}
                                 onChange={this.handleChange}
-                                name="notificationDuration"
+                                name={NOTIFICATION_DURATION}
                             >
                                 <MenuItem id="notification-small" key="small" value="5000" >Small</MenuItem>
                                 <MenuItem id="notification-medium" key="medium" value="10000" >Medium</MenuItem>
@@ -112,11 +102,11 @@ export class SettingForm extends React.Component {
                         <FormControl>
                             <FormControlLabel
                                 control={<Switch
-                                    name="enableReduxLogger"
-                                    checked={this.state.enableReduxLogger}
+                                    name={ENABLE_REDUX_LOGGER}
+                                    checked={enableReduxLogger}
                                     onChange={this.handleChange}
                                 />}
-                                label="Redux Logger"
+                                label="*Redux Logger"
                             />
                         </FormControl>
                     </SettingSection>
@@ -124,16 +114,3 @@ export class SettingForm extends React.Component {
             </Settings>);
     }
 }
-
-SettingForm.propTypes = {
-
-};
-
-function mapStateToProps() {
-    return {
-
-    };
-}
-
-const ConnectedSettingForm = connect(mapStateToProps)(SettingForm);
-export default ConnectedSettingForm;

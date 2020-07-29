@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 import Snackbar from '@material-ui/core/Snackbar';
 import { List } from 'immutable';
 import { popMessage } from '../actions/snackbarNotifications';
+import { getStorageItem, NOTIFICATION_DURATION } from '../utilities/storageHelper';
 
 class AtlasSnackbar extends React.Component {
     constructor(props) {
@@ -22,6 +23,7 @@ class AtlasSnackbar extends React.Component {
             timeout: 0,
             open: false,
         };
+        this.notificationDuration = parseInt(getStorageItem(NOTIFICATION_DURATION), 10) || 5000;
     }
 
     componentWillReceiveProps(nextProps) {
@@ -44,7 +46,7 @@ class AtlasSnackbar extends React.Component {
         this.state.timeout = setTimeout(() => {
             dispatch(popMessage());
             this.setState({ open: false });
-        }, 5000);
+        }, this.notificationDuration);
     }
 
     handleRequestClose = () => {

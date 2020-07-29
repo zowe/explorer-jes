@@ -24,6 +24,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import queryString from 'query-string';
 import UpperCaseTextField from '../components/dialogs/UpperCaseTextField';
+import { getStorageItem, setStorageItem, LAST_FILTERS } from '../utilities/storageHelper';
 
 import { setFilters, resetFilters, setOwnerAndFetchJobs } from '../actions/filters';
 import { fetchJobs } from '../actions/jobNodes';
@@ -40,12 +41,13 @@ export class Filters extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            toggled: false,
+            toggled: true,
         };
         this.toggleFilters = this.toggleFilters.bind(this);
         this.resetValues = this.resetValues.bind(this);
+        this.setFocusOnOwner = this.setFocusOnOwner.bind(this);
         this.applyValues = this.applyValues.bind(this);
-
+        this.filterOwnerRef = null;
         this.handlePrefixChange = this.handlePrefixChange.bind(this);
         this.handleOwnerChange = this.handleOwnerChange.bind(this);
         this.handleStatusChange = this.handleStatusChange.bind(this);
@@ -54,6 +56,7 @@ export class Filters extends React.Component {
     }
 
     componentDidMount() {
+        setTimeout(this.setFocusOnOwner, 100);
         const { location, dispatch, owner, username } = this.props;
         if (location && location.search) {
             const urlQueryParams = queryString.parse(location.search);
@@ -71,7 +74,15 @@ export class Filters extends React.Component {
                 }
             }
         }
-        if (owner === '' && (!location || !location.search || !location.search.includes('owner'))) {
+
+        let lastFilters = getStorageItem(LAST_FILTERS);
+        if (lastFilters > '') {
+            lastFilters = JSON.parse(lastFilters);
+            if (Object.keys(lastFilters).length > 0) {
+                dispatch(setFilters(lastFilters));
+                dispatch(fetchJobs(lastFilters));
+            }
+        } else if (owner === '' && (!location || !location.search || !location.search.includes('owner'))) {
             dispatch(setOwnerAndFetchJobs(username, this.props));
         }
 
@@ -104,6 +115,12 @@ export class Filters extends React.Component {
         }
         window.addEventListener('message', e => { receiveMessage(e); }, false);
         window.top.postMessage('iframeload', '*');
+    }
+
+    setFocusOnOwner() {
+        if (this.filterOwnerRef) {
+            this.filterOwnerRef.focusTextInput();
+        }
     }
 
     isOwnerAndPrefixWild() {
@@ -148,6 +165,8 @@ export class Filters extends React.Component {
         const { dispatch } = this.props;
         e.preventDefault();
         this.toggleFilters();
+        const { owner, prefix, status, jobId } = this.props;
+        setStorageItem(LAST_FILTERS, JSON.stringify({ owner, prefix, status, jobId }));
         dispatch(fetchJobs(this.props));
     }
 
@@ -188,6 +207,7 @@ export class Filters extends React.Component {
                             fieldChangedCallback={this.handleOwnerChange}
                             style={{ width: '50%' }}
                             disabled={!this.state.toggled}
+                            ref={elem => { this.filterOwnerRef = elem; return this.filterOwnerRef; }}
                         />
                         <UpperCaseTextField
                             id="filter-prefix-field"
