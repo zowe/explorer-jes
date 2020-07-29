@@ -47,10 +47,16 @@
 .col-2 {width: 15.33%;}
 .col-1 {width: 6.866%;}
 
+/* Specialised Columns */
+.col-11-8 {width: 98%; margin-left: 0%;}
+.col-9-2 {width: 72.6%; margin-left: 0%;}
+.col-0-1 {width: 6px; margin: 0 calc(0.5% - 3px); height: 100%;}
+
 /*  FULL WIDTH */
 @media only screen and (max-width: 600px) {
 	.col { margin: 1% 0 1% 0%; }
-    .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
+    .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12, .col-9-2 {
         width: 100%;
 	}
+	.col-0-1{ height: 0; width: 0;}
 }
