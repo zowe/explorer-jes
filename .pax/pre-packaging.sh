@@ -15,7 +15,7 @@ FUNC=[CreatePax][pre-packaging]
 PWD=$(pwd)
 
 cd ./content/server
-npm install
+npm install --production
 cd ${PWD}
 
 # display extracted files
