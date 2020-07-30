@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018, 2019
+ * Copyright IBM Corporation 2018, 2020
  */
 
 /* eslint-env mocha */
@@ -167,7 +167,7 @@ describe('Action: jobNodes', () => {
     });
 
     describe('purgeJob', () => {
-        it('Should create an action to request a job purge and then receive validation', () => {
+        it('Should create an action to request a job purge and then receive confirmation', () => {
             const purgeSuccessMessage = rewiredJobNodes.__get__('PURGE_JOB_SUCCESS_MESSAGE');
 
             const expectedActions = [{
@@ -180,6 +180,9 @@ describe('Action: jobNodes', () => {
                 message: Map({
                     message: `${purgeSuccessMessage} ${jobNodesResources.jobName}/${jobNodesResources.jobId}`,
                 }),
+            },
+            {
+                type: JobNodes.UNSELECT_ALL_JOBS,
             },
             {
                 type: JobNodes.RECEIVE_PURGE_JOB,
@@ -249,7 +252,7 @@ describe('Action: jobNodes', () => {
     });
 
     describe('cancelJob', () => {
-        it('Should create an action to request a job cancel and then receive validation', () => {
+        it('Should create an action to request a job cancel and then receive confirmation', () => {
             const cancelSuccessMessage = rewiredJobNodes.__get__('CANCEL_JOB_SUCCESS_MESSAGE');
 
             const expectedActions = [{
@@ -324,6 +327,74 @@ describe('Action: jobNodes', () => {
                 .reply(404, { message: fetchResponseMessage });
 
             return store.dispatch(JobNodes.cancelJob(jobNodesResources.jobName, jobNodesResources.jobId))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
+        });
+    });
+
+    describe('purgeJobs', () => {
+        it('Should create an action to request multiple jobs be purged and then receive confirmation', () => {
+            const purgeSuccessMessage = rewiredJobNodes.__get__('PURGE_JOBS_SUCCESS_MESSAGE');
+
+            const expectedActions = [
+                { type: JobNodes.REQUEST_PURGE_MULTIPLE_JOBS },
+                {
+                    type: snackbar.PUSH_NOTIFICATION_MESSAGE,
+                    message: Map({
+                        message: purgeSuccessMessage,
+                    }),
+                },
+                { type: JobNodes.UNSELECT_ALL_JOBS },
+                { type: JobNodes.RECEIVE_PURGE_MULTIPLE_JOBS },
+            ];
+
+            const store = mockStore(fromJS({
+                treeNodesJobs: {
+                    jobs: jobNodesResources.jobsStateWithOneJobSelected,
+                },
+            }));
+
+            nock(BASE_URL)
+                .delete('/jobs')
+                .reply(200, '');
+
+            return store.dispatch(JobNodes.purgeJobs(jobNodesResources.jobsStateWithOneJobSelected))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
+        });
+
+        it('Should create an action to request multiple jobs be purged, fail and then invalidate', () => {
+            const purgeFailMessage = rewiredJobNodes.__get__('PURGE_JOBS_FAIL_MESSAGE');
+            const fetchResponseMessage = 'Job Not found';
+
+            const expectedActions = [
+                { type: JobNodes.REQUEST_PURGE_MULTIPLE_JOBS },
+                {
+                    type: snackbar.PUSH_NOTIFICATION_MESSAGE,
+                    message: Map({
+                        message: `${purgeFailMessage} : ${fetchResponseMessage}`,
+                    }),
+                },
+                {
+                    type: JobNodes.INVALIDATE_PURGE_JOB,
+                    jobName: undefined,
+                    jobId: undefined,
+                },
+            ];
+
+            const store = mockStore(fromJS({
+                treeNodesJobs: {
+                    jobs: jobNodesResources.jobsStateWithOneJobSelected,
+                },
+            }));
+
+            nock(BASE_URL)
+                .delete('/jobs')
+                .reply(404, { message: fetchResponseMessage });
+
+            return store.dispatch(JobNodes.purgeJobs(jobNodesResources.jobsStateWithOneJobSelected))
                 .then(() => {
                     expect(store.getActions()).toEqual(expectedActions);
                 });

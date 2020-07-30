@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 
 import { Map, List } from 'immutable';
@@ -15,32 +15,13 @@ import {
     RECEIVE_JOBS,
     RECEIVE_SINGLE_JOB,
     TOGGLE_JOB,
+    INVERT_JOB_SELECT_STATUS,
+    UNSELECT_ALL_JOBS,
     REQUEST_JOB_FILES,
     RECEIVE_JOB_FILES,
     INVALIDATE_JOBS,
     STOP_REFRESH_ICON,
 } from '../actions/jobNodes';
-
-/**
-jobs: [
-    {
-        jobName: MYJOB,
-        jobID: JOB1234,
-        label: MYJOB:JOB1234,
-        files: [
-            {
-                label: JESMSG,
-                id: 102,
-            },
-        ]
-        steps: [
-            {
-                label: TODODODODO
-            },
-        ]
-    }
-]
-*/
 
 const INITIAL_STATE = Map({
     jobs: List(),
@@ -56,6 +37,7 @@ function extractJobs(jobs) {
             returnCode: job.returnCode,
             status: job.status,
             isToggled: false,
+            isSelected: false,
             files: List(),
         };
     });
@@ -70,6 +52,7 @@ function extractJob(job) {
             returnCode: job.returnCode,
             status: job.status,
             isToggled: false,
+            isSelected: false,
             files: List(),
         }),
     ]);
@@ -84,6 +67,17 @@ function findKeyOfJob(jobs, jobId) {
 function toggleJob(jobs, jobId) {
     const jobKey = findKeyOfJob(jobs, jobId);
     return jobs.get(jobKey).set('isToggled', !jobs.get(jobKey).get('isToggled'));
+}
+
+function invertJobSelectStatus(jobs, jobId) {
+    const jobKey = findKeyOfJob(jobs, jobId);
+    return jobs.get(jobKey).set('isSelected', !jobs.get(jobKey).get('isSelected'));
+}
+
+function unselectAllJobs(jobs) {
+    return jobs.map(job => {
+        return job.set('isSelected', false);
+    });
 }
 
 function extractJobFiles(jobFiles) {
@@ -112,6 +106,14 @@ export default function JobNodes(state = INITIAL_STATE, action) {
         case TOGGLE_JOB:
             return state.merge({
                 jobs: state.get('jobs').set(findKeyOfJob(state.get('jobs'), action.jobId), toggleJob(state.get('jobs'), action.jobId)),
+            });
+        case INVERT_JOB_SELECT_STATUS:
+            return state.merge({
+                jobs: state.get('jobs').set(findKeyOfJob(state.get('jobs'), action.jobId), invertJobSelectStatus(state.get('jobs'), action.jobId)),
+            });
+        case UNSELECT_ALL_JOBS:
+            return state.merge({
+                jobs: unselectAllJobs(state.get('jobs')),
             });
         case REQUEST_JOB_FILES:
             return state.set('isFetching', true);

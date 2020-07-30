@@ -14,7 +14,7 @@ import { Map, List } from 'immutable';
 import { connect } from 'react-redux';
 import LabelIcon from '@material-ui/icons/Label';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
-import { fetchJobFiles, toggleJob, cancelJob, purgeJob } from '../actions/jobNodes';
+import { fetchJobFiles, toggleJob, invertJobSelectStatus, unselectAllJobs, cancelJob, purgeJob, purgeJobs } from '../actions/jobNodes';
 import { getJCL, getFileLabel, changeSelectedContent, fetchConcatenatedJobFiles } from '../actions/content';
 import JobFile from './JobFile';
 import JobStep from './JobStep';
@@ -33,14 +33,21 @@ class JobInstance extends React.Component {
         this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
-    handleSingleClick(job) {
-        this.state.singleClickTimeout = setTimeout(() => {
-            if (!this.state.preventSingleClick) {
-                this.handleJobToggle(job);
-            }
-            this.setState({ preventSingleClick: false });
-            this.setState({ keyEnterCount: 0 });
-        }, 500);
+    handleSingleClick(e) {
+        const { dispatch } = this.props;
+        if (e && (e.metaKey || e.ctrlKey)) {
+            this.handleSelectChange();
+        } else {
+            dispatch(unselectAllJobs());
+            this.handleSelectChange();
+            this.state.singleClickTimeout = setTimeout(() => {
+                if (!this.state.preventSingleClick) {
+                    this.handleJobToggle();
+                }
+                this.setState({ preventSingleClick: false });
+                this.setState({ keyEnterCount: 0 });
+            }, 500);
+        }
     }
 
     handleKeyDown(e) {
@@ -50,7 +57,7 @@ class JobInstance extends React.Component {
 
             if (this.state.keyEnterCount === 0) {
                 // single click on single enter
-                this.handleSingleClick(job);
+                this.handleSingleClick();
             } else {
                 // double click action - on quick multiple presses
                 this.handleOpenAllFiles(job);
@@ -58,8 +65,13 @@ class JobInstance extends React.Component {
         }
     }
 
-    handleJobToggle(job) {
-        const { dispatch } = this.props;
+    handleSelectChange() {
+        const { dispatch, job } = this.props;
+        dispatch(invertJobSelectStatus(job.get('jobId')));
+    }
+
+    handleJobToggle() {
+        const { dispatch, job } = this.props;
         if (!job.get('isToggled') && !job.get('files').length > 0) {
             dispatch(fetchJobFiles(job.get('jobName'), job.get('jobId')));
         } else {
@@ -81,8 +93,8 @@ class JobInstance extends React.Component {
         });
     }
 
-    handleOpenAllFiles(job) {
-        const { dispatch } = this.props;
+    handleOpenAllFiles() {
+        const { job, dispatch } = this.props;
         const fileLabel = getFileLabel(job.get('jobName'), job.get('jobId'));
         // Reset the debounce handling
         clearTimeout(this.state.singleClickTimeout);
@@ -95,9 +107,13 @@ class JobInstance extends React.Component {
         }
     }
 
-    handlePurge(job) {
-        const { dispatch } = this.props;
-        dispatch(purgeJob(job.get('jobName'), job.get('jobId')));
+    handlePurge() {
+        const { dispatch, job, jobs } = this.props;
+        // If only one job is selected
+        if (!job.get('isSelected')) {
+            return dispatch(purgeJob(job.get('jobName'), job.get('jobId')));
+        }
+        return dispatch(purgeJobs(jobs));
     }
 
     handleCancel(job) {
@@ -165,7 +181,7 @@ class JobInstance extends React.Component {
                     Open
             </MenuItem>,
             <MenuItem key="purge" onClick={() => { this.handlePurge(job); }}>
-            Purge Job
+            Purge
             </MenuItem>,
             <MenuItem key="getJCL" onClick={() => { this.handleGetJCL(job); }}>
                 Get JCL (SJ)
@@ -188,13 +204,17 @@ class JobInstance extends React.Component {
         const { job } = this.props;
 
         return (
-            <div className="job-instance" role="none">
+            <div
+                className="job-instance"
+                role="none"
+                style={job.get('isSelected') ? { background: '#dedede' } : null}
+            >
                 <li role="none">
                     <ContextMenuTrigger id={job.get('label')}>
                         <span
                             className="content-link"
-                            onClick={() => { this.handleSingleClick(job); }}
-                            onDoubleClick={() => { this.handleOpenAllFiles(job); }}
+                            onClick={e => { this.handleSingleClick(e); }}
+                            onDoubleClick={() => { this.handleOpenAllFiles(); }}
                             tabIndex="0"
                             onKeyDown={this.handleKeyDown}
                             role="treeitem"
@@ -221,13 +241,16 @@ class JobInstance extends React.Component {
 JobInstance.propTypes = {
     dispatch: PropTypes.func.isRequired,
     job: PropTypes.instanceOf(Map).isRequired,
+    jobs: PropTypes.instanceOf(List).isRequired,
     content: PropTypes.instanceOf(List),
 };
 
 function mapStateToProps(state) {
     const contentRoot = state.get('content');
+    const jobs = state.get('jobNodes');
     return {
         content: contentRoot.get('content'),
+        jobs: jobs.get('jobs'),
     };
 }
 
