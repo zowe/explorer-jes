@@ -97,7 +97,7 @@ const HomeView = props => {
                         aria-label="Resize Bar"
                     >
                         <IconButton
-                            className="collapce-btn"
+                            className="collapse-btn"
                             onClick={() => {
                                 setCollapse(!collapsed);
                             }}
