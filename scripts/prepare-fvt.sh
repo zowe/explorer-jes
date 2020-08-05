@@ -96,6 +96,8 @@ echo "[${SCRIPT_NAME}] copying plugin to target test folder ..."
 cd "${ROOT_DIR}"
 cp -R .pax/content/. "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/"
 cp -R .pax/ascii/. "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/"
+cd "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/server"
+npm install --production
 echo
 
 ################################################################################
