@@ -1,12 +1,16 @@
 # Change Log
 All notable changes to the JES-Explorer will be documented in this file.
 
+## <1.0.5>
+
+### New features and enhancements
+- Changed packaging and lifecycle start.sh script to support explorer-ui-server keyring support (https://github.com/zowe/zowe-install-packaging/pull/1177), Thanks @stevenhorsman, @js665999, @nakulmanchanda, @jackjia-ibm
+
 ## <1.0.4>
 
 ### New features and enhancements
 - Added ability to multi select jobs with cmd/ctrl click and request multiple jobs be purged using this (https://github.com/zowe/zlux/issues/274), Thanks @jordanCain
 - Added ability to collapse and resize jobs tree (https://github.com/zowe/zlux/issues/259), Thanks @skurnevich
-- Changed packaging and lifecycle start.sh script to support explorer-ui-server keyring support (https://github.com/zowe/zowe-install-packaging/pull/1177), Thanks @stevenhorsman, @js665999, @nakulmanchanda
 
 ## <1.0.3>
 
