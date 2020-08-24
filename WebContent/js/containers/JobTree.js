@@ -31,6 +31,7 @@ class JobNodeTree extends React.Component {
         super(props);
         this.state = {
             message: null,
+            filtersToggled: false,
         };
     }
 
@@ -59,6 +60,10 @@ class JobNodeTree extends React.Component {
         return filtersString;
     }
 
+    updateFiltersToggled = () => {
+        this.setState({ filtersToggled: !this.state.filtersToggled });
+    };
+
     renderJobs() {
         const { jobs, isFetching, dispatch } = this.props;
         if (jobs && jobs.size >= 1) {
@@ -84,17 +89,19 @@ class JobNodeTree extends React.Component {
 
     render() {
         const { dispatch, isFetching } = this.props;
+        const NOT_EXPANDED_FILTER_OFFSET_HEIGHT = 100;
+        const EXPANDED_FILTER_OFFSET_HEIGHT = 333;
         return (
             <Card class="tree-card">
                 <CardHeader subheader={this.getFilterValues()} />
                 <CardContent id="tree-text-content">
-                    <ConnectedFilter />
+                    <ConnectedFilter updateFiltersToggledFunc={this.updateFiltersToggled} />
                     <RefreshIcon
                         isFetching={isFetching}
                         submitAction={() => { return dispatch(fetchJobs(this.props)); }}
                         dispatch={dispatch}
                     />
-                    <FullHeightTree >
+                    <FullHeightTree offset={this.state.filtersToggled ? EXPANDED_FILTER_OFFSET_HEIGHT : NOT_EXPANDED_FILTER_OFFSET_HEIGHT}>
                         <ul id="job-list" role="tree">
                             {this.renderJobs()}
                         </ul>

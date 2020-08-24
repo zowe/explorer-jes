@@ -152,7 +152,11 @@ export class Filters extends React.Component {
     }
 
     toggleFilters() {
+        const { updateFiltersToggledFunc } = this.props;
         this.setState({ toggled: !this.state.toggled });
+        if (updateFiltersToggledFunc) {
+            updateFiltersToggledFunc();
+        }
     }
 
     render() {
@@ -259,6 +263,7 @@ Filters.propTypes = {
         search: PropTypes.string,
     }),
     username: PropTypes.string.isRequired,
+    updateFiltersToggledFunc: PropTypes.func,
 };
 
 function mapStateToProps(state) {
