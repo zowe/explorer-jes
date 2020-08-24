@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to the JES-Explorer will be documented in this file.
 
+## <1.0.6>
+
+### Bug fixes
+- Fixed job tree height being greater than app container making page scrollable (https://github.com/zowe/zlux/issues/484), Thanks @jordanCain
+
 ## <1.0.5>
 
 ### New features and enhancements
