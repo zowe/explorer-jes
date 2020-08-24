@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to the JES-Explorer will be documented in this file.
 
+## <1.0.6>
+
+### Bug fixes
+- Fixed bug where no jobs would show after auth token expired and user logs back in (https://github.com/zowe/zlux/issues/408), Thanks @jordanCain
+
 ## <1.0.5>
 
 ### New features and enhancements
