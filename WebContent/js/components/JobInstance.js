@@ -18,6 +18,8 @@ import { fetchJobFiles, toggleJob, invertJobSelectStatus, unselectAllJobs, cance
 import { getJCL, getFileLabel, changeSelectedContent, fetchConcatenatedJobFiles } from '../actions/content';
 import JobFile from './JobFile';
 import JobStep from './JobStep';
+import { atlasFetch } from '../utilities/urlUtils';
+import { constructAndPushMessage } from '../actions/snackbarNotifications';
 
 
 class JobInstance extends React.Component {
@@ -131,6 +133,32 @@ class JobInstance extends React.Component {
         }
     }
 
+    handleDownloadJCL(job) {
+        const { dispatch } = this.props;
+        atlasFetch(`jobs/${job.get('jobName')}/${job.get('jobId')}/files/JCL/content`, { credentials: 'include' })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                return dispatch(constructAndPushMessage('Unable to download JCL'));
+            })
+            .then(json => {
+                // TODO :: Extract to utility function as also used to doanload a file
+                const blob = new Blob([json.content], { type: 'text/plain' });
+                const fileName = `${job.get('jobName')}-${job.get('jobId')}-JCL`;
+                if (window.navigator.msSaveOrOpenBlob) {
+                    window.navigator.msSaveBlob(blob, fileName);
+                } else {
+                    const elem = window.document.createElement('a');
+                    elem.href = window.URL.createObjectURL(blob);
+                    elem.download = fileName;
+                    document.body.appendChild(elem);
+                    elem.click();
+                    document.body.removeChild(elem);
+                }
+            });
+    }
+
     renderJobStatus() {
         const { job } = this.props;
         const statusStyleActive = { display: 'inline' };
@@ -185,6 +213,9 @@ class JobInstance extends React.Component {
             </MenuItem>,
             <MenuItem key="getJCL" onClick={() => { this.handleGetJCL(job); }}>
                 Get JCL (SJ)
+            </MenuItem>,
+            <MenuItem key="downloadJCL" onClick={() => { this.handleDownloadJCL(job); }}>
+                Download JCL
             </MenuItem>,
         ];
         if (job.get('status').toLowerCase() === 'active') {
