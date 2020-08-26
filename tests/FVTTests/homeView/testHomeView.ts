@@ -348,27 +348,47 @@ describe('JES explorer function verification tests', function () {
                 it('Should handle opening a files content unathorised for user and display error message');
             });
 
-            //TODO:: Too unreliable
-            it.skip('Should handle rendering context menu on right click', async () => {
-                await reloadAndOpenFilterPanel(driver, false);
-                expect(await testTextInputFieldCanBeModified(driver, 'filter-owner-field', '*'), 'filter-owner-field wrong').to.be.true;
-                expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', TEST_JOB_SHORT_NAME), 'filter-prefix-field wrong').to.be.true;
-                await findAndClickApplyButton(driver);
+            describe('Context Menu behaviour', () => {
+                async function loadJobsAndOpenContextMenu() {
+                    await reloadAndOpenFilterPanel(driver, false);
+                    expect(await testTextInputFieldCanBeModified(driver, 'filter-owner-field', '*'), 'filter-owner-field wrong').to.be.true;
+                    expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field', TEST_JOB_SHORT_NAME), 'filter-prefix-field wrong').to.be.true;
+                    await findAndClickApplyButton(driver);
+    
+                    const jobs = await waitForAndExtractJobs(driver);
+                    expect(jobs).to.be.an('array').that.has.lengthOf.at.least(1);
+                    const actions = driver.actions();
+                    await actions.contextClick(jobs[0]).perform();
+                }
+                it('Should handle rendering context menu on right click', async () => {
+                    await loadJobsAndOpenContextMenu();
 
-                const jobs = await waitForAndExtractJobs(driver);
-                expect(jobs).to.be.an('array').that.has.lengthOf.at.least(1);
-                const actions = driver.actions();
-                await actions.contextClick(jobs[0]).perform();
-                await driver.sleep(1000); // TODO:: replace with driver wait for element to be visible
-                const contextMenuEntries = await driver.findElements(By.css('.job-instance > nav > div'));
-                const text = await contextMenuEntries[0].getText();
-                expect(text).to.equal('Open');
+                    const contextMenu :WebElement[] = await driver.findElements(By.css('.react-contextmenu--visible'));
+                    expect(contextMenu).to.be.an('array').with.length(1);
+                });
+
+                async function getContextMenuItems() :Promise<string[]> {
+                    const contextMenuItems :WebElement[] = await driver.findElements(By.css('nav.react-contextmenu--visible > div.react-contextmenu-item'));
+                    await driver.sleep(200);
+                    return await Promise.all(contextMenuItems.map(async (menuItem :WebElement) => {
+                        return await menuItem.getText();
+                    }));
+            }
+
+                it('Should display context menu with expected items', async () => {
+                    await loadJobsAndOpenContextMenu();
+                    const expectedContextMenuItems :string[] = ["Open", "Purge", "Get JCL (SJ)", "Download JCL"];
+
+                    const contextMenuItems :string[] = await getContextMenuItems();
+                    expect(contextMenuItems).to.eql(expectedContextMenuItems);
+                });
+                // TODO: check after PURGE API is validated on HSS and ZD&T
+                it('Should handle purging a job');
+                it('Should handle getting JCL of job');
+                it('Should handle closing context menu when clicking elsewhere on screen');
             });
-            // TODO: check after PURGE API is validated on HSS and ZD&T
-            it('Should handle purging a job');
-            it('Should handle getting JCL of job');
-            it('Should handle closing context menu when clicking elsewhere on screen');
         });
+
         describe('Editor behaviour', () => {
             const jobFileName = 'JESJCL';
 
