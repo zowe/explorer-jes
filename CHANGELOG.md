@@ -6,6 +6,9 @@ All notable changes to the JES-Explorer will be documented in this file.
 ### New features and enhancements
 - Changed packaging and lifecycle start.sh script to support explorer-ui-server keyring support (https://github.com/zowe/zowe-install-packaging/pull/1177), Thanks @stevenhorsman, @js665999, @nakulmanchanda, @jackjia-ibm
 
+### Bug fixes
+- Fixed bug where no jobs would show after auth token expired and user logs back in (https://github.com/zowe/zlux/issues/408), Thanks @jordanCain
+
 ## <1.0.4>
 
 ### New features and enhancements
