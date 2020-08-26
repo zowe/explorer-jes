@@ -19,6 +19,8 @@
 # - KEYSTORE_KEY
 # - KEYSTORE_CERTIFICATE
 # - ZOWE_PREFIX
+# - ZOWE_EXPLORER_HOST
+# - ZOWE_IP_ADDRESS
 
 NODE_BIN=${NODE_HOME}/bin/node
 
@@ -30,6 +32,10 @@ EXPLORER_PLUGIN_NAME=$($NODE_BIN -e "process.stdout.write(require('./app/package
 SERVER_DIR="${ROOT_DIR}/components/explorer-jes/bin/server/"
 
 JOB_NAME="${ZOWE_PREFIX}UJ"
+
+if [ -z "${ZOWE_EXPLORER_FRAME_ANCESTORS}" ]; then
+  ZOWE_EXPLORER_FRAME_ANCESTORS="${ZOWE_EXPLORER_HOST}:*,${ZOWE_IP_ADDRESS}:*"
+fi
 
 # start service
 _BPX_JOBNAME=${JOB_NAME} $NODE_BIN $SERVER_DIR/src/index.js \

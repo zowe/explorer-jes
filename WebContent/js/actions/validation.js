@@ -15,6 +15,8 @@ export const RECEIVE_VALIDATION = 'RECEIVE_VALIDATION';
 export const INVALIDATE_VALIDATION = 'INVALIDATE_VALIDATION';
 export const SET_SERVER = 'SET_SERVER';
 
+export const VALIDATION_FAILURE_MESSAGE = 'Check for validation failed';
+
 function requestValidation() {
     return {
         type: REQUEST_VALIDATION,
@@ -38,7 +40,8 @@ function invalidateValidation(message) {
 export function checkForValidationFailure(response) {
     return dispatch => {
         if (response.status === 401) {
-            return dispatch(invalidateValidation());
+            dispatch(invalidateValidation());
+            throw Error(VALIDATION_FAILURE_MESSAGE);
         }
         return response;
     };
