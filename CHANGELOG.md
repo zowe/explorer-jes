@@ -8,6 +8,8 @@ All notable changes to the JES-Explorer will be documented in this file.
 
 ### Bug fixes
 - Fixed bug where no jobs would show after auth token expired and user logs back in (https://github.com/zowe/zlux/issues/408), Thanks @jordanCain
+- Add default value for ZOWE_EXPLORER_FRAME_ANCESTORS at lifecycle start script.           
+  It resolves (https://github.com/zowe/explorer-ui-server/issues/44), thanks @nakulmanchanda
 
 ## <1.0.4>
 
