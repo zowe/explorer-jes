@@ -9,6 +9,9 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
+
+import { withStyles } from '@material-ui/core/styles';
 import Switch from '@material-ui/core/Switch';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
@@ -19,7 +22,7 @@ import { ENABLE_REDUX_LOGGER, NOTIFICATION_DURATION, getStorageItem, setStorageI
 
 
 const Settings = styled.div`
-    width: 580px;
+    width: 180px;
     padding: 15px;
     margin: 0px 0px 15px;
     fontSize: 13px;
@@ -39,16 +42,24 @@ const H3 = styled.h3`
 const SettingSection = styled.div`
     width: 100%;
     display: grid;
-    grid-template-columns: 33% 33% 33%
+    grid-template-columns: 100%
 `;
 
-export default class SettingForm extends React.Component {
+const styles = {
+    customizeLabel: {
+        fontSize: '0.75rem',
+        color: 'grey',
+    },
+};
+
+
+class SettingFormBase extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            enableReduxLogger: (getStorageItem(ENABLE_REDUX_LOGGER) === 'true') || false,
-            notificationDuration: parseInt(getStorageItem(NOTIFICATION_DURATION), 10) || 5000,
+            enableReduxLogger: getStorageItem(ENABLE_REDUX_LOGGER) || false,
+            notificationDuration: getStorageItem(NOTIFICATION_DURATION) || 5000,
         };
 
         this.mapStorageKey = new Map();
@@ -75,29 +86,28 @@ export default class SettingForm extends React.Component {
 
     render() {
         const { notificationDuration, enableReduxLogger } = this.state;
+        const { classes } = this.props;
         return (
             <Settings>
-                <h5 style={{ color: 'red' }}>*require reload</h5>
+                <h3>Preferences</h3>
                 <form>
                     <H3>App</H3>
                     <SettingSection>
                         <FormControl>
                             <TextField
                                 select={true}
-                                label="*Notification Duration"
+                                label="Notification Duration"
                                 value={notificationDuration.toString()}
                                 onChange={this.handleChange}
                                 name={NOTIFICATION_DURATION}
                             >
-                                <MenuItem id="notification-small" key="small" value="5000" >Small</MenuItem>
-                                <MenuItem id="notification-medium" key="medium" value="10000" >Medium</MenuItem>
-                                <MenuItem id="notification-large" key="large" value="15000" >Large</MenuItem>
+                                <MenuItem id="notification-small" key="small" value="5000" >Small(5s)</MenuItem>
+                                <MenuItem id="notification-medium" key="medium" value="10000" >Medium(10s)</MenuItem>
+                                <MenuItem id="notification-large" key="large" value="15000" >Large(15s)</MenuItem>
                             </TextField>
-
-
                         </FormControl>
                     </SettingSection>
-                    <H3>Development</H3>
+                    <H3>Logging</H3>
                     <SettingSection>
                         <FormControl>
                             <FormControlLabel
@@ -106,11 +116,21 @@ export default class SettingForm extends React.Component {
                                     checked={enableReduxLogger}
                                     onChange={this.handleChange}
                                 />}
-                                label="*Redux Logger"
+                                label="Browser Console Logging"
+                                classes={{ label: classes.customizeLabel }}
                             />
                         </FormControl>
                     </SettingSection>
                 </form>
+                <h5 style={{ color: 'red' }}>*Preferences change require reload</h5>
             </Settings>);
     }
 }
+
+SettingFormBase.propTypes = {
+    // eslint-disable-next-line react/forbid-prop-types
+    classes: PropTypes.object.isRequired,
+};
+
+const SettingForm = withStyles(styles)(SettingFormBase);
+export default SettingForm;

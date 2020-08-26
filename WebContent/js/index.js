@@ -27,7 +27,7 @@ import { getStorageItem, ENABLE_REDUX_LOGGER } from './utilities/storageHelper';
 
 // redux dev tool extension enabled
 let appMiddleware;
-if (getStorageItem(ENABLE_REDUX_LOGGER) === 'true') {
+if (getStorageItem(ENABLE_REDUX_LOGGER) === true) {
     appMiddleware = applyMiddleware(thunk, createLogger());
 } else {
     appMiddleware = applyMiddleware(thunk);

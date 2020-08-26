@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
+import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -11,6 +13,18 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import Popover from '@material-ui/core/Popover';
 import Tooltip from '@material-ui/core/Tooltip';
 import SettingForm from './Setting';
+
+const styles = {
+    customizeToolbar: {
+        minHeight: 32,
+        maxHeight: 32,
+    },
+    small: {
+        width: 20,
+        height: 20,
+        fontSize: '1rem',
+    },
+};
 
 class TopBar extends React.Component {
     constructor(props) {
@@ -31,14 +45,17 @@ class TopBar extends React.Component {
 
     render() {
         const { anchorEl } = this.state;
-        const { validated, username } = this.props;
+        const { validated, username, classes } = this.props;
         const open = Boolean(anchorEl);
         const id = open ? 'simple-popover' : undefined;
         return (
-            <AppBar position="static">
-                <Toolbar>
+            <AppBar position="static" >
+                <Toolbar
+                    className={classNames(classes.customizeToolbar)}
+                    variant="dense"
+                >
                     <Typography type="title" color="inherit" style={{ flex: 1 }}>
-                            JES Explorer
+                        JES Explorer
                     </Typography>
                     <Tooltip title="Setting" placement="bottom">
                         <IconButton color="inherit" aria-describedby={id} onClick={this.handleClick}>
@@ -64,7 +81,7 @@ class TopBar extends React.Component {
                     {validated &&
                     <Tooltip title={username} placement="bottom">
                         <IconButton color="inherit">
-                            <Avatar>{username.charAt(0).toUpperCase()}</Avatar>
+                            <Avatar className={classes.small}>{username.charAt(0).toUpperCase()}</Avatar>
                         </IconButton>
                     </Tooltip>}
                 </Toolbar>
@@ -76,6 +93,8 @@ class TopBar extends React.Component {
 TopBar.propTypes = {
     validated: PropTypes.bool.isRequired,
     username: PropTypes.string.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
+    classes: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -86,5 +105,5 @@ function mapStateToProps(state) {
     };
 }
 
-const ConnectedTopBar = connect(mapStateToProps)(TopBar);
+const ConnectedTopBar = connect(mapStateToProps)(withStyles(styles)(TopBar));
 export default ConnectedTopBar;

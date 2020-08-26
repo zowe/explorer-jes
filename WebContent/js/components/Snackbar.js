@@ -23,7 +23,7 @@ class AtlasSnackbar extends React.Component {
             timeout: 0,
             open: false,
         };
-        this.notificationDuration = parseInt(getStorageItem(NOTIFICATION_DURATION), 10) || 5000;
+        this.notificationDuration = getStorageItem(NOTIFICATION_DURATION) || 5000;
     }
 
     componentWillReceiveProps(nextProps) {

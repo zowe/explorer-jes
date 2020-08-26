@@ -9,6 +9,7 @@
  */
 
 let host = 'tvt5003.svl.ibm.com:7554';
+
 if (typeof location !== 'undefined') {
     const hostname = location.hostname;
     if (hostname !== 'localhost' || process.env.NODE_ENV === 'production') {

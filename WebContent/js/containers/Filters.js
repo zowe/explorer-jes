@@ -41,7 +41,7 @@ export class Filters extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            toggled: true,
+            toggled: false,
         };
         this.toggleFilters = this.toggleFilters.bind(this);
         this.resetValues = this.resetValues.bind(this);
@@ -56,7 +56,6 @@ export class Filters extends React.Component {
     }
 
     componentDidMount() {
-        setTimeout(this.setFocusOnOwner, 100);
         const { location, dispatch, owner, username } = this.props;
         if (location && location.search) {
             const urlQueryParams = queryString.parse(location.search);
@@ -75,9 +74,8 @@ export class Filters extends React.Component {
             }
         }
 
-        let lastFilters = getStorageItem(LAST_FILTERS);
+        const lastFilters = getStorageItem(LAST_FILTERS);
         if (lastFilters > '') {
-            lastFilters = JSON.parse(lastFilters);
             if (Object.keys(lastFilters).length > 0) {
                 dispatch(setFilters(lastFilters));
                 dispatch(fetchJobs(lastFilters));

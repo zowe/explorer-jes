@@ -14,7 +14,11 @@ export const LAST_FILTERS = 'ZoweJes.lastFilters';
 
 
 export function getStorageItem(storageKey) {
-    return window.localStorage.getItem(storageKey);
+    try {
+        return JSON.parse(window.localStorage.getItem(storageKey));
+    } catch (err) {
+        return '';
+    }
 }
 
 export function setStorageItem(storageKey, value) {
