@@ -160,10 +160,10 @@ export class Filters extends React.Component {
     }
 
     applyValues(e) {
-        const { dispatch } = this.props;
+        const { dispatch, owner, prefix, status, jobId } = this.props;
         e.preventDefault();
         this.toggleFilters();
-        const { owner, prefix, status, jobId } = this.props;
+
         setStorageItem(LAST_FILTERS, JSON.stringify({ owner, prefix, status, jobId }));
         dispatch(fetchJobs(this.props));
     }

@@ -121,6 +121,7 @@ export async function testOwnerFilterFetching(driver, owner, potentialJobs) {
     await testTextInputFieldCanBeModified(driver, 'filter-owner-field', owner);
     await findAndClickApplyButton(driver);
     const jobs = await waitForAndExtractJobs(driver);
+
     if (potentialJobs.length === 0) {
         const jobText = await jobs[0].getText();
         return jobText === 'No jobs found';
