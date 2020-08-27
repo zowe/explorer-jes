@@ -24,6 +24,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import queryString from 'query-string';
 import UpperCaseTextField from '../components/dialogs/UpperCaseTextField';
+import { getStorageItem, setStorageItem, LAST_FILTERS } from '../utilities/storageHelper';
 
 import { setFilters, resetFilters, setOwnerAndFetchJobs } from '../actions/filters';
 import { fetchJobs } from '../actions/jobNodes';
@@ -44,8 +45,9 @@ export class Filters extends React.Component {
         };
         this.toggleFilters = this.toggleFilters.bind(this);
         this.resetValues = this.resetValues.bind(this);
+        this.setFocusOnOwner = this.setFocusOnOwner.bind(this);
         this.applyValues = this.applyValues.bind(this);
-
+        this.filterOwnerRef = null;
         this.handlePrefixChange = this.handlePrefixChange.bind(this);
         this.handleOwnerChange = this.handleOwnerChange.bind(this);
         this.handleStatusChange = this.handleStatusChange.bind(this);
@@ -71,7 +73,14 @@ export class Filters extends React.Component {
                 }
             }
         }
-        if (owner === '' && (!location || !location.search || !location.search.includes('owner'))) {
+
+        const lastFilters = getStorageItem(LAST_FILTERS);
+        if (lastFilters > '') {
+            if (Object.keys(lastFilters).length > 0) {
+                dispatch(setFilters(lastFilters));
+                dispatch(fetchJobs(lastFilters));
+            }
+        } else if (owner === '' && (!location || !location.search || !location.search.includes('owner'))) {
             dispatch(setOwnerAndFetchJobs(username, this.props));
         }
 
@@ -104,6 +113,12 @@ export class Filters extends React.Component {
         }
         window.addEventListener('message', e => { receiveMessage(e); }, false);
         window.top.postMessage('iframeload', '*');
+    }
+
+    setFocusOnOwner() {
+        if (this.filterOwnerRef) {
+            this.filterOwnerRef.focusTextInput();
+        }
     }
 
     isOwnerAndPrefixWild() {
@@ -145,9 +160,11 @@ export class Filters extends React.Component {
     }
 
     applyValues(e) {
-        const { dispatch } = this.props;
+        const { dispatch, owner, prefix, status, jobId } = this.props;
         e.preventDefault();
         this.toggleFilters();
+
+        setStorageItem(LAST_FILTERS, JSON.stringify({ owner, prefix, status, jobId }));
         dispatch(fetchJobs(this.props));
     }
 
@@ -188,6 +205,7 @@ export class Filters extends React.Component {
                             fieldChangedCallback={this.handleOwnerChange}
                             style={{ width: '50%' }}
                             disabled={!this.state.toggled}
+                            ref={elem => { this.filterOwnerRef = elem; return this.filterOwnerRef; }}
                         />
                         <UpperCaseTextField
                             id="filter-prefix-field"

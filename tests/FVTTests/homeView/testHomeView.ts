@@ -82,117 +82,6 @@ describe('JES explorer function verification tests', function () {
 
     describe('JES explorer home view', () => {
         it('Should handle rendering expected components (Navigator[filters+tree] & File Viewer)');
-        describe('Component resizing', () => {
-            afterEach(async () => {
-                await driver.manage().window().setRect({ width: 1600, height: 800 });
-            });
-            const browserHeaderHeight = 74;
-            const jobTreeTitleHeight = 52;
-            it('Should handle resizing of tree card component (tree-text-content)', async () => {
-                expect(await testWindowHeightChangeForcesComponentHeightChange(
-                    driver, 'tree-text-content', browserHeaderHeight + jobTreeTitleHeight)).to.be.true;
-            });
-            it('Should handle resizing just the tree (full-height-tree)', async () => {
-                const filterCardHeight = 48;
-                expect(await testWindowHeightChangeForcesComponentHeightChange(
-                    driver, 'full-height-tree', browserHeaderHeight + jobTreeTitleHeight + filterCardHeight)).to.be.true;
-            });
-            it('Should handle resizing of editor card component (content-viewer)', async () => {
-                expect(await testWindowHeightChangeForcesComponentHeightChange(
-                    driver, 'content-viewer', browserHeaderHeight)).to.be.true;
-            });
-            it('Should handle resizing just the editor text area (embeddedEditor)', async () => {
-                const contentViewerHeader = await driver.findElement(By.id('content-viewer-header'));
-                const contentViewerHeaderHeight = await contentViewerHeader.getCssValue('height');
-                const contentViewerHeaderHeightInt = parseInt(contentViewerHeaderHeight.substr(0, contentViewerHeaderHeight.length - 2), 10);
-                const contentViewerHeaderPadding = 16;
-                expect(await testWindowHeightChangeForcesComponentHeightChange(
-                    driver, 'embeddedEditor', browserHeaderHeight + contentViewerHeaderHeightInt + contentViewerHeaderPadding)).to.be.true;
-            });
-        });
-
-        describe('Filter card component behaviour', () => {
-            describe('Pre expansion', () => {
-                it('Should render filter card (filter-view)', async () => {
-                    const filterView = await driver.findElements(By.id('filter-view'));
-                    expect(filterView).to.be.an('array').that.has.lengthOf(1);
-                });
-
-                it('Should render filter card title', async () => {
-                    const cardTitle = await driver.findElements(By.css('#filter-view > div > div'));
-                    const text = await cardTitle[0].getText();
-                    expect(text).to.equal('Job Filters');
-                });
-
-                it('Should render filter card expand icon (svg)', async () => {
-                    const expandIcon = await driver.findElements(By.css('#filter-view > div > div > span > svg'));
-                    expect(expandIcon).to.be.an('array').that.has.lengthOf(1);
-                });
-
-                it('Should not render filter-form before expansion', async () => {
-                    expect(await testElementAppearsXTimesById(driver, 'filter-form', 0), 'filter-form is visible').to.be.true;
-                });
-
-                it('Should not render filter-input-fields before expansion', async () => {
-                    expect(await testElementAppearsXTimesById(driver, 'filter-owner-field', 0), 'filter-owner-field is visible').to.be.true;
-                    expect(await testElementAppearsXTimesById(driver, 'filter-prefix-field', 0), 'filter-prefix-field is visible').to.be.true;
-                    expect(await testElementAppearsXTimesById(driver, 'filter-jobId-field', 0), 'filter-jobId-field is visible').to.be.true;
-                    expect(await testElementAppearsXTimesById(driver, 'filter-status-field', 0), 'filter-status-field is visible').to.be.true;
-                });
-
-                it('Should render filter-form after card click', async () => {
-                    await reloadAndOpenFilterPanel(driver, false);
-                    const filterForm = await driver.findElements(By.id('filter-form'));
-                    expect(filterForm).to.be.an('array').that.has.lengthOf(1);
-                });
-            });
-
-            describe('Post expansion', () => {
-                beforeEach(async () => {
-                    await reloadAndOpenFilterPanel(driver, false);
-                });
-
-                it('Should render filter-input-fields after expansion', async () => {
-                    expect(await testElementAppearsXTimesById(driver, 'filter-owner-field', 1), 'filter-owner-field wrong').to.be.true;
-                    expect(await testElementAppearsXTimesById(driver, 'filter-prefix-field', 1), 'filter-prefix-field wrong').to.be.true;
-                    expect(await testElementAppearsXTimesById(driver, 'filter-jobId-field', 1), 'filter-jobId-field wrong').to.be.true;
-                    expect(await testElementAppearsXTimesById(driver, 'filter-status-field', 1), 'filter-status-field wrong').to.be.true;
-                });
-
-                it('Should pre-populate owner field with username', async () => {
-                    const ownerField = await driver.findElement(By.id('filter-owner-field'));
-                    expect(await ownerField.getAttribute('value')).to.equal(USERNAME.toUpperCase());
-                });
-
-                it('Should allow input fields to be changed', async () => {
-                    expect(await testTextInputFieldCanBeModified(driver, 'filter-owner-field'), 'filter-owner-field wrong').to.be.true;
-                    expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field'), 'filter-prefix-field wrong').to.be.true;
-                    expect(await testTextInputFieldCanBeModified(driver, 'filter-jobId-field'), 'filter-jobId-field wrong').to.be.true;
-                });
-
-                it('Should reset filter fields when reset clicked', async () => {
-                    expect(await testTextInputFieldCanBeModified(driver, 'filter-owner-field'), 'filter-owner-field wrong').to.be.true;
-                    expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field'), 'filter-prefix-field wrong').to.be.true;
-                    expect(await testTextInputFieldCanBeModified(driver, 'filter-jobId-field'), 'filter-jobId-field wrong').to.be.true;
-                    const resetButton = await driver.findElement(By.id('filters-reset-button'));
-                    await resetButton.click();
-                    expect(await testTextInputFieldValue(driver, 'filter-owner-field', USERNAME.toUpperCase()), 'filter-owner-field wrong').to.be.true;
-                    expect(await testTextInputFieldValue(driver, 'filter-prefix-field', '*'), 'filter-prefix-field wrong').to.be.true;
-                    expect(await testTextInputFieldValue(driver, 'filter-jobId-field', '*'), 'filter-jobId-field wrong').to.be.true;
-                });
-
-                it('Should handle closing the filter card when clicking apply', async () => {
-                    await findAndClickApplyButton(driver);
-                    expect(await testElementAppearsXTimesById(driver, 'filter-form', 0)).to.be.true;
-                });
-
-                it('Should handle closing the filter card when clicking card header', async () => {
-                    const headerElement = await driver.findElement(By.id('filter-view-header'));
-                    await headerElement.click();
-                    expect(await testElementAppearsXTimesById(driver, 'filter-form', 0)).to.be.true;
-                });
-            });
-        });
         describe('Tree interaction', () => {
             before('Reset prior to Tree interaction suite', async () => {
                 await loadPage(driver, BASE_URL_WITH_PATH);
@@ -266,6 +155,15 @@ describe('JES explorer function verification tests', function () {
                     await reloadAndOpenFilterPanel(driver, false);
                 });
 
+                describe('Owner Filter', () => {
+                    it('Should handle fetching jobs based on owner filter set to owner (IZUSVR)', async () => {
+                        expect(await testOwnerFilterFetching(driver, 'IZUSVR', ['IZU', 'ZOWE', 'ZWE'])).to.be.true;
+                    });
+                    it('Should handle fetching no jobs based on crazy owner (1ZZZZZZ1)', async () => {
+                        expect(await testOwnerFilterFetching(driver, '1ZZZZZZ1', [])).to.be.true;
+                    });
+                });
+
                 describe('Prefix Filter', () => {
                     it('Should handle fetching jobs based on full prefix (ZOSMF_JOB_NAME)', async () => {
                         expect(await testPrefixFilterFetching(driver, ZOSMF_SERVER_JOB_NAME, false)).to.be.true;
@@ -275,15 +173,6 @@ describe('JES explorer function verification tests', function () {
                     });
                     it('Should handle fetching no jobs based on crazy prefix (1ZZZZZZ1)', async () => {
                         expect(await testPrefixFilterFetching(driver, '1ZZZZZZ1', true)).to.be.true;
-                    });
-                });
-
-                describe('Owner Filter', () => {
-                    it('Should handle fetching jobs based on owner filter set to ZOWESVR owner (IZUSVR)', async () => {
-                        expect(await testOwnerFilterFetching(driver, 'IZUSVR', ['IZU', 'ZOWE', 'ZWE'])).to.be.true;
-                    });
-                    it('Should handle fetching no jobs based on crazy owner (1ZZZZZZ1)', async () => {
-                        expect(await testOwnerFilterFetching(driver, '1ZZZZZZ1', [])).to.be.true;
                     });
                 });
 
@@ -369,6 +258,89 @@ describe('JES explorer function verification tests', function () {
             it('Should handle getting JCL of job');
             it('Should handle closing context menu when clicking elsewhere on screen');
         });
+        describe('Filter card component behaviour', () => {
+            describe('Pre expansion', () => {
+                it('Should render filter card (filter-view)', async () => {
+                    const filterView = await driver.findElements(By.id('filter-view'));
+                    expect(filterView).to.be.an('array').that.has.lengthOf(1);
+                });
+
+                it('Should render filter card title', async () => {
+                    const cardTitle = await driver.findElements(By.css('#filter-view > div > div'));
+                    const text = await cardTitle[0].getText();
+                    expect(text).to.equal('Job Filters');
+                });
+
+                it('Should render filter card expand icon (svg)', async () => {
+                    const expandIcon = await driver.findElements(By.css('#filter-view > div > div > span > svg'));
+                    expect(expandIcon).to.be.an('array').that.has.lengthOf(1);
+                });
+
+                it('Should not render filter-form before expansion', async () => {
+                    expect(await testElementAppearsXTimesById(driver, 'filter-form', 0), 'filter-form is visible').to.be.true;
+                });
+
+                it('Should not render filter-input-fields before expansion', async () => {
+                    expect(await testElementAppearsXTimesById(driver, 'filter-owner-field', 0), 'filter-owner-field is visible').to.be.true;
+                    expect(await testElementAppearsXTimesById(driver, 'filter-prefix-field', 0), 'filter-prefix-field is visible').to.be.true;
+                    expect(await testElementAppearsXTimesById(driver, 'filter-jobId-field', 0), 'filter-jobId-field is visible').to.be.true;
+                    expect(await testElementAppearsXTimesById(driver, 'filter-status-field', 0), 'filter-status-field is visible').to.be.true;
+                });
+
+                it('Should render filter-form after card click', async () => {
+                    await reloadAndOpenFilterPanel(driver, false);
+                    const filterForm = await driver.findElements(By.id('filter-form'));
+                    expect(filterForm).to.be.an('array').that.has.lengthOf(1);
+                });
+            });
+
+            describe('Post expansion', () => {
+                beforeEach(async () => {
+                    await reloadAndOpenFilterPanel(driver, false);
+                });
+
+                it('Should render filter-input-fields after expansion', async () => {
+                    expect(await testElementAppearsXTimesById(driver, 'filter-owner-field', 1), 'filter-owner-field wrong').to.be.true;
+                    expect(await testElementAppearsXTimesById(driver, 'filter-prefix-field', 1), 'filter-prefix-field wrong').to.be.true;
+                    expect(await testElementAppearsXTimesById(driver, 'filter-jobId-field', 1), 'filter-jobId-field wrong').to.be.true;
+                    expect(await testElementAppearsXTimesById(driver, 'filter-status-field', 1), 'filter-status-field wrong').to.be.true;
+                });
+
+                it('Should pre-populate owner field with username', async () => {
+                    driver.executeScript('window.localStorage.clear();');
+                    const ownerField = await driver.findElement(By.id('filter-owner-field'));
+                    expect(await ownerField.getAttribute('value')).to.equal(USERNAME.toUpperCase());
+                });
+
+                it('Should allow input fields to be changed', async () => {
+                    expect(await testTextInputFieldCanBeModified(driver, 'filter-owner-field'), 'filter-owner-field wrong').to.be.true;
+                    expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field'), 'filter-prefix-field wrong').to.be.true;
+                    expect(await testTextInputFieldCanBeModified(driver, 'filter-jobId-field'), 'filter-jobId-field wrong').to.be.true;
+                });
+
+                it('Should reset filter fields when reset clicked', async () => {
+                    expect(await testTextInputFieldCanBeModified(driver, 'filter-owner-field'), 'filter-owner-field wrong').to.be.true;
+                    expect(await testTextInputFieldCanBeModified(driver, 'filter-prefix-field'), 'filter-prefix-field wrong').to.be.true;
+                    expect(await testTextInputFieldCanBeModified(driver, 'filter-jobId-field'), 'filter-jobId-field wrong').to.be.true;
+                    const resetButton = await driver.findElement(By.id('filters-reset-button'));
+                    await resetButton.click();
+                    expect(await testTextInputFieldValue(driver, 'filter-owner-field', USERNAME.toUpperCase()), 'filter-owner-field wrong').to.be.true;
+                    expect(await testTextInputFieldValue(driver, 'filter-prefix-field', '*'), 'filter-prefix-field wrong').to.be.true;
+                    expect(await testTextInputFieldValue(driver, 'filter-jobId-field', '*'), 'filter-jobId-field wrong').to.be.true;
+                });
+
+                it('Should handle closing the filter card when clicking apply', async () => {
+                    await findAndClickApplyButton(driver);
+                    expect(await testElementAppearsXTimesById(driver, 'filter-form', 0)).to.be.true;
+                });
+
+                it('Should handle closing the filter card when clicking card header', async () => {
+                    const headerElement = await driver.findElement(By.id('filter-view-header'));
+                    await headerElement.click();
+                    expect(await testElementAppearsXTimesById(driver, 'filter-form', 0)).to.be.true;
+                });
+            });
+        });
         describe('Editor behaviour', () => {
             const jobFileName = 'JESJCL';
 
@@ -441,6 +413,35 @@ describe('JES explorer function verification tests', function () {
                 expect(isExceptionThrown).to.be.true;
                 const afterText = await line1.getText();
                 expect(beforeText).to.be.equal(afterText);
+            });
+        });
+        describe('Component resizing', () => {
+            afterEach(async () => {
+                await driver.manage().window().setRect({ width: 1600, height: 800 });
+            });
+            const browserHeaderHeight = 74;
+            const jobTreeTitleHeight = 52;
+            const appBarHeight = 32;
+            it('Should handle resizing of tree card component (tree-text-content)', async () => {
+                expect(await testWindowHeightChangeForcesComponentHeightChange(
+                    driver, 'tree-text-content', browserHeaderHeight + jobTreeTitleHeight)).to.be.true;
+            });
+            it('Should handle resizing just the tree (full-height-tree)', async () => {
+                const filterCardHeight = 48;
+                expect(await testWindowHeightChangeForcesComponentHeightChange(
+                    driver, 'full-height-tree', browserHeaderHeight + jobTreeTitleHeight + filterCardHeight)).to.be.true;
+            });
+            it('Should handle resizing of editor card component (content-viewer)', async () => {
+                expect(await testWindowHeightChangeForcesComponentHeightChange(
+                    driver, 'content-viewer', browserHeaderHeight+appBarHeight)).to.be.true;
+            });
+            it('Should handle resizing just the editor text area (embeddedEditor)', async () => {
+                const contentViewerHeader = await driver.findElement(By.id('content-viewer-header'));
+                const contentViewerHeaderHeight = await contentViewerHeader.getCssValue('height');
+                const contentViewerHeaderHeightInt = parseInt(contentViewerHeaderHeight.substr(0, contentViewerHeaderHeight.length - 2), 10);
+                const contentViewerHeaderPadding = 16;
+                expect(await testWindowHeightChangeForcesComponentHeightChange(
+                    driver, 'embeddedEditor', browserHeaderHeight + appBarHeight + contentViewerHeaderHeightInt + contentViewerHeaderPadding)).to.be.true;
             });
         });
     });

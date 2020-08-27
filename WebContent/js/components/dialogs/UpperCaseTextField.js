@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2019
+ * Copyright IBM Corporation 2016, 2020
  */
 
 import PropTypes from 'prop-types';
@@ -17,6 +17,7 @@ export default class UpperCaseTextField extends React.Component {
         super(props);
         const { value } = props;
         this.handleFieldChange = this.handleFieldChange.bind(this);
+        this.textInput = React.createRef();
 
         this.state = {
             field: value,
@@ -42,9 +43,14 @@ export default class UpperCaseTextField extends React.Component {
         return fieldValue;
     }
 
+    focusTextInput() {
+        this.textInput.current.focus();
+    }
+
     render() {
         const { fieldChangedCallback, ...props } = this.props;
         return (<TextField
+            inputRef={this.textInput}
             {...props}
             value={this.state.field}
             onChange={this.handleFieldChange}

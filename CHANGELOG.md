@@ -5,6 +5,8 @@ All notable changes to the JES-Explorer will be documented in this file.
 
 ### New features and enhancements
 - Changed packaging and lifecycle start.sh script to support explorer-ui-server keyring support (https://github.com/zowe/zowe-install-packaging/pull/1177), Thanks @stevenhorsman, @js665999, @nakulmanchanda, @jackjia-ibm
+- Added app bar, along with settings, and local storage to store user preferences and remember last search filter.(https://github.com/zowe/zlux/issues/487)    
+  Notifications preference can set duration for snackbar notification.(https://github.com/zowe/zlux/issues/273) Thanks @nakulmanchanda
 
 ### Bug fixes
 - Fixed bug where no jobs would show after auth token expired and user logs back in (https://github.com/zowe/zlux/issues/408), Thanks @jordanCain
