@@ -21,7 +21,7 @@ import debounce from '../../utilities/debouncer';
 import TopBar from '../../components/TopBar';
 
 const HomeView = props => {
-    const isParentZLUX = typeof window.top.ZoweZLUX !== 'undefined';
+    const isEmbedded = window.top !== window;
     const { validated } = props;
     const gridOfTwelveCol3 = 0.238;
     const widthForFullScreen = 600;
@@ -78,7 +78,7 @@ const HomeView = props => {
     if (validated) {
         return (
             <div className="row group" role="main" aria-label="Home">
-                { !isParentZLUX && <TopBar /> }
+                { !isEmbedded && <TopBar /> }
                 <div
                     className={moveMode ? 'action-layer draggable' : 'action-layer'}
                     onMouseUp={onDraggingEnd}
