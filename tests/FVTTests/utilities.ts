@@ -116,7 +116,6 @@ export async function checkJobsOwner(actualJobs, expectedJobs) {
     if (expectedJobs.length >= 1) {
         let allMatchFlag = true;
         const jobTexts :string[] = await Promise.all(actualJobs.map(j => { return j.getText(); }));
-
         for (const text of jobTexts) {
             if (!expectedJobs.some(expectedJob => { return text.startsWith(expectedJob); })) {
                 allMatchFlag = false;

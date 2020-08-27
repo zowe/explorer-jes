@@ -82,35 +82,6 @@ describe('JES explorer function verification tests', function () {
 
     describe('JES explorer home view', () => {
         it('Should handle rendering expected components (Navigator[filters+tree] & File Viewer)');
-        describe('Component resizing', () => {
-            afterEach(async () => {
-                await driver.manage().window().setRect({ width: 1600, height: 800 });
-            });
-            const browserHeaderHeight = 74;
-            const jobTreeTitleHeight = 52;
-            it('Should handle resizing of tree card component (tree-text-content)', async () => {
-                expect(await testWindowHeightChangeForcesComponentHeightChange(
-                    driver, 'tree-text-content', browserHeaderHeight + jobTreeTitleHeight)).to.be.true;
-            });
-            it('Should handle resizing just the tree (full-height-tree)', async () => {
-                const filterCardHeight = 48;
-                expect(await testWindowHeightChangeForcesComponentHeightChange(
-                    driver, 'full-height-tree', browserHeaderHeight + jobTreeTitleHeight + filterCardHeight)).to.be.true;
-            });
-            it('Should handle resizing of editor card component (content-viewer)', async () => {
-                expect(await testWindowHeightChangeForcesComponentHeightChange(
-                    driver, 'content-viewer', browserHeaderHeight)).to.be.true;
-            });
-            it('Should handle resizing just the editor text area (embeddedEditor)', async () => {
-                const contentViewerHeader = await driver.findElement(By.id('content-viewer-header'));
-                const contentViewerHeaderHeight = await contentViewerHeader.getCssValue('height');
-                const contentViewerHeaderHeightInt = parseInt(contentViewerHeaderHeight.substr(0, contentViewerHeaderHeight.length - 2), 10);
-                const contentViewerHeaderPadding = 16;
-                expect(await testWindowHeightChangeForcesComponentHeightChange(
-                    driver, 'embeddedEditor', browserHeaderHeight + contentViewerHeaderHeightInt + contentViewerHeaderPadding)).to.be.true;
-            });
-        });
-
         describe('Filter card component behaviour', () => {
             describe('Pre expansion', () => {
                 it('Should render filter card (filter-view)', async () => {
@@ -279,7 +250,7 @@ describe('JES explorer function verification tests', function () {
                 });
 
                 describe('Owner Filter', () => {
-                    it('Should handle fetching jobs based on owner filter set to ZOWESVR owner (IZUSVR)', async () => {
+                    it('Should handle fetching jobs based on owner filter set to owner (IZUSVR)', async () => {
                         expect(await testOwnerFilterFetching(driver, 'IZUSVR', ['IZU', 'ZOWE', 'ZWE'])).to.be.true;
                     });
                     it('Should handle fetching no jobs based on crazy owner (1ZZZZZZ1)', async () => {
@@ -441,6 +412,35 @@ describe('JES explorer function verification tests', function () {
                 expect(isExceptionThrown).to.be.true;
                 const afterText = await line1.getText();
                 expect(beforeText).to.be.equal(afterText);
+            });
+        });
+        describe('Component resizing', () => {
+            afterEach(async () => {
+                await driver.manage().window().setRect({ width: 1600, height: 800 });
+            });
+            const browserHeaderHeight = 74;
+            const jobTreeTitleHeight = 52;
+            const appBarHeight = 32;
+            it('Should handle resizing of tree card component (tree-text-content)', async () => {
+                expect(await testWindowHeightChangeForcesComponentHeightChange(
+                    driver, 'tree-text-content', browserHeaderHeight + jobTreeTitleHeight)).to.be.true;
+            });
+            it('Should handle resizing just the tree (full-height-tree)', async () => {
+                const filterCardHeight = 48;
+                expect(await testWindowHeightChangeForcesComponentHeightChange(
+                    driver, 'full-height-tree', browserHeaderHeight + jobTreeTitleHeight + filterCardHeight)).to.be.true;
+            });
+            it('Should handle resizing of editor card component (content-viewer)', async () => {
+                expect(await testWindowHeightChangeForcesComponentHeightChange(
+                    driver, 'content-viewer', browserHeaderHeight+appBarHeight)).to.be.true;
+            });
+            it('Should handle resizing just the editor text area (embeddedEditor)', async () => {
+                const contentViewerHeader = await driver.findElement(By.id('content-viewer-header'));
+                const contentViewerHeaderHeight = await contentViewerHeader.getCssValue('height');
+                const contentViewerHeaderHeightInt = parseInt(contentViewerHeaderHeight.substr(0, contentViewerHeaderHeight.length - 2), 10);
+                const contentViewerHeaderPadding = 16;
+                expect(await testWindowHeightChangeForcesComponentHeightChange(
+                    driver, 'embeddedEditor', browserHeaderHeight + appBarHeight + contentViewerHeaderHeightInt + contentViewerHeaderPadding)).to.be.true;
             });
         });
     });

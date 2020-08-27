@@ -1,3 +1,13 @@
+/**
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright IBM Corporation 2020
+ */
+
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -49,7 +59,7 @@ class TopBar extends React.Component {
         const open = Boolean(anchorEl);
         const id = open ? 'simple-popover' : undefined;
         return (
-            <AppBar position="static" >
+            <AppBar position="static" id="app-bar" >
                 <Toolbar
                     className={classNames(classes.customizeToolbar)}
                     variant="dense"
