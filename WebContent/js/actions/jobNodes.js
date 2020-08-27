@@ -10,7 +10,7 @@
 
 import { atlasFetch } from '../utilities/urlUtils';
 import { constructAndPushMessage } from './snackbarNotifications';
-import { checkForValidationFailure } from './validation';
+import { checkForValidationFailure, VALIDATION_FAILURE_MESSAGE } from './validation';
 
 export const TOGGLE_JOB = 'TOGGLE_JOB';
 
@@ -221,7 +221,11 @@ export function fetchJobs(filters) {
             })
             .catch(e => {
                 dispatch(constructAndPushMessage(e.message));
-                dispatch(invalidateJobs());
+                // Don't clear the jobs as auth token may have expired just requiring re login
+                if (e.message !== VALIDATION_FAILURE_MESSAGE) {
+                    return dispatch(invalidateJobs());
+                }
+                return dispatch(stopRefreshIcon());
             });
     };
 }

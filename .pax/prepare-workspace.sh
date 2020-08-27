@@ -57,7 +57,8 @@ echo "[${SCRIPT_NAME}] copying explorer UI server ..."
 mkdir -p "${PAX_WORKSPACE_DIR}/content/server"
 cp -r node_modules/explorer-ui-server/. "${PAX_WORKSPACE_DIR}/content/server"
 cd "${PAX_WORKSPACE_DIR}/content/server"
-npm install --only=production
+# will do npm install on z/OS side and make sure we don't have anything added on linux side
+rm -fr node_modules
 cd "${ROOT_DIR}"
 
 # copy explorer-jes to target folder

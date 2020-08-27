@@ -20,7 +20,7 @@ const Announcer = ({ message }) => {
         <div
             aria-live="polite"
             aria-label={message}
-            style={{ visibility: 'hidden' }}
+            style={{ visibility: 'hidden', lineHeight: 0, display: 'block' }}
         >
             {message}
         </div>
