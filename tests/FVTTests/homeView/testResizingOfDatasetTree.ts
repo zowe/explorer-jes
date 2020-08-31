@@ -40,7 +40,7 @@ describe('JES explorer page load', function () {
         it('Should be able to resize sidebar component (explorer-sidebar)', async () => {
             const barWidth = await getSidebarCSSValue('width');
             await resizeSidebarRelatively(200);
-            expect(parseInt(await getSidebarCSSValue('width'))).to.equal(parseInt(barWidth) + 200);
+            expect(parseInt(await getSidebarCSSValue('width'))).to.be.above(parseInt(barWidth) + 190);
         });
         it('Should not be able to make sidebar component too small (explorer-sidebar)', async () => {
             await resizeSidebarRelatively(-500);
