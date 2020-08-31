@@ -17,7 +17,7 @@ const { BASE_URL_WITH_PATH } = TEST_CONFIG;
 
 // Need to use unnamed function so we can specify the retries
 // eslint-disable-next-line
-describe('MVS explorer page load', function () {
+describe('JES explorer page load', function () {
     let driver: WebDriver;
     this.retries(0);
 
@@ -38,11 +38,12 @@ describe('MVS explorer page load', function () {
             await driver.manage().window().setRect({ width: 1600, height: 800 });
         })
         it('Should be able to resize sidebar component (explorer-sidebar)', async () => {
-            await resizeSidebar(1000);
-            expect(parseInt(await getSidebarCSSValue('width'))).to.equal(992);
+            const barWidth = await getSidebarCSSValue('width');
+            await resizeSidebarRelatively(200);
+            expect(parseInt(await getSidebarCSSValue('width'))).to.equal(parseInt(barWidth) + 200);
         });
         it('Should not be able to make sidebar component too small (explorer-sidebar)', async () => {
-            await resizeSidebar(100);
+            await resizeSidebarRelatively(-500);
             expect(parseInt(await getSidebarCSSValue('width'))).to.be.above(250);
         });
     });
@@ -58,10 +59,10 @@ describe('MVS explorer page load', function () {
         });
     });
 
-    async function resizeSidebar(x: number) {
+    async function resizeSidebarRelatively(x: number) {
         const resizeBar = await driver.findElement(By.id('resize-bar'));
         const actions = driver.actions({async: true});
-        await actions.move({origin: resizeBar, y: 200}).press().move({x: x}).release().perform();
+        await actions.move({origin: resizeBar, y: 200}).press().move({origin: resizeBar, x: x}).release().perform();
     }
 
     async function getSidebarCSSValue(value: string) {
