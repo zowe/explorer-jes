@@ -5,10 +5,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2020
+ * Copyright Contributors to the Zowe Project.
  */
 import { expect } from 'chai';
-import { WebDriver, until, By } from "selenium-webdriver"
+import { WebDriver, until, By, WebElement } from "selenium-webdriver"
 
 import { loadPage } from 'explorer-fvt-utilities';
 import { getDriver, TEST_CONFIG } from '../testConfig';
@@ -17,7 +17,7 @@ const { BASE_URL_WITH_PATH } = TEST_CONFIG;
 
 // Need to use unnamed function so we can specify the retries
 // eslint-disable-next-line
-describe('JES explorer page load', function () {
+describe('JES explorer sidebar actions.', function () {
     let driver: WebDriver;
     this.retries(0);
 
@@ -38,7 +38,7 @@ describe('JES explorer page load', function () {
             await driver.manage().window().setRect({ width: 1600, height: 800 });
         })
         it('Should be able to resize sidebar component (explorer-sidebar)', async () => {
-            const barWidth = await getSidebarCSSValue('width');
+            const barWidth :string = await getSidebarCSSValue('width');
             await resizeSidebarRelatively(200);
             expect(parseInt(await getSidebarCSSValue('width'))).to.be.above(parseInt(barWidth) + 190);
         });
@@ -59,20 +59,20 @@ describe('JES explorer page load', function () {
         });
     });
 
-    async function resizeSidebarRelatively(x: number) {
-        const resizeBar = await driver.findElement(By.id('resize-bar'));
+    async function resizeSidebarRelatively(x: number) :Promise<void> {
+        const resizeBar :WebElement = await driver.findElement(By.id('resize-bar'));
         const actions = driver.actions({async: true});
         await actions.move({origin: resizeBar, y: 200}).press().move({origin: resizeBar, x: x}).release().perform();
     }
 
-    async function getSidebarCSSValue(value: string) {
-        const explorerSidebar = await driver.findElement(By.id('explorer-sidebar'));
-        const explorerSidebarCSSValue = await explorerSidebar.getCssValue(value);
+    async function getSidebarCSSValue(value: string) :Promise<string> {
+        const explorerSidebar :WebElement = await driver.findElement(By.id('explorer-sidebar'));
+        const explorerSidebarCSSValue :string = await explorerSidebar.getCssValue(value);
         return explorerSidebarCSSValue;
     }
 
-    async function switchSidebarState() {
-        const collapseButton = await driver.findElement(By.id('collapse-button'));
+    async function switchSidebarState() :Promise<void> {
+        const collapseButton :WebElement = await driver.findElement(By.id('collapse-button'));
         await collapseButton.click();
     }
 
