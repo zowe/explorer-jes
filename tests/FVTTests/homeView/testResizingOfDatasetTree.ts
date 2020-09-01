@@ -38,12 +38,12 @@ describe('JES explorer sidebar actions.', function () {
             await driver.manage().window().setRect({ width: 1600, height: 800 });
         })
         it('Should be able to resize sidebar component (explorer-sidebar)', async () => {
-            const barWidth :string = await getSidebarCSSValue('width');
-            await resizeSidebarRelatively(200);
-            expect(parseInt(await getSidebarCSSValue('width'))).to.be.above(parseInt(barWidth) + 190);
+            const barWidth :number = parseInt(await getSidebarCSSValue('width'));
+            await resizeSidebarTo(barWidth + 200);
+            expect(parseInt(await getSidebarCSSValue('width'))).to.be.above(barWidth);
         });
         it('Should not be able to make sidebar component too small (explorer-sidebar)', async () => {
-            await resizeSidebarRelatively(-500);
+            await resizeSidebarTo(100);
             expect(parseInt(await getSidebarCSSValue('width'))).to.be.above(250);
         });
     });
@@ -59,10 +59,10 @@ describe('JES explorer sidebar actions.', function () {
         });
     });
 
-    async function resizeSidebarRelatively(x: number) :Promise<void> {
+    async function resizeSidebarTo(x: number) :Promise<void> {
         const resizeBar :WebElement = await driver.findElement(By.id('resize-bar'));
         const actions = driver.actions({async: true});
-        await actions.move({origin: resizeBar, y: 200}).press().move({origin: resizeBar, x: x}).release().perform();
+        await actions.move({origin: resizeBar, y: 200}).press().move({x: x}).release().perform();
     }
 
     async function getSidebarCSSValue(value: string) :Promise<string> {
