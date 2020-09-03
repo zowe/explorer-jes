@@ -76,7 +76,7 @@ const output = {
     filename: 'app.[hash].min.js',
 };
 
-const plugins = debug ? [htmlTask, cleanTask, copyTask] : [htmlTask, cleanTask,
+const plugins = debug ? [cleanTask, copyTask, htmlTask] : [cleanTask,
     new webpack.DefinePlugin({
         'process.env.REACT_SYNTAX_HIGHLIGHTER_LIGHT_BUILD': true,
         'process.env.NODE_ENV': JSON.stringify(REACT_APP_ENVIRONMENT),
@@ -86,6 +86,7 @@ const plugins = debug ? [htmlTask, cleanTask, copyTask] : [htmlTask, cleanTask,
         minRatio: 0.8,
     }),
     copyTask,
+    htmlTask,
 ];
 
 if (analyze) {

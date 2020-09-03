@@ -88,7 +88,7 @@
     "test": "cross-env JUNIT_REPORT_PATH=target/report.xml nyc mocha --require babel-core/register tests/UnitTests --recursive --colors --reporter mocha-jenkins-reporter",
     "testWatch": "cross-env JUNIT_REPORT_PATH=target/report-fvt.xml mocha --watch --require babel-core/register tests/UnitTests --recursive",
     "test:fvt": "cross-env JUNIT_REPORT_PATH=target/report-fvt.xml mocha --timeout 999999 --require ts-node/register tests/FVTTests/**/*.ts --recursive --colors --reporter mocha-jenkins-reporter",
-    "prod": "cross-env NODE_ENV='production' webpack",
+    "prod": "cross-env NODE_ENV='production' webpack -p",
     "build": "cross-env NODE_ENV='development' OUTPUT_FOLDER='web' webpack --progress --colors",
     "prod:analyze": "cross-env ANALYZE=true npm run prod",
     "preCommit": "npm-run-all --aggregate-output --parallel --print-label lint test prod"
