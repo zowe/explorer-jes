@@ -52,6 +52,7 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
                     id: action.fileLabel + action.fileId,
                     content: '',
                     isFetching: true,
+                    controller: action.controller,
                 }),
             });
         case RECEIVE_CONTENT:
@@ -66,11 +67,16 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
                         readOnly: action.readOnly,
                     }),
             });
-        case REMOVE_CONTENT:
+        case REMOVE_CONTENT: {
+            const controller = state.get('content').get(action.index).controller;
+            if (controller) {
+                controller.abort();
+            }
             return state.merge({
                 title: `${DEFAULT_TITLE}`,
                 content: state.get('content').delete(action.index),
             });
+        }
         case UPDATE_CONTENT:
             return state.merge({
                 content: state.get('content').set(state.get('selectedContent'), {

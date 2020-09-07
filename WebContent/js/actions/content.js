@@ -25,7 +25,7 @@ export const INVALIDATE_SUBMIT_JCL = 'INVALIDATE_SUBMIT_JCL';
 
 export const NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE = 'No Content in response from API';
 
-function requestContent(jobName, jobId, fileName, fileId, fileLabel) {
+function requestContent(jobName, jobId, fileName, fileId, fileLabel, controller) {
     return {
         type: REQUEST_CONTENT,
         jobName,
@@ -33,6 +33,7 @@ function requestContent(jobName, jobId, fileName, fileId, fileLabel) {
         fileName,
         fileId,
         fileLabel,
+        controller,
     };
 }
 
@@ -78,8 +79,9 @@ function dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, file
 export function fetchJobFile(jobName, jobId, fileName, fileId) {
     return dispatch => {
         const fileLabel = getFileLabel(jobId, fileName);
-        dispatch(requestContent(jobName, jobId, fileName, fileId, fileLabel));
-        return atlasFetch(`jobs/${jobName}/${jobId}/files/${fileId}/content`, { credentials: 'include' })
+        const controller = new AbortController();
+        dispatch(requestContent(jobName, jobId, fileName, fileId, fileLabel, controller));
+        return atlasFetch(`jobs/${jobName}/${jobId}/files/${fileId}/content`, { credentials: 'include', signal: controller.signal })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));
             })
@@ -90,8 +92,9 @@ export function fetchJobFile(jobName, jobId, fileName, fileId) {
                 return dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, getFileLabel(jobId, fileName), json);
             })
             .catch(e => {
+                if (e.name === 'AbortError') return;
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileName}`));
-                return dispatch(invalidateContent(fileLabel, fileId));
+                dispatch(invalidateContent(fileLabel, fileId));
             });
     };
 }
@@ -99,8 +102,9 @@ export function fetchJobFile(jobName, jobId, fileName, fileId) {
 export function fetchConcatenatedJobFiles(jobName, jobId) {
     return dispatch => {
         const fileLabel = getFileLabel(jobName, jobId);
-        dispatch(requestContent(jobName, jobId, jobId, jobId, fileLabel));
-        return atlasFetch(`jobs/${jobName}/${jobId}/files/content`, { credentials: 'include' })
+        const controller = new AbortController();
+        dispatch(requestContent(jobName, jobId, jobId, jobId, fileLabel, controller));
+        return atlasFetch(`jobs/${jobName}/${jobId}/files/content`, { credentials: 'include', signal: controller.signal })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));
             })
@@ -111,8 +115,9 @@ export function fetchConcatenatedJobFiles(jobName, jobId) {
                 return dispatchReceiveContent(dispatch, jobName, jobId, jobId, jobId, fileLabel, json);
             })
             .catch(e => {
+                if (e.name === 'AbortError') return;
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:`));
-                return dispatch(invalidateContent());
+                dispatch(invalidateContent());
             });
     };
 }
@@ -139,8 +144,9 @@ function getFileNameFromJob(jobName, jobId, fileId) {
 export function fetchJobFileNoName(jobName, jobId, fileId) {
     return dispatch => {
         const contentPath = `jobs/${jobName}/${jobId}/files/${fileId}/content`;
-        dispatch(requestContent(jobName, jobId, '', fileId, getFileLabel(jobId)));
-        return atlasFetch(contentPath, { credentials: 'include' })
+        const controller = new AbortController();
+        dispatch(requestContent(jobName, jobId, '', fileId, getFileLabel(jobId), controller));
+        return atlasFetch(contentPath, { credentials: 'include', signal: controller.signal })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));
             })
@@ -164,8 +170,9 @@ export function fetchJobFileNoName(jobName, jobId, fileId) {
                 throw Error(json.message || NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE);
             })
             .catch(e => {
+                if (e.name === 'AbortError') return;
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileId}`));
-                return dispatch(invalidateContent());
+                dispatch(invalidateContent());
             });
     };
 }
@@ -194,8 +201,9 @@ export function changeSelectedContent(index) {
 export function getJCL(jobName, jobId) {
     return dispatch => {
         const fileLabel = getFileLabel(jobId, 'JCL');
-        dispatch(requestContent(jobName, jobId, 'JCL', 0, fileLabel));
-        return atlasFetch(`jobs/${jobName}/${jobId}/files/JCL/content`, { credentials: 'include' })
+        const controller = new AbortController();
+        dispatch(requestContent(jobName, jobId, 'JCL', 0, fileLabel, controller));
+        return atlasFetch(`jobs/${jobName}/${jobId}/files/JCL/content`, { credentials: 'include', signal: controller.signal })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));
             })
@@ -206,8 +214,9 @@ export function getJCL(jobName, jobId) {
                 return dispatchReceiveContent(dispatch, jobName, jobId, 'JCL', 0, fileLabel, json, false);
             })
             .catch(e => {
+                if (e.name === 'AbortError') return;
                 dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:JCL`));
-                return dispatch(invalidateContent(fileLabel));
+                dispatch(invalidateContent(fileLabel));
             });
     };
 }
