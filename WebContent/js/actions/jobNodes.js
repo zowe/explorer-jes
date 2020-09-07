@@ -43,10 +43,11 @@ const PURGE_JOBS_SUCCESS_MESSAGE = 'Purge request succeeded for selected jobs';
 const PURGE_JOB_FAIL_MESSAGE = 'Purge request failed for';
 const PURGE_JOBS_FAIL_MESSAGE = 'Purge request failed for selected jobs';
 
-function requestJobs(filters) {
+function requestJobs(filters, controller) {
     return {
         type: REQUEST_JOBS,
         filters,
+        controller,
     };
 }
 
@@ -198,8 +199,9 @@ function filterByJobId(json, jobId, dispatch) {
 
 export function fetchJobs(filters) {
     return dispatch => {
-        dispatch(requestJobs(filters));
-        return atlasFetch(`jobs${getURIQuery(filters)}`, { credentials: 'include' })
+        const controller = new AbortController();
+        dispatch(requestJobs(filters, controller));
+        return atlasFetch(`jobs${getURIQuery(filters)}`, { credentials: 'include', signal: controller.signal })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));
             })
@@ -220,12 +222,13 @@ export function fetchJobs(filters) {
                 }
             })
             .catch(e => {
+                if (e.name === 'AbortError') return;
                 dispatch(constructAndPushMessage(e.message));
                 // Don't clear the jobs as auth token may have expired just requiring re login
                 if (e.message !== VALIDATION_FAILURE_MESSAGE) {
-                    return dispatch(invalidateJobs());
+                    dispatch(invalidateJobs());
                 }
-                return dispatch(stopRefreshIcon());
+                dispatch(stopRefreshIcon());
             });
     };
 }

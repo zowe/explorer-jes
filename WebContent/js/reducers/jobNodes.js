@@ -26,6 +26,7 @@ import {
 const INITIAL_STATE = Map({
     jobs: List(),
     isFetching: false,
+    controller: null,
 });
 
 function extractJobs(jobs) {
@@ -96,7 +97,10 @@ function createJobWithFiles(jobs, jobId, jobFiles) {
 export default function JobNodes(state = INITIAL_STATE, action) {
     switch (action.type) {
         case REQUEST_JOBS:
-            return state.set('isFetching', true);
+            if (state.get('isFetching') && state.get('controller') != null) {
+                state.get('controller').abort();
+            }
+            return state.merge({ isFetching: true, controller: action.controller });
         case RECEIVE_JOBS:
             return state.merge({ jobs: extractJobs(action.jobs), isFetching: false });
         case RECEIVE_SINGLE_JOB:
