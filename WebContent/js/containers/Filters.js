@@ -12,10 +12,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import AccordionActions from '@material-ui/core/AccordionActions';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -179,24 +179,24 @@ export class Filters extends React.Component {
     render() {
         const { prefix, owner, status, jobId } = this.props;
         return (
-            <ExpansionPanel
+            <Accordion
                 id="filter-view"
                 expanded={this.state.toggled}
             >
-                <ExpansionPanelSummary
+                <AccordionSummary
                     id="filter-view-header"
                     expandIcon={<ExpandMoreIcon />}
                     onClick={() => { this.toggleFilters(); }}
                 >
                     Job Filters
-                </ExpansionPanelSummary>
+                </AccordionSummary>
                 <form
                     role="search"
                     aria-label="Job Filters"
                     id="filter-form"
                     onSubmit={e => { return this.applyValues(e); }}
                 >
-                    <ExpansionPanelDetails style={{ display: 'block' }}>
+                    <AccordionDetails style={{ display: 'block' }}>
                         <UpperCaseTextField
                             id="filter-owner-field"
                             label="Owner"
@@ -243,8 +243,8 @@ export class Filters extends React.Component {
                                 </Select>
                             </FormControl>
                         </div>
-                    </ExpansionPanelDetails>
-                    <ExpansionPanelActions>
+                    </AccordionDetails>
+                    <AccordionActions>
                         <Button
                             id="filters-apply-button"
                             variant="contained"
@@ -264,9 +264,9 @@ export class Filters extends React.Component {
                         >
                         RESET
                         </Button>
-                    </ExpansionPanelActions>
+                    </AccordionActions>
                 </form>
-            </ExpansionPanel>
+            </Accordion>
         );
     }
 }
