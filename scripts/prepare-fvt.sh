@@ -25,6 +25,7 @@ FVT_WORKSPACE="${ROOT_DIR}/.fvt"
 FVT_APIML_DIR=api-layer
 FVT_JOBS_API_DIR=jobs-api
 FVT_PLUGIN_DIR=jes_explorer
+FVT_UI_SERVER_DIR=ui-server
 FVT_KEYSTORE_DIR=keystore
 FVT_CONFIG_DIR=configs
 FVT_LOGS_DIR=logs
@@ -43,8 +44,8 @@ FVT_ZOSMF_PORT=$4
 
 ################################################################################
 cd "${ROOT_DIR}"
-EXPLORER_PLUGIN_BASEURI=$(node -e "process.stdout.write(require('${ROOT_DIR}/package.json').config.baseuri)")
-EXPLORER_PLUGIN_NAME=$(node -e "process.stdout.write(require('${ROOT_DIR}/package.json').config.pluginName)")
+EXPLORER_PLUGIN_BASEURI=$(node -e "process.stdout.write(require('./package.json').config.baseuri)")
+EXPLORER_PLUGIN_NAME=$(node -e "process.stdout.write(require('./package.json').config.pluginName)")
 echo "[${SCRIPT_NAME}] FVT Test for ${EXPLORER_PLUGIN_NAME}"
 echo
 
@@ -81,6 +82,7 @@ mkdir -p "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_LOGS_DIR}"
+mkdir -p "${FVT_WORKSPACE}/${FVT_UI_SERVER_DIR}"
 echo
 
 ################################################################################
@@ -97,7 +99,16 @@ cd "${ROOT_DIR}"
 cp -R .pax/content/. "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/"
 cp -R .pax/ascii/. "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/"
 cd "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}"
-npm install --production
+echo
+
+################################################################################
+# Explorer UI Server
+echo "[${SCRIPT_NAME}] copying explorer UI server ..."	
+# fetch latest version of explorer ui server
+cd "${FVT_WORKSPACE}/${FVT_UI_SERVER_DIR}"
+npm init -y
+npm install explorer-ui-server --ignore-scripts --registry=https://zowe.jfrog.io/zowe/api/npm/npm-release/
+mv node_modules/explorer-ui-server/* .	
 echo
 
 ################################################################################
@@ -182,7 +193,7 @@ echo
 #        ps aux | grep .fvt | grep -v grep | awk '{print $2}' | xargs kill -9
 cd "${ROOT_DIR}"
 echo "[${SCRIPT_NAME}] starting plugin service ..."
-node ${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/../explorer-ui-server/../src/index.js \
+node ${FVT_WORKSPACE}/${FVT_UI_SERVER_DIR}/src/index.js \
   --service "${EXPLORER_PLUGIN_NAME}" \
   --path "${EXPLORER_PLUGIN_BASEURI}" \
   --port "${FVT_EXPLORER_UI_PORT}" \
