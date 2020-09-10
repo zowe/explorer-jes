@@ -39,7 +39,7 @@ if [ -z "${ZOWE_EXPLORER_FRAME_ANCESTORS}" ]; then
 fi
 
 # start service
-_BPX_JOBNAME=${JOB_NAME} $NODE_BIN $SERVER_DIR/server/src/index.js \
+_BPX_JOBNAME=${JOB_NAME} $NODE_BIN $SERVER_DIR/src/index.js \
   --service ${EXPLORER_PLUGIN_NAME} \
 	--path ${EXPLORER_PLUGIN_BASEURI} \
 	--dir  ${EXPLORER_APP_DIR} \
