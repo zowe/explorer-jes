@@ -253,7 +253,7 @@ export class Filters extends React.Component {
                             type="submit"
                             disabled={!this.state.toggled}
                         >
-                        APPLY
+                            APPLY
                         </Button>
                         <Button
                             id="filters-reset-button"
@@ -262,7 +262,7 @@ export class Filters extends React.Component {
                             onClick={this.resetValues}
                             disabled={!this.state.toggled}
                         >
-                        RESET
+                            RESET
                         </Button>
                     </AccordionActions>
                 </form>

@@ -10,7 +10,7 @@
     "orion-editor-component": "0.0.11",
     "prop-types": "^15.5.10",
     "query-string": "^6.8.2",
-    "react": "^16.4.2",
+    "react": "^16.13.1",
     "react-contextmenu": "^2.6.1",
     "react-dom": "^16.4.2",
     "react-redux": "^5.1.1",
