@@ -31,7 +31,7 @@ rm -fr "${PAX_WORKSPACE_DIR}/content"
 mkdir -p "${PAX_WORKSPACE_DIR}/content"
 
 # build client
-if [ ! -f "dist/app.min.js" ]; then
+if [ ! -z "$(ls -1 dist/app.min.*.js)" ]; then
   echo "[${SCRIPT_NAME}] building client ..."
   npm run prod
 fi
