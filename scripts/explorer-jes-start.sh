@@ -30,7 +30,7 @@ EXPLORER_PLUGIN_NAME=$($NODE_BIN -e "process.stdout.write(require('./app/package
 
 # get current ui server directory
 EXPLORER_APP_DIR="${ROOT_DIR}/components/explorer-jes/bin/app"
-SERVER_DIR="${ROOT_DIR}/components/explorer-ui-server"
+SERVER_DIR="${ROOT_DIR}/shared/explorer-ui-server"
 
 JOB_NAME="${ZOWE_PREFIX}UJ"
 
