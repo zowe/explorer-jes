@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to the JES-Explorer will be documented in this file.
 
+## <1.0.6>
+
+### New features and enhancements
+- Moved explorer-ui-server out of explorers into new `shared` folder under Zowe Runtime Directory. Changed JES lifecycle start script to use new shared location.It involved following PRs (https://github.com/zowe/zowe-install-packaging/pull/1545), (https://github.com/zowe/explorer-jes/pull/207), (https://github.com/zowe/explorer-ui-server/pull/37). Thanks @stevenhorsman, @nakulmanchanda, @jackjia-ibm
+
 ## <1.0.5>
 
 ### New features and enhancements
