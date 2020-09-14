@@ -19,12 +19,11 @@
 
 # contants
 SCRIPT_NAME=$(basename "$0")
-BASEDIR=$(dirname "$0")
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+ROOT_DIR=$(cd "$SCRIPT_DIR" && cd .. && pwd)
 PAX_WORKSPACE_DIR=.pax
 
-cd $BASEDIR
-cd ..
-ROOT_DIR=$(pwd)
+cd "$ROOT_DIR"
 
 # prepare pax workspace
 echo "[${SCRIPT_NAME}] cleaning PAX workspace ..."
