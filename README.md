@@ -66,7 +66,7 @@ npm run preCommit
 After preparing PAX workspace, you can serve the explorer UI with explorer-ui-server:
 
 ```
-node .pax/ascii/server/src/index.js --config .pax/ascii/server/configs/config.json
+node .pax/ascii/src/index.js --config .pax/ascii/configs/config.json
 ```
 
 ## Run SonarQube Code Analysis
@@ -125,7 +125,7 @@ Or enable redux logs by setting `enableReduxLogger` variable `true` in your loca
 While explore app is open in browser:
 1. Run this in browser console 
 ```
-window.localStorage.setItem('enableReduxLogger', true);
+window.localStorage.setItem('ZoweJes.enableReduxLogger', true);
 ```
 
 2. And refresh browser    
@@ -134,8 +134,8 @@ you will see redux logs in console.
 
 ### Remove Redux Logger          
 While explore app is open in browser:      
-1. Run either `window.localStorage.setItem('enableReduxLogger', false)`         
-or `window.localStorage.removeItem('enableReduxLogger')`           
+1. Run either `window.localStorage.setItem('ZoweJes.enableReduxLogger', false)`         
+or `window.localStorage.removeItem('ZoweJes.enableReduxLogger')`           
 or clear storage manually in `browser dev tools` under `Application` tab 
 
 2. And refresh browser to stop seeing redux console logs.       

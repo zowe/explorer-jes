@@ -27,6 +27,10 @@ export default class FullHeightTree extends React.Component {
         window.addEventListener('resize', this.updateDivHeight);
     }
 
+    componentDidUpdate() {
+        this.updateDivHeight();
+    }
+
     onDivRef(node) {
         if (node) {
             this.divRef = node;
@@ -35,8 +39,9 @@ export default class FullHeightTree extends React.Component {
 
     updateDivHeight() {
         const { offset } = this.props;
-        if (this.divRef) {
-            this.setState({ height: window.innerHeight - this.divRef.offsetTop - (offset || 0) });
+        const newHeight = window.innerHeight - (offset || 0);
+        if (this.divRef && this.state.height !== newHeight) {
+            this.setState({ height: newHeight });
         }
     }
 

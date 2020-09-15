@@ -28,6 +28,7 @@ web
 !.pax/pre-packaging.sh
 !.pax/post-packaging.sh
 !.pax/prepare-workspace.sh
+!.pax/catchall-packaging.sh
 
 # fvt tmp folder
 .fvt
