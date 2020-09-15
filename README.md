@@ -66,7 +66,7 @@ npm run preCommit
 After preparing PAX workspace, you can serve the explorer UI with explorer-ui-server:
 
 ```
-node .pax/ascii/server/src/index.js --config .pax/ascii/server/configs/config.json
+node .pax/ascii/src/index.js --config .pax/ascii/configs/config.json
 ```
 
 ## Run SonarQube Code Analysis
