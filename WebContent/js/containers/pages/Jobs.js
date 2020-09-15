@@ -94,12 +94,14 @@ const HomeView = props => {
                         <JobTree />
                     </div>
                     <div
+                        id="resize-bar"
                         className={`component col col-0-1 collapse-col ${collapsed ? '' : 'draggable'} `}
                         onMouseDown={onDraggingStart}
                         region="resize-bar"
                         aria-label="Resize Bar"
                     >
                         <IconButton
+                            id="collapse-button"
                             className="collapse-btn"
                             onClick={() => {
                                 setCollapse(!collapsed);
