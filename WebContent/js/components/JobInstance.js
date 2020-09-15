@@ -15,11 +15,9 @@ import { connect } from 'react-redux';
 import LabelIcon from '@material-ui/icons/Label';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { fetchJobFiles, toggleJob, invertJobSelectStatus, unselectAllJobs, cancelJob, purgeJob, purgeJobs } from '../actions/jobNodes';
-import { getJCL, getFileLabel, changeSelectedContent, fetchConcatenatedJobFiles } from '../actions/content';
+import { getJCL, getFileLabel, changeSelectedContent, fetchConcatenatedJobFiles, downloadFile } from '../actions/content';
 import JobFile from './JobFile';
 import JobStep from './JobStep';
-import { downloadFile } from '../utilities/fileDownload';
-
 
 class JobInstance extends React.Component {
     constructor(props) {

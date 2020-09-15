@@ -14,8 +14,7 @@ import { Map, List } from 'immutable';
 import { connect } from 'react-redux';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import Description from '@material-ui/icons/Description';
-import { fetchJobFile, getFileLabel, changeSelectedContent } from '../actions/content';
-import { downloadFile } from '../utilities/fileDownload';
+import { fetchJobFile, getFileLabel, changeSelectedContent, downloadFile } from '../actions/content';
 
 class JobFile extends React.Component {
     constructor(props) {
