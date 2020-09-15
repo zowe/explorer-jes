@@ -19,47 +19,22 @@
 
 # contants
 SCRIPT_NAME=$(basename "$0")
-BASEDIR=$(dirname "$0")
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+ROOT_DIR=$(cd "$SCRIPT_DIR" && cd .. && pwd)
 PAX_WORKSPACE_DIR=.pax
-PACKAGE_NAME=$(node -e "console.log(require('./package.json').name)")
-PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
-PACKAGE_DESC=$(node -e "console.log(require('./package.json').description)")
-APPLICAIION_URI=$(node -e "console.log(require('./package.json').config.baseuri)")
-APPLICAIION_PORT=$(node -e "console.log(require('./package.json').config.port)")
-ZOWE_PLUGIN_ID="com.ibm.${PACKAGE_NAME}"
 
-cd $BASEDIR
-cd ..
-ROOT_DIR=$(pwd)
+cd "$ROOT_DIR"
 
 # prepare pax workspace
 echo "[${SCRIPT_NAME}] cleaning PAX workspace ..."
 rm -fr "${PAX_WORKSPACE_DIR}/content"
 mkdir -p "${PAX_WORKSPACE_DIR}/content"
 
-# copy plugin definition files
-# echo "[${SCRIPT_NAME}] copying plugin definitions ..."
-# cp -r plugin-definition "${PAX_WORKSPACE_DIR}/content"
-
-# install peerDependencies
-echo "[${SCRIPT_NAME}] install peer dependencies (explorer-ui-server) ..."
-EXPLORER_UI_SERVER_VERSION=$(node -e "console.log(require('./package.json').peerDependencies['explorer-ui-server'])")
-npm install "explorer-ui-server@${EXPLORER_UI_SERVER_VERSION}" --no-save
-
 # build client
 if [ ! -f "dist/app.min.js" ]; then
   echo "[${SCRIPT_NAME}] building client ..."
   npm run prod
 fi
-
-# copy explorer UI server
-echo "[${SCRIPT_NAME}] copying explorer UI server ..."
-mkdir -p "${PAX_WORKSPACE_DIR}/content/server"
-cp -r node_modules/explorer-ui-server/. "${PAX_WORKSPACE_DIR}/content/server"
-cd "${PAX_WORKSPACE_DIR}/content/server"
-# will do npm install on z/OS side and make sure we don't have anything added on linux side
-rm -fr node_modules
-cd "${ROOT_DIR}"
 
 # copy explorer-jes to target folder
 echo "[${SCRIPT_NAME}] copying explorer JES backend ..."
@@ -75,20 +50,6 @@ mkdir -p "${PAX_WORKSPACE_DIR}/content/scripts"
 cp -r scripts/explorer-jes-start.sh "${PAX_WORKSPACE_DIR}/content/scripts"
 cp -r scripts/explorer-jes-configure.sh "${PAX_WORKSPACE_DIR}/content/scripts"
 cp -r scripts/explorer-jes-validate.sh "${PAX_WORKSPACE_DIR}/content/scripts"
-
-# pre-configure server config
-echo "[${SCRIPT_NAME}] update default UI server config ..."
-sed -e "s#{{service-name}}#${PACKAGE_NAME}#" \
-  -e "s#{{path-uri}}#${APPLICAIION_URI}#" \
-  -e "s#{{path-dir}}#../app#" \
-  -e "s#{{port}}#${APPLICAIION_PORT}#" \
-  -e "s#{{https-pfx}}##" \
-  -e "s#{{https-passphrase}}##" \
-  -e "s#{{https-key}}#server.key#" \
-  -e "s#{{https-cert}}#server.cert#" \
-  -e "s#\"{{csp-frame-ancestors}}\"##" \
-  "${PAX_WORKSPACE_DIR}/content/server/configs/config.json.template" \
-  > "${PAX_WORKSPACE_DIR}/content/server/configs/config.json"
 
 # move content to another folder
 rm -fr "${PAX_WORKSPACE_DIR}/ascii"
