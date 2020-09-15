@@ -15,8 +15,7 @@ import { connect } from 'react-redux';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import Description from '@material-ui/icons/Description';
 import { fetchJobFile, getFileLabel, changeSelectedContent } from '../actions/content';
-import { atlasFetch } from '../utilities/urlUtils';
-import { constructAndPushMessage } from '../actions/snackbarNotifications';
+import { downloadFile } from '../utilities/fileDownload';
 
 class JobFile extends React.Component {
     constructor(props) {
@@ -44,27 +43,8 @@ class JobFile extends React.Component {
 
     downloadJobFile() {
         const { job, file, dispatch } = this.props;
-        atlasFetch(`jobs/${job.get('jobName')}/${job.get('jobId')}/files/${file.id}/content`, { credentials: 'include' })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                return dispatch(constructAndPushMessage('Unable to download file'));
-            })
-            .then(json => {
-                const blob = new Blob([json.content], { type: 'text/plain' });
-                const fileName = `${job.get('jobName')}-${job.get('jobId')}-${file.label}`;
-                if (window.navigator.msSaveOrOpenBlob) {
-                    window.navigator.msSaveBlob(blob, fileName);
-                } else {
-                    const elem = window.document.createElement('a');
-                    elem.href = window.URL.createObjectURL(blob);
-                    elem.download = fileName;
-                    document.body.appendChild(elem);
-                    elem.click();
-                    document.body.removeChild(elem);
-                }
-            });
+        const url = `jobs/${job.get('jobName')}/${job.get('jobId')}/files/${file.id}/content`;
+        downloadFile(job, file, url, dispatch);
     }
 
     openInNewWindow() {

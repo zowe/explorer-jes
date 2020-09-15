@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 
 import PropTypes from 'prop-types';
@@ -18,8 +18,7 @@ import { fetchJobFiles, toggleJob, invertJobSelectStatus, unselectAllJobs, cance
 import { getJCL, getFileLabel, changeSelectedContent, fetchConcatenatedJobFiles } from '../actions/content';
 import JobFile from './JobFile';
 import JobStep from './JobStep';
-import { atlasFetch } from '../utilities/urlUtils';
-import { constructAndPushMessage } from '../actions/snackbarNotifications';
+import { downloadFile } from '../utilities/fileDownload';
 
 
 class JobInstance extends React.Component {
@@ -118,13 +117,13 @@ class JobInstance extends React.Component {
         return dispatch(purgeJobs(jobs));
     }
 
-    handleCancel(job) {
-        const { dispatch } = this.props;
+    handleCancel() {
+        const { dispatch, job } = this.props;
         dispatch(cancelJob(job.get('jobName'), job.get('jobId')));
     }
 
-    handleGetJCL(job) {
-        const { dispatch } = this.props;
+    handleGetJCL() {
+        const { dispatch, job } = this.props;
         const fileLabel = getFileLabel(job.get('jobId'), 'JCL');
         if (this.isFileOpen(fileLabel)) {
             this.findAndSwitchToContent(job, fileLabel);
@@ -133,30 +132,11 @@ class JobInstance extends React.Component {
         }
     }
 
-    handleDownloadJCL(job) {
-        const { dispatch } = this.props;
-        atlasFetch(`jobs/${job.get('jobName')}/${job.get('jobId')}/files/JCL/content`, { credentials: 'include' })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                return dispatch(constructAndPushMessage('Unable to download JCL'));
-            })
-            .then(json => {
-                // TODO :: Extract to utility function as also used to doanload a file
-                const blob = new Blob([json.content], { type: 'text/plain' });
-                const fileName = `${job.get('jobName')}-${job.get('jobId')}-JCL`;
-                if (window.navigator.msSaveOrOpenBlob) {
-                    window.navigator.msSaveBlob(blob, fileName);
-                } else {
-                    const elem = window.document.createElement('a');
-                    elem.href = window.URL.createObjectURL(blob);
-                    elem.download = fileName;
-                    document.body.appendChild(elem);
-                    elem.click();
-                    document.body.removeChild(elem);
-                }
-            });
+    handleDownloadJCL() {
+        const { dispatch, job } = this.props;
+        const fileName = `${job.get('jobName')}-${job.get('jobId')}-JCL`;
+        const url = `jobs/${job.get('jobName')}/${job.get('jobId')}/files/JCL/content`;
+        downloadFile(job, fileName, url, dispatch);
     }
 
     renderJobStatus() {
@@ -205,22 +185,22 @@ class JobInstance extends React.Component {
     renderJobInstanceMenu() {
         const { job } = this.props;
         const menuItems = [
-            <MenuItem key="open" onClick={() => { this.handleOpenAllFiles(job); }}>
+            <MenuItem key="open" onClick={() => { this.handleOpenAllFiles(); }}>
                     Open
             </MenuItem>,
-            <MenuItem key="purge" onClick={() => { this.handlePurge(job); }}>
+            <MenuItem key="purge" onClick={() => { this.handlePurge(); }}>
             Purge
             </MenuItem>,
-            <MenuItem key="getJCL" onClick={() => { this.handleGetJCL(job); }}>
+            <MenuItem key="getJCL" onClick={() => { this.handleGetJCL(); }}>
                 Get JCL (SJ)
             </MenuItem>,
-            <MenuItem key="downloadJCL" onClick={() => { this.handleDownloadJCL(job); }}>
+            <MenuItem key="downloadJCL" onClick={() => { this.handleDownloadJCL(); }}>
                 Download JCL
             </MenuItem>,
         ];
         if (job.get('status').toLowerCase() === 'active') {
             menuItems.splice(1, 0,
-                <MenuItem key="cancel" onClick={() => { this.handleCancel(job); }}>
+                <MenuItem key="cancel" onClick={() => { this.handleCancel(); }}>
                     Cancel Job
                 </MenuItem>);
         }
