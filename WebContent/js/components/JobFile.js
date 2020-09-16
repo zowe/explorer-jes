@@ -43,7 +43,7 @@ class JobFile extends React.Component {
     downloadJobFile() {
         const { job, file, dispatch } = this.props;
         const url = `jobs/${job.get('jobName')}/${job.get('jobId')}/files/${file.id}/content`;
-        downloadFile(job, file, url, dispatch);
+        downloadFile(job, file.label, url, dispatch);
     }
 
     openInNewWindow() {

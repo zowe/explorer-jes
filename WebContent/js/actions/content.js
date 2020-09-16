@@ -281,7 +281,7 @@ export function downloadFile(job, file, url, dispatch) {
         })
         .then(json => {
             const blob = new Blob([json.content], { type: 'text/plain' });
-            const fileName = `${job.get('jobName')}-${job.get('jobId')}-${file.label}`;
+            const fileName = `${job.get('jobName')}-${job.get('jobId')}-${file}`;
             if (window.navigator.msSaveOrOpenBlob) {
                 window.navigator.msSaveBlob(blob, fileName);
             } else {
