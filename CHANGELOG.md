@@ -4,13 +4,18 @@ All notable changes to the JES-Explorer will be documented in this file.
 ## <1.0.6>
 
 ### New features and enhancements
-- Moved explorer-ui-server out of explorers into new `shared` folder under Zowe Runtime Directory. Changed JES lifecycle start script to use new shared location.It involved following PRs (https://github.com/zowe/zowe-install-packaging/pull/1545), (https://github.com/zowe/explorer-jes/pull/207), (https://github.com/zowe/explorer-ui-server/pull/37). Thanks @stevenhorsman, @nakulmanchanda, @jackjia-ibm
+- Moved explorer-ui-server out of explorers into new `shared` folder under Zowe Runtime Directory.
+  Changed JES lifecycle start script to use new shared location.
+  It involved following PRs (https://github.com/zowe/zowe-install-packaging/pull/1545), 
+  (https://github.com/zowe/explorer-jes/pull/207), (https://github.com/zowe/explorer-ui-server/pull/37). 
+  Thanks @stevenhorsman, @nakulmanchanda, @jackjia-ibm
+- Add context menu entry for download JCL used to submit a job (https://github.com/zowe/zlux/issues/335), 
+  Thanks @jordanCain
 
 ## <1.0.5>
 
 ### New features and enhancements
 - Changed packaging and lifecycle start.sh script to support explorer-ui-server keyring support (https://github.com/zowe/zowe-install-packaging/pull/1177), Thanks @stevenhorsman, @js665999, @nakulmanchanda, @jackjia-ibm
-- Add context menu entry for download JCL used to submit a job (https://github.com/zowe/zlux/issues/335), Thanks @jordanCain
 - Added app bar, along with settings, and local storage to store user preferences and remember last search filter.(https://github.com/zowe/zlux/issues/487)    
   Notifications preference can set duration for snackbar notification.(https://github.com/zowe/zlux/issues/273) Thanks @nakulmanchanda
 
