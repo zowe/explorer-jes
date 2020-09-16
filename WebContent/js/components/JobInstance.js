@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 
 import PropTypes from 'prop-types';
@@ -15,10 +15,9 @@ import { connect } from 'react-redux';
 import LabelIcon from '@material-ui/icons/Label';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { fetchJobFiles, toggleJob, invertJobSelectStatus, unselectAllJobs, cancelJob, purgeJob, purgeJobs } from '../actions/jobNodes';
-import { getJCL, getFileLabel, changeSelectedContent, fetchConcatenatedJobFiles } from '../actions/content';
+import { getJCL, getFileLabel, changeSelectedContent, fetchConcatenatedJobFiles, downloadFile } from '../actions/content';
 import JobFile from './JobFile';
 import JobStep from './JobStep';
-
 
 class JobInstance extends React.Component {
     constructor(props) {
@@ -116,19 +115,25 @@ class JobInstance extends React.Component {
         return dispatch(purgeJobs(jobs));
     }
 
-    handleCancel(job) {
-        const { dispatch } = this.props;
+    handleCancel() {
+        const { dispatch, job } = this.props;
         dispatch(cancelJob(job.get('jobName'), job.get('jobId')));
     }
 
-    handleGetJCL(job) {
-        const { dispatch } = this.props;
+    handleGetJCL() {
+        const { dispatch, job } = this.props;
         const fileLabel = getFileLabel(job.get('jobId'), 'JCL');
         if (this.isFileOpen(fileLabel)) {
             this.findAndSwitchToContent(job, fileLabel);
         } else {
             dispatch(getJCL(job.get('jobName'), job.get('jobId')));
         }
+    }
+
+    handleDownloadJCL() {
+        const { dispatch, job } = this.props;
+        const url = `jobs/${job.get('jobName')}/${job.get('jobId')}/files/JCL/content`;
+        downloadFile(job, 'JCL', url, dispatch);
     }
 
     renderJobStatus() {
@@ -177,19 +182,22 @@ class JobInstance extends React.Component {
     renderJobInstanceMenu() {
         const { job } = this.props;
         const menuItems = [
-            <MenuItem key="open" onClick={() => { this.handleOpenAllFiles(job); }}>
+            <MenuItem key="open" onClick={() => { this.handleOpenAllFiles(); }}>
                     Open
             </MenuItem>,
-            <MenuItem key="purge" onClick={() => { this.handlePurge(job); }}>
+            <MenuItem key="purge" onClick={() => { this.handlePurge(); }}>
             Purge
             </MenuItem>,
-            <MenuItem key="getJCL" onClick={() => { this.handleGetJCL(job); }}>
+            <MenuItem key="getJCL" onClick={() => { this.handleGetJCL(); }}>
                 Get JCL (SJ)
+            </MenuItem>,
+            <MenuItem key="downloadJCL" onClick={() => { this.handleDownloadJCL(); }}>
+                Download JCL
             </MenuItem>,
         ];
         if (job.get('status').toLowerCase() === 'active') {
             menuItems.splice(1, 0,
-                <MenuItem key="cancel" onClick={() => { this.handleCancel(job); }}>
+                <MenuItem key="cancel" onClick={() => { this.handleCancel(); }}>
                     Cancel Job
                 </MenuItem>);
         }
