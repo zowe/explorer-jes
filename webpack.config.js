@@ -94,8 +94,8 @@ if (analyze) {
 }
 
 const optimization = {
-    minimize: true,
-    minimizer: [new TerserPlugin({
+    minimize: debug,
+    minimizer: debug ?[]:[new TerserPlugin({
         terserOptions: {
             ecma: 8,
             compress: {
