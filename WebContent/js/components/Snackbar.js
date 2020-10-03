@@ -49,7 +49,11 @@ class AtlasSnackbar extends React.Component {
         }, this.notificationDuration);
     }
 
-    handleRequestClose = () => {
+    handleRequestClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
         const { dispatch } = this.props;
         this.state.timeout = clearTimeout(this.state.timeout);
         this.setState({ open: false });
@@ -62,6 +66,10 @@ class AtlasSnackbar extends React.Component {
             const messageValue = snackbarNotificationsMessages.first();
             return (
                 <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }}
                     message={messageValue.get('message')}
                     open={this.state.open}
                     onClose={this.handleRequestClose}
