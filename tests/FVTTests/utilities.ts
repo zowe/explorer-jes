@@ -258,7 +258,7 @@ export async function getAllFilterValues(driver) {
     element = await driver.findElement(By.id('filter-jobId-field'));
     const jobId = await element.getAttribute('value');
 
-    element = await driver.findElement(By.css('#filter-status-field > div > div > input'));
+    element = await driver.findElement(By.css('#filter-status-field input'));
     const status = await element.getAttribute('value');
 
     return {
