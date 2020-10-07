@@ -183,10 +183,10 @@ class JobInstance extends React.Component {
         const { job } = this.props;
         const menuItems = [
             <MenuItem key="open" onClick={() => { this.handleOpenAllFiles(); }}>
-                    Open
+                Open
             </MenuItem>,
             <MenuItem key="purge" onClick={() => { this.handlePurge(); }}>
-            Purge
+                Purge
             </MenuItem>,
             <MenuItem key="getJCL" onClick={() => { this.handleGetJCL(); }}>
                 Get JCL (SJ)
