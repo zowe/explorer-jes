@@ -36,7 +36,7 @@ class JobFile extends React.Component {
                 }
             });
         } else {
-            dispatch(fetchJobFile(job.get('jobName'), job.get('jobId'), file.label, file.id));
+            dispatch(fetchJobFile(job.get('jobName'), job.get('jobId'), file.label, file.id, forceRefresh));
         }
     }
 

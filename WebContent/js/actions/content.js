@@ -13,6 +13,7 @@ import { constructAndPushMessage } from './snackbarNotifications';
 import { checkForValidationFailure } from './validation';
 
 export const REQUEST_CONTENT = 'REQUEST_CONTENT';
+export const REFRESH_CONTENT = 'REFRESH_CONTENT';
 export const RECEIVE_CONTENT = 'RECEIVE_CONTENT';
 export const REMOVE_CONTENT = 'REMOVE_CONTENT';
 export const UPDATE_CONTENT = 'UPDATE_CONTENT';
@@ -25,9 +26,9 @@ export const INVALIDATE_SUBMIT_JCL = 'INVALIDATE_SUBMIT_JCL';
 
 export const NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE = 'No Content in response from API';
 
-function requestContent(jobName, jobId, fileName, fileId, fileLabel) {
+function requestContent(jobName, jobId, fileName, fileId, fileLabel, refreshFile) {
     return {
-        type: REQUEST_CONTENT,
+        type: refreshFile ? REFRESH_CONTENT : REQUEST_CONTENT,
         jobName,
         jobId,
         fileName,
@@ -75,10 +76,10 @@ function dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, file
     throw Error(json.message || NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE);
 }
 
-export function fetchJobFile(jobName, jobId, fileName, fileId) {
+export function fetchJobFile(jobName, jobId, fileName, fileId, refreshFile) {
     return dispatch => {
         const fileLabel = getFileLabel(jobId, fileName);
-        dispatch(requestContent(jobName, jobId, fileName, fileId, fileLabel));
+        dispatch(requestContent(jobName, jobId, fileName, fileId, fileLabel, refreshFile));
         return atlasFetch(`jobs/${jobName}/${jobId}/files/${fileId}/content`, { credentials: 'include' })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));

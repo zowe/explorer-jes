@@ -11,6 +11,7 @@
 import { Map, List } from 'immutable';
 import {
     REQUEST_CONTENT,
+    REFRESH_CONTENT,
     RECEIVE_CONTENT,
     REMOVE_CONTENT,
     UPDATE_CONTENT,
@@ -46,18 +47,6 @@ function getIndexOfContentFromId(contentList, label, fileId) {
 export default function content(state = INITIAL_CONTENT_STATE, action) {
     switch (action.type) {
         case REQUEST_CONTENT:
-            // If we just want to refresh the content do a set rather than push to the content map
-            if (getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId) >= 0) {
-                return state.merge({
-                    content: state.get('content').set(getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId),
-                        {
-                            label: action.fileLabel,
-                            id: action.fileLabel + action.fileId,
-                            content: '',
-                            isFetching: true,
-                        }),
-                });
-            }
             return state.merge({
                 content: state.get('content').push({
                     label: action.fileLabel,
@@ -65,6 +54,16 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
                     content: '',
                     isFetching: true,
                 }),
+            });
+        case REFRESH_CONTENT:
+            return state.merge({
+                content: state.get('content').set(getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId),
+                    {
+                        label: action.fileLabel,
+                        id: action.fileLabel + action.fileId,
+                        content: '',
+                        isFetching: true,
+                    }),
             });
         case RECEIVE_CONTENT:
             return state.merge({
