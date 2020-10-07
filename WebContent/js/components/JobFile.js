@@ -25,10 +25,10 @@ class JobFile extends React.Component {
         this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
-    openFile() {
+    openFile(forceRefresh) {
         const { content, dispatch, job, file } = this.props;
         // Is the file already open?
-        if (content.filter(x => { return x.id === getFileLabel(job.get('jobId'), file.label) + file.id; }).size > 0) {
+        if (!forceRefresh && content.filter(x => { return x.id === getFileLabel(job.get('jobId'), file.label) + file.id; }).size > 0) {
             // Find which index the file is open in and change to it
             content.forEach(x => {
                 if (x.id === getFileLabel(job.get('jobId'), file.label) + file.id) {
@@ -53,7 +53,7 @@ class JobFile extends React.Component {
         newWindow.focus();
     }
 
-    handleKeyDown(e: Event) {
+    handleKeyDown(e) {
         if (e.key === 'Enter') {
             this.openFile();
         }
@@ -68,6 +68,9 @@ class JobFile extends React.Component {
                 </MenuItem>
                 <MenuItem onClick={this.openInNewWindow}>
                     Open in Fullscreen
+                </MenuItem>
+                <MenuItem onClick={() => { return this.openFile(true); }}>
+                    Refresh Content
                 </MenuItem>
             </ContextMenu>
         );
