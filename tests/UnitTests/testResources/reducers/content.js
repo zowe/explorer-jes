@@ -45,6 +45,14 @@ export const receivedContent =
         title: `${DEFAULT_TITLE} [${tabLabel}]`,
     });
 
+export const requestedRefreshContent =
+    Map({
+        content: List([{ label: tabLabel, id: `${tabLabel}${fileId}`, content: '', isFetching: true }]),
+        selectedContent: 0,
+        isSubmittingJCL: false,
+        title: `${DEFAULT_TITLE} [${tabLabel}]`,
+    });
+
 export const updatedContent = 'new updated Content';
 export const receivedContentUpdated =
     Map({
