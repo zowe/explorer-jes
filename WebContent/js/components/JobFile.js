@@ -20,15 +20,16 @@ class JobFile extends React.Component {
     constructor(props) {
         super(props);
         this.openFile = this.openFile.bind(this);
+        this.refreshFile = this.refreshFile.bind(this);
         this.downloadJobFile = this.downloadJobFile.bind(this);
         this.openInNewWindow = this.openInNewWindow.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
-    openFile(forceRefresh) {
+    openFile() {
         const { content, dispatch, job, file } = this.props;
         // Is the file already open?
-        if (!forceRefresh && content.filter(x => { return x.id === getFileLabel(job.get('jobId'), file.label) + file.id; }).size > 0) {
+        if (content.filter(x => { return x.id === getFileLabel(job.get('jobId'), file.label) + file.id; }).size > 0) {
             // Find which index the file is open in and change to it
             content.forEach(x => {
                 if (x.id === getFileLabel(job.get('jobId'), file.label) + file.id) {
@@ -36,8 +37,13 @@ class JobFile extends React.Component {
                 }
             });
         } else {
-            dispatch(fetchJobFile(job.get('jobName'), job.get('jobId'), file.label, file.id, forceRefresh));
+            dispatch(fetchJobFile(job.get('jobName'), job.get('jobId'), file.label, file.id));
         }
+    }
+
+    refreshFile() {
+        const { dispatch, job, file } = this.props;
+        dispatch(fetchJobFile(job.get('jobName'), job.get('jobId'), file.label, file.id, true));
     }
 
     downloadJobFile() {
@@ -69,7 +75,7 @@ class JobFile extends React.Component {
                 <MenuItem onClick={this.openInNewWindow}>
                     Open in Fullscreen
                 </MenuItem>
-                <MenuItem onClick={() => { return this.openFile(true); }}>
+                <MenuItem onClick={() => { return this.refreshFile(); }}>
                     Refresh Content
                 </MenuItem>
             </ContextMenu>
