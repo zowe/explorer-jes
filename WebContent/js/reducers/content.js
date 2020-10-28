@@ -11,6 +11,7 @@
 import { Map, List } from 'immutable';
 import {
     REQUEST_CONTENT,
+    REFRESH_CONTENT,
     RECEIVE_CONTENT,
     REMOVE_CONTENT,
     UPDATE_CONTENT,
@@ -53,6 +54,16 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
                     content: '',
                     isFetching: true,
                 }),
+            });
+        case REFRESH_CONTENT:
+            return state.merge({
+                content: state.get('content').set(getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId),
+                    {
+                        label: action.fileLabel,
+                        id: action.fileLabel + action.fileId,
+                        content: '',
+                        isFetching: true,
+                    }),
             });
         case RECEIVE_CONTENT:
             return state.merge({

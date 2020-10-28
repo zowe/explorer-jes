@@ -27,6 +27,15 @@ describe('Reducer: content', () => {
         expect(content(contentResources.baseContent, action)).toEqual(contentResources.requestedContent);
     });
 
+    it('Should handle REFRESH_CONTENT', () => {
+        const action = {
+            type: contentActions.REFRESH_CONTENT,
+            fileLabel: `${contentResources.jobId}-${contentResources.fileLabel}`,
+            fileId: contentResources.fileId,
+        };
+        expect(content(contentResources.receivedContent, action)).toEqual(contentResources.requestedRefreshContent);
+    });
+
     it('Should handle RECEIVE_CONTENT', () => {
         const action = {
             type: contentActions.RECEIVE_CONTENT,
