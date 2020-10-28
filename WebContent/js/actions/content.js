@@ -97,10 +97,10 @@ export function fetchJobFile(jobName, jobId, fileName, fileId, refreshFile) {
     };
 }
 
-export function fetchConcatenatedJobFiles(jobName, jobId) {
+export function fetchConcatenatedJobFiles(jobName, jobId, refreshFile) {
     return dispatch => {
         const fileLabel = getFileLabel(jobName, jobId);
-        dispatch(requestContent(jobName, jobId, jobId, jobId, fileLabel));
+        dispatch(requestContent(jobName, jobId, jobId, jobId, fileLabel, refreshFile));
         return atlasFetch(`jobs/${jobName}/${jobId}/files/content`, { credentials: 'include' })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));

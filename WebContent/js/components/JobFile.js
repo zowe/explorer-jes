@@ -19,6 +19,7 @@ import { fetchJobFile, getFileLabel, changeSelectedContent, downloadFile } from 
 class JobFile extends React.Component {
     constructor(props) {
         super(props);
+        this.isFileOpen = this.isFileOpen.bind(this);
         this.openFile = this.openFile.bind(this);
         this.refreshFile = this.refreshFile.bind(this);
         this.downloadJobFile = this.downloadJobFile.bind(this);
@@ -26,10 +27,14 @@ class JobFile extends React.Component {
         this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
+    isFileOpen() {
+        const { content, job, file } = this.props;
+        return content.filter(x => { return x.id === getFileLabel(job.get('jobId'), file.label) + file.id; }).size > 0;
+    }
+
     openFile() {
         const { content, dispatch, job, file } = this.props;
-        // Is the file already open?
-        if (content.filter(x => { return x.id === getFileLabel(job.get('jobId'), file.label) + file.id; }).size > 0) {
+        if (this.isFileOpen()) {
             // Find which index the file is open in and change to it
             content.forEach(x => {
                 if (x.id === getFileLabel(job.get('jobId'), file.label) + file.id) {
@@ -67,17 +72,25 @@ class JobFile extends React.Component {
 
     renderJobFileMenu() {
         const { job, file } = this.props;
+        const menuItems = [
+            <MenuItem onClick={this.downloadJobFile} key="download" >
+                Download
+            </MenuItem>,
+            <MenuItem onClick={this.openInNewWindow} key="fullscreen" >
+                Open in Fullscreen
+            </MenuItem>,
+        ];
+
+        if (this.isFileOpen()) {
+            menuItems.push(
+                <MenuItem onClick={() => { return this.refreshFile(); }} key="refresh" >
+                    Refresh Content
+                </MenuItem>,
+            );
+        }
         return (
             <ContextMenu id={`${job.get('jobId')}${file.id}`} style={{ zIndex: '100' }}>
-                <MenuItem onClick={this.downloadJobFile} >
-                    Download
-                </MenuItem>
-                <MenuItem onClick={this.openInNewWindow}>
-                    Open in Fullscreen
-                </MenuItem>
-                <MenuItem onClick={() => { return this.refreshFile(); }}>
-                    Refresh Content
-                </MenuItem>
+                {menuItems}
             </ContextMenu>
         );
     }

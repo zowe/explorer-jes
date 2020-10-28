@@ -83,7 +83,7 @@ class JobInstance extends React.Component {
         return content.filter(x => { return x.label === fileLabel; }).size > 0;
     }
 
-    findAndSwitchToContent(job, fileLabel) {
+    findAndSwitchToContent(fileLabel) {
         const { content, dispatch } = this.props;
         content.forEach(x => {
             if (x.label === fileLabel) {
@@ -104,6 +104,11 @@ class JobInstance extends React.Component {
         } else {
             dispatch(fetchConcatenatedJobFiles(job.get('jobName'), job.get('jobId')));
         }
+    }
+
+    refreshFile() {
+        const { dispatch, job } = this.props;
+        dispatch(fetchConcatenatedJobFiles(job.get('jobName'), job.get('jobId'), true));
     }
 
     handlePurge() {
@@ -200,6 +205,14 @@ class JobInstance extends React.Component {
                 <MenuItem key="cancel" onClick={() => { this.handleCancel(); }}>
                     Cancel Job
                 </MenuItem>);
+        }
+        const fileLabel = getFileLabel(job.get('jobName'), job.get('jobId'));
+        if (this.isFileOpen(fileLabel)) {
+            menuItems.push(
+                <MenuItem onClick={() => { return this.refreshFile(); }} key="refresh">
+                    Refresh Content
+                </MenuItem>,
+            );
         }
         return (
             <ContextMenu id={job.get('label')} style={{ zIndex: '100' }}>
