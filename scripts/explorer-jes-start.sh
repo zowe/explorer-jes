@@ -22,6 +22,13 @@
 # - ZOWE_EXPLORER_HOST
 # - ZOWE_IP_ADDRESS
 
+stop_jobs()
+{
+  kill -15 $pid
+}
+
+trap 'stop_jobs' INT
+
 NODE_BIN=${NODE_HOME}/bin/node
 
 cd "$ROOT_DIR/components/explorer-jes/bin"
@@ -51,3 +58,6 @@ _BPX_JOBNAME=${JOB_NAME} $NODE_BIN $SERVER_DIR/src/index.js \
 	--keyring-owner $KEYRING_OWNER \
 	--keyring-label $KEY_ALIAS \
 	-v &
+pid=$?
+
+wait
