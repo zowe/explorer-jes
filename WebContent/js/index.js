@@ -44,9 +44,16 @@ const theme = createMuiTheme({
                 backgroundColor: '#F5F8F8',
             },
         },
-        MuiExpansionPanel: {
+        MuiAccordion: {
             root: {
                 backgroundColor: '#F5F8F8',
+            },
+        },
+        MuiTypography: {
+            body1: {
+                fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
+                fontWeight: 400,
+                fontSize: '0.875rem',
             },
         },
     },
