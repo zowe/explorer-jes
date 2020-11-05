@@ -5,6 +5,7 @@ All notable changes to the JES-Explorer will be documented in this file.
 
 ### New features and enhancements
 - Added ability to refresh content of an open job output file via context menu entry on the job file (https://github.com/zowe/zlux/issues/549), Thanks @jordanCain
+- Major material ui update from v1.x to 4.x, and minor react update. Accordian and snackbar changes as per required by latest materail-ui version, Thanks @nakulmanchanda
 
 ## <1.0.6>
 
