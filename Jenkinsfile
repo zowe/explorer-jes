@@ -142,7 +142,7 @@ node('ibm-jenkins-slave-dind') {
       echo "Preparing server for integration test ..."
       ansiColor('xterm') {
         // prepare environtment for integration test
-        sh "./scripts/prepare-fvt.sh \"${params.FVT_APIML_ARTIFACT}\" \"${params.FVT_API_ARTIFACT}\" \"${params.FVT_ZOSMF_HOST}\" \"${params.FVT_ZOSMF_PORT}\""
+        sh "./bin/prepare-fvt.sh \"${params.FVT_APIML_ARTIFACT}\" \"${params.FVT_API_ARTIFACT}\" \"${params.FVT_ZOSMF_HOST}\" \"${params.FVT_ZOSMF_PORT}\""
       }
       // wait a while to give time for service to be started
       sleep time: 2, unit: 'MINUTES'
@@ -157,7 +157,7 @@ node('ibm-jenkins-slave-dind') {
           ansiColor('xterm') {
             sh """ZOWE_USERNAME=${USERNAME} \
               ZOWE_PASSWORD=${PASSWORD} \
-              ./scripts/delete-fvt-jobs.sh"""
+              ./bin/delete-fvt-jobs.sh"""
           }
         }
 
