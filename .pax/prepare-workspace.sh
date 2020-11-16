@@ -43,13 +43,15 @@ cp README.md "${PAX_WORKSPACE_DIR}/content/app"
 cp package.json "${PAX_WORKSPACE_DIR}/content/app"
 cp package-lock.json "${PAX_WORKSPACE_DIR}/content/app"
 cp -r dist/. "${PAX_WORKSPACE_DIR}/content/app"
+cp manifest.yaml "${PAX_WORKSPACE_DIR}/content"
+cp apiml-static-registration.yaml.template "${PAX_WORKSPACE_DIR}/content"
 
 # copy start script to target folder
 echo "[${SCRIPT_NAME}] copying startup script ..."
 mkdir -p "${PAX_WORKSPACE_DIR}/content/scripts"
-cp -r scripts/explorer-jes-start.sh "${PAX_WORKSPACE_DIR}/content/scripts"
-cp -r scripts/explorer-jes-configure.sh "${PAX_WORKSPACE_DIR}/content/scripts"
-cp -r scripts/explorer-jes-validate.sh "${PAX_WORKSPACE_DIR}/content/scripts"
+cp -r scripts/start.sh "${PAX_WORKSPACE_DIR}/content/scripts"
+cp -r scripts/configure.sh "${PAX_WORKSPACE_DIR}/content/scripts"
+cp -r scripts/validate.sh "${PAX_WORKSPACE_DIR}/content/scripts"
 
 # move content to another folder
 rm -fr "${PAX_WORKSPACE_DIR}/ascii"

@@ -1,0 +1,11 @@
+services:
+  - serviceId: explorer-jes
+    title: IBM z/OS Jobs UI
+    description: IBM z/OS Jobs UI service
+    catalogUiTileId:
+    instanceBaseUrls:
+      - https://${ZOWE_EXPLORER_HOST}:${JES_EXPLORER_UI_PORT}/
+    homePageRelativeUrl:
+    routedServices:
+      - gatewayUrl: ui/v1
+        serviceRelativeUrl: ${EXPLORER_PLUGIN_BASEURI}
