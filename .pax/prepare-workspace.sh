@@ -48,10 +48,10 @@ cp apiml-static-registration.yaml.template "${PAX_WORKSPACE_DIR}/content"
 
 # copy start script to target folder
 echo "[${SCRIPT_NAME}] copying startup script ..."
-mkdir -p "${PAX_WORKSPACE_DIR}/content/scripts"
-cp -r scripts/start.sh "${PAX_WORKSPACE_DIR}/content/scripts"
-cp -r scripts/configure.sh "${PAX_WORKSPACE_DIR}/content/scripts"
-cp -r scripts/validate.sh "${PAX_WORKSPACE_DIR}/content/scripts"
+mkdir -p "${PAX_WORKSPACE_DIR}/content/bin"
+cp -r bin/start.sh "${PAX_WORKSPACE_DIR}/content/bin"
+cp -r bin/configure.sh "${PAX_WORKSPACE_DIR}/content/bin"
+cp -r bin/validate.sh "${PAX_WORKSPACE_DIR}/content/bin"
 
 # move content to another folder
 rm -fr "${PAX_WORKSPACE_DIR}/ascii"
