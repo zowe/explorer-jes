@@ -8,7 +8,7 @@ name: explorer-jes
 id: org.zowe.explorer-jes
 # Component version is defined in gradle.properties for Gradle project
 # Human readable component name
-title: IBM z/OS Jobs UI
+title: JES Explorer
 # Human readable component description
 description: IBM z/OS Jobs UI service
 license: EPL-2.0
@@ -27,6 +27,12 @@ commands:
   # apimlServices.static.file definition
   configure: bin/configure.sh
   validate: bin/validate.sh
+configs:
+  pluginShortName: "JES"
+  baseUri: "/ui/v1/explorer-jes"
 apimlServices:
   static:
-    - file: apiml-static-registration.yaml.template
+  - file: apiml-static-registration.yaml.template
+desktopIframePlugins:
+- icon: app/img/explorer-JES.png
+  
