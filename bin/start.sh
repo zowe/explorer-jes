@@ -32,8 +32,8 @@ trap 'stop_jobs' INT
 NODE_BIN=${NODE_HOME}/bin/node
 
 cd "$ROOT_DIR/components/explorer-jes/bin"
-EXPLORER_PLUGIN_BASEURI=$($NODE_BIN -e "process.stdout.write(require('./app/package.json').config.baseuri)")
-EXPLORER_PLUGIN_NAME=$($NODE_BIN -e "process.stdout.write(require('./app/package.json').config.pluginName)")
+EXPLORER_PLUGIN_BASEURI=$($NODE_BIN -e "process.stdout.write(require('../app/package.json').config.baseuri)")
+EXPLORER_PLUGIN_NAME=$($NODE_BIN -e "process.stdout.write(require('../app/package.json').config.pluginName)")
 
 # get current ui server directory
 EXPLORER_APP_DIR="${ROOT_DIR}/components/explorer-jes/app"
