@@ -38,11 +38,11 @@ fi
 
 # copy explorer-jes to target folder
 echo "[${SCRIPT_NAME}] copying explorer JES backend ..."
-mkdir -p "${PAX_WORKSPACE_DIR}/content/bin/app"
-cp README.md "${PAX_WORKSPACE_DIR}/content/bin/app"
-cp package.json "${PAX_WORKSPACE_DIR}/content/bin/app"
-cp package-lock.json "${PAX_WORKSPACE_DIR}/content/bin/app"
-cp -r dist/. "${PAX_WORKSPACE_DIR}/content/bin/app"
+mkdir -p "${PAX_WORKSPACE_DIR}/content/app"
+cp README.md "${PAX_WORKSPACE_DIR}/content/app"
+cp package.json "${PAX_WORKSPACE_DIR}/content/app"
+cp package-lock.json "${PAX_WORKSPACE_DIR}/content/app"
+cp -r dist/. "${PAX_WORKSPACE_DIR}/content/app"
 cp manifest.yaml "${PAX_WORKSPACE_DIR}/content"
 cp apiml-static-registration.yaml.template "${PAX_WORKSPACE_DIR}/content"
 

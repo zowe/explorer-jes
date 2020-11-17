@@ -19,7 +19,7 @@
 NODE_BIN=${NODE_HOME}/bin/node
 
 
-EXPLORER_CONFIG="$ROOT_DIR/components/explorer-jes/bin/app/package.json"
+EXPLORER_CONFIG="$ROOT_DIR/components/explorer-jes/app/package.json"
 EXPLORER_PLUGIN_BASEURI=$($NODE_BIN -e "process.stdout.write(require('${EXPLORER_CONFIG}').config.baseuri)")
 EXPLORER_PLUGIN_ID=$($NODE_BIN -e "process.stdout.write(require('${EXPLORER_CONFIG}').config.pluginId)")
 EXPLORER_PLUGIN_NAME=$($NODE_BIN -e "process.stdout.write(require('${EXPLORER_CONFIG}').config.pluginName)")
@@ -33,7 +33,7 @@ then
     "${EXPLORER_PLUGIN_NAME}" \
     ${EXPLORER_PLUGIN_FULLURL} \
     "${WORKSPACE_DIR}/explorer-jes" \
-    "${ROOT_DIR}/components/explorer-jes/bin/app/img/explorer-JES.png"
+    "${ROOT_DIR}/components/explorer-jes/app/img/explorer-JES.png"
 fi
 
 # Remove any previous static defintiion config
