@@ -28,7 +28,6 @@ commands:
   configure: bin/configure.sh
   validate: bin/validate.sh
 configs:
-  pluginShortName: "JES"
   baseUri: "/ui/v1/explorer-jes"
 apimlServices:
   static:

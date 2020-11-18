@@ -46,7 +46,7 @@ cat <<EOF >$STATIC_DEF_CONFIG_DIR/jobs-ui.ebcdic.yml
 #
 services:
   - serviceId: explorer-jes
-    title: IBM z/OS Jobs UI
+    title: JES Explorer
     description: IBM z/OS Jobs UI service
     catalogUiTileId:
     instanceBaseUrls:

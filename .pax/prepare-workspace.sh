@@ -31,7 +31,6 @@ rm -fr "${PAX_WORKSPACE_DIR}/content"
 mkdir -p "${PAX_WORKSPACE_DIR}/content"
 
 # build client
-echo $PWD
 if [ ! -d "dist" ] || [ ! -z "$(ls -1 dist/app.min.*.js)" ]; then
   echo "[${SCRIPT_NAME}] building client ..."
   npm run prod
@@ -47,8 +46,8 @@ cp -r dist/. "${PAX_WORKSPACE_DIR}/content/app"
 cp manifest.yaml "${PAX_WORKSPACE_DIR}/content"
 cp apiml-static-registration.yaml.template "${PAX_WORKSPACE_DIR}/content"
 
-# copy start script to target folder
-echo "[${SCRIPT_NAME}] copying startup script ..."
+# copy start scripts to target folder
+echo "[${SCRIPT_NAME}] copying startup scripts ..."
 mkdir -p "${PAX_WORKSPACE_DIR}/content/bin"
 cp -r bin/start.sh "${PAX_WORKSPACE_DIR}/content/bin"
 cp -r bin/configure.sh "${PAX_WORKSPACE_DIR}/content/bin"

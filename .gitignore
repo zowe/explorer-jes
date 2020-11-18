@@ -14,7 +14,6 @@ WebContent/app.min.js
 .classpath
 .factorypath
 *.war
-bin
 dist
 web
 .scannerwork
