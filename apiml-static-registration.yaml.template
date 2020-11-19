@@ -8,4 +8,4 @@ services:
     homePageRelativeUrl:
     routedServices:
       - gatewayUrl: ui/v1
-        serviceRelativeUrl: ${EXPLORER_PLUGIN_BASEURI}
+        serviceRelativeUrl: {{ configs.baseUri }} # Note - this needs reading from manifest.yaml/component configs
