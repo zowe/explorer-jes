@@ -46,6 +46,19 @@ cp -r dist/. "${PAX_WORKSPACE_DIR}/content/app"
 cp manifest.yaml "${PAX_WORKSPACE_DIR}/content"
 cp apiml-static-registration.yaml.template "${PAX_WORKSPACE_DIR}/content"
 
+# update build information
+# BRANCH_NAME and BUILD_NUMBER is Jenkins environment variable
+commit_hash=$(git rev-parse --verify HEAD)
+current_timestamp=$(date +%s%3N)
+sed -e "s|{{build\.branch}}|${BRANCH_NAME}|g" \
+    -e "s|{{build\.number}}|${BUILD_NUMBER}|g" \
+    -e "s|{{build\.commitHash}}|${commit_hash}|g" \
+    -e "s|{{build\.timestamp}}|${current_timestamp}|g" \
+    "${PAX_WORKSPACE_DIR}/manifest.yaml" > "${PAX_WORKSPACE_DIR}/manifest.yaml.tmp"
+mv "${PAX_WORKSPACE_DIR}/manifest.yaml.tmp" "${PAX_WORKSPACE_DIR}/manifest.yaml"
+echo "[${SCRIPT_NAME}] manifest:"
+cat "${PAX_WORKSPACE_DIR}/manifest.yaml"
+
 # copy start scripts to target folder
 echo "[${SCRIPT_NAME}] copying startup scripts ..."
 mkdir -p "${PAX_WORKSPACE_DIR}/content/bin"
