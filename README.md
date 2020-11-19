@@ -51,7 +51,7 @@ npm run preCommit
 ### Prepare PAX Packaging Workspace
 
 ```
-./scripts/prepare-workspace.sh
+./.pax/prepare-workspace.sh
 ```
 
 ## Start With explorer-ui-server

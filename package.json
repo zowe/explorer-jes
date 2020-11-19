@@ -122,7 +122,6 @@
   "author": "IBM",
   "license": "EPL-2.0",
   "config": {
-    "pluginShortName": "JES",
     "pluginId": "org.zowe.explorer-jes",
     "pluginName": "JES Explorer",
     "baseuri": "/ui/v1/explorer-jes"
