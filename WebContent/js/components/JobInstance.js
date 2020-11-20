@@ -27,6 +27,8 @@ class JobInstance extends React.Component {
             singleClickTimeout: 0,
             preventSingleClick: false,
             keyEnterCount: 0,
+            menuShortCuts: true,
+            menuVisible: false,
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -48,10 +50,13 @@ class JobInstance extends React.Component {
             }, 500);
         }
     }
-
+    
     handleKeyDown(e) {
         const { job } = this.props;
-        if (e.key === 'Enter') {
+        if (e.metaKey || e.altKey || e.ctrlKey){
+            return; 
+        }
+        if (e.key === 'Enter' && this.state.menuVisible === false) {
             this.setState({ keyEnterCount: 1 });
 
             if (this.state.keyEnterCount === 0) {
@@ -60,6 +65,22 @@ class JobInstance extends React.Component {
             } else {
                 // double click action - on quick multiple presses
                 this.handleOpenAllFiles(job);
+            }
+        }
+        if (this.state.menuShortCuts && this.state.menuVisible){
+            switch (e.key.toLowerCase()){
+                case 'o':
+                    this.handleOpenAllFiles(job); 
+                    break;
+                case 'j':
+                    this.handleGetJCL(job);        
+                    break;
+                case 'c':
+                    this.handleCancel(job);
+                    break;
+                case 'delete':
+                    this.handlePurge(job);
+                    break;    
             }
         }
     }
@@ -187,14 +208,14 @@ class JobInstance extends React.Component {
     renderJobInstanceMenu() {
         const { job } = this.props;
         const menuItems = [
-            <MenuItem key="open" onClick={() => { this.handleOpenAllFiles(); }}>
-                Open
+            <MenuItem key="open" onClick={() => { this.handleOpenAllFiles(job); }}>
+                <u>O</u>pen
             </MenuItem>,
-            <MenuItem key="purge" onClick={() => { this.handlePurge(); }}>
-                Purge
+            <MenuItem key="purge" onClick={() => { this.handlePurge(job); }}>
+                Purge <span class="react-contextmenu-right"><u>Del</u>ete</span>
             </MenuItem>,
-            <MenuItem key="getJCL" onClick={() => { this.handleGetJCL(); }}>
-                Get JCL (SJ)
+            <MenuItem key="getJCL" onClick={() => { this.handleGetJCL(job); }}>
+                Get <u>J</u>CL (SJ)
             </MenuItem>,
             <MenuItem key="downloadJCL" onClick={() => { this.handleDownloadJCL(); }}>
                 Download JCL
@@ -202,8 +223,8 @@ class JobInstance extends React.Component {
         ];
         if (job.get('status').toLowerCase() === 'active') {
             menuItems.splice(1, 0,
-                <MenuItem key="cancel" onClick={() => { this.handleCancel(); }}>
-                    Cancel Job
+                <MenuItem key="cancel" onClick={() => { this.handleCancel(job); }}>
+                    <u>C</u>ancel Job
                 </MenuItem>);
         }
         const fileLabel = getFileLabel(job.get('jobName'), job.get('jobId'));
@@ -215,7 +236,10 @@ class JobInstance extends React.Component {
             );
         }
         return (
-            <ContextMenu id={job.get('label')} style={{ zIndex: '100' }}>
+            <ContextMenu id={job.get('label')} style={{ zIndex: '100' }} 
+                onShow={() => { this.setState({menuVisible: true}); }} 
+                onHide={() => { this.setState({menuVisible: false}); }}
+            >
                 {menuItems}
             </ContextMenu>
         );

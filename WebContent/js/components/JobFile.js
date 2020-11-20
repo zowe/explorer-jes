@@ -25,6 +25,10 @@ class JobFile extends React.Component {
         this.downloadJobFile = this.downloadJobFile.bind(this);
         this.openInNewWindow = this.openInNewWindow.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.state = {
+            menuShortCuts: true,
+            menuVisible: false,
+        };
     }
 
     isFileOpen() {
@@ -65,8 +69,19 @@ class JobFile extends React.Component {
     }
 
     handleKeyDown(e) {
-        if (e.key === 'Enter') {
+        if (e.metaKey || e.altKey || e.ctrlKey) {
+            return;
+        }
+        if (e.key === 'Enter' && this.state.menuVisible === false) {
             this.openFile();
+        }
+        if (this.state.menuShortCuts && this.state.menuVisible) {
+            if (e.key.toLowerCase() === 'd') {
+                this.downloadJobFile();
+            }
+            if (e.key.toLowerCase() === 'o') {
+                this.openInNewWindow();
+            }
         }
     }
 
@@ -89,8 +104,18 @@ class JobFile extends React.Component {
             );
         }
         return (
-            <ContextMenu id={`${job.get('jobId')}${file.id}`} style={{ zIndex: '100' }}>
-                {menuItems}
+            <ContextMenu
+                id={`${job.get('jobId')}${file.id}`}
+                style={{ zIndex: '100' }}
+                onShow={() => { this.setState({ menuVisible: true }); }}
+                onHide={() => { this.setState({ menuVisible: false }); }}
+            >
+                <MenuItem onClick={this.downloadJobFile} >
+                    <u>D</u>ownload
+                </MenuItem>
+                <MenuItem onClick={this.openInNewWindow}>
+                    <u>O</u>pen in Fullscreen
+                </MenuItem>
             </ContextMenu>
         );
     }

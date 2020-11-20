@@ -38,6 +38,7 @@ export const INVALIDATE_PURGE_JOB = 'INVALIDATE_PURGE_JOB';
 const NO_JOBS_FOUND_MESSAGE = 'No Jobs found for filter parameters';
 const CANCEL_JOB_SUCCESS_MESSAGE = 'Cancel request succeeded for';
 const CANCEL_JOB_FAIL_MESSAGE = 'Cancel request failed for';
+const CANCEL_JOB_CANCEL_MESSAGE = 'Cancel request canceled for';
 const PURGE_JOB_SUCCESS_MESSAGE = 'Purge request succeeded for';
 const PURGE_JOBS_SUCCESS_MESSAGE = 'Purge request succeeded for selected jobs';
 const PURGE_JOB_FAIL_MESSAGE = 'Purge request failed for';
@@ -266,6 +267,10 @@ export function fetchJobFiles(jobName, jobId) {
 }
 
 export function cancelJob(jobName, jobId) {
+    var confirmCancel = confirm(`Cancel the job ${jobName}/${jobId}?`);
+    if (confirmCancel === false) { 
+        return dispatch => {dispatch(constructAndPushMessage(`${CANCEL_JOB_CANCEL_MESSAGE} ${jobName}/${jobId}`));};
+    };
     return dispatch => {
         dispatch(requestCancel(jobName, jobId));
         return atlasFetch(`jobs/${jobName}/${jobId}`,
@@ -294,6 +299,10 @@ export function cancelJob(jobName, jobId) {
 }
 
 export function purgeJob(jobName, jobId) {
+    var confirmPurge = confirm(`Purge the job ${jobName}/${jobId}?`);
+    if (confirmPurge === false) { 
+        return dispatch => {dispatch(constructAndPushMessage(`${PURGE_JOB_CANCEL_MESSAGE} ${jobName}/${jobId}`));};
+    };
     return dispatch => {
         dispatch(requestPurge(jobName, jobId));
         return atlasFetch(`jobs/${jobName}/${jobId}`,

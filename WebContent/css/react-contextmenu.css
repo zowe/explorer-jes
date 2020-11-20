@@ -9,7 +9,7 @@
  */
 
 .react-contextmenu {
-    min-width: 160px;
+    min-width: 200px;
     padding: 5px 0;
     margin: 2px 0 0;
     font-size: 16px;
@@ -22,6 +22,10 @@
     outline: none;
     opacity: 0;
     pointer-events: none;
+}
+
+.react-contextmenu-right {
+    float: right;
 }
 
 .react-contextmenu.react-contextmenu--visible {
@@ -42,6 +46,7 @@
 }
 
 .react-contextmenu-item.react-contextmenu-item--active,
+.react-contextmenu-item.react-contextmenu-item--selected,
 .react-contextmenu-item:hover {
     color: #fff;
     background-color: #20a0ff;
