@@ -127,6 +127,6 @@
     "baseuri": "/ui/v1/explorer-jes"
   },
   "proxy": {
-    "target":"https://tvt5003.svl.ibm.com:57554"
+    "target": "https://tvt5003.svl.ibm.com:57554"
   }
 }
