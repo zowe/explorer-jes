@@ -132,6 +132,7 @@ const devServer = {
             secure: false,
         },
     },
+    open: true,
 };
 
 module.exports = {

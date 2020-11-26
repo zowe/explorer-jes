@@ -35,7 +35,7 @@ const styles = {
         fontSize: '1rem',
     },
 };
-
+const APP_VERSION = process.env.APP_VERSION;
 class TopBar extends React.Component {
     constructor(props) {
         super(props);
@@ -64,8 +64,9 @@ class TopBar extends React.Component {
                     className={classNames(classes.customizeToolbar)}
                     variant="dense"
                 >
-                    <Typography type="title" color="inherit" style={{ flex: 1 }}>
-                        JES Explorer
+                    <Typography type="title" color="inherit" style={{ flex: 1 }} >
+                        JES Explorer 
+                        <Typography variant="caption" color="inherit" style={{ flex: 1, paddingLeft: '5px' }}>v{ APP_VERSION }</Typography>
                     </Typography>
                     <Tooltip title="Setting" placement="bottom">
                         <IconButton color="inherit" aria-describedby={id} onClick={this.handleClick}>
