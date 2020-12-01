@@ -5,7 +5,7 @@
   "pluginType": "application",
   "webContent": {
     "framework": "iframe",
-    "startingPage": "index.html",
+    "startingPage": "start.html",
     "launchDefinition": {
       "pluginShortNameKey": "JES Explorer",
       "pluginShortNameDefault": "JES Explorer", 

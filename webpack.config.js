@@ -48,6 +48,13 @@ const copyArray = [{
 },
 ];
 
+if (debug && OUTPUT_FOLDER === 'web') {
+    copyArray.push({
+        from: path.resolve(__dirname, './start.html'),
+        to: path.resolve(OUTPUT_FOLDER),
+    });
+}
+
 const copyTask = new CopyWebpackPlugin({
     patterns: copyArray,
 });
