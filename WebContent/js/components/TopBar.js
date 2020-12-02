@@ -65,7 +65,7 @@ class TopBar extends React.Component {
                     variant="dense"
                 >
                     <Typography type="title" color="inherit" style={{ flex: 1 }} >
-                        JES Explorer 
+                        JES Explorer
                         <Typography variant="caption" color="inherit" style={{ flex: 1, paddingLeft: '5px' }}>v{ APP_VERSION }</Typography>
                     </Typography>
                     <Tooltip title="Setting" placement="bottom">
