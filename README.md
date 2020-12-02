@@ -18,13 +18,13 @@ npm install
 
 ### Build for Development
 
-Modify the host variable in WebContent/js/utilities/urlUtils.js to a host and port that has the Zowe Jobs API server available
+Modify the `proxy.target` property in `package.json` to a host and port that has the Zowe Jobs API server available
 
 ```
 npm run dev 
 ```
 
-Then you can visit http://localhost:8080 to test.
+Then you can visit https://localhost:8080 to test.
 When testing you may see errors with API calls do to CORS (Cross origin resource sharing), to work around this you may disable CORS checking in your browser for local development. 
 
 ### Run unit tests
@@ -114,28 +114,7 @@ cd zlux/zlux-app-server/bin
 Either use [Redux Dev Tool Browser Extension](https://github.com/reduxjs/redux-devtools) in your browser 
 Or enable redux logs by setting `enableReduxLogger` variable `true` in your local storage.
 
-### Add Redux Logger
-While explore app is open in browser:
-1. Run this in browser console 
-```
-window.localStorage.setItem('ZoweJes.enableReduxLogger', true);
-```
-
-2. And refresh browser    
-So as long as this value remains true in browser local storage,       
-you will see redux logs in console.                  
-
-### Remove Redux Logger          
-While explore app is open in browser:      
-1. Run either `window.localStorage.setItem('ZoweJes.enableReduxLogger', false)`         
-or `window.localStorage.removeItem('ZoweJes.enableReduxLogger')`           
-or clear storage manually in `browser dev tools` under `Application` tab 
-
-2. And refresh browser to stop seeing redux console logs.       
-
-
-
-
-
-
+### Redux Logger - Enable/Disable
+Use preferences menu on top right corner to turn on or off browser settings, and refresh browser to have settings take effect.
+![Logger Preference](loggerPreference.jpg)
 

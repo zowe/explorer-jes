@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to the JES-Explorer will be documented in this file.
 
+## <1.0.8>
+
+### New features and enhancements
+- Added webdevSever proxy setting in webpack.config.js to enable https for local development. Thanks @nakulmanchanda
+
 ## <1.0.7>
 
 ### New features and enhancements

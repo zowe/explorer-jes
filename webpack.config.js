@@ -8,6 +8,13 @@
 * Copyright IBM Corporation 2018, 2020
  */
 
+const PACKAGE = require('./package.json');
+
+const DEVSERVER_HOST = PACKAGE.devServerHost || 'localhost';
+const proxy = PACKAGE.proxy;
+const APP_VERSION = PACKAGE.version;
+
+
 const REACT_APP_ENVIRONMENT = process.env.NODE_ENV;
 const debug = REACT_APP_ENVIRONMENT !== 'production';
 const prod = REACT_APP_ENVIRONMENT === 'production';
@@ -40,6 +47,13 @@ const copyArray = [{
     to: path.resolve(OUTPUT_FOLDER),
 },
 ];
+
+if (debug && OUTPUT_FOLDER === 'web') {
+    copyArray.push({
+        from: path.resolve(__dirname, './start.html'),
+        to: path.resolve(OUTPUT_FOLDER),
+    });
+}
 
 const copyTask = new CopyWebpackPlugin({
     patterns: copyArray,
@@ -77,11 +91,19 @@ const output = {
     filename: 'app.[hash].min.js',
 };
 
-const plugins = debug ? [cleanTask, copyTask, htmlTask] : [cleanTask,
-    new webpack.DefinePlugin({
-        'process.env.REACT_SYNTAX_HIGHLIGHTER_LIGHT_BUILD': true,
-        'process.env.NODE_ENV': JSON.stringify(REACT_APP_ENVIRONMENT),
-    }),
+const defineEnvConstants = {
+    'process.env.REACT_SYNTAX_HIGHLIGHTER_LIGHT_BUILD': true,
+    'process.env.NODE_ENV': JSON.stringify(REACT_APP_ENVIRONMENT),
+    'process.env.APP_VERSION': JSON.stringify(APP_VERSION),
+};
+
+if (debug) {
+    defineEnvConstants['process.env.DEVSERVER_HOSTNAME'] = JSON.stringify(DEVSERVER_HOST);
+}
+
+const definePlugin = new webpack.DefinePlugin(defineEnvConstants);
+
+const plugins = debug ? [cleanTask, definePlugin, copyTask, htmlTask] : [cleanTask, definePlugin,
     new CompressionPlugin({
         threshold: 100000,
         minRatio: 0.8,
@@ -108,6 +130,18 @@ const optimization = {
     })],
 };
 
+const devServer = {
+    host: DEVSERVER_HOST,
+    https: true,
+    proxy: {
+        '*': {
+            target: proxy.target,
+            secure: false,
+        },
+    },
+    open: true,
+};
+
 module.exports = {
     devtool: debug ? 'source-map' : false,
     entry,
@@ -118,4 +152,5 @@ module.exports = {
     plugins,
     optimization,
     mode: REACT_APP_ENVIRONMENT,
+    devServer,
 };
