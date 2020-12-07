@@ -7,7 +7,7 @@
 #
 # SPDX-License-Identifier: EPL-2.0
 #
-# Copyright IBM Corporation 2018, 2019
+# Copyright IBM Corporation 2018, 2020
 ################################################################################
 
 ################################################################################
@@ -31,7 +31,7 @@ rm -fr "${PAX_WORKSPACE_DIR}/content"
 mkdir -p "${PAX_WORKSPACE_DIR}/content"
 
 # build client
-if [ ! -z "$(ls -1 dist/app.min.*.js)" ]; then
+if [ ! -d "dist" ] || [ ! -z "$(ls -1 dist/app.min.*.js)" ]; then
   echo "[${SCRIPT_NAME}] building client ..."
   npm run prod
 fi
@@ -43,13 +43,28 @@ cp README.md "${PAX_WORKSPACE_DIR}/content/app"
 cp package.json "${PAX_WORKSPACE_DIR}/content/app"
 cp package-lock.json "${PAX_WORKSPACE_DIR}/content/app"
 cp -r dist/. "${PAX_WORKSPACE_DIR}/content/app"
+cp manifest.yaml "${PAX_WORKSPACE_DIR}/content"
+cp apiml-static-registration.yaml.template "${PAX_WORKSPACE_DIR}/content"
 
-# copy start script to target folder
-echo "[${SCRIPT_NAME}] copying startup script ..."
-mkdir -p "${PAX_WORKSPACE_DIR}/content/scripts"
-cp -r scripts/explorer-jes-start.sh "${PAX_WORKSPACE_DIR}/content/scripts"
-cp -r scripts/explorer-jes-configure.sh "${PAX_WORKSPACE_DIR}/content/scripts"
-cp -r scripts/explorer-jes-validate.sh "${PAX_WORKSPACE_DIR}/content/scripts"
+# update build information
+# BRANCH_NAME and BUILD_NUMBER is Jenkins environment variable
+commit_hash=$(git rev-parse --verify HEAD)
+current_timestamp=$(date +%s%3N)
+sed -e "s|{{build\.branch}}|${BRANCH_NAME}|g" \
+    -e "s|{{build\.number}}|${BUILD_NUMBER}|g" \
+    -e "s|{{build\.commitHash}}|${commit_hash}|g" \
+    -e "s|{{build\.timestamp}}|${current_timestamp}|g" \
+    "${PAX_WORKSPACE_DIR}/content/manifest.yaml" > "${PAX_WORKSPACE_DIR}/content/manifest.yaml.tmp"
+mv "${PAX_WORKSPACE_DIR}/content/manifest.yaml.tmp" "${PAX_WORKSPACE_DIR}/content/manifest.yaml"
+echo "[${SCRIPT_NAME}] manifest:"
+cat "${PAX_WORKSPACE_DIR}/content/manifest.yaml"
+
+# copy start scripts to target folder
+echo "[${SCRIPT_NAME}] copying startup scripts ..."
+mkdir -p "${PAX_WORKSPACE_DIR}/content/bin"
+cp -r bin/start.sh "${PAX_WORKSPACE_DIR}/content/bin"
+cp -r bin/configure.sh "${PAX_WORKSPACE_DIR}/content/bin"
+cp -r bin/validate.sh "${PAX_WORKSPACE_DIR}/content/bin"
 
 # move content to another folder
 rm -fr "${PAX_WORKSPACE_DIR}/ascii"

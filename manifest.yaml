@@ -1,0 +1,33 @@
+---
+name: explorer-jes
+# Component identifier. This identifier matches artifact path in Zowe Artifactory https://zowe.jfrog.io/.
+id: org.zowe.explorer-jes
+# Component version is defined in gradle.properties for Gradle project
+# Human readable component name
+title: JES Explorer
+# Human readable component description
+description: IBM z/OS Jobs UI service
+license: EPL-2.0
+repository:
+  type: git
+  url: https://github.com/zowe/explorer-jes.git
+build:
+  branch: "{{build.branch}}"
+  number: "{{build.number}}"
+  commitHash: "{{build.commitHash}}"
+  timestamp: "{{build.timestamp}}"
+commands:
+  start: bin/start.sh
+  # eventually we expect to remove this configure entry
+  # the logic should be automatically handled by Zowe component launcher with
+  # apimlServices.static.file definition
+  configure: bin/configure.sh
+  validate: bin/validate.sh
+configs:
+  baseUri: "/ui/v1/explorer-jes"
+apimlServices:
+  static:
+  - file: apiml-static-registration.yaml.template
+desktopIframePlugins:
+- icon: app/img/explorer-JES.png
+  
