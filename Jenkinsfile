@@ -11,7 +11,7 @@
  */
 
 
-node('ibm-jenkins-slave-dind') {
+node('zowe-jenkins-agent-dind') {
   def lib = library("jenkins-library").org.zowe.jenkins_shared_library
 
   def pipeline = lib.pipelines.nodejs.NodeJSPipeline.new(this)
@@ -101,7 +101,7 @@ node('ibm-jenkins-slave-dind') {
     ],
     // FIXME: ideally this should set to false (using default by remove this line)
     ignoreAuditFailure            : true,
-    // FIXME: npm version in ibm-jenkins-slave-dind is too old, doesn't support "npm ci"
+    // FIXME: npm version in zowe-jenkins-agent-dind is too old, doesn't support "npm ci"
     alwaysUseNpmInstall           : true
 
   )
