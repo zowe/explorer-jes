@@ -14,8 +14,9 @@ import { Map, List } from 'immutable';
 import { connect } from 'react-redux';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import Description from '@material-ui/icons/Description';
-import { fetchJobFile, getFileLabel, changeSelectedContent, downloadFile } from '../actions/content';
 import { hideMenu } from 'react-contextmenu/modules/actions';
+import { fetchJobFile, getFileLabel, changeSelectedContent, downloadFile } from '../actions/content';
+
 
 class JobFile extends React.Component {
     constructor(props) {
@@ -68,8 +69,8 @@ class JobFile extends React.Component {
         const newWindow = window.open(`${baseURI}#/viewer?jobName=${job.get('jobName')}&jobId=${job.get('jobId')}&fileId=${file.id}`, '_blank');
         newWindow.focus();
     }
-    
-    hideContextMenu(){
+
+    hideContextMenu() {
         hideMenu();
         this.setState({ menuVisible: false });
     }

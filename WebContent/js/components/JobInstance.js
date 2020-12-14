@@ -14,11 +14,12 @@ import { Map, List } from 'immutable';
 import { connect } from 'react-redux';
 import LabelIcon from '@material-ui/icons/Label';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
+import { hideMenu } from 'react-contextmenu/modules/actions';
 import { fetchJobFiles, toggleJob, invertJobSelectStatus, unselectAllJobs, cancelJob, purgeJob, purgeJobs, getSelectedJobs } from '../actions/jobNodes';
 import { getJCL, getFileLabel, changeSelectedContent, fetchConcatenatedJobFiles, downloadFile } from '../actions/content';
 import JobFile from './JobFile';
 import JobStep from './JobStep';
-import { hideMenu } from 'react-contextmenu/modules/actions';
+
 
 class JobInstance extends React.Component {
     constructor(props) {
@@ -51,8 +52,8 @@ class JobInstance extends React.Component {
             }, 500);
         }
     }
-    
-    hideContextMenu(){
+
+    hideContextMenu() {
         hideMenu();
         this.setState({ menuVisible: false });
     }
@@ -60,8 +61,8 @@ class JobInstance extends React.Component {
     handleKeyDown(e) {
         const { job } = this.props;
         const shortCuts = ['o', 'j', 'c', 'delete', 'r', 'd'];
-        if (e.metaKey || e.altKey || e.ctrlKey){
-            return; 
+        if (e.metaKey || e.altKey || e.ctrlKey) {
+            return;
         }
         if (e.key === 'Enter' && this.state.menuVisible === false) {
             this.setState({ keyEnterCount: 1 });
@@ -74,8 +75,8 @@ class JobInstance extends React.Component {
                 this.handleOpenAllFiles(job);
             }
         }
-        if (this.state.menuShortCuts && this.state.menuVisible){
-            switch (e.key.toLowerCase()){
+        if (this.state.menuShortCuts && this.state.menuVisible) {
+            switch (e.key.toLowerCase()) {
                 case 'o':
                     this.handleOpenAllFiles(job);
                     break;
@@ -87,15 +88,17 @@ class JobInstance extends React.Component {
                     break;
                 case 'delete':
                     this.handlePurge(job);
-                    break;   
+                    break;
                 case 'r':
                     this.refreshFile();
                     break;
                 case 'd':
                     this.handleDownloadJCL();
                     break;
+                default:
+                    break;
             }
-            if (shortCuts.includes(e.key.toLowerCase())){
+            if (shortCuts.includes(e.key.toLowerCase())) {
                 this.hideContextMenu();
             }
         }
@@ -228,7 +231,7 @@ class JobInstance extends React.Component {
                 <u>O</u>pen
             </MenuItem>,
             <MenuItem key="purge" onClick={() => { this.handlePurge(job); }}>
-                Purge <span class="react-contextmenu-right"><u>Del</u>ete</span>
+                Purge <span className="react-contextmenu-right"><u>Del</u>ete</span>
             </MenuItem>,
             <MenuItem key="getJCL" onClick={() => { this.handleGetJCL(job); }}>
                 Get <u>J</u>CL (SJ)
@@ -252,9 +255,11 @@ class JobInstance extends React.Component {
             );
         }
         return (
-            <ContextMenu id={job.get('label')} style={{ zIndex: '100' }} 
-                onShow={() => { this.setState({menuVisible: true}); }} 
-                onHide={() => { this.setState({menuVisible: false}); }}
+            <ContextMenu
+                id={job.get('label')}
+                style={{ zIndex: '100' }}
+                onShow={() => { this.setState({ menuVisible: true }); }}
+                onHide={() => { this.setState({ menuVisible: false }); }}
             >
                 {menuItems}
             </ContextMenu>

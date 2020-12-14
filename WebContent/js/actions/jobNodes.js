@@ -269,10 +269,10 @@ export function fetchJobFiles(jobName, jobId) {
 }
 
 export function cancelJob(jobName, jobId) {
-    var confirmCancel = confirm(`Cancel the job ${jobName}/${jobId}?`);
-    if (confirmCancel === false) { 
-        return dispatch => {dispatch(constructAndPushMessage(`${CANCEL_JOB_CANCEL_MESSAGE} ${jobName}/${jobId}`));};
-    };
+    const confirmCancel = confirm(`Cancel the job ${jobName}/${jobId}?`);
+    if (confirmCancel === false) {
+        return dispatch => { dispatch(constructAndPushMessage(`${CANCEL_JOB_CANCEL_MESSAGE} ${jobName}/${jobId}`)); };
+    }
     return dispatch => {
         dispatch(requestCancel(jobName, jobId));
         return atlasFetch(`jobs/${jobName}/${jobId}`,
@@ -301,10 +301,10 @@ export function cancelJob(jobName, jobId) {
 }
 
 export function purgeJob(jobName, jobId) {
-    var confirmPurge = confirm(`Purge the job ${jobName}/${jobId}?`);
-    if (confirmPurge === false) { 
-        return dispatch => {dispatch(constructAndPushMessage(`${PURGE_JOB_CANCEL_MESSAGE} ${jobName}/${jobId}`));};
-    };
+    const confirmPurge = confirm(`Purge the job ${jobName}/${jobId}?`);
+    if (confirmPurge === false) {
+        return dispatch => { dispatch(constructAndPushMessage(`${PURGE_JOB_CANCEL_MESSAGE} ${jobName}/${jobId}`)); };
+    }
     return dispatch => {
         dispatch(requestPurge(jobName, jobId));
         return atlasFetch(`jobs/${jobName}/${jobId}`,
@@ -337,10 +337,10 @@ export function getSelectedJobs(jobs) {
 }
 
 export function purgeJobs(jobs) {
-    var confirmPurge = confirm('Purge the jobs?');
-    if (confirmPurge === false) { 
-        return dispatch => {dispatch(constructAndPushMessage(`${PURGE_JOBS_CANCEL_MESSAGE}`));};
-    };
+    const confirmPurge = confirm('Purge the jobs?');
+    if (confirmPurge === false) {
+        return dispatch => { dispatch(constructAndPushMessage(`${PURGE_JOBS_CANCEL_MESSAGE}`)); };
+    }
     return dispatch => {
         dispatch(requestPurgeMultipleJobs());
         const selectedJobs = getSelectedJobs(jobs);
