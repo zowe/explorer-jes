@@ -14,10 +14,11 @@ import { Map, List } from 'immutable';
 import { connect } from 'react-redux';
 import LabelIcon from '@material-ui/icons/Label';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
-import { fetchJobFiles, toggleJob, invertJobSelectStatus, unselectAllJobs, cancelJob, purgeJob, purgeJobs } from '../actions/jobNodes';
+import { fetchJobFiles, toggleJob, invertJobSelectStatus, unselectAllJobs, cancelJob, purgeJob, purgeJobs, getSelectedJobs } from '../actions/jobNodes';
 import { getJCL, getFileLabel, changeSelectedContent, fetchConcatenatedJobFiles, downloadFile } from '../actions/content';
 import JobFile from './JobFile';
 import JobStep from './JobStep';
+import { hideMenu } from 'react-contextmenu/modules/actions';
 
 class JobInstance extends React.Component {
     constructor(props) {
@@ -51,8 +52,14 @@ class JobInstance extends React.Component {
         }
     }
     
+    hideContextMenu(){
+        hideMenu();
+        this.setState({ menuVisible: false });
+    }
+
     handleKeyDown(e) {
         const { job } = this.props;
+        const shortCuts = ['o', 'j', 'c', 'delete', 'r', 'd'];
         if (e.metaKey || e.altKey || e.ctrlKey){
             return; 
         }
@@ -70,17 +77,26 @@ class JobInstance extends React.Component {
         if (this.state.menuShortCuts && this.state.menuVisible){
             switch (e.key.toLowerCase()){
                 case 'o':
-                    this.handleOpenAllFiles(job); 
+                    this.handleOpenAllFiles(job);
                     break;
                 case 'j':
-                    this.handleGetJCL(job);        
+                    this.handleGetJCL(job);
                     break;
                 case 'c':
                     this.handleCancel(job);
                     break;
                 case 'delete':
                     this.handlePurge(job);
-                    break;    
+                    break;   
+                case 'r':
+                    this.refreshFile();
+                    break;
+                case 'd':
+                    this.handleDownloadJCL();
+                    break;
+            }
+            if (shortCuts.includes(e.key.toLowerCase())){
+                this.hideContextMenu();
             }
         }
     }
@@ -135,7 +151,7 @@ class JobInstance extends React.Component {
     handlePurge() {
         const { dispatch, job, jobs } = this.props;
         // If only one job is selected
-        if (!job.get('isSelected')) {
+        if (!job.get('isSelected') || getSelectedJobs(jobs).size === 1) {
             return dispatch(purgeJob(job.get('jobName'), job.get('jobId')));
         }
         return dispatch(purgeJobs(jobs));
@@ -218,7 +234,7 @@ class JobInstance extends React.Component {
                 Get <u>J</u>CL (SJ)
             </MenuItem>,
             <MenuItem key="downloadJCL" onClick={() => { this.handleDownloadJCL(); }}>
-                Download JCL
+                <u>D</u>ownload JCL
             </MenuItem>,
         ];
         if (job.get('status').toLowerCase() === 'active') {
@@ -231,7 +247,7 @@ class JobInstance extends React.Component {
         if (this.isFileOpen(fileLabel)) {
             menuItems.push(
                 <MenuItem onClick={() => { return this.refreshFile(); }} key="refresh">
-                    Refresh Content
+                    <u>R</u>efresh Content
                 </MenuItem>,
             );
         }

@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import Description from '@material-ui/icons/Description';
 import { fetchJobFile, getFileLabel, changeSelectedContent, downloadFile } from '../actions/content';
+import { hideMenu } from 'react-contextmenu/modules/actions';
 
 class JobFile extends React.Component {
     constructor(props) {
@@ -67,6 +68,11 @@ class JobFile extends React.Component {
         const newWindow = window.open(`${baseURI}#/viewer?jobName=${job.get('jobName')}&jobId=${job.get('jobId')}&fileId=${file.id}`, '_blank');
         newWindow.focus();
     }
+    
+    hideContextMenu(){
+        hideMenu();
+        this.setState({ menuVisible: false });
+    }
 
     handleKeyDown(e) {
         if (e.metaKey || e.altKey || e.ctrlKey) {
@@ -78,9 +84,15 @@ class JobFile extends React.Component {
         if (this.state.menuShortCuts && this.state.menuVisible) {
             if (e.key.toLowerCase() === 'd') {
                 this.downloadJobFile();
+                this.hideContextMenu();
             }
             if (e.key.toLowerCase() === 'o') {
                 this.openInNewWindow();
+                this.hideContextMenu();
+            }
+            if (e.key.toLowerCase() === 'r') {
+                this.refreshFile();
+                this.hideContextMenu();
             }
         }
     }
@@ -89,17 +101,17 @@ class JobFile extends React.Component {
         const { job, file } = this.props;
         const menuItems = [
             <MenuItem onClick={this.downloadJobFile} key="download" >
-                Download
+                <u>D</u>ownload
             </MenuItem>,
             <MenuItem onClick={this.openInNewWindow} key="fullscreen" >
-                Open in Fullscreen
+                <u>O</u>pen in Fullscreen
             </MenuItem>,
         ];
 
         if (this.isFileOpen()) {
             menuItems.push(
                 <MenuItem onClick={() => { return this.refreshFile(); }} key="refresh" >
-                    Refresh Content
+                    <u>R</u>efresh Content
                 </MenuItem>,
             );
         }

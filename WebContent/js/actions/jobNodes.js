@@ -41,6 +41,8 @@ const CANCEL_JOB_FAIL_MESSAGE = 'Cancel request failed for';
 const CANCEL_JOB_CANCEL_MESSAGE = 'Cancel request canceled for';
 const PURGE_JOB_SUCCESS_MESSAGE = 'Purge request succeeded for';
 const PURGE_JOBS_SUCCESS_MESSAGE = 'Purge request succeeded for selected jobs';
+const PURGE_JOB_CANCEL_MESSAGE = 'Purge request canceled for';
+const PURGE_JOBS_CANCEL_MESSAGE = 'Purge request canceled for selected jobs';
 const PURGE_JOB_FAIL_MESSAGE = 'Purge request failed for';
 const PURGE_JOBS_FAIL_MESSAGE = 'Purge request failed for selected jobs';
 
@@ -330,11 +332,15 @@ export function purgeJob(jobName, jobId) {
     };
 }
 
-function getSelectedJobs(jobs) {
+export function getSelectedJobs(jobs) {
     return jobs.filter(job => { return job.get('isSelected'); });
 }
 
 export function purgeJobs(jobs) {
+    var confirmPurge = confirm('Purge the jobs?');
+    if (confirmPurge === false) { 
+        return dispatch => {dispatch(constructAndPushMessage(`${PURGE_JOBS_CANCEL_MESSAGE}`));};
+    };
     return dispatch => {
         dispatch(requestPurgeMultipleJobs());
         const selectedJobs = getSelectedJobs(jobs);
