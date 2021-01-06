@@ -24,6 +24,6 @@ configs:
 apimlServices:
   static:
   - file: apiml-static-registration.yaml.template
-desktopIframePlugins:
-- icon: app/img/explorer-JES.png
+desktopPlugins:
+- icon: web/img/explorer-JES.png
   

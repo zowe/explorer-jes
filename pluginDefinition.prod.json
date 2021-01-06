@@ -5,7 +5,7 @@
   "pluginType": "application",
   "webContent": {
     "framework": "iframe",
-    "destination": "https://localhost:8080",
+    "destination": "https://${ZOWE_EXTERNAL_HOST}:${GATEWAY_PORT}/ui/v1/explorer-jes",
     "launchDefinition": {
       "pluginShortNameKey": "JES Explorer",
       "pluginShortNameDefault": "JES Explorer", 

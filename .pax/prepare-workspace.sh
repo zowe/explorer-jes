@@ -31,20 +31,21 @@ rm -fr "${PAX_WORKSPACE_DIR}/content"
 mkdir -p "${PAX_WORKSPACE_DIR}/content"
 
 # build client
-if [ ! -d "dist" ] || [ ! -z "$(ls -1 dist/app.min.*.js)" ]; then
+if [ ! -d "dist" ] || [ -z "$(ls -1 dist/app.*.min.js)" ]; then
   echo "[${SCRIPT_NAME}] building client ..."
   npm run prod
 fi
 
 # copy explorer-jes to target folder
 echo "[${SCRIPT_NAME}] copying explorer JES backend ..."
-mkdir -p "${PAX_WORKSPACE_DIR}/content/app"
-cp README.md "${PAX_WORKSPACE_DIR}/content/app"
-cp package.json "${PAX_WORKSPACE_DIR}/content/app"
-cp package-lock.json "${PAX_WORKSPACE_DIR}/content/app"
-cp -r dist/. "${PAX_WORKSPACE_DIR}/content/app"
+mkdir -p "${PAX_WORKSPACE_DIR}/content/web"
+cp README.md "${PAX_WORKSPACE_DIR}/content/web"
+cp package.json "${PAX_WORKSPACE_DIR}/content/web"
+cp package-lock.json "${PAX_WORKSPACE_DIR}/content/web"
+cp -r dist/. "${PAX_WORKSPACE_DIR}/content/web"
 cp manifest.yaml "${PAX_WORKSPACE_DIR}/content"
 cp apiml-static-registration.yaml.template "${PAX_WORKSPACE_DIR}/content"
+cp pluginDefinition.prod.json "${PAX_WORKSPACE_DIR}/content/pluginDefinition.json"
 
 # update build information
 # BRANCH_NAME and BUILD_NUMBER is Jenkins environment variable
@@ -69,8 +70,8 @@ cp -r bin/validate.sh "${PAX_WORKSPACE_DIR}/content/bin"
 rm -fr "${PAX_WORKSPACE_DIR}/ascii"
 mkdir -p "${PAX_WORKSPACE_DIR}/ascii"
 rsync -rv \
-  --include '*.json' --include '*.html' --include '*.jcl' --include '*.template' \
-  --exclude '*.zip' --exclude '*.png' --exclude '*.tgz' --exclude '*.tar.gz' --exclude '*.pax' \
+  --include '*.json' --include '*.html' --include '*.jcl' --include '*.template' --include '*.png' \
+  --exclude '*.zip' --exclude '*.tgz' --exclude '*.tar.gz' --exclude '*.pax' \
   --prune-empty-dirs --remove-source-files \
   "${PAX_WORKSPACE_DIR}/content/" \
   "${PAX_WORKSPACE_DIR}/ascii"
