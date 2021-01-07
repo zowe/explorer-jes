@@ -24,6 +24,6 @@ configs:
 apimlServices:
   static:
   - file: apiml-static-registration.yaml.template
-desktopPlugins:
-- icon: web/img/explorer-JES.png
+desktopPlugin:
+  path: $RUNTIME_DIR/components/explorer-jes
   
