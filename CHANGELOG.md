@@ -1,6 +1,13 @@
 # Change Log
 All notable changes to the JES-Explorer will be documented in this file.
 
+## <1.0.9>
+
+### New features and enhancements
+- Introduces the menu shortcuts and confirmation dialog before canceling or purging the job for JES explorer. Thanks @Martin-Zeithaml
+- Refactor JES packagaing & installation scripts, and folder renames, to accomodate new iframe capability in ZLUX. Thanks @NakulManchanda
+- Added manifest for API ML & App Framework installation using new plugin installation process. Thanks @JadinLuong, @jackjia-ibm
+
 ## <1.0.8>
 
 ### New features and enhancements
