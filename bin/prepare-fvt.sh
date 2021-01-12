@@ -196,7 +196,7 @@ echo "[${SCRIPT_NAME}] starting plugin service ..."
 node ${FVT_WORKSPACE}/${FVT_UI_SERVER_DIR}/src/index.js \
   --service "${EXPLORER_PLUGIN_NAME}" \
   --path "${EXPLORER_PLUGIN_BASEURI}" \
-  --dir "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/app" \
+  --dir "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/web" \
   --port "${FVT_EXPLORER_UI_PORT}" \
   --key  "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}/localhost.private.pem" \
   --cert "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}/localhost.cert.pem" \
