@@ -57,7 +57,7 @@ if [ -z "$FVT_APIML_ARTIFACT" ]; then
   echo "[${SCRIPT_NAME}][warn] APIML artifact is not defined, using default value."
 fi
 if [ -z "$FVT_JOBS_API_ARTIFACT" ]; then
-  FVT_JOBS_API_ARTIFACT="libs-snapshot-local/org/zowe/explorer/jobs/*/jobs-server-zowe-package-*.zip"
+  FVT_JOBS_API_ARTIFACT="libs-snapshot-local/org/zowe/explorer/jobs/*/jobs-api-package-*.zip"
   echo "[${SCRIPT_NAME}][warn] Jobs API artifact is not defined, using default value."
 fi
 if [ -z "$FVT_ZOSMF_HOST" ]; then
