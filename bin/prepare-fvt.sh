@@ -57,7 +57,7 @@ if [ -z "$FVT_APIML_ARTIFACT" ]; then
   echo "[${SCRIPT_NAME}][warn] APIML artifact is not defined, using default value."
 fi
 if [ -z "$FVT_JOBS_API_ARTIFACT" ]; then
-  FVT_JOBS_API_ARTIFACT="libs-snapshot-local/org/zowe/explorer/jobs/*/jobs-server-zowe-package-*.zip"
+  FVT_JOBS_API_ARTIFACT="libs-snapshot-local/org/zowe/explorer/jobs/*/jobs-api-package-*.zip"
   echo "[${SCRIPT_NAME}][warn] Jobs API artifact is not defined, using default value."
 fi
 if [ -z "$FVT_ZOSMF_HOST" ]; then
@@ -196,7 +196,7 @@ echo "[${SCRIPT_NAME}] starting plugin service ..."
 node ${FVT_WORKSPACE}/${FVT_UI_SERVER_DIR}/src/index.js \
   --service "${EXPLORER_PLUGIN_NAME}" \
   --path "${EXPLORER_PLUGIN_BASEURI}" \
-  --dir "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/app" \
+  --dir "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/web" \
   --port "${FVT_EXPLORER_UI_PORT}" \
   --key  "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}/localhost.private.pem" \
   --cert "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}/localhost.cert.pem" \

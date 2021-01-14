@@ -167,6 +167,9 @@ describe('Action: jobNodes', () => {
     });
 
     describe('purgeJob', () => {
+        before('init confirm for purge', () => {
+            global.confirm = () => { return true; };
+        });
         it('Should create an action to request a job purge and then receive confirmation', () => {
             const purgeSuccessMessage = rewiredJobNodes.__get__('PURGE_JOB_SUCCESS_MESSAGE');
 
