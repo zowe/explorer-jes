@@ -70,8 +70,8 @@ cp -r bin/validate.sh "${PAX_WORKSPACE_DIR}/content/bin"
 rm -fr "${PAX_WORKSPACE_DIR}/ascii"
 mkdir -p "${PAX_WORKSPACE_DIR}/ascii"
 rsync -rv \
-  --include '*.json' --include '*.html' --include '*.jcl' --include '*.template' --include '*.png' \
-  --exclude '*.zip' --exclude '*.tgz' --exclude '*.tar.gz' --exclude '*.pax' \
+  --include '*.json' --include '*.html' --include '*.jcl' --include '*.template' \
+  --exclude '*.zip' --exclude '*.tgz' --exclude '*.tar.gz' --exclude '*.pax' --exclude '*.png' \
   --prune-empty-dirs --remove-source-files \
   "${PAX_WORKSPACE_DIR}/content/" \
   "${PAX_WORKSPACE_DIR}/ascii"
