@@ -30,6 +30,11 @@ echo "[${SCRIPT_NAME}] cleaning PAX workspace ..."
 rm -fr "${PAX_WORKSPACE_DIR}/content"
 mkdir -p "${PAX_WORKSPACE_DIR}/content"
 
+# set node version
+set +x
+. ~/.nvm/nvm.sh
+nvm use v10.18.1
+set -x
 # build client
 npm run prod
 
