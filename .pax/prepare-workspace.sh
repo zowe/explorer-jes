@@ -31,7 +31,7 @@ rm -fr "${PAX_WORKSPACE_DIR}/content"
 mkdir -p "${PAX_WORKSPACE_DIR}/content"
 
 # build client
-if [ ! -d "dist" ] || [ -z "$(ls -1 dist/app.*.min.js)" ]; then
+if [ ! -d "dist" ] || [ -z "$(ls -1 dist/app*.min.js)" ]; then
   echo "[${SCRIPT_NAME}] building client ..."
   npm run prod
 fi
@@ -70,8 +70,8 @@ cp -r bin/validate.sh "${PAX_WORKSPACE_DIR}/content/bin"
 rm -fr "${PAX_WORKSPACE_DIR}/ascii"
 mkdir -p "${PAX_WORKSPACE_DIR}/ascii"
 rsync -rv \
-  --include '*.json' --include '*.html' --include '*.jcl' --include '*.template' --include '*.png' \
-  --exclude '*.zip' --exclude '*.tgz' --exclude '*.tar.gz' --exclude '*.pax' \
+  --include '*.json' --include '*.html' --include '*.jcl' --include '*.template' \
+  --exclude '*.zip' --exclude '*.tgz' --exclude '*.tar.gz' --exclude '*.pax' --include '*.png' \
   --prune-empty-dirs --remove-source-files \
   "${PAX_WORKSPACE_DIR}/content/" \
   "${PAX_WORKSPACE_DIR}/ascii"
