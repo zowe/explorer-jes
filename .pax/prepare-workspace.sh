@@ -47,6 +47,12 @@ cp manifest.yaml "${PAX_WORKSPACE_DIR}/content"
 cp apiml-static-registration.yaml.template "${PAX_WORKSPACE_DIR}/content"
 cp pluginDefinition.prod.json "${PAX_WORKSPACE_DIR}/content/pluginDefinition.json"
 
+mkdir -p "${PAX_WORKSPACE_DIR}/content/web/config"
+mkdir -p "${PAX_WORKSPACE_DIR}/content/web/config/actions"
+mv "${PAX_WORKSPACE_DIR}/content/web/zlux-hooks/actions.json" "${PAX_WORKSPACE_DIR}/content/web/config/actions/org.zowe.explorer-jes"
+mkdir -p "${PAX_WORKSPACE_DIR}/content/web/config/recognizers"
+mv "${PAX_WORKSPACE_DIR}/content/web/zlux-hooks/recognizers.json" "${PAX_WORKSPACE_DIR}/content/web/config/recognizers/org.zowe.explorer-jes"
+
 # update build information
 # BRANCH_NAME and BUILD_NUMBER is Jenkins environment variable
 commit_hash=$(git rev-parse --verify HEAD)
