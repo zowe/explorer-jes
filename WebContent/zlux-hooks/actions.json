@@ -8,12 +8,12 @@
       "targetId":"org.zowe.explorer-jes",
       "arg": {},
       "primaryArgument": {
-        "type": "open_job",
+        "type": "open-job",
         "data": {
           "op": "deref",
           "source": "event",
           "path": [
-            "job_data"
+            "data"
           ]
         }
       }
