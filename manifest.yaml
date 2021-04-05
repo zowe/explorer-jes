@@ -18,7 +18,6 @@ build:
   timestamp: "{{build.timestamp}}"
 commands:
   start: bin/start.sh
-  validate: bin/validate.sh
 configs:
   baseUri: "/ui/v1/explorer-jes"
 apimlServices:
