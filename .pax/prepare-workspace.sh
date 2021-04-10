@@ -43,15 +43,10 @@ cp README.md "${PAX_WORKSPACE_DIR}/content/web"
 cp package.json "${PAX_WORKSPACE_DIR}/content/web"
 cp package-lock.json "${PAX_WORKSPACE_DIR}/content/web"
 cp -r dist/. "${PAX_WORKSPACE_DIR}/content/web"
+mv "${PAX_WORKSPACE_DIR}/content/web/zlux-hooks/config"  "${PAX_WORKSPACE_DIR}/content/config"
 cp manifest.yaml "${PAX_WORKSPACE_DIR}/content"
 cp apiml-static-registration.yaml.template "${PAX_WORKSPACE_DIR}/content"
 cp pluginDefinition.prod.json "${PAX_WORKSPACE_DIR}/content/pluginDefinition.json"
-
-mkdir -p "${PAX_WORKSPACE_DIR}/content/config"
-mkdir -p "${PAX_WORKSPACE_DIR}/content/config/actions"
-mv "${PAX_WORKSPACE_DIR}/content/web/zlux-hooks/actions.json" "${PAX_WORKSPACE_DIR}/content/config/actions/org.zowe.explorer-jes"
-mkdir -p "${PAX_WORKSPACE_DIR}/content/config/recognizers"
-mv "${PAX_WORKSPACE_DIR}/content/web/zlux-hooks/recognizers.json" "${PAX_WORKSPACE_DIR}/content/config/recognizers/org.zowe.explorer-jes"
 
 # update build information
 # BRANCH_NAME and BUILD_NUMBER is Jenkins environment variable
