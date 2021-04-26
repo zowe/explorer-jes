@@ -1,0 +1,10 @@
+{
+  "recognizers":[
+    {
+      "id":"org.zowe.explorer-jes.open-job",
+      "clause": {
+        "prop": ["type", "open-job"]
+      }
+    }
+  ]
+}

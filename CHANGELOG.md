@@ -1,5 +1,9 @@
 # Change Log
 All notable changes to the JES-Explorer will be documented in this file.
+## <1.0.13>
+
+### New features and enhancements
+- Added actions and recognizers stored in JSON files. Other applications are able to open JES Explorer with pre-populated filter. Thanks @skurnevich
 
 ## <1.0.9>
 
