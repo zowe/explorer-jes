@@ -8,14 +8,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.3.4
       
-      - name: setup node
+      - name: Setup Node
         uses: actions/setup-node@v2
         with:
           node-version: '14'
 
-      - name: install
+      - name: Install
         run: npm install --no-audit
 
-      - name: lint
+      - name: Lint
         run: npm run lint
 
