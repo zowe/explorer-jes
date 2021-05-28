@@ -1,8 +1,8 @@
-name: Lint Workflow
+name: Audit Workflow
 on: push
 
 jobs:
-  run-lint:
+  run-audit:
     runs-on: macos-latest
     steps:
       - name: Checkout
@@ -16,6 +16,5 @@ jobs:
       - name: install
         run: npm install --no-audit
 
-      - name: lint
-        run: npm run lint
-
+      - name: audit
+        run: npm run audit
