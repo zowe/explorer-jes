@@ -16,4 +16,5 @@ jobs:
 
       - name: run lint
         run: |
-        npm run lint
+          npm run lint
+
