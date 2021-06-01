@@ -49,7 +49,7 @@ jobs:
           node-version: ${{ env.DEFAULT_NODE_VERSION }}
       
       - name: install and build
-        run: npm installl && npm run prod
+        run: npm install && npm run prod
 
 
       # to access inputs, call ${{ github.event.inputs.SOMETHING }}
