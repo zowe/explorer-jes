@@ -1,5 +1,5 @@
-name: "CodeQL Workflow"
-on: push
+name: CodeQL Workflow
+on: pull_request
 
 jobs:
   run-code-ql:
@@ -8,7 +8,7 @@ jobs:
 
     steps:
         - name: Checkout repository
-          uses: actions/checkout@v2.3.4
+          uses: actions/checkout@v2
 
         # Initializes the CodeQL tools for scanning.
         - name: Initialize CodeQL
