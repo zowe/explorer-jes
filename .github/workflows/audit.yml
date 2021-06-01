@@ -10,17 +10,14 @@ jobs:
 
       - name: apply env vars
         uses: zowe-actions/global-configurations@main
-
-      - name: fetch env vars
-        run: echo $DEFAULT_NODE_VERSION
       
-      # - name: Setup Node
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: '14'
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: $DEFAULT_NODE_VERSION
 
-      # - name: Install
-      #   run: npm install --no-audit
+      - name: Install
+        run: npm install --no-audit
 
-      # - name: Audit
-      #   run: npm audit
+      - name: Audit
+        run: npm audit
