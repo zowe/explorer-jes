@@ -8,7 +8,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       
-      - name: apply env vars
+      - name: Apply Global Environment Variables
         uses: zowe-actions/global-configurations@main
       
       - name: Setup Node
