@@ -9,7 +9,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: apply env vars
-        uses: zowe-actions/global-configurations
+        uses: zowe-actions/global-configurations@main
 
       - name: fetch env vars
         run: echo $DEFAULT_NODE_VERSION
