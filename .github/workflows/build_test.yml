@@ -1,6 +1,6 @@
 name: Build and Test Workflow
 on: 
-  #pull_request:
+  pull_request:
   workflow_dispatch:
     inputs:
       FVT_APIML_ARTIFACT:
@@ -47,8 +47,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ env.DEFAULT_NODE_VERSION }}
-      - name: build
-        run: npm run prod
+      
+      - name: install and build
+        run: npm installl && npm run prod
 
 
       # to access inputs, call ${{ github.event.inputs.SOMETHING }}
