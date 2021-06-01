@@ -14,7 +14,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: ${DEFAULT_NODE_VERSION}
+          node-version: ${{ env.DEFAULT_NODE_VERSION }}
 
       - name: Install
         run: npm install --no-audit
