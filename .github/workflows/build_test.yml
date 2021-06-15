@@ -43,7 +43,7 @@ jobs:
 
       - id: check_permission
         run: |
-          jsonOutput=$(curl -H "Authorization: token ${{ secrets.ZOWE_ROBOT_TOKEN }}" -X GET "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission")
+          jsonOutput=$(curl -H "Accept: application/json;Authorization: token ${{ secrets.ZOWE_ROBOT_TOKEN }}" -X GET "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission")
           echo "::set-output name=jsonOutput::$jsonOutput"
 
       - name : process json
