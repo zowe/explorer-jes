@@ -39,12 +39,15 @@ jobs:
     runs-on: macos-latest
     steps:
 
-      - name: Print GitHub context
-        run: echo "$GITHUB_CONTEXT"
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
+      - name: get actor
+        run: ACTOR=echo ${{ github.actor }} >> $GITHUB_ENV
+        
       - name: get the owner of the head repository
         run: echo "head owner = ${{ github.event.pull_request.user.login }}"
+
+      - name: check permission
+        run: |
+           curl -H "Authorization: token ${{ secrets.ZOWE_ROBOT_TOKEN }}" -X GET "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ env.ACTOR }}/permission"
 
       - name: Checkout
         uses: actions/checkout@v2
