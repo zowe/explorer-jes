@@ -48,7 +48,7 @@ jobs:
 
       - name : process json
         run: |
-          echo "${{fromJson(steps.check_permission.outputs.jsonOutput).permission}}"
+          echo "${{fromJson(steps.check_permission.outputs.jsonOutput)}}"
 
 
       - name: Checkout
