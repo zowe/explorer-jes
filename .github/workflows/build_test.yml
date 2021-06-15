@@ -43,7 +43,7 @@ jobs:
 
       - id: check_permission
         run: |
-          curl -H "Accept: application/vnd.github.v3+json;Authorization: token ${{ secrets.ZOWE_ROBOT_TOKEN }}" -X GET "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission" | jq -r .permission
+          curl -s -H "Accept: application/vnd.github.v3+json;Authorization: token ${{ secrets.ZOWE_ROBOT_TOKEN }}" -X GET "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission"
           
 
       - name: Checkout
