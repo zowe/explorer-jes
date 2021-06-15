@@ -37,14 +37,19 @@ on:
 jobs:
   build:
     runs-on: macos-latest
-    steps:
-        
+    steps: 
       - name: get the owner of the head repository
         run: echo "head owner = ${{ github.event.pull_request.user.login }}"
 
-      - name: check permission
+      - id: check_permission
         run: |
-           curl -H "Authorization: token ${{ secrets.ZOWE_ROBOT_TOKEN }}" -X GET "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission"
+          jsonOutput=$(curl -H "Authorization: token ${{ secrets.ZOWE_ROBOT_TOKEN }}" -X GET "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission")
+          echo "::set-output name=jsonOutput::$jsonOutput"
+
+      - name : process json
+        run: |
+          echo "${{fromJson(steps.check_permission.outputs.jsonOutput).permission}}"
+
 
       - name: Checkout
         uses: actions/checkout@v2
