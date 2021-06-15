@@ -40,7 +40,7 @@ jobs:
     steps:
 
       - name: get actor
-        run: ACTOR=echo ${{ github.actor }} >> $GITHUB_ENV
+        run: ACTOR=$(echo ${{ github.actor }}) >> $GITHUB_ENV
         
       - name: get the owner of the head repository
         run: echo "head owner = ${{ github.event.pull_request.user.login }}"
