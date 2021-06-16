@@ -1,5 +1,7 @@
 name: Codescan Workflow
-on: pull_request
+on: 
+  pull_request:
+    types: [opened, synchronize]
 
 jobs:
   run-audit:
@@ -8,8 +10,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+      - name: Prepare workflow
+        uses: zowe-actions/shared-actions/prepare-workflow@main
+=======
       - name: Apply Global Environment Variables
-        uses: zowe-actions/global-setup/envvars-global@main
+        uses: zowe-actions/shared-actions/envvars-global@main
+>>>>>>> dea76e7 (Update shared actions path)
+=======
+      - name: Prepare workflow
+        uses: zowe-actions/shared-actions/prepare-workflow@main
+>>>>>>> 8b5f64d (Debug nodejs setup action)
       
       - name: Setup Node
         uses: actions/setup-node@v2
@@ -28,8 +40,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       
+<<<<<<< HEAD
+<<<<<<< HEAD
+      - name: Prepare workflow
+        uses: zowe-actions/shared-actions/prepare-workflow@main
+=======
       - name: Apply Global Environment Variables
-        uses: zowe-actions/global-setup/envvars-global@main
+        uses: zowe-actions/shared-actions/envvars-global@main
+>>>>>>> dea76e7 (Update shared actions path)
+=======
+      - name: Prepare workflow
+        uses: zowe-actions/shared-actions/prepare-workflow@main
+>>>>>>> 8b5f64d (Debug nodejs setup action)
       
       - name: Setup Node
         uses: actions/setup-node@v2
