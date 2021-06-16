@@ -44,8 +44,7 @@ jobs:
           echo "::set-output name=permission::$(echo $(curl -u "${{ secrets.ZOWE_ROBOT_USER }}:${{ secrets.ZOWE_ROBOT_TOKEN }}" -sS -H "Accept: application/vnd.github.v3+json" -X GET "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission" | jq -r .permission))"
 
       - name: Check permission
-        # if: ${{ steps.check-permission.outputs.permission  != 'admin' && steps.check-permission.outputs.permission  != 'write' && steps.check-permission.outputs.permission  != 'maintain' }}
-        if: ${{ steps.check-permission.outputs.permission  == 'admin' }}
+        if: ${{ steps.check-permission.outputs.permission  != 'admin' && steps.check-permission.outputs.permission  != 'write' && steps.check-permission.outputs.permission  != 'maintain' }}  
         uses: actions/github-script@v4
         with:
           script: |
