@@ -20,10 +20,6 @@ on:
         description: 'z/OSMF port for integration test'
         required: true
         default: '10443'
-      FVT_ZOSMF_CREDENTIAL:
-        description: 'The SSH credential used to connect to z/OSMF for integration test'
-        required: true
-        default: ''
       FVT_SERVER_HOSTNAME:
         description: 'Server hostname for integration test'
         required: true
@@ -50,31 +46,31 @@ jobs:
           script: |
             core.setFailed('Permission check failure, user ${{ github.actor }} is not authorized to run workflow')
 
-  # build:
-  #   runs-on: macos-latest
-  #   steps: 
+  build:
+    runs-on: macos-latest
+    needs: check-permission
+    steps: 
+      - name: Checkout
+        uses: actions/checkout@v2
 
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
-
-  #     - name: Apply Global Environment Variables
-  #       uses: zowe-actions/global-configurations@main
+      - name: Apply Global Environment Variables
+        uses: zowe-actions/global-configurations@main
       
-  #     - name: Setup Node.js Enviornment
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: ${{ env.DEFAULT_NODE_VERSION }}
+      - name: Setup Node.js Enviornment
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.DEFAULT_NODE_VERSION }}
        
-  #     - name: Nodejs setup action
-  #       uses: zowe-actions/NodeJS-actions/setup-action@setup
-  #       with:
-  #         installRegistry_registry: ${{ env.DEFAULT_NPM_PRIVATE_INSTALL_REGISTRY }}
-  #         installRegistry_email: ${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}
-  #         installRegistry_username: ${{ secrets.NPM_PRIVATE_REGISTRY_USERNAME }}
-  #         installRegistry_password: ${{ secrets.NPM_PRIVATE_REGISTRY_PASSWORD }}
-  #         publishRegistry_email: ${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}
-  #         publishRegistry_username: ${{ secrets.NPM_PRIVATE_REGISTRY_USERNAME }}
-  #         publishRegistry_password: ${{ secrets.NPM_PRIVATE_REGISTRY_PASSWORD }}
+      - name: Nodejs setup action
+        uses: zowe-actions/NodeJS-actions/setup-action@setup
+        with:
+          installRegistry_registry: ${{ env.DEFAULT_NPM_PRIVATE_INSTALL_REGISTRY }}
+          installRegistry_email: ${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}
+          installRegistry_username: ${{ secrets.NPM_PRIVATE_REGISTRY_USERNAME }}
+          installRegistry_password: ${{ secrets.NPM_PRIVATE_REGISTRY_PASSWORD }}
+          publishRegistry_email: ${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}
+          publishRegistry_username: ${{ secrets.NPM_PRIVATE_REGISTRY_USERNAME }}
+          publishRegistry_password: ${{ secrets.NPM_PRIVATE_REGISTRY_PASSWORD }}
           
 
 
