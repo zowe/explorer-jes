@@ -51,7 +51,7 @@ jobs:
       - name: get the user of head of the PR
         run: echo ${{ github.event.pull_request.head.user.login }}
 
-      - id: check-permission
+      - id: check-permission 
         run: |
           curl -u "${{ secrets.ZOWE_ROBOT_USER }}:${{ secrets.ZOWE_ROBOT_TOKEN }}" -sS -H "Accept: application/vnd.github.v3+json" -X GET "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission" | jq -r .permission
       
