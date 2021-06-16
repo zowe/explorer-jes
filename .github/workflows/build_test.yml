@@ -64,6 +64,8 @@ jobs:
       - name: Nodejs setup action
         uses: zowe-actions/NodeJS-actions/setup-action@setup
         with:
+          packageName: 'org.zowe.explorer-jes'
+          nodeJsVersion: 'v10.18.1'
           installRegistry_registry: ${{ env.DEFAULT_NPM_PRIVATE_INSTALL_REGISTRY }}
           installRegistry_email: ${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}
           installRegistry_username: ${{ secrets.NPM_PRIVATE_REGISTRY_USERNAME }}
