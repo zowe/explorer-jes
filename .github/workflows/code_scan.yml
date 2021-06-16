@@ -1,5 +1,7 @@
 name: Codescan Workflow
-on: pull_request
+on: 
+  pull_request:
+    types: [opened, synchronize]
 
 jobs:
   run-audit:
@@ -8,8 +10,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Apply Global Environment Variables
-        uses: zowe-actions/global-setup/envvars-global@main
+
+      - name: Prepare workflow
+        uses: zowe-actions/shared-actions/prepare-workflow@main
       
       - name: Setup Node
         uses: actions/setup-node@v2
@@ -28,8 +31,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       
-      - name: Apply Global Environment Variables
-        uses: zowe-actions/global-setup/envvars-global@main
+
+      - name: Prepare workflow
+        uses: zowe-actions/shared-actions/prepare-workflow@main
       
       - name: Setup Node
         uses: actions/setup-node@v2
