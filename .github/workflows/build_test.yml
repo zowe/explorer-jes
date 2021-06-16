@@ -1,0 +1,100 @@
+name: Build and Test Workflow
+on: 
+  pull_request:
+    types: [opened, synchronize]
+  workflow_dispatch:
+    inputs:
+      FVT_APIML_ARTIFACT:
+        description: 'APIML build for integration test'
+        required: true
+        default: 'libs-release-local/org/zowe/apiml/sdk/zowe-install/*/zowe-install-*.zip'
+      FVT_API_ARTIFACT:
+        description: 'Jobs API artifact download pattern'
+        required: true
+        default: 'libs-snapshot-local/org/zowe/explorer/jobs/*/jobs-api-package-*.zip'
+      FVT_ZOSMF_HOST:
+        description: 'z/OSMF server for integration test'
+        required: true
+        default: 'zzow01.zowe.marist.cloud'
+      FVT_ZOSMF_PORT:
+        description: 'z/OSMF port for integration test'
+        required: true
+        default: '10443'
+      FVT_ZOSMF_CREDENTIAL:
+        description: 'The SSH credential used to connect to z/OSMF for integration test'
+        required: true
+        default: ''
+      FVT_SERVER_HOSTNAME:
+        description: 'Server hostname for integration test'
+        required: true
+        default: 'fvt-test-server'
+      API_ML_DEBUG_PROFILES:
+        description: 'Debug profiles for API Gateway'
+        required: true
+        default: 'default'
+
+
+jobs:
+  check-permission:
+    runs-on: macos-latest
+    steps:
+
+      - name: get event_name and event.action
+        run: echo "event_name is ${{ github.event_name }} and event.action is ${{ github.event.action }}"
+
+      - name: get the github.actor
+        run: echo ${{ github.actor }}
+
+      - name: get the pr author
+        run: echo ${{ github.event.pull_request.user.login }}
+
+      - name: get the user of head of the PR
+        run: echo ${{ github.event.pull_request.head.user.login }}
+
+      - id: check-permission 
+        run: |
+          curl -u "${{ secrets.ZOWE_ROBOT_USER }}:${{ secrets.ZOWE_ROBOT_TOKEN }}" -sS -H "Accept: application/vnd.github.v3+json" -X GET "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission" | jq -r .permission
+      
+      # - name: Dump GitHub context
+      #   env:
+      #     GITHUB_CONTEXT: ${{ toJson(github) }}
+      #   run: echo "$GITHUB_CONTEXT"
+
+
+
+      # - name: Check permission
+      #   if: ${{  }}
+      #   uses: actions/github-script@v4
+      #   with:
+      #     script: |
+      #       core.setFailed('Permission check failure, user is not authorized to run workflow')
+
+  # build:
+  #   runs-on: macos-latest
+  #   steps: 
+
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+
+  #     - name: Apply Global Environment Variables
+  #       uses: zowe-actions/global-configurations@main
+      
+  #     - name: Setup Node.js Enviornment
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ env.DEFAULT_NODE_VERSION }}
+       
+  #     - name: Nodejs setup action
+  #       uses: zowe-actions/NodeJS-actions/setup-action@setup
+  #       with:
+  #         installRegistry_registry: ${{ env.DEFAULT_NPM_PRIVATE_INSTALL_REGISTRY }}
+  #         installRegistry_email: ${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}
+  #         installRegistry_username: ${{ secrets.NPM_PRIVATE_REGISTRY_USERNAME }}
+  #         installRegistry_password: ${{ secrets.NPM_PRIVATE_REGISTRY_PASSWORD }}
+  #         publishRegistry_email: ${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}
+  #         publishRegistry_username: ${{ secrets.NPM_PRIVATE_REGISTRY_USERNAME }}
+  #         publishRegistry_password: ${{ secrets.NPM_PRIVATE_REGISTRY_PASSWORD }}
+          
+
+
+      # to access inputs, call ${{ github.event.inputs.SOMETHING }}
