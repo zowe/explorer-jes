@@ -35,16 +35,36 @@ on:
 
 
 jobs:
+  check-permission:
+    runs-on: macos-latest
+    steps:
+
+      - name: get event_name and event.action
+        run: echo "event_name is $ {{ github.event_name }} and event.action is $ {{ github.event.action }}"
+
+      - name: get the github.actor
+        run: echo ${{ github.actor }}
+
+      - name: get the pr author
+        run: echo ${{ github.event.pull_request.user.login }}
+
+      - name: get the user of head of the PR
+        run: echo ${{ github.event.pull_request.head.user.login }}
+
+      - id: check-permission
+        run: |
+          curl -u "${{ secrets.ZOWE_ROBOT_USER }}:${{ secrets.ZOWE_ROBOT_TOKEN }}" -sS -H "Accept: application/vnd.github.v3+json" -X GET "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission" | jq -r .permission
+      
+      # - name: Check permission
+      #   if: ${{  }}
+      #   uses: actions/github-script@v4
+      #   with:
+      #     script: |
+      #       core.setFailed('Permission check failure, user is not authorized to run workflow')
+
   build:
     runs-on: macos-latest
     steps: 
-      - name: get the owner of the head repository
-        run: echo "head owner = ${{ github.event.pull_request.user.login }}"
-
-      - id: check_permission
-        run: |
-          curl -u "${{ secrets.ZOWE_ROBOT_USER }}:${{ secrets.ZOWE_ROBOT_TOKEN }}" -sS -H "Accept: application/vnd.github.v3+json" -X GET "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission" | jq -r .permission
-          
 
       - name: Checkout
         uses: actions/checkout@v2
