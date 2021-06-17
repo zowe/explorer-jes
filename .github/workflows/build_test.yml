@@ -54,7 +54,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Apply Global Environment Variables
-        uses: zowe-actions/global-configurations@main
+        uses: zowe-actions/global-setup/envvars-global@main
       
       - name: Setup Node.js Enviornment
         uses: actions/setup-node@v2
