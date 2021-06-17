@@ -34,17 +34,13 @@ jobs:
   check-permission:
     runs-on: macos-latest
     steps:
-      - name: HTTP GET permission
-        id: check-permission 
-        run: |
-          echo "::set-output name=permission::$(echo $(curl -u "${{ secrets.ZOWE_ROBOT_USER }}:${{ secrets.ZOWE_ROBOT_TOKEN }}" -sS -H "Accept: application/vnd.github.v3+json" -X GET "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission" | jq -r .permission))"
-
-      - name: Check permission
-        if: ${{ steps.check-permission.outputs.permission  != 'admin' && steps.check-permission.outputs.permission  != 'write' && steps.check-permission.outputs.permission  != 'maintain' }}  
-        uses: actions/github-script@v4
+      - name: check permission
+        uses: zowe-actions/global-setup/permission-check@main
         with:
-          script: |
-            core.setFailed('Permission check failure, user ${{ github.actor }} is not authorized to run workflow')
+            user: $ {{ github.actor }}
+            github_repo: ${{ github.repository }}
+            github_user: ${{ secrets.ZOWE_ROBOT_USER }}
+            github_passwd: ${{ secrets.ZOWE_ROBOT_TOKEN }}
 
   build:
     runs-on: macos-latest
