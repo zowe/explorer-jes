@@ -56,6 +56,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ env.DEFAULT_NODE_VERSION }}
+
+      - name: Run generic setup
+        uses: zowe-actions/global-setup/generic-setup@main
        
       - name: Nodejs setup action
         uses: zowe-actions/NodeJS-actions/setup-action@setup
