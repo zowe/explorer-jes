@@ -37,7 +37,7 @@ jobs:
       - name: check permission
         uses: zowe-actions/global-setup/permission-check@main
         with:
-            user: $ {{ github.actor }}
+            user: ${{ github.actor }}
             github_repo: ${{ github.repository }}
             github_user: ${{ secrets.ZOWE_ROBOT_USER }}
             github_passwd: ${{ secrets.ZOWE_ROBOT_TOKEN }}
