@@ -34,6 +34,7 @@ jobs:
   check-permission:
     runs-on: macos-latest
     steps:
+      # this action will fail the whole workflow if permission check fails
       - name: check permission
         uses: zowe-actions/global-setup/permission-check@main
         with:
@@ -46,20 +47,21 @@ jobs:
     runs-on: macos-latest
     needs: check-permission
     steps: 
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Apply Global Environment Variables
-        uses: zowe-actions/global-setup/envvars-global@main
-      
-      - name: Setup Node.js Enviornment
-        uses: actions/setup-node@v2
+      # Initial setting up environments
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
         with:
           node-version: ${{ env.DEFAULT_NODE_VERSION }}
-
-      - name: Run generic setup
-        uses: zowe-actions/global-setup/generic-setup@main
+      - uses: jfrog/setup-jfrog-cli@v1
+        env:
+          JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_TOKEN }}
+      - run: |
+          # Ping the server
+          jfrog rt ping
+      - uses: zowe-actions/global-setup/envvars-global@main
+      - uses: zowe-actions/global-setup/generic-setup@main
        
+      # Set up NodeJS env
       - name: Nodejs setup action
         uses: zowe-actions/NodeJS-actions/setup-action@setup
         with:
