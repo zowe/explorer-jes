@@ -22,6 +22,7 @@ web
 .DS_Store
 .history/
 .env
+.vscode/
 
 # pax workspace
 .pax/*

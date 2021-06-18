@@ -38,43 +38,51 @@ jobs:
       - name: check permission
         uses: zowe-actions/global-setup/permission-check@main
         with:
-            user: ${{ github.actor }}
-            github_repo: ${{ github.repository }}
-            github_user: ${{ secrets.ZOWE_ROBOT_USER }}
-            github_passwd: ${{ secrets.ZOWE_ROBOT_TOKEN }}
+          user: ${{ github.actor }}
+          github-repo: ${{ github.repository }}
+          github-user: ${{ secrets.ZOWE_ROBOT_USER }}
+          github-passwd: ${{ secrets.ZOWE_ROBOT_TOKEN }}
 
-  build:
+  setup-build:
     runs-on: macos-latest
     needs: check-permission
     steps: 
       # Initial setting up environments
       - uses: actions/checkout@v2
+      - uses: zowe-actions/global-setup/envvars-global@main
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ env.DEFAULT_NODE_VERSION }}
       - uses: jfrog/setup-jfrog-cli@v1
         env:
           JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_TOKEN }}
-      - run: |
-          # Ping the server
-          jfrog rt ping
-      - uses: zowe-actions/global-setup/envvars-global@main
       - uses: zowe-actions/global-setup/generic-setup@main
+        # with:
+        #   extra-init: |
+        #     console.log('1234')
+        #     console.log('5678')
        
       # Set up NodeJS env
-      - name: Nodejs setup action
-        uses: zowe-actions/NodeJS-actions/setup-action@setup
+      - name: Nodejs project setup action
+        uses: zowe-actions/nodejs-actions/setup-action@setup
         with:
-          packageName: 'org.zowe.explorer-jes'
-          nodeJsVersion: 'v10.18.1'
-          installRegistry_registry: ${{ env.DEFAULT_NPM_PRIVATE_INSTALL_REGISTRY }}
-          installRegistry_email: ${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}
-          installRegistry_username: ${{ secrets.NPM_PRIVATE_REGISTRY_USERNAME }}
-          installRegistry_password: ${{ secrets.NPM_PRIVATE_REGISTRY_PASSWORD }}
-          publishRegistry_email: ${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}
-          publishRegistry_username: ${{ secrets.NPM_PRIVATE_REGISTRY_USERNAME }}
-          publishRegistry_password: ${{ secrets.NPM_PRIVATE_REGISTRY_PASSWORD }}
-          
+          package-name: 'org.zowe.explorer-jes'
+          nodejs-version: 'v10.18.1'
+          install-registry-url: ${{ env.DEFAULT_NPM_PRIVATE_INSTALL_REGISTRY }}
+          install-registry-email: ${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}
+          install-registry-username: ${{ secrets.NPM_PRIVATE_REGISTRY_USERNAME }}
+          install-registry-password: ${{ secrets.NPM_PRIVATE_REGISTRY_PASSWORD }}
+          publish-registry-email: ${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}
+          publish-registry-username: ${{ secrets.NPM_PRIVATE_REGISTRY_USERNAME }}
+          publish-registry-password: ${{ secrets.NPM_PRIVATE_REGISTRY_PASSWORD }}
 
-
-      # to access inputs, call ${{ github.event.inputs.SOMETHING }}
+      # Build project
+      - name: Nodejs project build 
+        run: |
+          set +x
+          . $HOME/.nvm/nvm.sh
+          nvm use v10.18.1
+          set -x
+          npm run prod
+      
+# to access inputs, call ${{ github.event.inputs.SOMETHING }}
