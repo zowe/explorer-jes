@@ -43,7 +43,7 @@ jobs:
             github_user: ${{ secrets.ZOWE_ROBOT_USER }}
             github_passwd: ${{ secrets.ZOWE_ROBOT_TOKEN }}
 
-  build:
+  setup:
     runs-on: macos-latest
     needs: check-permission
     steps: 
@@ -55,14 +55,15 @@ jobs:
       - uses: jfrog/setup-jfrog-cli@v1
         env:
           JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_TOKEN }}
-      - run: |
-          # Ping the server
-          jfrog rt ping
       - uses: zowe-actions/global-setup/envvars-global@main
       - uses: zowe-actions/global-setup/generic-setup@main
+        # with:
+          # extraInit: |
+          #   console.log('1234')
+          #   console.log('5678')
        
       # Set up NodeJS env
-      - name: Nodejs setup action
+      - name: Nodejs project setup action
         uses: zowe-actions/NodeJS-actions/setup-action@setup
         with:
           packageName: 'org.zowe.explorer-jes'
