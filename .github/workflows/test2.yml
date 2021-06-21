@@ -1,4 +1,4 @@
-name: TEST2
+name: TEST2 no target
 on: 
   pull_request:
     types: [opened, synchronize]
@@ -14,4 +14,4 @@ jobs:
         run: ls
 
       - name: echo
-        run: echo >>>${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}<<<
+        run: echo ">>>${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}<<<"
