@@ -1,12 +1,5 @@
 
-As following modules \erver available
-
-```
-npm run dev 
-```
-
-Then you can visit https://localhost:8080 to test.
-When testing you may see errors with API calls do to CORS (Cross origin resource sharing), to work around this you may disable CORS checking in your browser for local development. 
+As following modules \erver available do to CORS (Cross origin resource sharing), to work around this you may disable CORS checking in your browser for local development. 
 
 ### Run unit tests
 
