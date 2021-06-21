@@ -5,9 +5,7 @@
 The issues for the JES explorer are tracked under the Zowe Zlux repository, https://github.com/zowe/zlux and tagged accordingly with the 'explorer-jes' label. Open issues tagged with 'explorer-jes' can be found [here](https://github.com/zowe/zlux/issues?q=is%3Aopen+is%3Aissue+label%3Aexplorer-jes).
 
 
-# App Development Workflow 
 
-### Install Dependencies
 
 As following modules 
  `explorer-ui-server`, `orion-editor-component` and `explorer-fvt-utilities` are published on Zowe Artifactory.
