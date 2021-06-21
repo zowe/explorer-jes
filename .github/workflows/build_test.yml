@@ -76,6 +76,14 @@ jobs:
           publishRegistry_username: ${{ secrets.NPM_PRIVATE_REGISTRY_USERNAME }}
           publishRegistry_password: ${{ secrets.NPM_PRIVATE_REGISTRY_PASSWORD }}
           
-
+  build:
+    needs: setup
+    runs-on: macos-latest
+    steps:
+      - name: Nodejs project build action
+        uses: zowe-actions/NodeJS-actions/build-action@setup
+        with:
+          nodeJsVersion: 'v10.18.1'
+      
 
       # to access inputs, call ${{ github.event.inputs.SOMETHING }}
