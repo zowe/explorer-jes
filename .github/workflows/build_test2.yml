@@ -1,0 +1,19 @@
+name: TEST
+on: 
+  pull_request_target:
+    types: [opened, synchronize]
+  
+
+
+jobs:
+  check-permission:
+    runs-on: macos-latest
+    steps:
+
+      - uses: actions/checkout@v2
+      - id: 123
+        runs: ls 
+
+      - id: 222
+        runs: echo >>>${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}<<<
+

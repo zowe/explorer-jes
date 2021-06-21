@@ -1,6 +1,6 @@
 name: Build and Test Workflow
 on: 
-  pull_request_target:
+  pull_request:
     types: [opened, synchronize]
   workflow_dispatch:
     inputs:
