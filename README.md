@@ -4,11 +4,7 @@ As following modules
  `.npmrc` file is pre-configured with registry value of `https://zowe.jfrog.io/zowe/api/npm/npm-release`
 ```
 npm install
-```
-
-### Build for Development
-
-Modify the `proxy.target` property in `package.json` to a host and port that has the Zowe Jobs API server available
+```\to a host and port that has the Zowe Jobs API server available
 
 ```
 npm run dev 
