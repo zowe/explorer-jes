@@ -6,7 +6,7 @@ on:
 
 
 jobs:
-  check-permission:
+  test2:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
