@@ -43,7 +43,7 @@ jobs:
             github_user: ${{ secrets.ZOWE_ROBOT_USER }}
             github_passwd: ${{ secrets.ZOWE_ROBOT_TOKEN }}
 
-  setup:
+  setup-build:
     runs-on: macos-latest
     needs: check-permission
     steps: 
