@@ -1,10 +1,5 @@
 
-As following modules 
- `explorer-ui-server`, `orion-editor-component` and `explorer-fvt-utilities` are published on Zowe Artifactory.
- `.npmrc` file is pre-configured with registry value of `https://zowe.jfrog.io/zowe/api/npm/npm-release`
-```
-npm install
-```\to a host and port that has the Zowe Jobs API server available
+As following modules \erver available
 
 ```
 npm run dev 
