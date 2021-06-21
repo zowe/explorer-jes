@@ -74,20 +74,4 @@ npm install
 npm run build
 ```
 
-Install as ZLUX App/Plugin
-```
-# install in zlux locally
-cd zlux/zlux-app-server/bin
-./install-app.sh <path-to-explorer-jes>
-```
-`explorer-jes` root already have sample `pluginDefinition.json` & will have `web` folder after `build`.
-
-
-## Enable Redux logs
-Either use [Redux Dev Tool Browser Extension](https://github.com/reduxjs/redux-devtools) in your browser 
-Or enable redux logs by setting `enableReduxLogger` variable `true` in your local storage.
-
-### Redux Logger - Enable/Disable
-Use preferences menu on top right corner to turn on or off browser settings, and refresh browser to have settings take effect.
-![Logger Preference](loggerPreference.jpg)
-
+hello
