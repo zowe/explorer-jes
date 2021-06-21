@@ -1,6 +1,5 @@
 
-As following modules \erver available do to CORS (Cross origin resource sharing), to work around this you may disable CORS checking in your browser for local development. 
-
+As
 ### Run unit tests
 
 ```
