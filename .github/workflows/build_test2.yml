@@ -9,11 +9,10 @@ jobs:
   check-permission:
     runs-on: macos-latest
     steps:
-
       - uses: actions/checkout@v2
-      - id: 123
-        runs: ls 
+      - name: ls
+        run: ls
 
-      - id: 222
-        runs: echo >>>${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}<<<
+      - name: echo
+        run: echo >>>${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}<<<
 
