@@ -38,3 +38,4 @@ web
 # apiml cache
 .ehcache*
 *.data
+.vscode/tasks.json

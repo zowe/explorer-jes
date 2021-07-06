@@ -64,7 +64,7 @@ jobs:
        
       # Set up NodeJS env
       - name: Nodejs project setup action
-        uses: zowe-actions/nodejs-actions/setup-action@setup
+        uses: zowe-actions/nodejs-actions/setup-action@main
         with:
           package-name: 'org.zowe.explorer-jes'
           nodejs-version: 'v10.18.1'
