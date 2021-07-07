@@ -98,5 +98,14 @@ jobs:
           nvm use v10.18.1
           set -x
           npm run prod
+
+      # Unit test
+      - name: Nodejs project unit test 
+        run: |
+          set +x
+          . $HOME/.nvm/nvm.sh
+          nvm use v10.18.1
+          set -x
+          npm run test
       
 # to access inputs, call ${{ github.event.inputs.SOMETHING }}
