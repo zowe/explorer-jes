@@ -49,6 +49,20 @@ jobs:
     steps: 
       # Initial setting up environments
       - uses: actions/checkout@v2
+
+      # Cache .npm
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: |
+            ~/.npm
+            ~/.nvm/.cache
+            ~/.nvm/versions
+          key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-cache-node-modules-
+      
       - uses: zowe-actions/global-setup/envvars-global@main
       - uses: actions/setup-node@v2
         with:
@@ -60,7 +74,7 @@ jobs:
         # with:
         #   extra-init: |
         #     console.log('1234')
-        #     console.log('5678')
+        #     console.log('5678') 
        
       # Set up NodeJS env
       - name: Nodejs project setup action
