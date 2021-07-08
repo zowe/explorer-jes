@@ -120,7 +120,8 @@ jobs:
           ./bin/delete-fvt-jobs.sh
           echo "Starting integration test ..."
           SERVER_HOST_NAME=${{ github.event.inputs.FVT_SERVER_HOSTNAME }}
-          SERVER_HTTPS_PORT=7554 
+          SERVER_HTTPS_PORT=7554
+          echo "debug: $SERVER_HOST_NAME"
           TEST_BROWSER=firefox
           npm run test:fvt
           find .fvt/logs -type f | xargs -i sh -c 'echo \">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>\" && cat {}'
