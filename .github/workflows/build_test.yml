@@ -107,5 +107,23 @@ jobs:
           nvm use v10.18.1
           set -x
           npm run test
+
+      # Integration test
+      - name: Integration test
+        timeout-minutes: 30
+        run: |
+          echo "Preparing server for integration test ..."
+          ./bin/prepare-fvt.sh "${{ github.event.inputs.FVT_APIML_ARTIFACT }}" "${{ github.event.inputs.FVT_API_ARTIFACT }}" "${{ github.event.inputs.FVT_ZOSMF_HOST }}" "${{ github.event.inputs.FVT_ZOSMF_PORT }}"
+          sleep 120
+          ZOWE_USERNAME=${{ secrets.SSH_MARIST1_USERNAMEP }}
+          ZOWE_PASSWORD=${{ secrets.SSH_MARIST1_PASSWORDP }}
+          ./bin/delete-fvt-jobs.sh
+          echo "Starting integration test ..."
+          SERVER_HOST_NAME=${{ github.event.inputs.FVT_SERVER_HOSTNAME }}
+          SERVER_HTTPS_PORT=7554 
+          TEST_BROWSER=firefox
+          npm run test:fvt
+          find .fvt/logs -type f | xargs -i sh -c 'echo \">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>\" && cat {}'
+
       
 # to access inputs, call ${{ github.event.inputs.SOMETHING }}
