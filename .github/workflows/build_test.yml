@@ -111,6 +111,7 @@ jobs:
       # Integration test
       - name: Integration test
         timeout-minutes: 30
+        continue-on-error: true
         env: 
           DEFAULT_FVT_APIML_ARTIFACT: 'libs-release-local/org/zowe/apiml/sdk/zowe-install/*/zowe-install-*.zip'
           DEFAULT_FVT_API_ARTIFACT: 'libs-snapshot-local/org/zowe/explorer/jobs/*/jobs-api-package-*.zip'
