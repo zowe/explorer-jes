@@ -121,13 +121,13 @@ jobs:
 
         run: |
           echo "Preparing server for integration test ..."
-          ./bin/prepare-fvt.sh "${{ github.event.inputs.FVT_APIML_ARTIFACT || DEFAULT_FVT_APIML_ARTIFACT }}" "${{ github.event.inputs.FVT_API_ARTIFACT || DEFAULT_FVT_API_ARTIFACT }}" "${{ github.event.inputs.FVT_ZOSMF_HOST || DEFAULT_FVT_ZOSMF_HOST }}" "${{ github.event.inputs.FVT_ZOSMF_PORT || DEFAULT_FVT_ZOSMF_PORT }}"
+          ./bin/prepare-fvt.sh "${{ github.event.inputs.FVT_APIML_ARTIFACT || env.DEFAULT_FVT_APIML_ARTIFACT }}" "${{ github.event.inputs.FVT_API_ARTIFACT || env.DEFAULT_FVT_API_ARTIFACT }}" "${{ github.event.inputs.FVT_ZOSMF_HOST || env.DEFAULT_FVT_ZOSMF_HOST }}" "${{ github.event.inputs.FVT_ZOSMF_PORT || env.DEFAULT_FVT_ZOSMF_PORT }}"
           sleep 120
           ZOWE_USERNAME=${{ secrets.SSH_MARIST1_USERNAMEP }}
           ZOWE_PASSWORD=${{ secrets.SSH_MARIST1_PASSWORDP }}
           ./bin/delete-fvt-jobs.sh
           echo "Starting integration test ..."
-          SERVER_HOST_NAME=${{ github.event.inputs.FVT_SERVER_HOSTNAME || DEFAULT_FVT_SERVER_HOSTNAME }}
+          SERVER_HOST_NAME=${{ github.event.inputs.FVT_SERVER_HOSTNAME || env.DEFAULT_FVT_SERVER_HOSTNAME }}
           SERVER_HTTPS_PORT=7554
           TEST_BROWSER=firefox
           npm run test:fvt
