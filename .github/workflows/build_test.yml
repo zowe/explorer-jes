@@ -5,27 +5,27 @@ on:
   workflow_dispatch:
     inputs:
       FVT_APIML_ARTIFACT:
-        description: 'APIML build for integration test'
+        description: '[Integration Test] APIML Artifact Download Pattern'
         required: true
         default: 'libs-release-local/org/zowe/apiml/sdk/zowe-install/*/zowe-install-*.zip'
       FVT_API_ARTIFACT:
-        description: 'Jobs API artifact download pattern'
+        description: '[Integration Test] Jobs API Artifact Download Pattern'
         required: true
         default: 'libs-snapshot-local/org/zowe/explorer/jobs/*/jobs-api-package-*.zip'
       FVT_ZOSMF_HOST:
-        description: 'z/OSMF server for integration test'
+        description: '[Integration Test] z/OSMF Host URL'
         required: true
         default: 'zzow01.zowe.marist.cloud'
       FVT_ZOSMF_PORT:
-        description: 'z/OSMF port for integration test'
+        description: '[Integration Test] z/OSMF Port '
         required: true
         default: '10443'
       FVT_SERVER_HOSTNAME:
-        description: 'Server hostname for integration test'
+        description: '[Integration Test] Server Hostname'
         required: true
         default: 'fvt-test-server'
       API_ML_DEBUG_PROFILES:
-        description: 'Debug profiles for API Gateway'
+        description: '[Integration Test] Debug Profile for API Gateway'
         required: true
         default: 'default'
 
@@ -111,20 +111,24 @@ jobs:
       # Integration test
       - name: Integration test
         timeout-minutes: 30
+        env: 
+          DEFAULT_FVT_APIML_ARTIFACT: 'libs-release-local/org/zowe/apiml/sdk/zowe-install/*/zowe-install-*.zip'
+          DEFAULT_FVT_API_ARTIFACT: 'libs-snapshot-local/org/zowe/explorer/jobs/*/jobs-api-package-*.zip'
+          DEFAULT_FVT_ZOSMF_HOST: 'zzow01.zowe.marist.cloud'
+          DEFAULT_FVT_ZOSMF_PORT: '10443'
+          DEFAULT_FVT_SERVER_HOSTNAME: 'fvt-test-server'
+          DEFAULT_API_ML_DEBUG_PROFILES: 'default'
+
         run: |
           echo "Preparing server for integration test ..."
-          ./bin/prepare-fvt.sh "${{ github.event.inputs.FVT_APIML_ARTIFACT }}" "${{ github.event.inputs.FVT_API_ARTIFACT }}" "${{ github.event.inputs.FVT_ZOSMF_HOST }}" "${{ github.event.inputs.FVT_ZOSMF_PORT }}"
+          ./bin/prepare-fvt.sh "${{ github.event.inputs.FVT_APIML_ARTIFACT || DEFAULT_FVT_APIML_ARTIFACT }}" "${{ github.event.inputs.FVT_API_ARTIFACT || DEFAULT_FVT_API_ARTIFACT }}" "${{ github.event.inputs.FVT_ZOSMF_HOST || DEFAULT_FVT_ZOSMF_HOST }}" "${{ github.event.inputs.FVT_ZOSMF_PORT || DEFAULT_FVT_ZOSMF_PORT }}"
           sleep 120
           ZOWE_USERNAME=${{ secrets.SSH_MARIST1_USERNAMEP }}
           ZOWE_PASSWORD=${{ secrets.SSH_MARIST1_PASSWORDP }}
           ./bin/delete-fvt-jobs.sh
           echo "Starting integration test ..."
-          SERVER_HOST_NAME=${{ github.event.inputs.FVT_SERVER_HOSTNAME }}
+          SERVER_HOST_NAME=${{ github.event.inputs.FVT_SERVER_HOSTNAME || DEFAULT_FVT_SERVER_HOSTNAME }}
           SERVER_HTTPS_PORT=7554
-          echo "debug: $SERVER_HOST_NAME"
           TEST_BROWSER=firefox
           npm run test:fvt
           find .fvt/logs -type f | xargs -i sh -c 'echo \">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>\" && cat {}'
-
-      
-# to access inputs, call ${{ github.event.inputs.SOMETHING }}
