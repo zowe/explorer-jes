@@ -36,7 +36,7 @@ jobs:
     steps:
       # this action will fail the whole workflow if permission check fails
       - name: check permission
-        uses: zowe-actions/global-setup/permission-check@main
+        uses: zowe-actions/shared-actions/permission-check@main
         with:
           user: ${{ github.actor }}
           github-repo: ${{ github.repository }}
@@ -63,14 +63,14 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-build-cache-node-modules-
       
-      - uses: zowe-actions/global-setup/envvars-global@main
+      - uses: zowe-actions/shared-actions/envvars-global@main
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ env.DEFAULT_NODE_VERSION }}
       - uses: jfrog/setup-jfrog-cli@v1
         env:
           JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_TOKEN }}
-      - uses: zowe-actions/global-setup/generic-setup@main
+      - uses: zowe-actions/shared-actions/generic-setup@main
         # with:
         #   extra-init: |
         #     console.log('1234')
