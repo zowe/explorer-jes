@@ -134,6 +134,11 @@ jobs:
       #     npm run test:fvt
       #     find .fvt/logs -type f | xargs -i sh -c 'echo \">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>\" && cat {}'
 
+      - name: Debug
+        run: |
+          ls -a coverage
+          cat coverage/lcov.info
+          ls -a /home/runner/work/explorer-jes/explorer-jes/WebContent/js/actions
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
