@@ -32,7 +32,7 @@ on:
 
 jobs:
   check-permission:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       # this action will fail the whole workflow if permission check fails
       - name: check permission
@@ -44,7 +44,7 @@ jobs:
           github-passwd: ${{ secrets.ZOWE_ROBOT_TOKEN }}
 
   setup-build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     needs: check-permission
     steps: 
       # Initial setting up environments
@@ -110,11 +110,7 @@ jobs:
 
       - name: Screen resolution change as pre-req of Integration test
         run: |
-          echo "Before change:"
-          system_profiler SPDisplaysDataType | grep Resolution
-          "/Library/Application Support/VMware Tools/vmware-resolutionSet" 2560 1440
-          echo "After change:"
-          system_profiler SPDisplaysDataType | grep Resolution
+          xrandr
 
       # Integration test
       - name: Integration test
