@@ -108,6 +108,14 @@ jobs:
           set -x
           npm run test
 
+      - name: Screen resolution change as pre-req of Integration test
+        run: |
+          echo "Before change:"
+          system_profiler SPDisplaysDataType | grep Resolution
+          "/Library/Application Support/VMware Tools/vmware-resolutionSet" 2560 1440
+          echo "After change:"
+          system_profiler SPDisplaysDataType | grep Resolution
+
       # Integration test
       - name: Integration test
         timeout-minutes: 30
@@ -133,3 +141,6 @@ jobs:
           export TEST_BROWSER=firefox
           npm run test:fvt
           find .fvt/logs -type f | xargs -i sh -c 'echo \">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>\" && cat {}'
+
+
+
