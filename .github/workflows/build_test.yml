@@ -75,6 +75,9 @@ jobs:
         #   extra-init: |
         #     console.log('1234')
         #     console.log('5678') 
+
+      - run: |
+          cat packageInfo.json
        
       # Set up NodeJS env
       - name: Nodejs project setup action
