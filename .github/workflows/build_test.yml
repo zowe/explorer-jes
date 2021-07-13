@@ -70,19 +70,17 @@ jobs:
       - uses: jfrog/setup-jfrog-cli@v1
         env:
           JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_TOKEN }}
-      - uses: zowe-actions/shared-actions/generic-setup@main
-        env:
-          DEBUG: 'zowe-actions:shared-actions:generic-setup'
+      - id: generic-setup
+        uses: zowe-actions/shared-actions/generic-setup@main
+        # env:
+        # DEBUG: 'zowe-actions:shared-actions:generic-setup'
         # with:
         #   extra-init: |
         #     console.log('1234')
         #     console.log('5678') 
+      
+      - run: echo aaaaaaa "${{ steps.generic-setup.outputs.packageInfoJsonText }}"
 
-      - run: |
-          pwd
-          ls
-          cat packageInfo.json
-       
       # Set up NodeJS env
       - name: Nodejs project setup action
         uses: zowe-actions/nodejs-actions/setup-action@main
