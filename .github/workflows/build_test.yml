@@ -112,14 +112,6 @@ jobs:
       - name: Integration test
         timeout-minutes: 30
         continue-on-error: true
-        env: 
-          DEFAULT_FVT_APIML_ARTIFACT: 'libs-release-local/org/zowe/apiml/sdk/zowe-install/*/zowe-install-*.zip'
-          DEFAULT_FVT_API_ARTIFACT: 'libs-snapshot-local/org/zowe/explorer/jobs/*/jobs-api-package-*.zip'
-          DEFAULT_FVT_ZOSMF_HOST: 'zzow01.zowe.marist.cloud'
-          DEFAULT_FVT_ZOSMF_PORT: '10443'
-          DEFAULT_FVT_SERVER_HOSTNAME: 'zzow01.zowe.marist.cloud'
-          DEFAULT_API_ML_DEBUG_PROFILES: 'default'
-
         run: |
           echo "Preparing server for integration test ..."
           ./bin/prepare-fvt.sh "${{ github.event.inputs.FVT_APIML_ARTIFACT || env.DEFAULT_FVT_APIML_ARTIFACT }}" "${{ github.event.inputs.FVT_API_ARTIFACT || env.DEFAULT_FVT_API_ARTIFACT }}" "${{ github.event.inputs.FVT_ZOSMF_HOST || env.DEFAULT_FVT_ZOSMF_HOST }}" "${{ github.event.inputs.FVT_ZOSMF_PORT || env.DEFAULT_FVT_ZOSMF_PORT }}"
@@ -143,6 +135,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
-
 
 
