@@ -77,6 +77,8 @@ jobs:
         #     console.log('5678') 
 
       - run: |
+          pwd
+          ls
           cat packageInfo.json
        
       # Set up NodeJS env
