@@ -71,6 +71,8 @@ jobs:
         env:
           JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_TOKEN }}
       - uses: zowe-actions/shared-actions/generic-setup@main
+        env:
+          DEBUG: 'zowe-actions:shared-actions:generic-setup'
         # with:
         #   extra-init: |
         #     console.log('1234')
