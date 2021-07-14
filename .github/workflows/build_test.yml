@@ -5,96 +5,138 @@ on:
   workflow_dispatch:
     inputs:
       FVT_APIML_ARTIFACT:
-        description: 'APIML build for integration test'
+        description: '[Integration Test] APIML Artifact Download Pattern'
         required: true
         default: 'libs-release-local/org/zowe/apiml/sdk/zowe-install/*/zowe-install-*.zip'
       FVT_API_ARTIFACT:
-        description: 'Jobs API artifact download pattern'
+        description: '[Integration Test] Jobs API Artifact Download Pattern'
         required: true
         default: 'libs-snapshot-local/org/zowe/explorer/jobs/*/jobs-api-package-*.zip'
       FVT_ZOSMF_HOST:
-        description: 'z/OSMF server for integration test'
+        description: '[Integration Test] z/OSMF Host URL'
         required: true
         default: 'zzow01.zowe.marist.cloud'
       FVT_ZOSMF_PORT:
-        description: 'z/OSMF port for integration test'
+        description: '[Integration Test] z/OSMF Port '
         required: true
         default: '10443'
-      FVT_ZOSMF_CREDENTIAL:
-        description: 'The SSH credential used to connect to z/OSMF for integration test'
-        required: true
-        default: ''
       FVT_SERVER_HOSTNAME:
-        description: 'Server hostname for integration test'
+        description: '[Integration Test] Server Hostname'
         required: true
-        default: 'fvt-test-server'
+        default: 'zzow01.zowe.marist.cloud'
       API_ML_DEBUG_PROFILES:
-        description: 'Debug profiles for API Gateway'
+        description: '[Integration Test] Debug Profile for API Gateway'
         required: true
         default: 'default'
 
 
 jobs:
   check-permission:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
+      # this action will fail the whole workflow if permission check fails
+      - name: check permission
+        uses: zowe-actions/shared-actions/permission-check@main
+        with:
+          user: ${{ github.actor }}
+          github-repo: ${{ github.repository }}
+          github-user: ${{ secrets.ZOWE_ROBOT_USER }}
+          github-passwd: ${{ secrets.ZOWE_ROBOT_TOKEN }}
 
-      - name: get event_name and event.action
-        run: echo "event_name is ${{ github.event_name }} and event.action is ${{ github.event.action }}"
+  setup-build:
+    runs-on: ubuntu-latest
+    needs: check-permission
+    steps: 
+      # Initial setting up environments
+      - uses: actions/checkout@v2
 
-      - name: get the github.actor
-        run: echo ${{ github.actor }}
+      # Cache .npm
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: |
+            ~/.npm
+            ~/.nvm/.cache
+            ~/.nvm/versions
+          key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-cache-node-modules-
+      
+      - uses: zowe-actions/shared-actions/envvars-global@main
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.DEFAULT_NODE_VERSION }}
+      - uses: jfrog/setup-jfrog-cli@v1
+        env:
+          JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_TOKEN }}
+      - id: generic-setup
+        uses: zowe-actions/shared-actions/generic-setup@main
+        # env:
+        # DEBUG: 'zowe-actions:shared-actions:generic-setup'
+        # with:
+        #   extra-init: |
+        #     console.log('1234')
+        #     console.log('5678') 
 
-      - name: get the pr author
-        run: echo ${{ github.event.pull_request.user.login }}
+      # Set up NodeJS env
+      - name: Nodejs project setup action
+        uses: zowe-actions/nodejs-actions/setup-action@main
+        with:
+          package-name: 'org.zowe.explorer-jes'
+          nodejs-version: 'v10.18.1'
+          install-registry-url: ${{ env.DEFAULT_NPM_PRIVATE_INSTALL_REGISTRY }}
+          install-registry-email: ${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}
+          install-registry-username: ${{ secrets.NPM_PRIVATE_REGISTRY_USERNAME }}
+          install-registry-password: ${{ secrets.NPM_PRIVATE_REGISTRY_PASSWORD }}
+          publish-registry-email: ${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}
+          publish-registry-username: ${{ secrets.NPM_PRIVATE_REGISTRY_USERNAME }}
+          publish-registry-password: ${{ secrets.NPM_PRIVATE_REGISTRY_PASSWORD }}
 
-      - name: get the user of head of the PR
-        run: echo ${{ github.event.pull_request.head.user.login }}
-
-      - id: check-permission 
+      # Build project
+      - name: Nodejs project build 
         run: |
-          curl -u "${{ secrets.ZOWE_ROBOT_USER }}:${{ secrets.ZOWE_ROBOT_TOKEN }}" -sS -H "Accept: application/vnd.github.v3+json" -X GET "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission" | jq -r .permission
-      
-      # - name: Dump GitHub context
-      #   env:
-      #     GITHUB_CONTEXT: ${{ toJson(github) }}
-      #   run: echo "$GITHUB_CONTEXT"
+          set +x
+          . $HOME/.nvm/nvm.sh
+          nvm use v10.18.1
+          set -x
+          npm run prod
 
+      # Unit test
+      - name: Nodejs project unit test 
+        run: |
+          set +x
+          . $HOME/.nvm/nvm.sh
+          nvm use v10.18.1
+          set -x
+          npm run test
 
+      # Integration test
+      - name: Integration test
+        timeout-minutes: 30
+        continue-on-error: true
+        run: |
+          echo "Preparing server for integration test ..."
+          ./bin/prepare-fvt.sh "${{ github.event.inputs.FVT_APIML_ARTIFACT || env.DEFAULT_FVT_APIML_ARTIFACT }}" "${{ github.event.inputs.FVT_API_ARTIFACT || env.DEFAULT_FVT_API_ARTIFACT }}" "${{ github.event.inputs.FVT_ZOSMF_HOST || env.DEFAULT_FVT_ZOSMF_HOST }}" "${{ github.event.inputs.FVT_ZOSMF_PORT || env.DEFAULT_FVT_ZOSMF_PORT }}"
+          sleep 120
+          export ZOWE_USERNAME=${{ secrets.SSH_MARIST1_USERNAMEP }}
+          export ZOWE_PASSWORD=${{ secrets.SSH_MARIST1_PASSWORDP }}
+          ./bin/delete-fvt-jobs.sh
+          echo "Starting integration test ..."
+          export SERVER_HOST_NAME=${{ github.event.inputs.FVT_SERVER_HOSTNAME || env.DEFAULT_FVT_SERVER_HOSTNAME }}
+          export SERVER_HTTPS_PORT=7554
+          export TEST_BROWSER=firefox
+          npm run test:fvt
+          find .fvt/logs -type f | xargs -i sh -c 'echo \">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>\" && cat {}'
 
-      # - name: Check permission
-      #   if: ${{  }}
-      #   uses: actions/github-script@v4
-      #   with:
-      #     script: |
-      #       core.setFailed('Permission check failure, user is not authorized to run workflow')
+      - name: Fix code coverage paths
+        working-directory: ./coverage
+        run: sed -i 's#'$GITHUB_WORKSPACE'#/github/workspace/#g' lcov.info
 
-  # build:
-  #   runs-on: macos-latest
-  #   steps: 
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
 
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
-
-  #     - name: Apply Global Environment Variables
-  #       uses: zowe-actions/global-configurations@main
-      
-  #     - name: Setup Node.js Enviornment
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: ${{ env.DEFAULT_NODE_VERSION }}
-       
-  #     - name: Nodejs setup action
-  #       uses: zowe-actions/NodeJS-actions/setup-action@setup
-  #       with:
-  #         installRegistry_registry: ${{ env.DEFAULT_NPM_PRIVATE_INSTALL_REGISTRY }}
-  #         installRegistry_email: ${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}
-  #         installRegistry_username: ${{ secrets.NPM_PRIVATE_REGISTRY_USERNAME }}
-  #         installRegistry_password: ${{ secrets.NPM_PRIVATE_REGISTRY_PASSWORD }}
-  #         publishRegistry_email: ${{ secrets.NPM_PRIVATE_REGISTRY_EMAIL }}
-  #         publishRegistry_username: ${{ secrets.NPM_PRIVATE_REGISTRY_USERNAME }}
-  #         publishRegistry_password: ${{ secrets.NPM_PRIVATE_REGISTRY_PASSWORD }}
-          
-
-
-      # to access inputs, call ${{ github.event.inputs.SOMETHING }}
+     # - run: echo aaaaaaa "${{ steps.generic-setup.outputs.packageInfoJsonText }}"

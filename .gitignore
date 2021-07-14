@@ -22,6 +22,7 @@ web
 .DS_Store
 .history/
 .env
+.vscode/
 
 # pax workspace
 .pax/*
@@ -37,3 +38,4 @@ web
 # apiml cache
 .ehcache*
 *.data
+.vscode/tasks.json
