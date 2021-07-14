@@ -78,8 +78,6 @@ jobs:
         #   extra-init: |
         #     console.log('1234')
         #     console.log('5678') 
-      
-      - run: echo aaaaaaa "${{ steps.generic-setup.outputs.packageInfoJsonText }}"
 
       # Set up NodeJS env
       - name: Nodejs project setup action
@@ -141,4 +139,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
 
-
+     # - run: echo aaaaaaa "${{ steps.generic-setup.outputs.packageInfoJsonText }}"

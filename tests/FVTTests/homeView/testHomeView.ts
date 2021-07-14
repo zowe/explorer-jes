@@ -438,9 +438,9 @@ describe('JES explorer function verification tests', function () {
             afterEach(async () => {
                 await driver.manage().window().setRect({ width: 1600, height: 800 });
             });
-            const browserHeaderHeight = 74;
-            const jobTreeTitleHeight = 52;
-            const appBarHeight = 32;
+            const browserHeaderHeight = 84;
+            const jobTreeTitleHeight = 53;
+            const appBarHeight = 33;
             it('Should handle resizing of tree card component (tree-text-content)', async () => {
                 expect(await testWindowHeightChangeForcesComponentHeightChange(
                     driver, 'tree-text-content', browserHeaderHeight + jobTreeTitleHeight)).to.be.true;
