@@ -266,7 +266,7 @@ describe('JES explorer function verification tests', function () {
 
                 it('Should display context menu with expected items', async () => {
                     await loadJobsAndOpenContextMenu();
-                    const expectedContextMenuItems :string[] = ["Open", "Purge", "Get JCL (SJ)", "Download JCL"];
+                    const expectedContextMenuItems :string[] = ["Open", "Purge\nDelete", "Get JCL (SJ)", "Download JCL"];
 
                     const contextMenuItems :string[] = await getContextMenuItems();
                     expect(contextMenuItems).to.eql(expectedContextMenuItems);
