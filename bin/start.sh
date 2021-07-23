@@ -40,14 +40,14 @@ fi
 
 # start service
 _BPX_JOBNAME=${JOB_NAME} $NODE_BIN $SERVER_DIR/src/index.js \
-  --service ${EXPLORER_PLUGIN_NAME} \
-	--path ${EXPLORER_PLUGIN_BASEURI} \
-	--dir  ${EXPLORER_APP_DIR} \
-	--port ${JES_EXPLORER_UI_PORT} \
-	--key  ${KEYSTORE_KEY} \
-	--cert ${KEYSTORE_CERTIFICATE} \
-	--csp ${ZOWE_EXPLORER_FRAME_ANCESTORS} \
-	--keyring $KEYRING_NAME \
-	--keyring-owner $KEYRING_OWNER \
-	--keyring-label $KEY_ALIAS \
+  --service "${EXPLORER_PLUGIN_NAME}" \
+	--path "${EXPLORER_PLUGIN_BASEURI}" \
+	--dir  "${EXPLORER_APP_DIR}" \
+	--port "${JES_EXPLORER_UI_PORT}" \
+	--key  "${KEYSTORE_KEY}" \
+	--cert "${KEYSTORE_CERTIFICATE}" \
+	--csp "${ZOWE_EXPLORER_FRAME_ANCESTORS}" \
+	--keyring "${KEYRING_NAME}" \
+	--keyring-owner "${KEYRING_OWNER}" \
+	--keyring-label "${KEY_ALIAS}" \
 	-v &
