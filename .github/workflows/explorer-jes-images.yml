@@ -65,7 +65,7 @@ jobs:
       - name: prepare build context
         run: |
           ./${IMAGE_BASE_DIR}/prepare-workdir.sh
-          cp -r ./${IMAGE_BASE_DIR}/tmp ./${IMAGE_BASE_DIR}/ubuntu/s390x/zowe
+          cp -r ./${IMAGE_BASE_DIR}/tmp ./${IMAGE_BASE_DIR}/ubuntu/s390x/component
         env:
           GITHUB_PR_ID: ${{ github.event.pull_request.number }}
 
@@ -128,7 +128,7 @@ jobs:
       - name: prepare build context
         run: |
           ./${IMAGE_BASE_DIR}/prepare-workdir.sh
-          cp -r ./${IMAGE_BASE_DIR}/tmp ./${IMAGE_BASE_DIR}/ubi/amd64/zowe
+          cp -r ./${IMAGE_BASE_DIR}/tmp ./${IMAGE_BASE_DIR}/ubi/amd64/component
         env:
           GITHUB_PR_ID: ${{ github.event.pull_request.number }}
 
@@ -158,7 +158,7 @@ jobs:
       - name: prepare build context
         run: |
           ./${IMAGE_BASE_DIR}/prepare-workdir.sh
-          cp -r ./${IMAGE_BASE_DIR}/tmp ./${IMAGE_BASE_DIR}/ubi/s390x/zowe
+          cp -r ./${IMAGE_BASE_DIR}/tmp ./${IMAGE_BASE_DIR}/ubi/s390x/component
         env:
           GITHUB_PR_ID: ${{ github.event.pull_request.number }}
 
