@@ -7,8 +7,15 @@
 #
 # SPDX-License-Identifier: EPL-2.0
 #
-# Copyright IBM Corporation 2019, 2021
+# Copyright Contributors to the Zowe Project.
 ################################################################################
+
+################################################################################
+# prepare docker build context
+#
+# This script will be executed with 2 parameters:
+# - linux-distro
+# - cpu-arch
 
 ################################################################################
 # This script prepares all required files we plan to put into zowe-launch-scripts
@@ -21,6 +28,19 @@
 # exit if there are errors
 set -e
 
+###############################
+# check parameters
+linux_distro=$1
+cpu_arch=$2
+if [ -z "${linux_distro}" ]; then
+  echo "Error: linux-distro parameter is missing."
+  exit 1
+fi
+if [ -z "${cpu_arch}" ]; then
+  echo "Error: cpu-arch parameter is missing."
+  exit 1
+fi
+
 ################################################################################
 # CONSTANTS
 # this should be containers/zowe-launch-scripts
@@ -30,6 +50,16 @@ WORK_DIR=tmp
 JFROG_REPO_SNAPSHOT=libs-snapshot-local
 JFROG_REPO_RELEASE=libs-release-local
 JFROG_URL=https://zowe.jfrog.io/zowe/
+
+###############################
+# copy Dockerfile
+echo ">>>>> copy Dockerfile to ${linux_distro}/${cpu_arch}/Dockerfile"
+mkdir -p "${linux_distro}/${cpu_arch}"
+if [ ! -f Dockerfile ]; then
+  echo "Error: Dockerfile file is missing."
+  exit 2
+fi
+cp Dockerfile "${linux_distro}/${cpu_arch}/Dockerfile"
 
 ###############################
 echo ">>>>> clean up folder"
@@ -88,6 +118,11 @@ cat manifest.yaml | \
       -e "s#{{build\.timestamp}}#$(date +%s)#" \
   > manifest.yaml
 rm -fr .pax .vscode dco_signoffs test .eslint* .editorconfig .nycrc sonar-project.properties explorer-ui-server.ppf Jenkinsfile .git .gitignore
+
+###############################
+# copy to target context
+echo ">>>>> copy to target build context"
+cp -r "${BASE_DIR}/${WORK_DIR}" "${BASE_DIR}/${linux_distro}/${cpu_arch}/component"
 
 ###############################
 # done
