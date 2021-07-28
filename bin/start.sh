@@ -29,10 +29,10 @@ EXPLORER_PLUGIN_BASEURI=$($NODE_BIN -e "process.stdout.write(require('./web/pack
 EXPLORER_PLUGIN_NAME=$($NODE_BIN -e "process.stdout.write(require('./web/package.json').config.pluginName)")
 
 # get current ui server directory
-EXPLORER_APP_DIR="./web"
-SERVER_DIR="./explorer-ui-server"
+EXPLORER_APP_DIR="$(pwd)/web"
+SERVER_DIR="$(pwd)/explorer-ui-server"
 if [ ! -d "${SERVER_DIR}" ]; then
-  SERVER_DIR="../explorer-ui-server"
+  SERVER_DIR="$(cd ../explorer-ui-server; pwd)"
 fi
 
 JOB_NAME="${ZOWE_PREFIX}UJ"
