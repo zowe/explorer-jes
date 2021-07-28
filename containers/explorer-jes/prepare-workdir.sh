@@ -76,5 +76,19 @@ cat manifest.yaml | \
   > "${BASE_DIR}/${WORK_DIR}/manifest.yaml"
 
 ###############################
+echo ">>>>> explorer-ui-server"
+cd "${BASE_DIR}/${WORK_DIR}"
+git clone --depth 1 --single-branch --branch "${EXPLORER_UI_SERVER_BRANCH:-master}" https://github.com/zowe/explorer-ui-server.git
+cd explorer-ui-server
+ui_server_commit_hash=$(git rev-parse --verify HEAD)
+cat manifest.yaml | \
+  sed -e "s#{{build\.branch}}#${EXPLORER_UI_SERVER_BRANCH:-master}#" \
+      -e "s#{{build\.number}}#${GITHUB_RUN_NUMBER}#" \
+      -e "s#{{build\.commitHash}}#${ui_server_commit_hash}#" \
+      -e "s#{{build\.timestamp}}#$(date +%s)#" \
+  > manifest.yaml
+rm -fr .pax .vscode dco_signoffs test .eslint* .editorconfig .nycrc sonar-project.properties explorer-ui-server.ppf Jenkinsfile .git .gitignore
+
+###############################
 # done
 echo ">>>>> all done"

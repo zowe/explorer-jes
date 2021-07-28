@@ -33,8 +33,7 @@ COPY --chown=zowe:zowe component .
 ##################################
 # build component
 # pretty same as .pax/prepare-workspace.sh. any way we can merge?
-RUN ls -la .. \
-    && npm ci --no-audit \
+RUN npm ci --no-audit \
     && npm run prod \
     && mkdir -p final/web \
     && mkdir -p final/bin \
@@ -48,11 +47,21 @@ RUN ls -la .. \
     && cp pluginDefinition.prod.json final/pluginDefinition.json \
     && cp bin/start.sh final/bin \
     && chmod +x final/bin/* \
-    && ls -laR
+    && mkdir -p final/explorer-ui-server \
+    && cd explorer-ui-server \
+    && npm ci --no-audit \
+    && npm run build \
+    && cd dist \
+    && npm install --production \
+    && cd .. \
+    && cp -r dist/. ../final/explorer-ui-server/ \
+    && cp manifest.yaml ../final/explorer-ui-server/
 
 ##################################
 # second stage
 FROM zowe-docker-release.jfrog.io/ompzowe/base-node:latest-ubuntu
+
+ENV ZOWE_COMPONENT_ID=explorer-jes
 
 ##################################
 # switch context
@@ -63,3 +72,8 @@ WORKDIR /component
 # copy files
 COPY --from=builder --chown=zowe:zowe /home/zowe/final ./
 COPY --chown=zowe:zowe component/LICENSE /licenses
+
+##################################
+# start command
+EXPOSE 8080
+ENTRYPOINT [ "bin/start.sh" ]
