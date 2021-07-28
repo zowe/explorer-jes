@@ -53,4 +53,4 @@ _BPX_JOBNAME=${JOB_NAME} $NODE_BIN $SERVER_DIR/src/index.js \
 	--keyring "${KEYRING_NAME}" \
 	--keyring-owner "${KEYRING_OWNER}" \
 	--keyring-label "${KEY_ALIAS}" \
-	-v &
+	-v
