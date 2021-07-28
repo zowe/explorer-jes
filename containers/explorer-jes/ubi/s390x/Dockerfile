@@ -61,6 +61,8 @@ RUN npm ci --no-audit \
 # second stage
 FROM zowe-docker-release.jfrog.io/ompzowe/base-node:latest-ubuntu
 
+##################################
+# environments
 ENV ZOWE_COMPONENT_ID=explorer-jes
 
 ##################################
