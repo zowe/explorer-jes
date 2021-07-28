@@ -24,6 +24,7 @@
 # Prereqs:
 # - must run with Github Actions (with GITHUB_RUN_NUMBER and GITHUB_SHA)
 # - must provide $GITHUB_PR_ID is it's pull request
+# - jq
 
 # exit if there are errors
 set -e
@@ -52,14 +53,20 @@ JFROG_REPO_RELEASE=libs-release-local
 JFROG_URL=https://zowe.jfrog.io/zowe/
 
 ###############################
+echo ">>>>> prepare basic files"
+cd "${REPO_ROOT_DIR}"
+package_version=$(jq -r '.version' package.json)
+
+###############################
 # copy Dockerfile
 echo ">>>>> copy Dockerfile to ${linux_distro}/${cpu_arch}/Dockerfile"
+cd "${BASE_DIR}"
 mkdir -p "${linux_distro}/${cpu_arch}"
 if [ ! -f Dockerfile ]; then
   echo "Error: Dockerfile file is missing."
   exit 2
 fi
-cp Dockerfile "${linux_distro}/${cpu_arch}/Dockerfile"
+cat Dockerfile | sed -e "s#0\.0\.0#${package_version}#" > "${linux_distro}/${cpu_arch}/Dockerfile"
 
 ###############################
 echo ">>>>> clean up folder"
