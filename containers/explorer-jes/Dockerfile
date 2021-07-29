@@ -62,7 +62,7 @@ RUN npm ci --no-audit --ignore-scripts \
 
 ##################################
 # second stage
-FROM zowe-docker-release.jfrog.io/ompzowe/base-node:latest-ubuntu
+FROM zowe-docker-release.jfrog.io/ompzowe/base-node:${ZOWE_BASE_IMAGE}
 
 ##################################
 # environments

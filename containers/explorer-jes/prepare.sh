@@ -113,18 +113,41 @@ cat manifest.yaml | \
   > "${BASE_DIR}/${WORK_DIR}/manifest.yaml"
 
 ###############################
-echo ">>>>> explorer-ui-server"
+echo ">>>>> download explorer-ui-server"
 cd "${BASE_DIR}/${WORK_DIR}"
-git clone --depth 1 --single-branch --branch "${EXPLORER_UI_SERVER_BRANCH:-master}" https://github.com/zowe/explorer-ui-server.git
+latest_tag=$(curl https://api.github.com/repos/zowe/explorer-ui-server/git/refs/tags -H "Accept: application/vnd.github.v3+json" -s | jq -r '[ .[].ref | sub("refs/tags/";"") | capture("(?<tag>v(?<major>[0-9]+).(?<minor>[0-9]+).(?<patch>[0-9]+))") | { tag: .tag, major: .major | tonumber, minor: .minor | tonumber, patch: .patch | tonumber } | { tag: .tag, seq: (.major * 1000000 + .minor * 1000 + .patch) }] | sort_by(.seq) | reverse | .[0] | .tag')
+checkout_branch="${EXPLORER_UI_SERVER_BRANCH:-${latest_tag:-master}}"
+git clone --depth 1 --single-branch --branch "${checkout_branch}" https://github.com/zowe/explorer-ui-server.git
 cd explorer-ui-server
 ui_server_commit_hash=$(git rev-parse --verify HEAD)
 cat manifest.yaml | \
-  sed -e "s#{{build\.branch}}#${EXPLORER_UI_SERVER_BRANCH:-master}#" \
+  sed -e "s#{{build\.branch}}#${checkout_branch}#" \
       -e "s#{{build\.number}}#${GITHUB_RUN_NUMBER}#" \
       -e "s#{{build\.commitHash}}#${ui_server_commit_hash}#" \
       -e "s#{{build\.timestamp}}#$(date +%s)#" \
   > manifest.yaml
 rm -fr .pax .vscode dco_signoffs test .eslint* .editorconfig .nycrc sonar-project.properties explorer-ui-server.ppf Jenkinsfile .git .gitignore
+
+# echo ">>>>> prepare explorer-ui-server"
+# #### use pax have encoding issue
+# cd "${REPO_ROOT_DIR}"
+# ARTIFACTORY_REPO="${JFROG_REPO_RELEASE}"
+# ARTIFACTORY_PATH_PATTERN="*/*.pax"
+# jfrog_path="${ARTIFACTORY_REPO}/org/zowe/explorer-ui-server/${ARTIFACTORY_PATH_PATTERN}"
+# echo "    - artifact path pattern: ${jfrog_path}"
+# artifact=$(jfrog rt s "${jfrog_path}" --sort-by created --sort-order desc --limit 1 | jq -r '.[0].path')
+# if [ -z "${artifact}" ]; then
+#   echo "Error: cannot find org.zowe.explorer-ui-server artifact."
+#   exit 1
+# fi
+# echo "    - artifact found: ${artifact}"
+# echo "    - download and extract"
+# curl -s ${JFROG_URL}${artifact} --output explorer-ui-server.pax
+# mkdir -p "${BASE_DIR}/${WORK_DIR}/explorer-ui-server"
+# cd "${BASE_DIR}/${WORK_DIR}/explorer-ui-server"
+# tar xf ../../../../explorer-ui-server.pax
+# cd "${REPO_ROOT_DIR}"
+# rm explorer-ui-server.pax
 
 ###############################
 # copy to target context
