@@ -46,7 +46,7 @@ fi
 # CONSTANTS
 # this should be containers/zowe-launch-scripts
 BASE_DIR=$(cd $(dirname $0);pwd)
-REPO_ROOT_DIR=$(cd $(dirname $0)/../../;pwd)
+REPO_ROOT_DIR=$(cd $(dirname $0)/../;pwd)
 WORK_DIR=tmp
 JFROG_REPO_SNAPSHOT=libs-snapshot-local
 JFROG_REPO_RELEASE=libs-release-local

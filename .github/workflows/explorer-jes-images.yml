@@ -9,7 +9,7 @@ on:
         required: false
         default: ''
 env:
-  IMAGE_BASE_DIR: containers/explorer-jes
+  IMAGE_BASE_DIR: container
 
 jobs:
   build-ubuntu-amd64:
@@ -25,6 +25,7 @@ jobs:
           registry-password: ${{ secrets.ARTIFACTORY_X_PASSWORD }}
           release: ${{ github.event.inputs.release }}
           base-directory: ${{ env.IMAGE_BASE_DIR }}
+          image-name: explorer-jes
           linux-distro: ubuntu
           cpu-arch: amd64
 
@@ -46,6 +47,7 @@ jobs:
           registry-password: ${{ secrets.ARTIFACTORY_X_PASSWORD }}
           release: ${{ github.event.inputs.release }}
           base-directory: ${{ env.IMAGE_BASE_DIR }}
+          image-name: explorer-jes
           linux-distro: ubuntu
           cpu-arch: s390x
 
@@ -74,6 +76,7 @@ jobs:
           registry-password: ${{ secrets.ARTIFACTORY_X_PASSWORD }}
           release: ${{ github.event.inputs.release }}
           base-directory: ${{ env.IMAGE_BASE_DIR }}
+          image-name: explorer-jes
           linux-distro: ubuntu
 
       - uses: zowe-actions/shared-actions/docker-manifest@main
@@ -96,6 +99,7 @@ jobs:
           registry-password: ${{ secrets.ARTIFACTORY_X_PASSWORD }}
           release: ${{ github.event.inputs.release }}
           base-directory: ${{ env.IMAGE_BASE_DIR }}
+          image-name: explorer-jes
           linux-distro: ubi
           cpu-arch: amd64
           redhat-registry: ${{ env.DEFAULT_REDHAT_DOCKER_REGISTRY }}
@@ -120,6 +124,7 @@ jobs:
           registry-password: ${{ secrets.ARTIFACTORY_X_PASSWORD }}
           release: ${{ github.event.inputs.release }}
           base-directory: ${{ env.IMAGE_BASE_DIR }}
+          image-name: explorer-jes
           linux-distro: ubi
           cpu-arch: s390x
 
@@ -151,6 +156,7 @@ jobs:
           registry-password: ${{ secrets.ARTIFACTORY_X_PASSWORD }}
           release: ${{ github.event.inputs.release }}
           base-directory: ${{ env.IMAGE_BASE_DIR }}
+          image-name: explorer-jes
           linux-distro: ubi
 
       - uses: zowe-actions/shared-actions/docker-manifest@main
