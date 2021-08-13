@@ -65,10 +65,6 @@ RUN npm ci --no-audit --ignore-scripts \
 FROM zowe-docker-release.jfrog.io/ompzowe/base-node:${ZOWE_BASE_IMAGE}
 
 ##################################
-# environments
-ENV ZOWE_COMPONENT_ID=explorer-jes
-
-##################################
 # switch context
 USER zowe
 WORKDIR /component
