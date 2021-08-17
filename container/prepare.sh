@@ -56,6 +56,7 @@ JFROG_URL=https://zowe.jfrog.io/zowe/
 echo ">>>>> prepare basic files"
 cd "${REPO_ROOT_DIR}"
 package_version=$(jq -r '.version' package.json)
+package_release=$(echo "${package_version}" | awk -F. '{print $1;}')
 
 ###############################
 # copy Dockerfile
@@ -66,7 +67,7 @@ if [ ! -f Dockerfile ]; then
   echo "Error: Dockerfile file is missing."
   exit 2
 fi
-cat Dockerfile | sed -e "s#0\.0\.0#${package_version}#" > "${linux_distro}/${cpu_arch}/Dockerfile"
+cat Dockerfile | sed -e "s#version=\"0\.0\.0\"#version=\"${package_version}\"#" -e "s#release=\"0\"#release=\"${package_release}\"#" > "${linux_distro}/${cpu_arch}/Dockerfile"
 
 ###############################
 echo ">>>>> clean up folder"
@@ -128,27 +129,6 @@ cat manifest.yaml | \
       -e "s#{{build\.timestamp}}#$(date +%s)#" \
   > manifest.yaml
 rm -fr .pax .vscode dco_signoffs test .eslint* .editorconfig .nycrc sonar-project.properties explorer-ui-server.ppf Jenkinsfile .git .gitignore
-
-# echo ">>>>> prepare explorer-ui-server"
-# #### use pax have encoding issue
-# cd "${REPO_ROOT_DIR}"
-# ARTIFACTORY_REPO="${JFROG_REPO_RELEASE}"
-# ARTIFACTORY_PATH_PATTERN="*/*.pax"
-# jfrog_path="${ARTIFACTORY_REPO}/org/zowe/explorer-ui-server/${ARTIFACTORY_PATH_PATTERN}"
-# echo "    - artifact path pattern: ${jfrog_path}"
-# artifact=$(jfrog rt s "${jfrog_path}" --sort-by created --sort-order desc --limit 1 | jq -r '.[0].path')
-# if [ -z "${artifact}" ]; then
-#   echo "Error: cannot find org.zowe.explorer-ui-server artifact."
-#   exit 1
-# fi
-# echo "    - artifact found: ${artifact}"
-# echo "    - download and extract"
-# curl -s ${JFROG_URL}${artifact} --output explorer-ui-server.pax
-# mkdir -p "${BASE_DIR}/${WORK_DIR}/explorer-ui-server"
-# cd "${BASE_DIR}/${WORK_DIR}/explorer-ui-server"
-# tar xf ../../../../explorer-ui-server.pax
-# cd "${REPO_ROOT_DIR}"
-# rm explorer-ui-server.pax
 
 ###############################
 # copy to target context
