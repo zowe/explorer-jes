@@ -40,7 +40,7 @@ RUN npm ci --no-audit --ignore-scripts \
     && npm run prod \
     && mkdir -p final/web \
     && mkdir -p final/bin \
-    && cp README.md final/web \
+    && cp README.md final \
     && cp package.json final/web \
     && cp package-lock.json final/web \
     && cp -r dist/. final/web \
