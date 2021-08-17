@@ -7,7 +7,7 @@
 #
 # SPDX-License-Identifier: EPL-2.0
 #
-# Copyright IBM Corporation 2018, 2020
+# Copyright IBM Corporation 2018, 2021
 ################################################################################
 
 ################################################################################
@@ -46,7 +46,7 @@ _BPX_JOBNAME=${JOB_NAME} $NODE_BIN $SERVER_DIR/src/index.js \
   --service "${EXPLORER_PLUGIN_NAME}" \
 	--path "${EXPLORER_PLUGIN_BASEURI}" \
 	--dir  "${EXPLORER_APP_DIR}" \
-	--port "${JES_EXPLORER_UI_PORT:-8080}" \
+	--port "${JES_EXPLORER_UI_PORT:-8546}" \
 	--key  "${KEYSTORE_KEY}" \
 	--cert "${KEYSTORE_CERTIFICATE}" \
 	--csp "${ZOWE_EXPLORER_FRAME_ANCESTORS}" \
