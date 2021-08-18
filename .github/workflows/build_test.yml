@@ -108,71 +108,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
-          sonar.projectVersion: ${{ fromJson(env.MANIFEST_INFO).version || fromJson(env.PACKAGE_JSON).version }}
-          sonar.links.ci: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID} 
-
-      - name: '[Packaging] Packaging'
-        uses: zowe-actions/shared-actions/packaging@main
-        with:
-          pax-name: 'explorer-jes'
-          pax-options: '-o saveext'
-          pax-ssh-username: ${{ secrets.SSH_MARIST_USERNAME }}
-          pax-ssh-password: ${{ secrets.SSH_MARIST_PASSWORD }}
-
-      - name: '[Publish] Prepare for publish'
-        uses: zowe-actions/shared-actions/publish@main
-        if: success()
-        with:
-          artifacts: .pax/explorer-jes.pax
-          perform-release: ${{ github.event.inputs.PERFORM_RELEASE }}
-
-      - name: '[Release 1] Release (if necessary)'
-        if: ${{ success() && github.event.inputs.PERFORM_RELEASE == 'true' && env.IS_RELEASE_BRANCH == 'true' }}
-        uses: zowe-actions/shared-actions/release@main
-
-      - name: '[Release 2] NPM bump version (if necessary)'
-        if: ${{ success() && github.event.inputs.PERFORM_RELEASE == 'true' && env.IS_RELEASE_BRANCH == 'true' && env.IS_FORMAL_RELEASE_BRANCH == 'true' && env.PRE_RELEASE_STRING == ''}}
-        uses: zowe-actions/nodejs-actions/bump-version@main
-        with:
-          github-user: ${{ steps.git-name-email.outputs.GITHUB_USER }}
-          github-passwd: ${{ steps.git-name-email.outputs.GITHUB_PASSWD }}
-
-      - name: '[Test 1] Nodejs project unit test'
-        run: npm run test
-
-      - name: '[Test 2] Integration test'
-        timeout-minutes: 30
-        continue-on-error: true
-        run: |
-          echo "Preparing server for integration test ..."
-          ./bin/prepare-fvt.sh "${{ github.event.inputs.FVT_APIML_ARTIFACT || env.DEFAULT_FVT_APIML_ARTIFACT }}" "${{ github.event.inputs.FVT_API_ARTIFACT || env.DEFAULT_FVT_API_ARTIFACT }}" "${{ github.event.inputs.FVT_ZOSMF_HOST || env.DEFAULT_FVT_ZOSMF_HOST }}" "${{ github.event.inputs.FVT_ZOSMF_PORT || env.DEFAULT_FVT_ZOSMF_PORT }}"
-          sleep 120
-          export ZOWE_USERNAME=${{ secrets.SSH_MARIST1_USERNAMEP }}
-          export ZOWE_PASSWORD=${{ secrets.SSH_MARIST1_PASSWORDP }}
-          ./bin/delete-fvt-jobs.sh
-          echo "Starting integration test ..."
-          export SERVER_HOST_NAME=${{ env.CUSTOM_FVT_SERVER_HOSTNAME || env.DEFAULT_FVT_SERVER_HOSTNAME }}
-          export SERVER_HTTPS_PORT=7554
-          export TEST_BROWSER=firefox
-          npm run test:fvt
-          find .fvt/logs -type f | xargs -i sh -c 'echo \">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>\" && cat {}'
-        # Uncomment the env part to customize test parameters
-        # env:
-        #   CUSTOM_FVT_APIML_ARTIFACT:
-        #   CUSTOM_FVT_API_ARTIFACT:
-        #   CUSTOM_FVT_ZOSMF_HOST:
-        #   CUSTOM_FVT_ZOSMF_PORT:
-        #   CUSTOM_FVT_SERVER_HOSTNAME:
-
-      - name: '[Scan 1] Fix code coverage paths'
-        working-directory: ./coverage
-        run: sed -i 's#'$GITHUB_WORKSPACE'#/github/workspace/#g' lcov.info
-
-      - name: '[Scan 2] SonarCloud Scan'
-        uses: sonarsource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+          sonar.projectVersion: ${{ env.P_VERSION }}
+          sonar.links.ci: 'https://github.com/${{ github.repository }}/actions/runs/${GITHUB_RUN_ID}'
 
       - name: '[Packaging] Packaging'
         uses: zowe-actions/shared-actions/packaging@main
