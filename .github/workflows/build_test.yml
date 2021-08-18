@@ -21,7 +21,7 @@ jobs:
           github-user: ${{ secrets.ZOWE_ROBOT_USER }}
           github-passwd: ${{ secrets.ZOWE_ROBOT_TOKEN }}
 
-  setup-build:
+  build-test:
     runs-on: ubuntu-latest
     needs: check-permission
     steps: 
@@ -109,17 +109,17 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
           sonar.projectVersion: ${{ env.P_VERSION }}
-          sonar.links.ci: 'https://github.com/${{ github.repository }}/actions/runs/${GITHUB_RUN_ID}'
+          sonar.links.ci: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
 
-      - name: '[Packaging] Packaging'
-        uses: zowe-actions/shared-actions/packaging@main
+      - name: '[Packaging] Make pax'
+        uses: zowe-actions/shared-actions/make-pax@main
         with:
           pax-name: 'explorer-jes'
           pax-options: '-o saveext'
           pax-ssh-username: ${{ secrets.SSH_MARIST_USERNAME }}
           pax-ssh-password: ${{ secrets.SSH_MARIST_PASSWORD }}
 
-      - name: '[Publish] Prepare for publish'
+      - name: '[Publish] Publish'
         uses: zowe-actions/shared-actions/publish@main
         if: success()
         with:
