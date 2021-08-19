@@ -77,7 +77,6 @@ jobs:
 
       - name: '[Test 2] Integration test'
         timeout-minutes: 30
-        continue-on-error: true
         run: |
           echo "Preparing server for integration test ..."
           ./bin/prepare-fvt.sh "${{ env.CUSTOM_FVT_APIML_ARTIFACT || env.DEFAULT_FVT_APIML_ARTIFACT }}" "${{ env.CUSTOM_FVT_API_ARTIFACT || env.DEFAULT_FVT_API_ARTIFACT }}" "${{ env.CUSTOM_FVT_ZOSMF_HOST || env.DEFAULT_FVT_ZOSMF_HOST }}" "${{ env.CUSTOM_FVT_ZOSMF_PORT || env.DEFAULT_FVT_ZOSMF_PORT }}"
