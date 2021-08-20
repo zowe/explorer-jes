@@ -79,7 +79,9 @@ jobs:
         timeout-minutes: 30
         run: |
           echo "Preparing server for integration test ..."
-          ./bin/prepare-fvt.sh "${{ env.CUSTOM_FVT_APIML_ARTIFACT || env.DEFAULT_FVT_APIML_ARTIFACT }}" "${{ env.CUSTOM_FVT_API_ARTIFACT || env.DEFAULT_FVT_API_ARTIFACT }}" "${{ env.CUSTOM_FVT_ZOSMF_HOST || env.DEFAULT_FVT_ZOSMF_HOST }}" "${{ env.CUSTOM_FVT_ZOSMF_PORT || env.DEFAULT_FVT_ZOSMF_PORT }}"
+          FVT_API_ARTIFACT_REPLACEMENT_TEXT=files
+          DEFAULT_FVT_API_ARTIFACT=$(echo ${{ env.DEFAULT_FVT_API_ARTIFACT_PATTERN }} | sed "s/@@REPLACE@@/$FVT_API_ARTIFACT_REPLACEMENT_TEXT/g")
+          ./bin/prepare-fvt.sh "${{ env.CUSTOM_FVT_APIML_ARTIFACT || env.DEFAULT_FVT_APIML_ARTIFACT }}" "${{ env.CUSTOM_FVT_API_ARTIFACT || DEFAULT_FVT_API_ARTIFACT }}" "${{ env.CUSTOM_FVT_ZOSMF_HOST || env.DEFAULT_FVT_ZOSMF_HOST }}" "${{ env.CUSTOM_FVT_ZOSMF_PORT || env.DEFAULT_FVT_ZOSMF_PORT }}"
           sleep 120
           export ZOWE_USERNAME=${{ secrets.SSH_MARIST1_USERNAMEP }}
           export ZOWE_PASSWORD=${{ secrets.SSH_MARIST1_PASSWORDP }}
@@ -90,7 +92,6 @@ jobs:
           export TEST_BROWSER=firefox
           npm run test:fvt
           find .fvt/logs -type f -execdir echo ">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>" \; -execdir cat {} \;
-
         # Uncomment the env part to customize test parameters
         # env:
         #   CUSTOM_FVT_APIML_ARTIFACT:
