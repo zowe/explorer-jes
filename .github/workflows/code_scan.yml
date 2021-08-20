@@ -1,5 +1,8 @@
 name: Codescan Workflow
 on: 
+  push:
+    branches:
+      - master 
   pull_request:
     types: [opened, synchronize]
 
@@ -9,7 +12,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
 
       - name: Prepare workflow
         uses: zowe-actions/shared-actions/prepare-workflow@main
