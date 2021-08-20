@@ -83,7 +83,7 @@ jobs:
         timeout-minutes: 30
         run: |
           echo "Preparing server for integration test ..."
-          FVT_API_ARTIFACT_REPLACEMENT_TEXT=files
+          FVT_API_ARTIFACT_REPLACEMENT_TEXT=jobs
           export DEFAULT_FVT_API_ARTIFACT=$(echo ${{ env.DEFAULT_FVT_API_ARTIFACT_PATTERN }} | sed "s/@@REPLACE@@/$FVT_API_ARTIFACT_REPLACEMENT_TEXT/g")
           ./bin/prepare-fvt.sh \
           "${CUSTOM_FVT_APIML_ARTIFACT:-${{ env.DEFAULT_FVT_APIML_ARTIFACT }}}" \
