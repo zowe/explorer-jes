@@ -88,7 +88,7 @@ jobs:
           ./bin/prepare-fvt.sh \
           "${CUSTOM_FVT_APIML_ARTIFACT:-${{ env.DEFAULT_FVT_APIML_ARTIFACT }}}" \
           "${CUSTOM_FVT_API_ARTIFACT:-$DEFAULT_FVT_API_ARTIFACT}" \
-          "${CUSTOM_FVT_ZOSMF_HOST:-${{ env.DEFAULT_FVT_ZOSMF_HOST }}}" \
+          "zzow03.zowe.marist.cloud" \
           "${CUSTOM_FVT_ZOSMF_PORT:-${{ env.DEFAULT_FVT_ZOSMF_PORT }}}"
           sleep 120
           export ZOWE_USERNAME=${{ secrets.SSH_MARIST3_USERNAMEP }}
