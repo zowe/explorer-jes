@@ -101,10 +101,10 @@ jobs:
           npm run test:fvt
           find .fvt/logs -type f -execdir echo ">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>" \; -execdir cat {} \;
         # Uncomment the env part to customize test parameters
-        # env:
+        env:
         #   CUSTOM_FVT_APIML_ARTIFACT:
         #   CUSTOM_FVT_API_ARTIFACT:
-        #   CUSTOM_FVT_ZOSMF_HOST:
+          CUSTOM_FVT_ZOSMF_HOST: zzow02.zowe.marist.cloud
         #   CUSTOM_FVT_ZOSMF_PORT:
         #   CUSTOM_FVT_SERVER_HOSTNAME:
 
