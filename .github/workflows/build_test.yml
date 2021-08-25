@@ -91,8 +91,8 @@ jobs:
           "${CUSTOM_FVT_ZOSMF_HOST:-${{ env.DEFAULT_FVT_ZOSMF_HOST }}}" \
           "${CUSTOM_FVT_ZOSMF_PORT:-${{ env.DEFAULT_FVT_ZOSMF_PORT }}}"
           sleep 120
-          export ZOWE_USERNAME=${{ secrets.SSH_MARIST1_USERNAMEP }}
-          export ZOWE_PASSWORD=${{ secrets.SSH_MARIST1_PASSWORDP }}
+          export ZOWE_USERNAME=${{ secrets.SSH_MARIST3_USERNAMEP }}
+          export ZOWE_PASSWORD=${{ secrets.SSH_MARIST3_PASSWORDP }}
           ./bin/delete-fvt-jobs.sh
           echo "Starting integration test ..."
           export SERVER_HOST_NAME=${CUSTOM_FVT_SERVER_HOSTNAME:-${{ env.DEFAULT_FVT_SERVER_HOSTNAME }}}
@@ -104,7 +104,7 @@ jobs:
         env:
         #   CUSTOM_FVT_APIML_ARTIFACT:
         #   CUSTOM_FVT_API_ARTIFACT:
-          CUSTOM_FVT_ZOSMF_HOST: zzow02.zowe.marist.cloud
+          CUSTOM_FVT_ZOSMF_HOST: zzow03.zowe.marist.cloud
         #   CUSTOM_FVT_ZOSMF_PORT:
         #   CUSTOM_FVT_SERVER_HOSTNAME:
 
