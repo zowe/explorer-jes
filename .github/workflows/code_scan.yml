@@ -13,13 +13,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Prepare workflow
-        uses: zowe-actions/shared-actions/prepare-workflow@main
-      
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ env.DEFAULT_NODE_VERSION }}
+          node-version: 10.18.1
 
       - name: Install
         run: npm install --no-audit
@@ -33,14 +30,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       
-
-      - name: Prepare workflow
-        uses: zowe-actions/shared-actions/prepare-workflow@main
-      
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ env.DEFAULT_NODE_VERSION }}
+          node-version: 10.18.1
 
       - name: Install
         run: npm install --no-audit
@@ -60,7 +53,7 @@ jobs:
         - name: Initialize CodeQL
           uses: github/codeql-action/init@v1
           with:
-              languages: javascript
+            languages: javascript
 
         # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
         # If this step fails, then you should remove it and run the build manually (see below)
