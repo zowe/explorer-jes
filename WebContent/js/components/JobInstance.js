@@ -177,7 +177,7 @@ class JobInstance extends React.Component {
 
     handleDownloadJCL() {
         const { dispatch, job } = this.props;
-        const url = `jobs/${job.get('jobName')}/${job.get('jobId')}/files/JCL/content`;
+        const url = `zosmf/restjobs/jobs/${job.get('jobName')}/${job.get('jobId')}/files/JCL/records`;
         downloadFile(job, 'JCL', url, dispatch);
     }
 
