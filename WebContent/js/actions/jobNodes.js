@@ -177,7 +177,6 @@ function invalidatePurge(jobName, jobId) {
 }
 
 function getURIQuery(filters) {
-    // let query = `?owner=IBMUSER&jobid=JOB03412&prefix=TESTJOBL`;
     let query = `?owner=${filters.owner ? filters.owner : '*'}&prefix=${filters.prefix ? filters.prefix : '*'}`;
 
     if (filters.status && filters.status !== '*') {
