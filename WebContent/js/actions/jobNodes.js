@@ -221,8 +221,8 @@ export function fetchJobs(filters) {
                     } else {
                         throw Error(NO_JOBS_FOUND_MESSAGE);
                     }
-                } else if (text.message) {
-                    throw Error(text.message);
+                } else if (jobs.message) {
+                    throw Error(jobs.message);
                 }
             })
             .catch(e => {

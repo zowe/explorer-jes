@@ -215,7 +215,7 @@ export function getJCL(jobName, jobId) {
     return dispatch => {
         const fileLabel = getFileLabel(jobId, 'JCL');
         dispatch(requestContent(jobName, jobId, 'JCL', 0, fileLabel));
-        return atlasFetch(`/zosmf/restjobs/jobs/${jobName}/${jobId}/files/JCL/records`, { credentials: 'include' })
+        return atlasFetch(`zosmf/restjobs/jobs/${jobName}/${jobId}/files/JCL/records`, { credentials: 'include' })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));
             })
@@ -258,7 +258,7 @@ function invalidateSubmitJCL() {
 export function submitJCL(content) {
     return dispatch => {
         dispatch(requestSubmitJCL());
-        return atlasFetch('/zosmf/restjobs/jobs',
+        return atlasFetch('zosmf/restjobs/jobs',
             {
                 credentials: 'include',
                 method: 'PUT',
