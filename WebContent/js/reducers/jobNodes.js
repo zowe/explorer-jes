@@ -29,12 +29,12 @@ const INITIAL_STATE = Map({
 });
 
 function extractJobs(jobs) {
-    return jobs.items.map(job => {
+    return jobs.map(job => {
         return {
-            jobName: job.jobName,
-            jobId: job.jobId,
-            label: `${job.jobName}:${job.jobId}`,
-            returnCode: job.returnCode,
+            jobName: job.jobname,
+            jobId: job.jobid,
+            label: `${job.jobname}:${job.jobid}`,
+            returnCode: job.retcode,
             status: job.status,
             isToggled: false,
             isSelected: false,
@@ -46,10 +46,10 @@ function extractJobs(jobs) {
 function extractJob(job) {
     return List([
         Map({
-            jobName: job.jobName,
-            jobId: job.jobId,
-            label: `${job.jobName}:${job.jobId}`,
-            returnCode: job.returnCode,
+            jobName: job.jobname,
+            jobId: job.jobid,
+            label: `${job.jobname}:${job.jobid}`,
+            returnCode: job.retcode,
             status: job.status,
             isToggled: false,
             isSelected: false,
@@ -81,9 +81,9 @@ function unselectAllJobs(jobs) {
 }
 
 function extractJobFiles(jobFiles) {
-    return jobFiles.items.map(file => {
+    return jobFiles.map(file => {
         return {
-            label: file.ddName,
+            label: file.ddname,
             id: file.id,
         };
     });
