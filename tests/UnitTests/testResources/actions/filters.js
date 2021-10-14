@@ -12,7 +12,7 @@
 export const filters = {
     prefix: '',
     owner: 'JCAIN',
-    retcode: '',
+    returnCode: '',
     status: '',
     type: '',
     isToggled: false,
@@ -22,7 +22,7 @@ export const filters = {
 export const fullyQualifiedFilters = {
     prefix: 'ATL*',
     owner: 'JCAIN',
-    retcode: '200',
+    returnCode: '200',
     status: 'SUCCESS',
     type: 'JOB',
     isToggled: false,
@@ -32,7 +32,7 @@ export const fullyQualifiedFilters = {
 export const defaultFilter = {
     prefix: '*',
     owner: 'JCAIN',
-    retcode: '200',
+    returnCode: '200',
     status: 'SUCCESS',
     type: 'JOB',
     isToggled: false,

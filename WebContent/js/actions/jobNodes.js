@@ -44,7 +44,7 @@ const PURGE_JOBS_SUCCESS_MESSAGE = 'Purge request succeeded for selected jobs';
 const PURGE_JOB_CANCEL_MESSAGE = 'Purge request canceled for';
 const PURGE_JOBS_CANCEL_MESSAGE = 'Purge request canceled for selected jobs';
 const PURGE_JOB_FAIL_MESSAGE = 'Purge request failed for';
-const PURGE_JOBS_FAIL_MESSAGE = 'Purge request failed for the following selected jobs';
+const PURGE_JOBS_FAIL_MESSAGE = 'Purge request failed for selected jobs';
 
 function requestJobs(filters) {
     return {
@@ -185,11 +185,11 @@ function getURIQuery(filters) {
     return query;
 }
 
-function filterByJobId(jobs, jobid, dispatch) {
+function filterByJobId(json, jobId, dispatch) {
     // filter for job Id as api doesn't support
     let jobFound = false;
-    jobs.forEach(job => {
-        if (job.jobid === jobid) {
+    json.items.forEach(job => {
+        if (job.jobId === jobId) {
             jobFound = true;
             dispatch(receiveSingleJob(job));
         }
@@ -202,26 +202,24 @@ function filterByJobId(jobs, jobid, dispatch) {
 export function fetchJobs(filters) {
     return dispatch => {
         dispatch(requestJobs(filters));
-        return atlasFetch(`zosmf/restjobs/jobs${getURIQuery(filters)}`, { credentials: 'include' })
+        return atlasFetch(`jobs${getURIQuery(filters)}`, { credentials: 'include' })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));
             })
-            .then(response => { return response.text(); })
-            .then(text => {
-                // convert the text response to an array of jobs
-                const jobs = JSON.parse(text);
-                if (jobs && jobs.constructor === Array) {
-                    if (jobs.length > 0) {
+            .then(response => { return response.json(); })
+            .then(json => {
+                if (json.items && json.items.constructor === Array) {
+                    if (json.items.length > 0) {
                         if ('jobId' in filters && filters.jobId !== '*') {
-                            filterByJobId(jobs, filters.jobId, dispatch);
+                            filterByJobId(json, filters.jobId, dispatch);
                         } else {
-                            dispatch(receiveJobs(jobs));
+                            dispatch(receiveJobs(json));
                         }
                     } else {
                         throw Error(NO_JOBS_FOUND_MESSAGE);
                     }
-                } else if (jobs.message) {
-                    throw Error(jobs.message);
+                } else if (json.message) {
+                    throw Error(json.message);
                 }
             })
             .catch(e => {
@@ -237,17 +235,16 @@ export function fetchJobs(filters) {
 
 function getJobFiles(jobName, jobId) {
     return dispatch => {
-        return atlasFetch(`zosmf/restjobs/jobs/${jobName}/${jobId}/files`, { credentials: 'include' })
+        return atlasFetch(`jobs/${jobName}/${jobId}/files`, { credentials: 'include' })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));
             })
-            .then(response => { return response.text(); })
-            .then(text => {
-                const jobFiles = JSON.parse(text);
-                if (jobFiles && jobFiles.constructor === Array) {
-                    return dispatch(receiveJobFiles(jobName, jobId, jobFiles));
+            .then(response => { return response.json(); })
+            .then(json => {
+                if (json.items && json.items.constructor === Array) {
+                    return dispatch(receiveJobFiles(jobName, jobId, json));
                 }
-                throw Error(jobFiles.message);
+                throw Error(json.message);
             })
             .catch(e => {
                 return dispatch(constructAndPushMessage(e.message));
@@ -278,12 +275,12 @@ export function cancelJob(jobName, jobId) {
     }
     return dispatch => {
         dispatch(requestCancel(jobName, jobId));
-        return atlasFetch(`zosmf/restjobs/jobs/${jobName}/${jobId}`,
+        return atlasFetch(`jobs/${jobName}/${jobId}`,
             {
                 credentials: 'include',
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ request: 'cancel' }),
+                body: JSON.stringify({ command: 'cancel' }),
             })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));
@@ -310,7 +307,7 @@ export function purgeJob(jobName, jobId) {
     }
     return dispatch => {
         dispatch(requestPurge(jobName, jobId));
-        return atlasFetch(`zosmf/restjobs/jobs/${jobName}/${jobId}`,
+        return atlasFetch(`jobs/${jobName}/${jobId}`,
             {
                 credentials: 'include',
                 method: 'DELETE',
@@ -351,39 +348,28 @@ export function purgeJobs(jobs) {
             // eslint-disable-next-line quote-props, quotes
             return { "jobName": job.get('jobName'), "jobId": job.get('jobId') };
         });
-        const mapSize = jobsToPurge.size;
-        let iteration = 0;
-        let failedJobs = '';
-        jobsToPurge.every(value => {
-            const jobName = value.jobName;
-            const jobId = value.jobId;
-            return atlasFetch(`zosmf/restjobs/jobs/${jobName}/${jobId}`,
-                {
-                    credentials: 'include',
-                    method: 'DELETE',
-                },
-            )
-                .then(response => {
-                    return dispatch(checkForValidationFailure(response));
-                })
-                .then(response => {
-                    iteration += 1;
-                    if (!response.ok) {
-                        failedJobs += `${jobName}/${jobId}, `;
-                    }
-                    // Check if any job Purge has failed during the operation and display the appropriate message accordingly
-                    if (iteration === mapSize) {
-                        if (failedJobs !== '') {
-                            dispatch(constructAndPushMessage(`${PURGE_JOBS_FAIL_MESSAGE} : ${failedJobs}`));
-                            dispatch(invalidatePurge());
-                        } else {
-                            dispatch(constructAndPushMessage(`${PURGE_JOBS_SUCCESS_MESSAGE}`));
-                            dispatch(unselectAllJobs());
-                            return dispatch(receivePurgeMultipleJobs());
-                        }
-                    }
-                    return true;
-                });
-        });
+        return atlasFetch('jobs',
+            {
+                credentials: 'include',
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(jobsToPurge),
+            })
+            .then(response => {
+                return dispatch(checkForValidationFailure(response));
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.text().then(() => {
+                        dispatch(constructAndPushMessage(PURGE_JOBS_SUCCESS_MESSAGE));
+                        dispatch(unselectAllJobs());
+                        return dispatch(receivePurgeMultipleJobs());
+                    });
+                }
+                return response.json().then(json => { throw Error(json && json.message ? json.message : ''); });
+            }).catch(e => {
+                dispatch(constructAndPushMessage(`${PURGE_JOBS_FAIL_MESSAGE} : ${e.message}`));
+                dispatch(invalidatePurge());
+            });
     };
 }

@@ -29,7 +29,7 @@ import { getStorageItem, setStorageItem, LAST_FILTERS } from '../utilities/stora
 import { setFilters, resetFilters, setOwnerAndFetchJobs } from '../actions/filters';
 import { fetchJobs } from '../actions/jobNodes';
 
-const STATUS_TYPES = ['ACTIVE'];
+const STATUS_TYPES = ['ACTIVE', 'INPUT', 'OUTPUT'];
 
 export class Filters extends React.Component {
     static renderStatusOptions() {

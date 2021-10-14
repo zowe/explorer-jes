@@ -8,13 +8,17 @@
  * Copyright IBM Corporation 2018, 2019
  */
 
-export const jobFileContents = '//TSTJIMS  JOB (ADL),ATLAS,MSGCLASS=0,CLASS=A,TIME=1440\n' +
+export const jobFileContents = { content: "//TSTJIMS  JOB (ADL),'ATLAS',MSGCLASS=0,CLASS=A,TIME=1440\n" +
 '//*        THIS JOB SIMULATES AN IMS REGION FOR 60 SECONDS\n' +
 '//IMS      EXEC PGM=DFSMVRC0\n' +
 '//STEPLIB  DD DSN=ATLAS.TEST.LOAD,DISP=SHR\n' +
 '//SYSPRINT DD SYSOUT=*\n' +
 '//SYSOUT   DD SYSOUT=*\n' +
-'//*\n';
+'//*\n' };
+
+export const jobFileFetchResponse = {
+    content: jobFileContents,
+};
 
 export const DSRequestFailed = "Request for content using z/OSMF failed for dataset 'ATLAS.TEST.JCL(TSTJIS)'";
 
@@ -31,53 +35,38 @@ export const USSRequestFailed = "Could not read content from file '/u/jcain//hel
 
 export const jobName = 'DEMOJOB';
 export const jobId = 'JOB12345';
-export const fileId = '2';
+export const fileId = '102';
 export const fileName = 'JESMSGLG';
 
-export const fileList = [{
-    recfm: 'UA',
-    'records-url': 'https://TVT5011.svl.ibm.com:443/zosmf/restjobs/jobs/J0004074TVT5011.DA48EC13.......%3A/files/2/records',
-    stepname: 'JES2',
-    subsystem: 'JES2',
-    'job-correlator': 'J0004074TVT5011.DA48EC13.......:',
-    'byte-count': 1445,
-    lrecl: 133,
-    jobid: 'JOB04074',
-    ddname: 'JESMSGLG',
-    id: 2,
-    'record-count': 24,
-    class: 'X',
-    jobname: 'ZWEACTPJ',
-    procstep: null },
-{ recfm: 'V',
-    'records-url': 'https://TVT5011.svl.ibm.com:443/zosmf/restjobs/jobs/J0004074TVT5011.DA48EC13.......%3A/files/3/records',
-    stepname: 'JES2',
-    subsystem: 'JES2',
-    'job-correlator': 'J0004074TVT5011.DA48EC13.......:',
-    'byte-count': 2063,
-    lrecl: 136,
-    jobid: 'JOB04074',
-    dname: 'JESJCL',
-    id: 3,
-    'record-count': 29,
-    class: 'X',
-    jobname: 'ZWEACTPJ',
-    procstep: null }];
+export const fileList = { items: [
+    {
+        ddName: 'JESMSGLG',
+        recordFormat: 'UA',
+        recordLength: 133,
+        byteCount: 1609,
+        recordCount: 24,
+        id: 102,
+    },
+    {
+        ddName: 'JESJCL',
+        recordFormat: 'V',
+        recordLength: 136,
+        byteCount: 981,
+        recordCount: 19,
+        id: 3,
+    },
+] };
 
-export const jobJCL = '//TESTJOBX JOB (),MSGCLASS=H EXEC PGM=IEFBR14';
+export const jobJCL = { content: '//TESTJOBX JOB (),MSGCLASS=H EXEC PGM=IEFBR14' };
 
 export const submitJCLResponse = {
-    owner: 'JCAIN',
-    phase: 130,
-    subsystem: 'JES2',
-    'phase-name': 'Job is actively converting',
-    'job-correlator': 'J0004091TVT5011.DA4A133D.......:',
+    jobId: 'JOB12345',
+    jobName: 'DEMOJOB',
+    owner: 'JORDAN',
     type: 'JOB',
-    url: 'https://TVT5011.svl.ibm.com:443/zosmf/restjobs/jobs/J0004091TVT5011.DA4A133D.......%3A',
-    jobid: 'JOB12345',
-    class: 'A',
-    'files-url': 'https://TVT5011.svl.ibm.com:443/zosmf/restjobs/jobs/J0004091TVT5011.DA4A133D.......%3A/files',
-    jobname: 'DEMOJOB',
     status: 'INPUT',
-    retcode: null,
+    returnCode: null,
+    subsystem: 'JES2',
+    executionClass: 'A',
+    phaseName: 'Job is actively converting',
 };

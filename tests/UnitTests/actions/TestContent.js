@@ -52,8 +52,8 @@ describe('Action: content', () => {
             ];
 
             nock(BASE_URL)
-                .get(`/zosmf/restjobs/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/records`)
-                .reply(200, contentResources.jobFileContents);
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/content`)
+                .reply(200, contentResources.jobFileFetchResponse);
 
             const store = mockStore();
             return store.dispatch(contentActions.fetchJobFile(contentResources.jobName, contentResources.jobId, contentResources.fileName, contentResources.fileId))
@@ -79,9 +79,34 @@ describe('Action: content', () => {
             ];
 
             nock(BASE_URL)
-                .get(`/zosmf/restjobs/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/records`)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/content`)
                 .reply(500, { status: 'INTERNAL_SERVER_ERROR', message: errorMessage });
 
+            const store = mockStore();
+            return store.dispatch(contentActions.fetchJobFile(contentResources.jobName, contentResources.jobId, contentResources.fileName, contentResources.fileId))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
+        });
+
+        it('Should create a request and but not receive due to no content in response', () => {
+            const expectedActions = [
+                requestContentAction,
+                {
+                    type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
+                    message: Map({
+                        message: `${contentActions.NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE} - ${contentResources.jobName}:${contentResources.jobId}:${contentResources.fileName}`,
+                    }),
+                },
+                {
+                    type: contentActions.INVALIDATE_CONTENT,
+                    fileLabel: `${contentResources.jobId}-${contentResources.fileName}`,
+                    fileId: contentResources.fileId,
+                },
+            ];
+            nock(BASE_URL)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/content`)
+                .reply(200, { });
             const store = mockStore();
             return store.dispatch(contentActions.fetchJobFile(contentResources.jobName, contentResources.jobId, contentResources.fileName, contentResources.fileId))
                 .then(() => {
@@ -116,10 +141,10 @@ describe('Action: content', () => {
 
             const store = mockStore();
             nock(BASE_URL)
-                .get(`/zosmf/restjobs/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/records`)
-                .reply(200, contentResources.jobFileContents);
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/content`)
+                .reply(200, contentResources.jobFileFetchResponse);
             nock(BASE_URL)
-                .get(`/zosmf/restjobs/jobs/${contentResources.jobName}/${contentResources.jobId}/files`)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files`)
                 .reply(200, contentResources.fileList);
 
             return store.dispatch(contentActions.fetchJobFileNoName(contentResources.jobName, contentResources.jobId, contentResources.fileId))
@@ -147,7 +172,7 @@ describe('Action: content', () => {
 
             const store = mockStore();
             nock(BASE_URL)
-                .get(`/zosmf/restjobs/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/records`)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/content`)
                 .reply(500, { status: 'INTERNAL_SERVER_ERROR', message: errorMessage });
 
             return store.dispatch(contentActions.fetchJobFileNoName(contentResources.jobName, contentResources.jobId, contentResources.fileId))
@@ -157,8 +182,8 @@ describe('Action: content', () => {
         });
 
         it('Should create a request but not receive action due to no file name match', () => {
-            const nodeURI = `zosmf/restjobs/jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/records`;
-            const nodeNameURI = `zosmf/restjobs/jobs/${contentResources.jobName}/${contentResources.jobId}/files`;
+            const nodeURI = `jobs/${contentResources.jobName}/${contentResources.jobId}/files/${contentResources.fileId}/content`;
+            const nodeNameURI = `jobs/${contentResources.jobName}/${contentResources.jobId}/files`;
             const expectedActions = [
                 requestContentAction,
                 {
@@ -184,6 +209,90 @@ describe('Action: content', () => {
                 .reply(500, { status: 'INTERNAL_SERVER_ERROR', message: errorMessage });
 
             return store.dispatch(contentActions.fetchJobFileNoName(contentResources.jobName, contentResources.jobId, contentResources.fileId))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
+        });
+    });
+
+    describe('fetchConcatenatedJobFiles', () => {
+        const requestContentAction = {
+            type: contentActions.REQUEST_CONTENT,
+            jobName: contentResources.jobName,
+            jobId: contentResources.jobId,
+            fileName: contentResources.jobId,
+            fileId: contentResources.jobId,
+            fileLabel: `${contentResources.jobName}-${contentResources.jobId}`,
+        };
+        it('Should create a request and receive content action', () => {
+            const expectedActions = [
+                requestContentAction,
+                {
+                    type: contentActions.RECEIVE_CONTENT,
+                    jobName: contentResources.jobName,
+                    jobId: contentResources.jobId,
+                    content: contentResources.jobFileContents,
+                    fileName: contentResources.jobId,
+                    fileId: contentResources.jobId,
+                    fileLabel: contentActions.getFileLabel(contentResources.jobName, contentResources.jobId),
+                    readOnly: true,
+                },
+            ];
+            nock(BASE_URL)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/content`)
+                .reply(200, contentResources.jobFileFetchResponse);
+            const store = mockStore();
+            return store.dispatch(contentActions.fetchConcatenatedJobFiles(contentResources.jobName, contentResources.jobId))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
+        });
+
+        it('Should create a request and but not receive due to invalid response', () => {
+            const expectedActions = [
+                requestContentAction,
+                {
+                    type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
+                    message: Map({
+                        message: `${errorMessage} - ${contentResources.jobName}:${contentResources.jobId}:`,
+                    }),
+                },
+                {
+                    type: contentActions.INVALIDATE_CONTENT,
+                    fileLabel: undefined,
+                    fileId: undefined,
+                },
+            ];
+            nock(BASE_URL)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/content`)
+                .reply(500, { status: 'INTERNAL_SERVER_ERROR', message: errorMessage });
+            const store = mockStore();
+            return store.dispatch(contentActions.fetchConcatenatedJobFiles(contentResources.jobName, contentResources.jobId))
+                .then(() => {
+                    expect(store.getActions()).toEqual(expectedActions);
+                });
+        });
+
+        it('Should create a request and but not receive due to no content in response', () => {
+            const expectedActions = [
+                requestContentAction,
+                {
+                    type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
+                    message: Map({
+                        message: `${contentActions.NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE} - ${contentResources.jobName}:${contentResources.jobId}:`,
+                    }),
+                },
+                {
+                    type: contentActions.INVALIDATE_CONTENT,
+                    fileLabel: undefined,
+                    fileId: undefined,
+                },
+            ];
+            nock(BASE_URL)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/content`)
+                .reply(200, { });
+            const store = mockStore();
+            return store.dispatch(contentActions.fetchConcatenatedJobFiles(contentResources.jobName, contentResources.jobId))
                 .then(() => {
                     expect(store.getActions()).toEqual(expectedActions);
                 });
@@ -233,7 +342,7 @@ describe('Action: content', () => {
                     jobId: contentResources.jobId,
                     fileName: 'JCL',
                     fileId: 0,
-                    content: contentResources.jobJCL,
+                    content: contentResources.jobJCL.content,
                     fileLabel: contentActions.getFileLabel(contentResources.jobId, 'JCL'),
                     readOnly: false,
                 }];
@@ -241,7 +350,7 @@ describe('Action: content', () => {
             const store = mockStore();
 
             nock(BASE_URL)
-                .get(`/zosmf/restjobs/jobs/${contentResources.jobName}/${contentResources.jobId}/files/JCL/records`)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/JCL/content`)
                 .reply(200, contentResources.jobJCL);
 
             return store.dispatch(contentActions.getJCL(contentResources.jobName, contentResources.jobId))
@@ -273,7 +382,7 @@ describe('Action: content', () => {
             const store = mockStore();
 
             nock(BASE_URL)
-                .get(`/zosmf/restjobs/jobs/${contentResources.jobName}/${contentResources.jobId}/files/JCL/records`)
+                .get(`/jobs/${contentResources.jobName}/${contentResources.jobId}/files/JCL/content`)
                 .reply(500, { status: 'INTERNAL_SERVER_ERROR', message: errorMessage });
 
             return store.dispatch(contentActions.getJCL(contentResources.jobName, contentResources.jobId))
@@ -304,10 +413,10 @@ describe('Action: content', () => {
             const store = mockStore();
 
             nock(BASE_URL)
-                .put('/zosmf/restjobs/jobs')
+                .post('/jobs/string')
                 .reply(201, contentResources.submitJCLResponse);
 
-            return store.dispatch(contentActions.submitJCL(contentResources.jobJCL))
+            return store.dispatch(contentActions.submitJCL(contentResources.jobJCL.content))
                 .then(() => {
                     expect(store.getActions()).toEqual(expectedActions);
                 });
@@ -331,7 +440,7 @@ describe('Action: content', () => {
             const store = mockStore();
 
             nock(BASE_URL)
-                .put('/zosmf/restjobs/jobs')
+                .post('/jobs/string')
                 .reply(500, { status: 'INTERNAL_SERVER_ERROR', message: errorMessage });
 
             return store.dispatch(contentActions.submitJCL(contentResources.jobJCL.content))
