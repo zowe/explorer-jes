@@ -202,7 +202,7 @@ function filterByJobId(jobs, jobid, dispatch) {
 export function fetchJobs(filters) {
     return dispatch => {
         dispatch(requestJobs(filters));
-        return atlasFetch(`zosmf/restjobs/jobs${getURIQuery(filters)}`, { credentials: 'include' })
+        return atlasFetch(`zosmf/restjobs/jobs${getURIQuery(filters)}`, { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));
             })
@@ -237,7 +237,7 @@ export function fetchJobs(filters) {
 
 function getJobFiles(jobName, jobId) {
     return dispatch => {
-        return atlasFetch(`zosmf/restjobs/jobs/${jobName}/${jobId}/files`, { credentials: 'include' })
+        return atlasFetch(`zosmf/restjobs/jobs/${jobName}/${jobId}/files`, { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));
             })
@@ -282,7 +282,7 @@ export function cancelJob(jobName, jobId) {
             {
                 credentials: 'include',
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-ZOSMF-HEADER': '*' },
                 body: JSON.stringify({ request: 'cancel' }),
             })
             .then(response => {
@@ -314,6 +314,7 @@ export function purgeJob(jobName, jobId) {
             {
                 credentials: 'include',
                 method: 'DELETE',
+                headers: { 'X-CSRF-ZOSMF-HEADER': '*' },
             },
         )
             .then(response => {
@@ -361,6 +362,7 @@ export function purgeJobs(jobs) {
                 {
                     credentials: 'include',
                     method: 'DELETE',
+                    headers: { 'X-CSRF-ZOSMF-HEADER': '*' },
                 },
             )
                 .then(response => {
