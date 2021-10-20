@@ -183,7 +183,8 @@ describe('JES explorer home view with filter parameters in url query', function 
                 expect(await testJobStatusFilter(driver, expectedStatus)).to.be.true;
             });
 
-            it('Should handle fetching only OUTPUT jobs', async () => {
+            // zOSMF APIs only accepts Active or * as job status
+            it.skip('Should handle fetching only OUTPUT jobs', async () => {
                 const filters = { status: 'OUTPUT' };
                 const expectedFilter = { ...DEFAULT_SEARCH_FILTERS, ...filters };
                 const expectedStatus = ['ABEND', 'OUTPUT', 'CC', 'CANCELED', 'JCL', 'SYS', 'SEC'];
