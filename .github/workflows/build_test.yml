@@ -91,9 +91,7 @@ jobs:
           export SERVER_HOST_NAME=${CUSTOM_FVT_SERVER_HOSTNAME:-${{ env.DEFAULT_FVT_SERVER_HOSTNAME }}}
           export SERVER_HTTPS_PORT=7554
           export TEST_BROWSER=firefox
-          ( (npm run test:fvt && export TEST_RESULT=0) || export TEST_RESULT=1 )
-          find .fvt/logs -type f -execdir echo ">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>" \; -execdir cat {} \;
-          exit $TEST_RESULT
+          npm run test:fvt
         # Uncomment the env part to customize test parameters
         # env:
         #   CUSTOM_FVT_APIML_ARTIFACT:
@@ -101,6 +99,10 @@ jobs:
         #   CUSTOM_FVT_ZOSMF_HOST:
         #   CUSTOM_FVT_ZOSMF_PORT:
         #   CUSTOM_FVT_SERVER_HOSTNAME:
+
+      - name: '[Test 2.1] Integration test print log'
+        if: always()
+        run: find .fvt/logs -type f -execdir echo ">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>" \; -execdir cat {} \;
 
       - name: '[Scan 1] Fix code coverage paths'
         working-directory: ./coverage
