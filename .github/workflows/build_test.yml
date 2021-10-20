@@ -91,7 +91,7 @@ jobs:
           export SERVER_HOST_NAME=${CUSTOM_FVT_SERVER_HOSTNAME:-${{ env.DEFAULT_FVT_SERVER_HOSTNAME }}}
           export SERVER_HTTPS_PORT=7554
           export TEST_BROWSER=firefox
-          npm run test:fvt
+          (npm run test:fvt || : )
           find .fvt/logs -type f -execdir echo ">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>" \; -execdir cat {} \;
         # Uncomment the env part to customize test parameters
         # env:
