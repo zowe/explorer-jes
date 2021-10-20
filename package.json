@@ -126,6 +126,6 @@
     "baseuri": "/ui/v1/explorer-jes"
   },
   "proxy": {
-    "target": "https://tvt5003.svl.ibm.com:7554"
+    "target": "https://zzow01.zowe.marist.cloud:7554"
   }
 }
