@@ -91,8 +91,9 @@ jobs:
           export SERVER_HOST_NAME=${CUSTOM_FVT_SERVER_HOSTNAME:-${{ env.DEFAULT_FVT_SERVER_HOSTNAME }}}
           export SERVER_HTTPS_PORT=7554
           export TEST_BROWSER=firefox
-          (npm run test:fvt || : )
+          ( (npm run test:fvt && export TEST_RESULT=0) || export TEST_RESULT=1 )
           find .fvt/logs -type f -execdir echo ">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>" \; -execdir cat {} \;
+          exit $TEST_RESULT
         # Uncomment the env part to customize test parameters
         # env:
         #   CUSTOM_FVT_APIML_ARTIFACT:
