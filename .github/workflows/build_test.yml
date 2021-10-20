@@ -87,7 +87,7 @@ jobs:
           export ZOWE_USERNAME=${{ secrets.SSH_MARIST1_USERNAMEP }}
           export ZOWE_PASSWORD=${{ secrets.SSH_MARIST1_PASSWORDP }}
           ./bin/delete-fvt-jobs.sh
-          sleep 300
+          sleep 120
           echo "Starting integration test ..."
           export SERVER_HOST_NAME=${CUSTOM_FVT_SERVER_HOSTNAME:-${{ env.DEFAULT_FVT_SERVER_HOSTNAME }}}
           export SERVER_HTTPS_PORT=7554
