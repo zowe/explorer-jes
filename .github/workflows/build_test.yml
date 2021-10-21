@@ -80,9 +80,11 @@ jobs:
       - name: '[Test 1] Nodejs project unit test'
         run: npm run test
 
-      - name: test docker ps
-        run: docker ps
-        
+      - name: print container log
+        run: |
+          docker logs "${{ job.services.discovery-service.id }}"
+          docker logs "${{ job.services.gateway-service.id }}"
+
       - name: '[Test 2] Integration test'
         #timeout-minutes: 30
         run: |
@@ -93,6 +95,8 @@ jobs:
           "${CUSTOM_FVT_ZOSMF_HOST:-${{ env.DEFAULT_FVT_ZOSMF_HOST }}}" \
           "${CUSTOM_FVT_ZOSMF_PORT:-${{ env.DEFAULT_FVT_ZOSMF_PORT }}}"
           sleep 120
+          docker logs "${{ job.services.discovery-service.id }}"
+          docker logs "${{ job.services.gateway-service.id }}"
           export ZOWE_USERNAME=${{ secrets.SSH_MARIST1_USERNAMEP }}
           export ZOWE_PASSWORD=${{ secrets.SSH_MARIST1_PASSWORDP }}
           ./bin/delete-fvt-jobs.sh
