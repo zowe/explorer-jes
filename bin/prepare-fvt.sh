@@ -30,7 +30,7 @@ FVT_LOGS_DIR=logs
 
 FVT_API_PORT=10491
 FVT_EXPLORER_UI_PORT=10071
-FVT_GATEWAY_HOST=gateway-service
+FVT_GATEWAY_HOST=localhost
 
 ################################################################################
 # variables
