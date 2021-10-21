@@ -19,7 +19,7 @@ if [ -z "${FVT_GATEWAY_PORT}" ]; then
   FVT_GATEWAY_PORT="${DEFAULT_FVT_GATEWAY_PORT}"
 fi
 
-APIML_URL="https://localhost:${FVT_GATEWAY_PORT}"
+APIML_URL="https://gateway-service:${FVT_GATEWAY_PORT}"
 APIML_LOGIN_ENDPOINT="${APIML_URL}/api/v1/gateway/auth/login"
 ZOSMF_API_URL="${APIML_URL}/zosmf/restjobs/jobs"
 
