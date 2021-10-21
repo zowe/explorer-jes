@@ -87,6 +87,10 @@ jobs:
           docker logs "${{ job.services.discovery-service.id }}"
           docker logs "${{ job.services.gateway-service.id }}"
 
+      - name: debug
+        run: |
+          ls /api-defs
+
       - name: '[Test 2] Integration test'
         #timeout-minutes: 30
         run: |
