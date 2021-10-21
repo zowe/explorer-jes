@@ -10,7 +10,6 @@ on:
       PERFORM_RELEASE:
         description: '[Release] perform release'
         required: false
-  
 
 jobs:
   check-permission:
@@ -28,6 +27,15 @@ jobs:
   build-test:
     runs-on: ubuntu-latest
     needs: check-permission
+
+    services:
+      discovery-service:
+        image: ghcr.io/balhar-jakub/discovery-service:latest
+        volumes:
+            - /api-defs:/api-defs
+      gateway-service:
+        image: ghcr.io/balhar-jakub/gateway-service:latest
+
     steps: 
       - name: '[Prep 1] Checkout'
         uses: actions/checkout@v2
@@ -79,8 +87,6 @@ jobs:
           FVT_API_ARTIFACT_REPLACEMENT_TEXT=jobs
           export DEFAULT_FVT_API_ARTIFACT=$(echo ${{ env.DEFAULT_FVT_API_ARTIFACT_PATTERN }} | sed "s/@@REPLACE@@/$FVT_API_ARTIFACT_REPLACEMENT_TEXT/g")
           ./bin/prepare-fvt.sh \
-          "${CUSTOM_FVT_APIML_ARTIFACT:-${{ env.DEFAULT_FVT_APIML_ARTIFACT }}}" \
-          "${CUSTOM_FVT_API_ARTIFACT:-$DEFAULT_FVT_API_ARTIFACT}" \
           "${CUSTOM_FVT_ZOSMF_HOST:-${{ env.DEFAULT_FVT_ZOSMF_HOST }}}" \
           "${CUSTOM_FVT_ZOSMF_PORT:-${{ env.DEFAULT_FVT_ZOSMF_PORT }}}"
           sleep 120
