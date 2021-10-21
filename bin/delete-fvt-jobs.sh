@@ -40,4 +40,7 @@ for line in $JOB_LIST; do
   jobId=$(echo $line | awk -F, '{print $2;}')
   echo "Purging: ${ZOSMF_API_URL}/${jobName}/${jobId}"
   curl -k -X DELETE --cookie "apimlAuthenticationToken=${APIML_AUTH_TOKEN}" "${ZOSMF_API_URL}/${jobName}/${jobId}"
+  echo "Jobname: $jobName, JobID: $jobId purged"
 done 
+
+echo "[${SCRIPT_NAME}] done."
