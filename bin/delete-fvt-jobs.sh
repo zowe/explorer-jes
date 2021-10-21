@@ -33,7 +33,7 @@ echo "Getting jobs"
 JOB_OUTPUT=$(curl -X GET --header 'Accept: application/json' -k --cookie "apimlAuthenticationToken=${APIML_AUTH_TOKEN}" "${ZOSMF_API_URL}?prefix=TESTJOB*&owner=*")
 JOB_LIST=$(echo "$JOB_OUTPUT" | jq -r '.items[]? | "\(.jobId),\(.jobName)"')
 JOB_COUNT=$(echo "$JOB_LIST" | wc -l)
-echo "Found $JOB_COUNT jobs to purge"
+echo "Found $JOB_COUNT jobs to purge, they are $JOB_LIST"
 
 for line in $JOB_LIST; do
   jobName=$(echo $line | awk -F, '{print $1;}')
