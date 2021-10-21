@@ -104,12 +104,10 @@ jobs:
           export TEST_BROWSER=firefox
           npm run test:fvt
         # Uncomment the env part to customize test parameters
-        # env:
-        #   CUSTOM_FVT_APIML_ARTIFACT:
-        #   CUSTOM_FVT_API_ARTIFACT:
+        env:
         #   CUSTOM_FVT_ZOSMF_HOST:
         #   CUSTOM_FVT_ZOSMF_PORT:
-        #   CUSTOM_FVT_SERVER_HOSTNAME:
+          CUSTOM_FVT_SERVER_HOSTNAME: gateway-service
 
       - name: '[Test 2.1] Integration test print log'
         if: always()
