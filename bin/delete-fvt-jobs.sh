@@ -21,7 +21,7 @@ fi
 
 APIML_URL="https://localhost:${FVT_GATEWAY_PORT}"
 APIML_LOGIN_ENDPOINT="${APIML_URL}/api/v1/gateway/auth/login"
-JOBS_API_URL="${APIML_URL}/api/v2/jobs"
+ZOSMF_API_URL="${APIML_URL}/zosmf/restjobs/jobs"
 
 echo "Getting apimlAuthToken"
 APIML_AUTH_TOKEN=$(curl -k -c - -H "Content-Type: application/json" -d "{\"username\":\"${ZOWE_USERNAME}\",\"password\":\"${ZOWE_PASSWORD}\"}" "${APIML_LOGIN_ENDPOINT}" \
@@ -30,7 +30,7 @@ APIML_AUTH_TOKEN=$(curl -k -c - -H "Content-Type: application/json" -d "{\"usern
 echo "Got apimlAuthToken"
 
 echo "Getting jobs"
-JOB_OUTPUT=$(curl -k --cookie "apimlAuthenticationToken=${APIML_AUTH_TOKEN}" "${JOBS_API_URL}?prefix=TESTJOB*&owner=*")
+JOB_OUTPUT=$(curl -X GET --header 'Accept: application/json' -k --cookie "apimlAuthenticationToken=${APIML_AUTH_TOKEN}" "${ZOSMF_API_URL}?prefix=TESTJOB*&owner=*")
 JOB_LIST=$(echo "$JOB_OUTPUT" | jq -r '.items[]? | "\(.jobId),\(.jobName)"')
 JOB_COUNT=$(echo "$JOB_LIST" | wc -l)
 echo "Found $JOB_COUNT jobs to purge"
@@ -38,6 +38,6 @@ echo "Found $JOB_COUNT jobs to purge"
 for line in $JOB_LIST; do
   jobName=$(echo $line | awk -F, '{print $1;}')
   jobId=$(echo $line | awk -F, '{print $2;}')
-  echo "Purging: ${JOBS_API_URL}/${jobName}/${jobId}"
-  curl -k -X DELETE --cookie "apimlAuthenticationToken=${APIML_AUTH_TOKEN}" "${JOBS_API_URL}/${jobName}/${jobId}"
+  echo "Purging: ${ZOSMF_API_URL}/${jobName}/${jobId}"
+  curl -k -X DELETE --cookie "apimlAuthenticationToken=${APIML_AUTH_TOKEN}" "${ZOSMF_API_URL}/${jobName}/${jobId}"
 done 
