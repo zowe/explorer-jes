@@ -166,7 +166,7 @@ node ${FVT_WORKSPACE}/${FVT_UI_SERVER_DIR}/src/index.js \
   --cert "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}/localhost.cert.pem" \
   --csp "localhost:*" \
   -v \
-  > "${FVT_WORKSPACE}/${FVT_LOGS_DIR}/plugin.log"
+  > "${FVT_WORKSPACE}/${FVT_LOGS_DIR}/plugin.log" &
 echo
 
 ################################################################################
