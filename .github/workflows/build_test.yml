@@ -37,6 +37,8 @@ jobs:
         image: ghcr.io/balhar-jakub/gateway-service:latest
         ports:
           - 7554:10010
+      mock-zosmf:
+        image: ghcr.io/balhar-jakub/mock-zosmf:latest
 
     steps: 
       - name: '[Prep 1] Checkout'
