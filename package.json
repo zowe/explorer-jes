@@ -1,6 +1,7 @@
 {
   "name": "explorer-jes",
   "version": "1.0.19",
+  "types": "module",
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
@@ -48,9 +49,9 @@
     "css-loader": "^1.0.1",
     "dotenv": "^6.2.0",
     "es6-promise": "^4.1.0",
-    "eslint": "^8.0.1",
+    "eslint": "^8.0.0",
     "eslint-config-airbnb": "^15.1.0",
-    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-mocha": "^4.11.0",
     "eslint-plugin-node": "^5.1.1",
@@ -78,17 +79,19 @@
     "webpack": "^5.59.1",
     "webpack-bundle-analyzer": "^3.8.0",
     "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^4.3.1"
+    "webpack-dev-server": "^4.3.1",
+    "file-saver":"^2.0.5",
+    "jszip":"^3.7.1"
   },
   "scripts": {
-    "dev": "webpack-dev-server --content-base WebContent --inline --hot",
-    "start": "npm run build && cross-env NODE_ENV='development' OUTPUT_FOLDER='web' webpack --progress --colors --watch ",
+    "dev": "NODE_ENV='development' webpack serve --config ./webpack.config.js  --hot ",
+    "start": "npm run build && cross-env NODE_ENV='development' OUTPUT_FOLDER='web' webpack --progress --color --watch ",
     "lint": "eslint ./WebContent/js/ ./tests/UnitTests",
-    "test": "cross-env JUNIT_REPORT_PATH=target/report.xml nyc mocha --require babel-core/register tests/UnitTests --recursive --colors --reporter mocha-jenkins-reporter",
+    "test": "cross-env JUNIT_REPORT_PATH=target/report.xml nyc mocha --require babel-core/register tests/UnitTests --recursive --color --reporter mocha-jenkins-reporter",
     "testWatch": "cross-env JUNIT_REPORT_PATH=target/report-fvt.xml mocha --watch --require babel-core/register tests/UnitTests --recursive",
-    "test:fvt": "cross-env JUNIT_REPORT_PATH=target/report-fvt.xml mocha --timeout 999999 --require ts-node/register tests/FVTTests/**/*.ts --recursive --colors --reporter mocha-jenkins-reporter",
+    "test:fvt": "cross-env JUNIT_REPORT_PATH=target/report-fvt.xml mocha --timeout 999999 --require ts-node/register tests/FVTTests/**/*.ts --recursive --color --reporter mocha-jenkins-reporter",
     "prod": "cross-env NODE_ENV='production' webpack -p",
-    "build": "cross-env NODE_ENV='development' OUTPUT_FOLDER='web' webpack --progress --colors",
+    "build": "cross-env NODE_ENV='development' OUTPUT_FOLDER='web' webpack --progress --color",
     "prod:analyze": "cross-env ANALYZE=true npm run prod",
     "preCommit": "npm-run-all --aggregate-output --parallel --print-label lint test prod"
   },
@@ -126,6 +129,6 @@
     "baseuri": "/ui/v1/explorer-jes"
   },
   "proxy": {
-    "target": "https://tvt5003.svl.ibm.com:7554"
+    "target": "https://tvt5010.svl.ibm.com:7554"
   }
 }
