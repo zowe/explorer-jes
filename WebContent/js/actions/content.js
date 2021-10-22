@@ -11,6 +11,8 @@
 import { atlasFetch } from '../utilities/urlUtils';
 import { constructAndPushMessage } from './snackbarNotifications';
 import { checkForValidationFailure } from './validation';
+import { saveAs } from '../../../node_modules/file-saver';
+import JSZip from '../../../node_modules/jszip';
 
 export const REQUEST_CONTENT = 'REQUEST_CONTENT';
 export const REFRESH_CONTENT = 'REFRESH_CONTENT';
@@ -125,6 +127,49 @@ export function fetchConcatenatedJobFiles(jobName, jobId, refreshFile) {
                                 index += 1;
                                 if (index === jobFiles.length) {
                                     return dispatchReceiveContent(dispatch, job.jobname, job.jobid, job.jobid, job.jobid, fileLabel, concatenatedText);
+                                }
+                                return true;
+                            });
+                    });
+                }
+            })
+            .catch(e => {
+                return dispatch(constructAndPushMessage(e.message));
+            });
+    };
+}
+
+export function downloadAllJobFiles(jobName, jobId) {
+    return dispatch => {
+        // fetch the list of files for a Job
+        return atlasFetch(`zosmf/restjobs/jobs/${jobName}/${jobId}/files`, { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
+            .then(response => {
+                return dispatch(checkForValidationFailure(response));
+            })
+            .then(response => { return response.text(); })
+            .then(text => {
+                let index = 0;
+                const jobFiles = JSON.parse(text);
+                const zip = new JSZip();
+                // fetch the content of each file and download these respective files in a zip file format
+                if (jobFiles && jobFiles.constructor === Array) {
+                    jobFiles.forEach(job => {
+                        return atlasFetch(`zosmf/restjobs/jobs/${job.jobname}/${job.jobid}/files/${job.id}/records`,
+                            { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
+                            .then(response => {
+                                return dispatch(checkForValidationFailure(response));
+                            })
+                            .then(response => {
+                                return checkResponse(response);
+                            })
+                            .then(response => {
+                                zip.file(job.ddname, response);
+                                index += 1;
+                                if (index === jobFiles.length) {
+                                    zip.generateAsync({ type: 'blob' })
+                                        .then(content => {
+                                            saveAs(content, `${jobName}-${jobId}`);
+                                        });
                                 }
                                 return true;
                             });
