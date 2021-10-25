@@ -25,7 +25,7 @@ require.extensions['.jpg'] = () => {
     return null;
 };
 
-require('babel-register')();
+require('@babel/register')();
 require('babel-polyfill');
 
 global.location = {

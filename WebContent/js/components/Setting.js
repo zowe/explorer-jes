@@ -39,6 +39,13 @@ const H3 = styled.h3`
     padding-top:8px;
 `;
 
+const H5 = styled.h5`
+    color: red;
+`;
+
+const Heading3 = styled.h3`
+`;
+
 const SettingSection = styled.div`
     width: 100%;
     display: grid;
@@ -89,7 +96,7 @@ class SettingFormBase extends React.Component {
         const { classes } = this.props;
         return (
             <Settings>
-                <h3>Preferences</h3>
+                <Heading3>Preferences</Heading3>
                 <form>
                     <H3>App</H3>
                     <SettingSection>
@@ -122,7 +129,7 @@ class SettingFormBase extends React.Component {
                         </FormControl>
                     </SettingSection>
                 </form>
-                <h5 style={{ color: 'red' }}>*Preferences change require reload</h5>
+                <H5 style={{ color: 'red' }}>*Preferences change require reload</H5>
             </Settings>);
     }
 }

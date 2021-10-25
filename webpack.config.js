@@ -59,8 +59,8 @@ const rules = [
         use: {
             loader:'babel-loader',
             options: {
-                presets: ['react', 'es2015', 'stage-0'],
-                plugins: ['react-html-attrs', 'transform-class-properties', 'transform-decorators-legacy'],
+                presets: ['@babel/react', '@babel/preset-env'],
+                plugins: [['react-html-attrs'], ['@babel/plugin-proposal-decorators',{ 'legacy': true}]],
             },
     },
         include: [
