@@ -1,5 +1,10 @@
 # Change Log
 All notable changes to the JES-Explorer will be documented in this file.
+## <1.0.19>
+
+### New features and enhancements
+- Added the feature to download all files of a JOB in a zip format.
+
 ## <1.0.18>
 
 ### New features and enhancements
