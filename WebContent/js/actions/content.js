@@ -11,8 +11,8 @@
 import { atlasFetch } from '../utilities/urlUtils';
 import { constructAndPushMessage } from './snackbarNotifications';
 import { checkForValidationFailure } from './validation';
-import { saveAs } from '../../../node_modules/file-saver';
-import JSZip from '../../../node_modules/jszip';
+import { saveAs } from 'file-saver';
+import JSZip from 'jszip';
 
 export const REQUEST_CONTENT = 'REQUEST_CONTENT';
 export const REFRESH_CONTENT = 'REFRESH_CONTENT';
