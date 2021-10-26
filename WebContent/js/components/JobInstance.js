@@ -16,7 +16,7 @@ import LabelIcon from '@material-ui/icons/Label';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { hideMenu } from 'react-contextmenu/modules/actions';
 import { fetchJobFiles, toggleJob, invertJobSelectStatus, unselectAllJobs, cancelJob, purgeJob, purgeJobs, getSelectedJobs } from '../actions/jobNodes';
-import { getJCL, getFileLabel, changeSelectedContent, fetchConcatenatedJobFiles, downloadFile } from '../actions/content';
+import { getJCL, getFileLabel, changeSelectedContent, fetchConcatenatedJobFiles, downloadAllJobFiles, downloadFile } from '../actions/content';
 import JobFile from './JobFile';
 import JobStep from './JobStep';
 
@@ -94,6 +94,9 @@ class JobInstance extends React.Component {
                     break;
                 case 'd':
                     this.handleDownloadJCL();
+                    break;
+                case 'a':
+                    this.handleDownloadALlFiles();
                     break;
                 default:
                     break;
@@ -181,6 +184,11 @@ class JobInstance extends React.Component {
         downloadFile(job, 'JCL', url, dispatch);
     }
 
+    handleDownloadALlFiles() {
+        const { job, dispatch } = this.props;
+        dispatch(downloadAllJobFiles(job.get('jobName'), job.get('jobId')));
+    }
+
     renderJobStatus() {
         const { job } = this.props;
         const statusStyleActive = { display: 'inline' };
@@ -238,6 +246,9 @@ class JobInstance extends React.Component {
             </MenuItem>,
             <MenuItem key="downloadJCL" onClick={() => { this.handleDownloadJCL(); }}>
                 <u>D</u>ownload JCL
+            </MenuItem>,
+            <MenuItem key="downloadAllFiles" onClick={() => { this.handleDownloadALlFiles(); }}>
+                Download <u>A</u>ll Files
             </MenuItem>,
         ];
         if (job.get('status').toLowerCase() === 'active') {
