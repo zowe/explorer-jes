@@ -167,6 +167,13 @@ node ${FVT_WORKSPACE}/${FVT_UI_SERVER_DIR}/src/index.js \
   --csp "localhost:*" \
   -v \
   > "${FVT_WORKSPACE}/${FVT_LOGS_DIR}/plugin.log" &
+echo "[${SCRIPT_NAME}] starting APIML ..."
+cd "${ROOT_DIR}"
+./${FVT_UTILITIES_SCRIPTS_DIR}/start-apiml.sh \
+  "${FVT_WORKSPACE}/${FVT_APIML_DIR}" \
+  "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}" \
+  "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}" \
+  "${FVT_WORKSPACE}/${FVT_LOGS_DIR}"
 echo
 
 ################################################################################

@@ -28,16 +28,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: check-permission
 
-    services:
-      discovery-service:
-        image: ghcr.io/balhar-jakub/discovery-service:latest
-        volumes:
-            - /api-defs:/api-defs
-      gateway-service:
-        image: ghcr.io/balhar-jakub/gateway-service:latest
-        ports:
-          - 7554:10010
-
     steps: 
       - name: '[Prep 1] Checkout'
         uses: actions/checkout@v2
