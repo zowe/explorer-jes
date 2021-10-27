@@ -206,7 +206,7 @@ jobs:
             ${{ runner.os }}-build-cache-node-modules-
 
       - name: '[Prep 3] Prepare workflow'
-        uses: zowe-actions/shared-actions/prepare-workflow@Change-fvt-test-server-to-localhost
+        uses: zowe-actions/shared-actions/prepare-workflow@main
         with:
           github-user: ${{ secrets.ZOWE_ROBOT_USER }}
           github-password: ${{ secrets.ZOWE_ROBOT_TOKEN }}
@@ -226,14 +226,12 @@ jobs:
         timeout-minutes: 30
         run: |
           echo "Preparing server for integration test ..."
-          FVT_API_ARTIFACT_REPLACEMENT_TEXT=jobs
-          export DEFAULT_FVT_API_ARTIFACT=$(echo ${{ env.DEFAULT_FVT_API_ARTIFACT_PATTERN }} | sed "s/@@REPLACE@@/$FVT_API_ARTIFACT_REPLACEMENT_TEXT/g")
           ./bin/prepare-fvt.sh \
           "${CUSTOM_FVT_ZOSMF_HOST:-${{ env.DEFAULT_FVT_ZOSMF_HOST }}}" \
           "${CUSTOM_FVT_ZOSMF_PORT:-${{ env.DEFAULT_FVT_ZOSMF_PORT }}}" \
           "${{ needs.build-ubuntu-amd64.outputs.IMAGE_NAME_FULL_REMOTE }}"
-          echo "Wait 120 seconds to have sufficient time for apiml to start up completely, be patient... :) "
-          sleep 120
+          echo "Wait 240 seconds to have sufficient time for apiml to start up completely, be patient... :) "
+          sleep 240
           export ZOWE_USERNAME=${{ secrets.SSH_MARIST1_USERNAMEP }}
           export ZOWE_PASSWORD=${{ secrets.SSH_MARIST1_PASSWORDP }}
           ./bin/delete-fvt-jobs.sh
