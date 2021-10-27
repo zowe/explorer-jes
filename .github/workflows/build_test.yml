@@ -11,6 +11,9 @@ on:
         description: '[Release] perform release'
         required: false
 
+env:
+  IMAGE_BASE_DIR: container
+
 jobs:
   check-permission:
     runs-on: ubuntu-latest
@@ -24,10 +27,234 @@ jobs:
           github-user: ${{ secrets.ZOWE_ROBOT_USER }}
           github-passwd: ${{ secrets.ZOWE_ROBOT_TOKEN }}
 
-  build-test:
+  build-ubuntu-amd64:
+    needs: check-permission
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
+
+      - uses: zowe-actions/shared-actions/docker-prepare@main
+        with:
+          registry-user: ${{ secrets.ARTIFACTORY_X_USERNAME }}
+          registry-password: ${{ secrets.ARTIFACTORY_X_PASSWORD }}
+          release: ${{ github.event.inputs.PERFORM_RELEASE }}
+          base-directory: ${{ env.IMAGE_BASE_DIR }}
+          image-name: explorer-jes
+          linux-distro: ubuntu
+          cpu-arch: amd64
+
+      - uses: zowe-actions/shared-actions/docker-build-local@main
+        with:
+          build-arg-list: ZOWE_BASE_IMAGE=latest-ubuntu
+        timeout-minutes: 5
+    outputs:
+      IMAGE_NAME_FULL_REMOTE: ${{ env.IMAGE_NAME_FULL_REMOTE }}
+
+  build-ubuntu-s390x:
+    needs: check-permission
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
+
+      - uses: zowe-actions/shared-actions/docker-prepare@main
+        with:
+          registry-user: ${{ secrets.ARTIFACTORY_X_USERNAME }}
+          registry-password: ${{ secrets.ARTIFACTORY_X_PASSWORD }}
+          release: ${{ github.event.inputs.PERFORM_RELEASE }}
+          base-directory: ${{ env.IMAGE_BASE_DIR }}
+          image-name: explorer-jes
+          linux-distro: ubuntu
+          cpu-arch: s390x
+
+      - uses: zowe-actions/shared-actions/docker-build-zlinux@main
+        with:
+          zlinux-host: ${{ secrets.ZLINUX_HOST }}
+          zlinux-ssh-user: ${{ secrets.ZLINUX_SSH_USER }}
+          zlinux-ssh-key: ${{ secrets.ZLINUX_SSH_KEY }}
+          zlinux-ssh-passphrase: ${{ secrets.ZLINUX_SSH_PASSPHRASE }}
+          build-arg-list: ZOWE_BASE_IMAGE=latest-ubuntu
+        timeout-minutes: 10
+
+  define-ubuntu-manifest:
+    needs:
+      - build-ubuntu-amd64
+      - build-ubuntu-s390x
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
+
+      - uses: zowe-actions/shared-actions/docker-prepare@main
+        with:
+          registry-user: ${{ secrets.ARTIFACTORY_X_USERNAME }}
+          registry-password: ${{ secrets.ARTIFACTORY_X_PASSWORD }}
+          release: ${{ github.event.inputs.PERFORM_RELEASE }}
+          base-directory: ${{ env.IMAGE_BASE_DIR }}
+          image-name: explorer-jes
+          linux-distro: ubuntu
+
+      - uses: zowe-actions/shared-actions/docker-manifest@main
+        with:
+          linux-distro: ubuntu
+          cpu-arch-list: "amd64 s390x"
+        timeout-minutes: 2
+
+  build-ubi-amd64:
     runs-on: ubuntu-latest
     needs: check-permission
+    steps:
+      - uses: actions/checkout@v2
 
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
+
+      - uses: zowe-actions/shared-actions/docker-prepare@main
+        with:
+          registry-user: ${{ secrets.ARTIFACTORY_X_USERNAME }}
+          registry-password: ${{ secrets.ARTIFACTORY_X_PASSWORD }}
+          release: ${{ github.event.inputs.PERFORM_RELEASE }}
+          base-directory: ${{ env.IMAGE_BASE_DIR }}
+          image-name: explorer-jes
+          linux-distro: ubi
+          cpu-arch: amd64
+          redhat-registry: ${{ env.DEFAULT_REDHAT_DOCKER_REGISTRY }}
+          redhat-registry-user: ${{ secrets.REDHAT_DEVELOPER_USER }}
+          redhat-registry-password: ${{ secrets.REDHAT_DEVELOPER_PASSWORD }}
+
+      - uses: zowe-actions/shared-actions/docker-build-local@main
+        with:
+          build-arg-list: ZOWE_BASE_IMAGE=latest-ubi
+        timeout-minutes: 5
+
+  build-ubi-s390x:
+    runs-on: ubuntu-latest
+    needs: check-permission
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
+
+      - uses: zowe-actions/shared-actions/docker-prepare@main
+        with:
+          registry-user: ${{ secrets.ARTIFACTORY_X_USERNAME }}
+          registry-password: ${{ secrets.ARTIFACTORY_X_PASSWORD }}
+          release: ${{ github.event.inputs.PERFORM_RELEASE }}
+          base-directory: ${{ env.IMAGE_BASE_DIR }}
+          image-name: explorer-jes
+          linux-distro: ubi
+          cpu-arch: s390x
+
+      - uses: zowe-actions/shared-actions/docker-build-zlinux@main
+        with:
+          zlinux-host: ${{ secrets.ZLINUX_HOST }}
+          zlinux-ssh-user: ${{ secrets.ZLINUX_SSH_USER }}
+          zlinux-ssh-key: ${{ secrets.ZLINUX_SSH_KEY }}
+          zlinux-ssh-passphrase: ${{ secrets.ZLINUX_SSH_PASSPHRASE }}
+          redhat-registry: ${{ env.DEFAULT_REDHAT_DOCKER_REGISTRY }}
+          redhat-registry-user: ${{ secrets.REDHAT_DEVELOPER_USER }}
+          redhat-registry-password: ${{ secrets.REDHAT_DEVELOPER_PASSWORD }}
+          build-arg-list: ZOWE_BASE_IMAGE=latest-ubi
+        timeout-minutes: 10
+
+  define-ubi-manifest:
+    needs:
+      - build-ubi-amd64
+      - build-ubi-s390x
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
+
+      - uses: zowe-actions/shared-actions/docker-prepare@main
+        with:
+          registry-user: ${{ secrets.ARTIFACTORY_X_USERNAME }}
+          registry-password: ${{ secrets.ARTIFACTORY_X_PASSWORD }}
+          release: ${{ github.event.inputs.PERFORM_RELEASE }}
+          base-directory: ${{ env.IMAGE_BASE_DIR }}
+          image-name: explorer-jes
+          linux-distro: ubi
+
+      - uses: zowe-actions/shared-actions/docker-manifest@main
+        with:
+          linux-distro: ubi
+          cpu-arch-list: "amd64 s390x"
+        timeout-minutes: 2
+
+  # test on explorer-jes image
+  integration-test:
+    runs-on: ubuntu-latest
+    needs: build-ubuntu-amd64
+    steps:
+      - name: '[Prep 1] Checkout'
+        uses: actions/checkout@v2
+
+      - name: '[Prep 2] Cache node modules'
+        uses: actions/cache@v2
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: |
+            ~/.npm
+            ~/.nvm/.cache
+            ~/.nvm/versions
+          key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-cache-node-modules-
+
+      - name: '[Prep 3] Prepare workflow'
+        uses: zowe-actions/shared-actions/prepare-workflow@Change-fvt-test-server-to-localhost
+        with:
+          github-user: ${{ secrets.ZOWE_ROBOT_USER }}
+          github-password: ${{ secrets.ZOWE_ROBOT_TOKEN }}
+          github-email: ${{ secrets.ZOWE_ROBOT_EMAIL }}
+
+      - name: '[Prep 4] Setup Node'
+        uses: actions/setup-node@v2
+        with:
+          node-version: 10.18.1
+
+      - name: '[Setup] NodeJS project setup'
+        uses: zowe-actions/nodejs-actions/setup@main
+        with:
+          package-name: 'org.zowe.explorer-jes'
+
+      - name: '[Test 1] Integration test'
+        timeout-minutes: 30
+        run: |
+          echo "Preparing server for integration test ..."
+          FVT_API_ARTIFACT_REPLACEMENT_TEXT=jobs
+          export DEFAULT_FVT_API_ARTIFACT=$(echo ${{ env.DEFAULT_FVT_API_ARTIFACT_PATTERN }} | sed "s/@@REPLACE@@/$FVT_API_ARTIFACT_REPLACEMENT_TEXT/g")
+          ./bin/prepare-fvt.sh \
+          "${CUSTOM_FVT_ZOSMF_HOST:-${{ env.DEFAULT_FVT_ZOSMF_HOST }}}" \
+          "${CUSTOM_FVT_ZOSMF_PORT:-${{ env.DEFAULT_FVT_ZOSMF_PORT }}}" \
+          "${{ needs.build-ubuntu-amd64.outputs.IMAGE_NAME_FULL_REMOTE }}"
+          echo "Wait 120 seconds to have sufficient time for apiml to start up completely, be patient... :) "
+          sleep 120
+          export ZOWE_USERNAME=${{ secrets.SSH_MARIST1_USERNAMEP }}
+          export ZOWE_PASSWORD=${{ secrets.SSH_MARIST1_PASSWORDP }}
+          ./bin/delete-fvt-jobs.sh
+          echo "Starting integration test ..."
+          export SERVER_HOST_NAME=${CUSTOM_FVT_SERVER_HOSTNAME:-${{ env.DEFAULT_FVT_SERVER_HOSTNAME }}}
+          export SERVER_HTTPS_PORT=7554
+          export TEST_BROWSER=firefox
+          npm run test:fvt
+        # Uncomment the env part to customize test parameters
+        #env:
+        #   CUSTOM_FVT_ZOSMF_HOST:
+        #   CUSTOM_FVT_ZOSMF_PORT:
+        #   CUSTOM_FVT_SERVER_HOSTNAME:
+
+      - name: '[Test 1.1] Integration test print log'
+        if: always()
+        run: find .fvt/logs -type f -execdir echo ">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>" \; -execdir cat {} \;
+
+  regular-build:
+    runs-on: ubuntu-latest
+    needs: check-permission
     steps: 
       - name: '[Prep 1] Checkout'
         uses: actions/checkout@v2
@@ -50,7 +277,7 @@ jobs:
           JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_TOKEN }}
           
       - name: '[Prep 4] Prepare workflow'
-        uses: zowe-actions/shared-actions/prepare-workflow@Change-fvt-test-server-to-localhost
+        uses: zowe-actions/shared-actions/prepare-workflow@main
         with:
           github-user: ${{ secrets.ZOWE_ROBOT_USER }}
           github-password: ${{ secrets.ZOWE_ROBOT_TOKEN }}
@@ -69,48 +296,8 @@ jobs:
       - name: '[Build] Nodejs project build'
         run: npm run prod
 
-      - name: '[Test 1] Nodejs project unit test'
+      - name: '[Test] Nodejs project unit test'
         run: npm run test
-
-      - name: print container log
-        run: |
-          docker logs "${{ job.services.discovery-service.id }}"
-          docker logs "${{ job.services.gateway-service.id }}"
-
-      - name: debug
-        run: |
-          ls /api-defs
-          ls .fvt/configs
-          cat .fvt/configs/zosmf.yml
-
-      - name: '[Test 2] Integration test'
-        #timeout-minutes: 30
-        run: |
-          echo "Preparing server for integration test ..."
-          FVT_API_ARTIFACT_REPLACEMENT_TEXT=jobs
-          export DEFAULT_FVT_API_ARTIFACT=$(echo ${{ env.DEFAULT_FVT_API_ARTIFACT_PATTERN }} | sed "s/@@REPLACE@@/$FVT_API_ARTIFACT_REPLACEMENT_TEXT/g")
-          ./bin/prepare-fvt.sh \
-          "${CUSTOM_FVT_ZOSMF_HOST:-${{ env.DEFAULT_FVT_ZOSMF_HOST }}}" \
-          "${CUSTOM_FVT_ZOSMF_PORT:-${{ env.DEFAULT_FVT_ZOSMF_PORT }}}"
-          echo "Wait 120 seconds"
-          sleep 120
-          export ZOWE_USERNAME=${{ secrets.SSH_MARIST1_USERNAMEP }}
-          export ZOWE_PASSWORD=${{ secrets.SSH_MARIST1_PASSWORDP }}
-          ./bin/delete-fvt-jobs.sh
-          echo "Starting integration test ..."
-          export SERVER_HOST_NAME=${CUSTOM_FVT_SERVER_HOSTNAME:-${{ env.DEFAULT_FVT_SERVER_HOSTNAME }}}
-          export SERVER_HTTPS_PORT=7554
-          export TEST_BROWSER=firefox
-          npm run test:fvt
-        # Uncomment the env part to customize test parameters
-        #env:
-        #   CUSTOM_FVT_ZOSMF_HOST:
-        #   CUSTOM_FVT_ZOSMF_PORT:
-        #   CUSTOM_FVT_SERVER_HOSTNAME:
-
-      - name: '[Test 2.1] Integration test print log'
-        if: always()
-        run: find .fvt/logs -type f -execdir echo ">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>" \; -execdir cat {} \;
 
       - name: '[Scan 1] Fix code coverage paths'
         working-directory: ./coverage

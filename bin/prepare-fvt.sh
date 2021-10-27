@@ -22,20 +22,18 @@ SCRIPT_PWD=$(cd "$(dirname "$0")" && pwd)
 ROOT_DIR=$(cd "$SCRIPT_PWD" && cd .. && pwd)
 FVT_UTILITIES_SCRIPTS_DIR=node_modules/explorer-fvt-utilities/scripts
 FVT_WORKSPACE="${ROOT_DIR}/.fvt"
-FVT_PLUGIN_DIR=jes_explorer
-FVT_UI_SERVER_DIR=ui-server
 FVT_KEYSTORE_DIR=keystore
 FVT_CONFIG_DIR=configs
 FVT_LOGS_DIR=logs
 
-FVT_API_PORT=10491
 FVT_EXPLORER_UI_PORT=10071
-FVT_GATEWAY_HOST=localhost
+FVT_GATEWAY_HOST=explorer-jes
 
 ################################################################################
 # variables
 FVT_ZOSMF_HOST=$1
 FVT_ZOSMF_PORT=$2
+IMAGE_NAME_FULL_REMOTE=$3
 
 ################################################################################
 cd "${ROOT_DIR}"
@@ -60,37 +58,11 @@ echo "[${SCRIPT_NAME}] cleaning FVT workspace ..."
 if [ -d "${FVT_WORKSPACE}" ]; then
   rm -fr "${FVT_WORKSPACE}"
 fi
-mkdir -p "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}"
+# mkdir -p "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_LOGS_DIR}"
-mkdir -p "${FVT_WORKSPACE}/${FVT_UI_SERVER_DIR}"
-echo
-
-################################################################################
-# prepare UI package
-echo "[${SCRIPT_NAME}] prepare plugin package ..."
-cd "${ROOT_DIR}"
-./.pax/prepare-workspace.sh
-echo
-
-################################################################################
-# prepare UI package
-echo "[${SCRIPT_NAME}] copying plugin to target test folder ..."
-cd "${ROOT_DIR}"
-cp -R .pax/content/. "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/"
-cp -R .pax/ascii/. "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/"
-cd "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}"
-echo
-
-################################################################################
-# Explorer UI Server
-echo "[${SCRIPT_NAME}] copying explorer UI server ..."	
-# fetch latest version of explorer ui server
-cd "${FVT_WORKSPACE}/${FVT_UI_SERVER_DIR}"
-npm init -y
-npm install explorer-ui-server --ignore-scripts --registry=https://zowe.jfrog.io/zowe/api/npm/npm-release/
-mv node_modules/explorer-ui-server/* .	
+# mkdir -p "${FVT_WORKSPACE}/${FVT_UI_SERVER_DIR}"
 echo
 
 ################################################################################
@@ -105,30 +77,8 @@ echo
 echo "[${SCRIPT_NAME}] writing z/OSMF config for APIML ..."
 cd "${ROOT_DIR}"
 ./${FVT_UTILITIES_SCRIPTS_DIR}/prepare-zosmf-config.sh "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}" "$FVT_ZOSMF_HOST" "$FVT_ZOSMF_PORT"
-echo "[${SCRIPT_NAME}] writing jobs API config for APIML ..."
-cat > "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}/jobs-api.yml" << EOF
-services:
-- serviceId: jobs
-  title: IBM z/OS Jobs
-  description: IBM z/OS Jobs REST API service
-  catalogUiTileId: jobs
-  instanceBaseUrls:
-  - https://${FVT_GATEWAY_HOST}:${FVT_API_PORT}/
-  homePageRelativeUrl:
-  routedServices:
-  - gatewayUrl: api/v2
-    serviceRelativeUrl: api/v2/jobs
-  apiInfo:
-  - apiId: com.ibm.jobs
-    gatewayUrl: api/v2
-    version: 1.0.0
-    swaggerUrl: https://${FVT_GATEWAY_HOST}:${FVT_API_PORT}/v2/api-docs
-    documentationUrl: https://${FVT_GATEWAY_HOST}:${FVT_API_PORT}/swagger-ui.html
-catalogUiTiles:
-  jobs:
-    title: z/OS Jobs services
-    description: IBM z/OS Jobs REST services
-EOF
+
+################################################################################
 echo "[${SCRIPT_NAME}] writing Explorer Jes UI config for APIML ..."
 cat > "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}/jobs-ui.yml" << EOF
 services:
@@ -156,25 +106,32 @@ echo
 # NOTE: to kill all processes on Mac
 #        ps aux | grep .fvt | grep -v grep | awk '{print $2}' | xargs kill -9
 cd "${ROOT_DIR}"
-echo "[${SCRIPT_NAME}] starting plugin service ..."
-node ${FVT_WORKSPACE}/${FVT_UI_SERVER_DIR}/src/index.js \
-  --service "${EXPLORER_PLUGIN_NAME}" \
-  --path "${EXPLORER_PLUGIN_BASEURI}" \
-  --dir "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}/web" \
-  --port "${FVT_EXPLORER_UI_PORT}" \
-  --key  "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}/localhost.private.pem" \
-  --cert "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}/localhost.cert.pem" \
-  --csp "localhost:*" \
-  -v \
-  > "${FVT_WORKSPACE}/${FVT_LOGS_DIR}/plugin.log" &
-echo "[${SCRIPT_NAME}] starting APIML ..."
+echo "[${SCRIPT_NAME}] preparing APIML in docker compose ..."
 cd "${ROOT_DIR}"
-./${FVT_UTILITIES_SCRIPTS_DIR}/start-apiml.sh \
-  "${FVT_WORKSPACE}/${FVT_APIML_DIR}" \
+./${FVT_UTILITIES_SCRIPTS_DIR}/prepare-apiml.sh \
+  "${FVT_WORKSPACE}" \
   "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}" \
   "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}" \
   "${FVT_WORKSPACE}/${FVT_LOGS_DIR}"
 echo
+echo "[${SCRIPT_NAME}] preparing explorer in docker compose ..."
+# append the explore-jes image config to the same docker-compose.yml file
+cat >> "$FVT_WORKSPACE/docker-compose.yml" << EOF
+  explorer-jes:
+    ports:
+      - ${FVT_EXPLORER_UI_PORT}:${FVT_EXPLORER_UI_PORT}
+    volumes:
+      - ${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}:/keystore
+    environment:
+      JES_EXPLORER_UI_PORT: ${FVT_EXPLORER_UI_PORT}
+      KEYSTORE_KEY: /keystore/localhost.private.pem
+      KEYSTORE_CERTIFICATE: /keystore/localhost.cert.pem
+    image: "$IMAGE_NAME_FULL_REMOTE"
+EOF
+
+echo "[${SCRIPT_NAME}] starting docker compose"
+cd $FVT_WORKSPACE
+docker compose up -d
 
 ################################################################################
 echo "[${SCRIPT_NAME}] done."
