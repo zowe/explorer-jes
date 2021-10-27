@@ -312,17 +312,14 @@ export function submitJCL(content) {
                 body: content,
             })
             .then(response => {
-                console.log.apply('im here 2: '+ response);
                 return dispatch(checkForValidationFailure(response));
             })
             .then(response => {
-                console.log.apply('im here 1: '+ response);
                 return checkResponse(response);
             })
             .then(response => {
                 // convert the response to JSON
                 const json = JSON.parse(response);
-                console.log.apply('im here 3: '+ json);
                 dispatch(receiveSubmitJCL(json.jobname, json.jobid));
                 dispatch(constructAndPushMessage(`${json.jobname}:${json.jobid} Submitted`));
             })
