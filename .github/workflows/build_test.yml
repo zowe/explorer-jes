@@ -240,13 +240,19 @@ jobs:
           sleep 300
       
       - name: "[Test 2] Print container service logs - discovery-service"
-        run: docker compose logs discovery-service
+        run: |
+          cd .fvt
+          docker compose logs discovery-service
       
       - name: "[Test 3] Print container service logs - gateway-service"
-        run: docker compose logs gateway-service
+        run: |
+          cd .fvt
+          docker compose logs gateway-service
 
       - name: "[Test 4] Print container service logs - explorer-jes"
-        run: docker compose logs explorer-jes
+        run: |
+          cd .fvt
+          docker compose logs explorer-jes
 
       - name: "[Test 5] Start integration test"
         run: |
