@@ -222,16 +222,34 @@ jobs:
         with:
           package-name: 'org.zowe.explorer-jes'
 
-      - name: '[Test 1] Integration test'
-        timeout-minutes: 30
+      - name: '[Test 1] Preparing integration test'
         run: |
           echo "Preparing server for integration test ..."
           ./bin/prepare-fvt.sh \
           "${CUSTOM_FVT_ZOSMF_HOST:-${{ env.DEFAULT_FVT_ZOSMF_HOST }}}" \
           "${CUSTOM_FVT_ZOSMF_PORT:-${{ env.DEFAULT_FVT_ZOSMF_PORT }}}" \
           "${{ needs.build-ubuntu-amd64.outputs.IMAGE_NAME_FULL_REMOTE }}"
-          echo "Wait 240 seconds to have sufficient time for apiml to start up completely, be patient... :) "
-          sleep 240
+          echo "Wait 20 mins to have sufficient time for apiml to start up completely, be patient... :) "
+          echo "20 mins left"
+          sleep 300
+          echo "15 mins left"
+          sleep 300
+          echo "10 mins left"
+          sleep 300
+          echo "5 mins left"
+          sleep 300
+      
+      - name: "[Test 2] Print container service logs - discovery-service"
+        run: docker compose logs discovery-service
+      
+      - name: "[Test 3] Print container service logs - gateway-service"
+        run: docker compose logs gateway-service
+
+      - name: "[Test 4] Print container service logs - explorer-jes"
+        run: docker compose logs explorer-jes
+
+      - name: "[Test 5] Start integration test"
+        run: |
           export ZOWE_USERNAME=${{ secrets.SSH_MARIST1_USERNAMEP }}
           export ZOWE_PASSWORD=${{ secrets.SSH_MARIST1_PASSWORDP }}
           ./bin/delete-fvt-jobs.sh
