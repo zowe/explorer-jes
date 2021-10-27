@@ -334,23 +334,26 @@ export async function submitJob(jcl, host, port, username, password) {
         rejectUnauthorized: false,
     });
     const b64Credentials = `Basic ${new Buffer(`${username}:${password}`).toString('base64')}`;
-    await fetch(`https://${host}:${port}/api/v2/jobs/string`, {
-        method: 'POST',
+    await fetch(`https://${host}:${port}/ibmzosmf/api/v1/zosmf/restjobs/jobs`, {
+        method: 'PUT',
         headers: {
             authorization: b64Credentials,
-            'Content-Type': 'application/json',
+            'Content-Type': 'text/plain',
+            'X-CSRF-ZOSMF-HEADER': '*',
         },
         agent,
-        body: JSON.stringify({ jcl }),
+        body: jcl,
     }).then(
         response => {
             if (response.ok) {
-                return response.json();
+                return response.text();
             }
             return response.json().then(e => { throw Error(e.message); });
         },
     ).then(
-        responseJson => { console.log(responseJson); },
+        responseText => {
+            const json = JSON.parse(responseText);
+            console.log(json); },
     );
 }
 
