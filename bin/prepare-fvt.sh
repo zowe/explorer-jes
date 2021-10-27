@@ -58,11 +58,9 @@ echo "[${SCRIPT_NAME}] cleaning FVT workspace ..."
 if [ -d "${FVT_WORKSPACE}" ]; then
   rm -fr "${FVT_WORKSPACE}"
 fi
-# mkdir -p "${FVT_WORKSPACE}/${FVT_PLUGIN_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_LOGS_DIR}"
-# mkdir -p "${FVT_WORKSPACE}/${FVT_UI_SERVER_DIR}"
 echo
 
 ################################################################################
@@ -122,6 +120,7 @@ echo
 echo "[${SCRIPT_NAME}] preparing explorer in docker compose ..."
 # append the explore-jes image config to the same docker-compose.yml file
 cat >> "$FVT_WORKSPACE/docker-compose.yml" << EOF
+  
   explorer-jes:
     ports:
       - ${FVT_EXPLORER_UI_PORT}:${FVT_EXPLORER_UI_PORT}
