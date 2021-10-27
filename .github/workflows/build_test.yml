@@ -229,15 +229,18 @@ jobs:
           "${CUSTOM_FVT_ZOSMF_HOST:-${{ env.DEFAULT_FVT_ZOSMF_HOST }}}" \
           "${CUSTOM_FVT_ZOSMF_PORT:-${{ env.DEFAULT_FVT_ZOSMF_PORT }}}" \
           "${{ needs.build-ubuntu-amd64.outputs.IMAGE_NAME_FULL_REMOTE }}"
-          echo "Wait 20 mins to have sufficient time for apiml to start up completely, be patient... :) "
-          echo "20 mins left"
-          sleep 300
-          echo "15 mins left"
-          sleep 300
-          echo "10 mins left"
-          sleep 300
-          echo "5 mins left"
-          sleep 300
+          sleep 120
+          cd .fvt/keystore && ls
+# echo "Wait 20 mins to have sufficient time for apiml to start up completely, be patient... :) "
+# echo "20 mins left"
+# sleep 300
+# echo "15 mins left"
+# sleep 300
+# echo "10 mins left"
+# sleep 300
+# echo "5 mins left"
+# sleep 300
+          
       
       - name: "[Test 2] Print container service logs - discovery-service"
         run: |
