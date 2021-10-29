@@ -11,7 +11,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export default class FulleHeightTree extends React.Component {
+export default class FullHeightTree extends React.Component {
     constructor(props) {
         super(props);
         this.onDivRef = this.onDivRef.bind(this);
@@ -27,6 +27,10 @@ export default class FulleHeightTree extends React.Component {
         window.addEventListener('resize', this.updateDivHeight);
     }
 
+    componentDidUpdate() {
+        this.updateDivHeight();
+    }
+
     onDivRef(node) {
         if (node) {
             this.divRef = node;
@@ -35,8 +39,9 @@ export default class FulleHeightTree extends React.Component {
 
     updateDivHeight() {
         const { offset } = this.props;
-        if (this.divRef) {
-            this.setState({ height: window.innerHeight - this.divRef.offsetTop - (offset || 0) });
+        const newHeight = window.innerHeight - (offset || 0);
+        if (this.divRef && this.state.height !== newHeight) {
+            this.setState({ height: newHeight });
         }
     }
 
@@ -44,7 +49,7 @@ export default class FulleHeightTree extends React.Component {
         const { overrideHeight, children } = this.props;
         return (
             <div
-                className="node"
+                id="full-height-tree"
                 ref={this.onDivRef}
                 style={{ overflow: 'scroll', height: overrideHeight || this.state.height }}
             >
@@ -54,7 +59,7 @@ export default class FulleHeightTree extends React.Component {
     }
 }
 
-FulleHeightTree.propTypes = {
+FullHeightTree.propTypes = {
     children: PropTypes.element.isRequired,
     overrideHeight: PropTypes.string,
     offset: PropTypes.number,

@@ -7,6 +7,7 @@ module.exports = {
     ],
     "rules": {
         "react/jsx-filename-extension": 0,
+        "react/no-did-update-set-state": 0,
         "indent": ["error", 4,{ "SwitchCase": 1 }],
         "react/jsx-indent": ["error", 4],
         "react/jsx-indent-props": ["error", 4],
@@ -20,7 +21,8 @@ module.exports = {
         "no-underscore-dangle":0,
         "jsx-a11y/no-static-element-interactions":0,
         "lines-between-class-members": ["error", "always"],
-        "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }]
+        "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+        "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/fvtTest/**/*.*", "**/tests/**/*.*", "**/WebContent/**/*.*", "webpack.*"]},]
     },
     "env": {
         "browser": true,
@@ -29,7 +31,7 @@ module.exports = {
         "jest": true,
         "mocha": true
     },
-    "parser": "babel-eslint",
+    "parser": "@babel/eslint-parser",
     "parserOptions": {
         "ecmaVersion": 6,
         "sourceType": "module",

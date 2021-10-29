@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2019
+ * Copyright IBM Corporation 2016, 2020
  */
 
 import { Map } from 'immutable';
@@ -19,7 +19,9 @@ import {
 const INITIAL_CONTENT_STATE = Map({
     validated: false,
     isValidating: false,
-    username: 'Loading...',
+    username: '',
+    message: '',
+    forceLogin: false,
 });
 
 export default function content(state = INITIAL_CONTENT_STATE, action) {
@@ -33,9 +35,15 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
                 validated: true,
                 username: action.username,
                 isValidating: false,
+                forceLogin: false,
             });
         case INVALIDATE_VALIDATION:
-            return INITIAL_CONTENT_STATE;
+            return state.merge({
+                isValidating: false,
+                validated: false,
+                message: action.message ? action.message : '',
+                forceLogin: true,
+            });
         default:
             return state;
     }

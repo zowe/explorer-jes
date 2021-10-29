@@ -5,15 +5,17 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2019
+ * Copyright IBM Corporation 2016, 2020
  */
 
-import { atlasFetch } from '../utilities/urlUtils';
+import { whichServer } from '../utilities/urlUtils';
 
 export const REQUEST_VALIDATION = 'REQUEST_VALIDATION';
 export const RECEIVE_VALIDATION = 'RECEIVE_VALIDATION';
 export const INVALIDATE_VALIDATION = 'INVALIDATE_VALIDATION';
 export const SET_SERVER = 'SET_SERVER';
+
+export const VALIDATION_FAILURE_MESSAGE = 'Check for validation failed';
 
 function requestValidation() {
     return {
@@ -28,26 +30,72 @@ function receiveValidation(username) {
     };
 }
 
-function invalidateValidation() {
+function invalidateValidation(message) {
     return {
         type: INVALIDATE_VALIDATION,
+        message,
     };
+}
+
+export function checkForValidationFailure(response) {
+    return dispatch => {
+        if (response.status === 401) {
+            dispatch(invalidateValidation());
+            throw Error(VALIDATION_FAILURE_MESSAGE);
+        }
+        return response;
+    };
+}
+
+export function constructValidationErrorMessage(errorMessageObject) {
+    return `${errorMessageObject.messageNumber} : ${errorMessageObject.messageContent}`;
+}
+
+function checkResponse(response) {
+    if (response.ok) {
+        return response.json();
+    }
+    return response.json()
+        .then(error => {
+            throw Error(constructValidationErrorMessage(error.messages[0]));
+        });
 }
 
 export function validateUser() {
     return dispatch => {
         dispatch(requestValidation());
-
-        return atlasFetch('jobs/username', { credentials: 'include' })
-            .then(response => { return response.json(); })
+        return fetch(`https://${whichServer()}/api/v1/gateway/auth/query`,
+            { credentials: 'include',
+                'Access-Control-Allow-Credentials': 'true' },
+        )
             .then(response => {
-                if (response && response.username && response.username !== '') {
-                    return dispatch(receiveValidation(response.username));
-                }
-                return dispatch(invalidateValidation());
+                return checkResponse(response);
             })
-            .catch(() => {
-                return dispatch(invalidateValidation());
+            .then(json => {
+                return dispatch(receiveValidation(json.userId));
+            })
+            .catch(error => {
+                return dispatch(invalidateValidation(error.message));
+            });
+    };
+}
+
+export function loginUser(username, password) {
+    return dispatch => {
+        dispatch(requestValidation());
+        return fetch(`https://${whichServer()}/api/v1/gateway/auth/login`,
+            { method: 'POST',
+                credentials: 'include',
+                'Access-Control-Allow-Credentials': 'true',
+                body: JSON.stringify({ username, password }) })
+            .then(response => {
+                if (response.ok) {
+                    return dispatch(receiveValidation(username));
+                }
+                return checkResponse(response);
+            })
+            .catch(error => {
+                return dispatch(invalidateValidation(error.message));
             });
     };
 }

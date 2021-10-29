@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 
 import { Map, List } from 'immutable';
@@ -15,32 +15,13 @@ import {
     RECEIVE_JOBS,
     RECEIVE_SINGLE_JOB,
     TOGGLE_JOB,
+    INVERT_JOB_SELECT_STATUS,
+    UNSELECT_ALL_JOBS,
     REQUEST_JOB_FILES,
     RECEIVE_JOB_FILES,
     INVALIDATE_JOBS,
     STOP_REFRESH_ICON,
 } from '../actions/jobNodes';
-
-/**
-jobs: [
-    {
-        jobName: MYJOB,
-        jobID: JOB1234,
-        label: MYJOB:JOB1234,
-        files: [
-            {
-                label: JESMSG,
-                id: 102,
-            },
-        ]
-        steps: [
-            {
-                label: TODODODODO
-            },
-        ]
-    }
-]
-*/
 
 const INITIAL_STATE = Map({
     jobs: List(),
@@ -48,14 +29,15 @@ const INITIAL_STATE = Map({
 });
 
 function extractJobs(jobs) {
-    return jobs.items.map(job => {
+    return jobs.map(job => {
         return {
-            jobName: job.jobName,
-            jobId: job.jobId,
-            label: `${job.jobName}:${job.jobId}`,
-            returnCode: job.returnCode,
+            jobName: job.jobname,
+            jobId: job.jobid,
+            label: `${job.jobname}:${job.jobid}`,
+            returnCode: job.retcode,
             status: job.status,
             isToggled: false,
+            isSelected: false,
             files: List(),
         };
     });
@@ -64,12 +46,13 @@ function extractJobs(jobs) {
 function extractJob(job) {
     return List([
         Map({
-            jobName: job.jobName,
-            jobId: job.jobId,
-            label: `${job.jobName}:${job.jobId}`,
-            returnCode: job.returnCode,
+            jobName: job.jobname,
+            jobId: job.jobid,
+            label: `${job.jobname}:${job.jobid}`,
+            returnCode: job.retcode,
             status: job.status,
             isToggled: false,
+            isSelected: false,
             files: List(),
         }),
     ]);
@@ -86,10 +69,21 @@ function toggleJob(jobs, jobId) {
     return jobs.get(jobKey).set('isToggled', !jobs.get(jobKey).get('isToggled'));
 }
 
+function invertJobSelectStatus(jobs, jobId) {
+    const jobKey = findKeyOfJob(jobs, jobId);
+    return jobs.get(jobKey).set('isSelected', !jobs.get(jobKey).get('isSelected'));
+}
+
+function unselectAllJobs(jobs) {
+    return jobs.map(job => {
+        return job.set('isSelected', false);
+    });
+}
+
 function extractJobFiles(jobFiles) {
-    return jobFiles.items.map(file => {
+    return jobFiles.map(file => {
         return {
-            label: file.ddName,
+            label: file.ddname,
             id: file.id,
         };
     });
@@ -112,6 +106,14 @@ export default function JobNodes(state = INITIAL_STATE, action) {
         case TOGGLE_JOB:
             return state.merge({
                 jobs: state.get('jobs').set(findKeyOfJob(state.get('jobs'), action.jobId), toggleJob(state.get('jobs'), action.jobId)),
+            });
+        case INVERT_JOB_SELECT_STATUS:
+            return state.merge({
+                jobs: state.get('jobs').set(findKeyOfJob(state.get('jobs'), action.jobId), invertJobSelectStatus(state.get('jobs'), action.jobId)),
+            });
+        case UNSELECT_ALL_JOBS:
+            return state.merge({
+                jobs: unselectAllJobs(state.get('jobs')),
             });
         case REQUEST_JOB_FILES:
             return state.set('isFetching', true);

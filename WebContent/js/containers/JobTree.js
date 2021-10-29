@@ -12,22 +12,44 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { List } from 'immutable';
-import { Card, CardHeader, CardText } from 'material-ui/Card';
-import ErrorIcon from 'material-ui/svg-icons/alert/error';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import ErrorIcon from '@material-ui/icons/Error';
 import ConnectedFilter from './Filters';
 import RefreshIcon from '../components/RefreshIcon';
 import { fetchJobs } from '../actions/jobNodes';
 import { LOADING_MESSAGE } from '../reducers/filters';
 import FullHeightTree from './FullHeightTree';
 import JobInstance from '../components/JobInstance';
+import Announcer from '../components/Announcer';
 
 const NO_JOBS_FOUND_MESSAGE = 'No jobs found';
 
-export class JobNodeTree extends React.Component {
+class JobNodeTree extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            message: null,
+            filtersToggled: false,
+        };
+    }
+
     componentWillReceiveProps(nextProps) {
-        const { owner, dispatch } = this.props;
-        if (owner === LOADING_MESSAGE && nextProps.owner && nextProps.owner !== LOADING_MESSAGE) {
+        const { owner, dispatch, isFetching } = this.props;
+        if (!isFetching && owner === LOADING_MESSAGE && nextProps.owner && nextProps.owner !== LOADING_MESSAGE) {
             dispatch(fetchJobs(nextProps));
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const { isFetching: isFetchingCurrent } = this.props;
+        const { isFetching: isFetchingPrev } = prevProps;
+        if (isFetchingCurrent && !isFetchingPrev) {
+            this.setState({ message: 'Jobs loading' });
+        }
+        if (!isFetchingCurrent && isFetchingPrev) {
+            this.setState({ message: 'Jobs loaded' });
         }
     }
 
@@ -38,43 +60,54 @@ export class JobNodeTree extends React.Component {
         return filtersString;
     }
 
+    updateFiltersToggled = () => {
+        this.setState({ filtersToggled: !this.state.filtersToggled });
+    };
+
     renderJobs() {
-        const { jobs, dispatch } = this.props;
+        const { jobs, isFetching, dispatch } = this.props;
         if (jobs && jobs.size >= 1) {
-            return jobs.map(job => {
+            return jobs.map((job, index) => {
                 return (
-                    <JobInstance key={job.get('label')} job={job} dispatch={dispatch} />
+                    <JobInstance key={job.get('label')} job={job} dispatch={dispatch} pos={index} size={jobs.size} />
                 );
             });
+        } else if (!isFetching) {
+            return (
+                <div className="job-instance" role="none">
+                    <li
+                        role="treeitem"
+                        aria-level="1"
+                    >
+                        <ErrorIcon className="node-icon" />
+                        <span className="job-label">{NO_JOBS_FOUND_MESSAGE}</span>
+                    </li>
+                </div>);
         }
-        return (
-            <div className="job-instance">
-                <li>
-                    <ErrorIcon className="node-icon" />
-                    <span className="job-label">{NO_JOBS_FOUND_MESSAGE}</span>
-                </li>
-            </div>);
+        return null;
     }
 
     render() {
         const { dispatch, isFetching } = this.props;
+        const NOT_EXPANDED_FILTER_OFFSET_HEIGHT = 100;
+        const EXPANDED_FILTER_OFFSET_HEIGHT = 333;
         return (
-            <Card class="tree-card" containerStyle={{ paddingBottom: 0 }}>
-                <CardHeader subtitle={this.getFilterValues()} />
-                <CardText id="tree-text-content">
-                    <ConnectedFilter />
+            <Card class="tree-card">
+                <CardHeader subheader={this.getFilterValues()} />
+                <CardContent id="tree-text-content">
+                    <ConnectedFilter updateFiltersToggledFunc={this.updateFiltersToggled} />
                     <RefreshIcon
                         isFetching={isFetching}
                         submitAction={() => { return dispatch(fetchJobs(this.props)); }}
                         dispatch={dispatch}
                     />
-                    <FullHeightTree >
-                        <ul id="job-list">
+                    <FullHeightTree offset={this.state.filtersToggled ? EXPANDED_FILTER_OFFSET_HEIGHT : NOT_EXPANDED_FILTER_OFFSET_HEIGHT}>
+                        <ul id="job-list" role="tree">
                             {this.renderJobs()}
                         </ul>
                     </FullHeightTree>
-                </CardText>
-
+                </CardContent>
+                <Announcer message={this.state.message} />
             </Card>
         );
     }

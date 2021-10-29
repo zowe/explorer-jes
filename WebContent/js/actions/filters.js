@@ -1,3 +1,5 @@
+import { fetchJobs } from './jobNodes';
+
 /**
  * This program and the accompanying materials are made available under the terms of the
  * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -5,23 +7,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2019
+ * Copyright IBM Corporation 2016, 2020
  */
-
-import { atlasFetch } from '../utilities/urlUtils';
 
 export const TOGGLE_FILTERS = 'TOGGLE_FILTERS';
 export const SET_FILTERS = 'SET_FILTERS';
 export const RESET_FILTERS = 'RESET_FILTERS';
-export const REQUEST_USER_ID = 'REQUEST_USER_ID';
-export const RECEIVE_USER_ID = 'RECEIVE_USER_ID';
-
-export function toggleFilters(isToggled) {
-    return {
-        type: TOGGLE_FILTERS,
-        isToggled,
-    };
-}
 
 export function setFilters(filters) {
     return {
@@ -30,34 +21,16 @@ export function setFilters(filters) {
     };
 }
 
-export function resetFilters() {
+export function resetFilters(username) {
     return {
         type: RESET_FILTERS,
+        username,
     };
 }
 
-function requestUserId() {
-    return {
-        type: REQUEST_USER_ID,
-    };
-}
-
-function receiveUserId(userId) {
-    return {
-        type: RECEIVE_USER_ID,
-        userId,
-    };
-}
-
-export function initialiseOwnerFilter() {
+export function setOwnerAndFetchJobs(username, filters) {
     return dispatch => {
-        dispatch(requestUserId());
-        return atlasFetch('jobs/username', { credentials: 'include' })
-            .then(response => { return response.json(); })
-            .then(response => {
-                if (response && response.username && response.username !== '') {
-                    dispatch(receiveUserId(response.username));
-                }
-            });
+        dispatch(setFilters({ owner: username.toUpperCase() }));
+        dispatch(fetchJobs({ ...filters, ...{ owner: username.toUpperCase() } }));
     };
 }

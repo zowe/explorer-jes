@@ -5,40 +5,49 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2019
+ * Copyright IBM Corporation 2016, 2020
  */
 
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Card, CardHeader, CardText, CardActions } from 'material-ui/Card';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import RaisedButton from 'material-ui/RaisedButton';
-import { orange500 } from 'material-ui/styles/colors';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import AccordionActions from '@material-ui/core/AccordionActions';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import Button from '@material-ui/core/Button';
+import queryString from 'query-string';
 import UpperCaseTextField from '../components/dialogs/UpperCaseTextField';
+import { getStorageItem, setStorageItem, LAST_FILTERS } from '../utilities/storageHelper';
 
-import { toggleFilters, setFilters, resetFilters, initialiseOwnerFilter } from '../actions/filters';
+import { setFilters, resetFilters, setOwnerAndFetchJobs } from '../actions/filters';
 import { fetchJobs } from '../actions/jobNodes';
-import { ibmBlueDark } from '../themes/ibmcolors';
 
-const STATUS_TYPES = ['ACTIVE', 'INPUT', 'OUTPUT'];
+const STATUS_TYPES = ['ACTIVE'];
 
 export class Filters extends React.Component {
     static renderStatusOptions() {
         return STATUS_TYPES.map(status => {
-            return <MenuItem id={`status-${status}`} key={status} value={status} primaryText={status} />;
+            return <MenuItem id={`status-${status}`} key={status} value={status}>{status}</MenuItem>;
         });
     }
 
     constructor(props) {
         super(props);
-
-        this.toggle = this.toggle.bind(this);
+        this.state = {
+            toggled: false,
+        };
+        this.toggleFilters = this.toggleFilters.bind(this);
         this.resetValues = this.resetValues.bind(this);
+        this.setFocusOnOwner = this.setFocusOnOwner.bind(this);
         this.applyValues = this.applyValues.bind(this);
-
+        this.filterOwnerRef = null;
         this.handlePrefixChange = this.handlePrefixChange.bind(this);
         this.handleOwnerChange = this.handleOwnerChange.bind(this);
         this.handleStatusChange = this.handleStatusChange.bind(this);
@@ -46,33 +55,58 @@ export class Filters extends React.Component {
         this.isOwnerAndPrefixWild = this.isOwnerAndPrefixWild.bind(this);
     }
 
-    componentWillMount() {
-        const { location, dispatch } = this.props;
-        if (location && Object.keys(location.query).length > 0) {
-            const queryFilters = {};
-            Object.keys(location.query).forEach(filter => {
-                queryFilters[filter] = location.query[filter].toUpperCase();
-            });
-            dispatch(setFilters(queryFilters));
-            dispatch(fetchJobs(queryFilters));
+    componentDidMount() {
+        const { location, dispatch, owner, username } = this.props;
+        if (location && location.search) {
+            const urlQueryParams = queryString.parse(location.search);
+
+            if (Object.keys(urlQueryParams).length > 0) {
+                const queryFilters = {};
+                Object.keys(urlQueryParams).forEach(filter => {
+                    if (['owner', 'prefix', 'jobId', 'status'].indexOf(filter) > -1) {
+                        queryFilters[filter] = urlQueryParams[filter].toUpperCase();
+                    }
+                });
+                if (Object.keys(queryFilters).length > 0) {
+                    dispatch(setFilters(queryFilters));
+                    dispatch(fetchJobs(queryFilters));
+                }
+            }
+        }
+
+        const lastFilters = getStorageItem(LAST_FILTERS);
+        if (lastFilters > '') {
+            if (Object.keys(lastFilters).length > 0) {
+                dispatch(setFilters(lastFilters));
+                dispatch(fetchJobs(lastFilters));
+            }
+        } else if (owner === '' && (!location || !location.search || !location.search.includes('owner'))) {
+            dispatch(setOwnerAndFetchJobs(username, this.props));
         }
 
         function receiveMessage(event) {
             const data = event.data;
+            let messageData;
             if (data && data.dispatchType && data.dispatchData) {
                 switch (data.dispatchType) {
                     case 'launch':
                     case 'message': {
-                        const messageData = data.dispatchType === 'launch'
-                            ? data.dispatchData.launchMetadata.data
-                            : data.dispatchData.data;
-                        if (messageData.owner && messageData.jobId) {
+                        if (data.dispatchType === 'launch') {
+                            if (data.dispatchData.launchMetadata) {
+                                messageData = data.dispatchData.launchMetadata.data;
+                            }
+                        } else {
+                            messageData = data.dispatchData.data;
+                        }
+
+                        if (messageData && messageData.owner && messageData.jobId) {
                             dispatch(setFilters(messageData));
                             dispatch(fetchJobs(messageData));
                         }
                         break;
                     }
                     default:
+                        // eslint-disable-next-line no-console
                         console.warn(`Unknown app2app type=${data.dispatchType}`);
                 }
             }
@@ -81,25 +115,15 @@ export class Filters extends React.Component {
         window.top.postMessage('iframeload', '*');
     }
 
-    componentDidMount() {
-        const { owner, location, dispatch } = this.props;
-        if (owner === '' && !location.query.length > 0 && !location.query.owner) {
-            dispatch(initialiseOwnerFilter());
+    setFocusOnOwner() {
+        if (this.filterOwnerRef) {
+            this.filterOwnerRef.focusTextInput();
         }
-    }
-
-    getOwnerAndPrefixErrorText() {
-        return this.isOwnerAndPrefixWild() ? ' ' : '';
     }
 
     isOwnerAndPrefixWild() {
         const { prefix, owner } = this.props;
         return prefix === '*' && owner === '*';
-    }
-
-    toggle(isToggled) {
-        const { dispatch } = this.props;
-        dispatch(toggleFilters(isToggled));
     }
 
     handlePrefixChange(value) {
@@ -116,10 +140,10 @@ export class Filters extends React.Component {
         }));
     }
 
-    handleStatusChange(event, index, value) {
+    handleStatusChange(event) {
         const { dispatch } = this.props;
         dispatch(setFilters({
-            status: value,
+            status: event.target.value,
         }));
     }
 
@@ -131,121 +155,118 @@ export class Filters extends React.Component {
     }
 
     resetValues() {
-        const { dispatch } = this.props;
-        dispatch(resetFilters());
+        const { username, dispatch } = this.props;
+        dispatch(resetFilters(username));
     }
 
     applyValues(e) {
-        const { dispatch } = this.props;
+        const { dispatch, owner, prefix, status, jobId } = this.props;
         e.preventDefault();
-        this.toggle(false);
+        this.toggleFilters();
+
+        setStorageItem(LAST_FILTERS, JSON.stringify({ owner, prefix, status, jobId }));
         dispatch(fetchJobs(this.props));
     }
 
-    render() {
-        const { prefix, owner, status, jobId, isToggled } = this.props;
-        const rightAlign = {
-            display: 'inline-block',
-            float: 'right',
-            width: '50%',
-        };
-        const leftAlign = {
-            width: '50%',
-        };
-        const formErrorText = {
-            color: orange500,
-            paddingTop: '0px',
-        };
-        const hiddenErrorText = {
-            position: 'absolute',
-            color: orange500,
-        };
-        const labelStyle = {
-            color: orange500,
-        };
+    toggleFilters() {
+        const { updateFiltersToggledFunc } = this.props;
+        this.setState({ toggled: !this.state.toggled });
+        if (updateFiltersToggledFunc) {
+            updateFiltersToggledFunc();
+        }
+    }
 
+    render() {
+        const { prefix, owner, status, jobId } = this.props;
         return (
-            <div>
-                <Card
-                    id="filter-view"
-                    expanded={isToggled}
-                    onExpandChange={this.toggle}
+            <Accordion
+                id="filter-view"
+                expanded={this.state.toggled}
+            >
+                <AccordionSummary
+                    id="filter-view-header"
+                    expandIcon={<ExpandMoreIcon />}
+                    onClick={() => { this.toggleFilters(); }}
                 >
-                    <CardHeader
-                        title="Job Filters"
-                        actAsExpander={true}
-                        showExpandableButton={true}
-                    />
-                    <CardText expandable={true}>
-                        <form id="filter-form" onSubmit={e => { return this.applyValues(e); }}>
-                            <div>
-                                <UpperCaseTextField
-                                    id="filter-owner-field"
-                                    floatingLabelText="Owner"
-                                    floatingLabelStyle={this.isOwnerAndPrefixWild() ? labelStyle : null}
-                                    value={owner}
-                                    fieldChangedCallback={this.handleOwnerChange}
-                                    fullWidth={false}
-                                    style={leftAlign}
-                                    errorText={this.getOwnerAndPrefixErrorText()}
-                                    errorStyle={hiddenErrorText}
-                                />
-                                <UpperCaseTextField
-                                    id="filter-prefix-field"
-                                    floatingLabelText="Prefix"
-                                    floatingLabelStyle={this.isOwnerAndPrefixWild() ? labelStyle : null}
-                                    value={prefix}
-                                    fieldChangedCallback={this.handlePrefixChange}
-                                    fullWidth={false}
-                                    style={rightAlign}
-                                    errorText={this.getOwnerAndPrefixErrorText()}
-                                    errorStyle={hiddenErrorText}
-                                />
-                                {this.isOwnerAndPrefixWild() ? <label style={formErrorText}>Owner=* & Prefix=* may take a long time to load, APPLY to proceed</label> : <br />}
-                            </div>
-                            <div>
-                                <UpperCaseTextField
-                                    id="filter-jobId-field"
-                                    floatingLabelText="Job ID"
-                                    value={jobId}
-                                    fieldChangedCallback={this.handleJobIdChange}
-                                    fullWidth={false}
-                                    style={leftAlign}
-                                />
-                                <SelectField
-                                    id="filter-status-field"
-                                    floatingLabelText="Status"
-                                    floatingLabelFixed={true}
+                    Job Filters
+                </AccordionSummary>
+                <form
+                    role="search"
+                    aria-label="Job Filters"
+                    id="filter-form"
+                    onSubmit={e => { return this.applyValues(e); }}
+                >
+                    <AccordionDetails style={{ display: 'block' }}>
+                        <UpperCaseTextField
+                            id="filter-owner-field"
+                            label="Owner"
+                            value={owner}
+                            error={owner.trim() === ''}
+                            fieldChangedCallback={this.handleOwnerChange}
+                            style={{ width: '50%' }}
+                            disabled={!this.state.toggled}
+                            ref={elem => { this.filterOwnerRef = elem; return this.filterOwnerRef; }}
+                        />
+                        <UpperCaseTextField
+                            id="filter-prefix-field"
+                            label="Prefix"
+                            value={prefix}
+                            error={prefix.trim() === ''}
+                            fieldChangedCallback={this.handlePrefixChange}
+                            style={{ width: '50%' }}
+                            disabled={!this.state.toggled}
+                        />
+                        {this.isOwnerAndPrefixWild() ? <label>Owner=* & Prefix=* may take a long time to load, APPLY to proceed</label> : <br />}
+                        <div style={{ paddingTop: '5px' }}>
+                            <UpperCaseTextField
+                                id="filter-jobId-field"
+                                label="Job ID"
+                                value={jobId}
+                                error={jobId.trim() === ''}
+                                fieldChangedCallback={this.handleJobIdChange}
+                                style={{ width: '50%' }}
+                                disabled={!this.state.toggled}
+                            />
+                            <FormControl
+                                style={{ width: '50%' }}
+                                id="filter-status-field"
+                            >
+                                <InputLabel>Status</InputLabel>
+                                <Select
+                                    label="Status"
                                     value={status}
                                     onChange={this.handleStatusChange}
-                                    fullWidth={false}
-                                    style={rightAlign}
+                                    disabled={!this.state.toggled}
                                 >
-
-                                    <MenuItem value="" primaryText="*" />
+                                    <MenuItem key="*" value="*">*</MenuItem>
                                     {Filters.renderStatusOptions()}
-                                </SelectField>
-                            </div>
-                            <CardActions>
-                                <RaisedButton
-                                    id="filters-apply-button"
-                                    label="APPLY"
-                                    labelColor={ibmBlueDark}
-                                    primary={true}
-                                    type="submit"
-                                />
-                                <RaisedButton
-                                    id="filters-reset-button"
-                                    label="RESET"
-                                    labelColor={ibmBlueDark}
-                                    secondary={true}
-                                    onClick={this.resetValues}
-                                />
-                            </CardActions>
-                        </form>
-                    </CardText>
-                </Card>
-            </div>
+                                </Select>
+                            </FormControl>
+                        </div>
+                    </AccordionDetails>
+                    <AccordionActions>
+                        <Button
+                            id="filters-apply-button"
+                            variant="contained"
+                            color="primary"
+                            primary={'true'}
+                            type="submit"
+                            disabled={!this.state.toggled}
+                        >
+                            APPLY
+                        </Button>
+                        <Button
+                            id="filters-reset-button"
+                            variant="contained"
+                            color="secondary"
+                            onClick={this.resetValues}
+                            disabled={!this.state.toggled}
+                        >
+                            RESET
+                        </Button>
+                    </AccordionActions>
+                </form>
+            </Accordion>
         );
     }
 }
@@ -255,21 +276,24 @@ Filters.propTypes = {
     owner: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
     jobId: PropTypes.string.isRequired,
-    isToggled: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     location: PropTypes.shape({
-        query: PropTypes.object,
+        search: PropTypes.string,
     }),
+    username: PropTypes.string.isRequired,
+    updateFiltersToggledFunc: PropTypes.func,
 };
 
 function mapStateToProps(state) {
-    const stateRoot = state.get('filters');
+    const filterRoot = state.get('filters');
+    const validationRoot = state.get('validation');
     return {
-        prefix: stateRoot.get('prefix'),
-        owner: stateRoot.get('owner'),
-        status: stateRoot.get('status'),
-        jobId: stateRoot.get('jobId'),
-        isToggled: stateRoot.get('isToggled'),
+        prefix: filterRoot.get('prefix'),
+        owner: filterRoot.get('owner'),
+        status: filterRoot.get('status'),
+        jobId: filterRoot.get('jobId'),
+        isToggled: filterRoot.get('isToggled'),
+        username: validationRoot.get('username'),
     };
 }
 

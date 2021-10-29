@@ -5,49 +5,42 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2019
+ * Copyright IBM Corporation 2016, 2020
  */
 
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import Snackbar from 'material-ui/Snackbar';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import { List } from 'immutable';
 import { popMessage } from '../actions/snackbarNotifications';
+import { getStorageItem, NOTIFICATION_DURATION } from '../utilities/storageHelper';
 
 class AtlasSnackbar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            timeout: 0,
             open: false,
         };
+        this.notificationDuration = getStorageItem(NOTIFICATION_DURATION) || 5000;
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentDidUpdate(prevProps) {
         const { snackbarNotificationsMessages } = this.props;
-        if (nextProps.snackbarNotificationsMessages.first() &&
-            snackbarNotificationsMessages.first() !== nextProps.snackbarNotificationsMessages.first()) {
-            this.registerMessageWithSnackbar();
+        if (snackbarNotificationsMessages.first() &&
+            prevProps.snackbarNotificationsMessages.first() !== snackbarNotificationsMessages.first()) {
+            const messageValue = snackbarNotificationsMessages.first();
+            window.sendJesNotificationsToZlux(messageValue.get('message'));
+            this.setState({ open: true });
         }
     }
 
-    componentWillUnmount() {
-        this.state.timeout = clearTimeout(this.state.timeout);
-    }
-
-    registerMessageWithSnackbar() {
-        const { dispatch } = this.props;
-        this.setState({ open: true });
-        this.state.timeout = setTimeout(() => {
-            dispatch(popMessage());
-            this.setState({ open: false });
-        }, 5000);
-    }
 
     handleRequestClose = () => {
         const { dispatch } = this.props;
-        this.state.timeout = clearTimeout(this.state.timeout);
+
         this.setState({ open: false });
         dispatch(popMessage());
     }
@@ -58,9 +51,20 @@ class AtlasSnackbar extends React.Component {
             const messageValue = snackbarNotificationsMessages.first();
             return (
                 <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }}
+                    autoHideDuration={this.notificationDuration}
                     message={messageValue.get('message')}
                     open={this.state.open}
-                    onRequestClose={this.handleRequestClose}
+                    onClose={this.handleRequestClose}
+                    role="alert"
+                    action={
+                        <IconButton size="small" aria-label="close" color="inherit" onClick={this.handleRequestClose}>
+                            <CloseIcon fontSize="small" />
+                        </IconButton>
+                    }
                 />
             );
         }

@@ -5,43 +5,113 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2019
+ * Copyright IBM Corporation 2016, 2020
  */
 
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import {
     REQUEST_CONTENT,
+    REFRESH_CONTENT,
     RECEIVE_CONTENT,
+    REMOVE_CONTENT,
+    UPDATE_CONTENT,
+    CHANGE_SELECTED_CONTENT,
+    REQUEST_SUBMIT_JCL,
+    RECEIVE_SUBMIT_JCL,
+    INVALIDATE_SUBMIT_JCL,
     INVALIDATE_CONTENT,
 } from '../actions/content';
 
+export const DEFAULT_TITLE = 'JES Explorer';
+
+// content List()
+// label - label of tab in content viewer
+// id - unique id for contant tab
+// content - text content
+// isFetching - boolean value of is content still being fetched
+
 const INITIAL_CONTENT_STATE = Map({
-    content: null,
-    isFetching: false,
-    label: '',
+    content: List(),
+    selectedContent: 0, // Index of the current active tab content
+    isSubmittingJCL: false,
+    title: DEFAULT_TITLE,
 });
 
-const CONTENT_UNABLE_TO_RETRIEVE_MESSAGE = 'Unable to retrieve content';
-const FETCH_CONTENT_LOADING_MESSAGE = 'Loading:';
+function getIndexOfContentFromId(contentList, label, fileId) {
+    return contentList.indexOf(
+        contentList.filter(contentItem => {
+            return contentItem.id === label + fileId;
+        }).first());
+}
 
 export default function content(state = INITIAL_CONTENT_STATE, action) {
     switch (action.type) {
         case REQUEST_CONTENT:
             return state.merge({
-                isFetching: true,
-                label: `${FETCH_CONTENT_LOADING_MESSAGE} ${action.fileLabel}`,
+                content: state.get('content').push({
+                    label: action.fileLabel,
+                    id: action.fileLabel + action.fileId,
+                    content: '',
+                    isFetching: true,
+                }),
+            });
+        case REFRESH_CONTENT:
+            return state.merge({
+                content: state.get('content').set(getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId),
+                    {
+                        label: action.fileLabel,
+                        id: action.fileLabel + action.fileId,
+                        content: '',
+                        isFetching: true,
+                    }),
             });
         case RECEIVE_CONTENT:
             return state.merge({
-                label: `${action.jobName} - ${action.jobId} - ${action.fileLabel}`,
-                content: action.content,
-                isFetching: false,
+                title: `${DEFAULT_TITLE} [${action.fileLabel}]`,
+                content: state.get('content').set(getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId),
+                    {
+                        label: action.fileLabel,
+                        content: action.content,
+                        id: action.fileLabel + action.fileId,
+                        isFetching: false,
+                        readOnly: action.readOnly,
+                    }),
+            });
+        case REMOVE_CONTENT:
+            return state.merge({
+                title: `${DEFAULT_TITLE}`,
+                content: state.get('content').delete(action.index),
+            });
+        case UPDATE_CONTENT:
+            return state.merge({
+                content: state.get('content').set(state.get('selectedContent'), {
+                    label: state.get('content').get(state.get('selectedContent')).label,
+                    content: action.content,
+                    id: state.get('content').get(state.get('selectedContent')).id,
+                    isFetching: state.get('content').get(state.get('selectedContent')).isFetching,
+                    readOnly: state.get('content').get(state.get('selectedContent')).readOnly,
+                }),
+            });
+        case CHANGE_SELECTED_CONTENT:
+            return state.merge({
+                selectedContent: action.newSelectedContent,
+                title: `${DEFAULT_TITLE} [${state.get('content').get(action.newSelectedContent).label}]`,
+            });
+        case REQUEST_SUBMIT_JCL:
+            return state.merge({
+                isSubmittingJCL: true,
+            });
+        case RECEIVE_SUBMIT_JCL:
+            return state.merge({
+                isSubmittingJCL: false,
+            });
+        case INVALIDATE_SUBMIT_JCL:
+            return state.merge({
+                isSubmittingJCL: false,
             });
         case INVALIDATE_CONTENT:
             return state.merge({
-                isFetching: false,
-                label: CONTENT_UNABLE_TO_RETRIEVE_MESSAGE,
-                content: CONTENT_UNABLE_TO_RETRIEVE_MESSAGE,
+                content: state.get('content').delete(getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId)),
             });
         default:
             return state;

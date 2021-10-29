@@ -1,9 +1,9 @@
-node_modules
-coverage
+node_modules/
+coverage/
 etc
 target
 node
-.nyc_output
+.nyc_output/
 .settings
 .externalToolBuilders
 .apt_generated
@@ -15,10 +15,15 @@ WebContent/app.min.js
 .factorypath
 *.war
 bin
+!/bin
 dist
+web
 .scannerwork
 .DS_Store
 web
+.history/
+.env
+.vscode/
 
 # pax workspace
 .pax/*
@@ -26,3 +31,12 @@ web
 !.pax/pre-packaging.sh
 !.pax/post-packaging.sh
 !.pax/prepare-workspace.sh
+!.pax/catchall-packaging.sh
+
+# fvt tmp folder
+.fvt
+
+# apiml cache
+.ehcache*
+*.data
+.vscode/tasks.json
