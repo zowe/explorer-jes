@@ -46,7 +46,6 @@ RUN npm ci --no-audit --ignore-scripts \
     && cp -r dist/. final/web \
     && mv final/web/zlux-hooks/config final/config \
     && cp manifest.yaml final \
-    && cp apiml-static-registration.yaml.template final \
     && cp pluginDefinition.prod.json final/pluginDefinition.json \
     && cp bin/start.sh final/bin \
     && chmod +x final/bin/* \
