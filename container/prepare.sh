@@ -88,7 +88,6 @@ cp webpack.config.js "${BASE_DIR}/${WORK_DIR}"
 cp jsconfig.json "${BASE_DIR}/${WORK_DIR}"
 cp .npmrc "${BASE_DIR}/${WORK_DIR}"
 cp .npmignore "${BASE_DIR}/${WORK_DIR}"
-cp apiml-static-registration.yaml.template "${BASE_DIR}/${WORK_DIR}"
 cp -r plugin-definition "${BASE_DIR}/${WORK_DIR}"
 cp -r WebContent "${BASE_DIR}/${WORK_DIR}"
 mkdir ${BASE_DIR}/${WORK_DIR}/bin
