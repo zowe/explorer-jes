@@ -60,7 +60,3 @@ WORKDIR /component
 # copy files
 COPY --from=builder --chown=zowe:zowe /home/zowe/final ./
 COPY --chown=zowe:zowe component/LICENSE /licenses
-
-##################################
-# start command
-ENTRYPOINT [ "bin/start.sh" ]

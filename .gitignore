@@ -20,7 +20,6 @@ dist
 web
 .scannerwork
 .DS_Store
-web
 .history/
 .env
 .vscode/
