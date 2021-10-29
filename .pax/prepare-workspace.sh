@@ -22,9 +22,6 @@ SCRIPT_NAME=$(basename "$0")
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 ROOT_DIR=$(cd "$SCRIPT_DIR" && cd .. && pwd)
 PAX_WORKSPACE_DIR=.pax
-PACKAGE_NAME=$(node -e "console.log(require('./package.json').name)")
-PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
-PACKAGE_DESC=$(node -e "console.log(require('./package.json').description)")
 
 cd "$ROOT_DIR"
 
@@ -81,4 +78,3 @@ rsync -rv \
 
 echo "[${SCRIPT_NAME}] ${PAX_WORKSPACE_DIR} folder is prepared."
 exit 0
-

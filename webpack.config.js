@@ -19,7 +19,7 @@ const REACT_APP_ENVIRONMENT = process.env.NODE_ENV;
 const debug = REACT_APP_ENVIRONMENT !== 'production';
 const prod = REACT_APP_ENVIRONMENT === 'production';
 const analyze = process.env.ANALYZE;
-const OUTPUT_FOLDER = process.env.OUTPUT_FOLDER || 'web';
+const OUTPUT_FOLDER = process.env.OUTPUT_FOLDER || 'dist';
 
 const webpack = require('webpack');
 const path = require('path');
