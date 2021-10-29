@@ -61,11 +61,6 @@ mv "${PAX_WORKSPACE_DIR}/content/manifest.yaml.tmp" "${PAX_WORKSPACE_DIR}/conten
 echo "[${SCRIPT_NAME}] manifest:"
 cat "${PAX_WORKSPACE_DIR}/content/manifest.yaml"
 
-# copy start scripts to target folder
-echo "[${SCRIPT_NAME}] copying startup scripts ..."
-mkdir -p "${PAX_WORKSPACE_DIR}/content/bin"
-cp -r bin/start.sh "${PAX_WORKSPACE_DIR}/content/bin"
-
 # move content to another folder
 rm -fr "${PAX_WORKSPACE_DIR}/ascii"
 mkdir -p "${PAX_WORKSPACE_DIR}/ascii"
