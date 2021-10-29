@@ -90,8 +90,6 @@ cp .npmrc "${BASE_DIR}/${WORK_DIR}"
 cp .npmignore "${BASE_DIR}/${WORK_DIR}"
 cp -r plugin-definition "${BASE_DIR}/${WORK_DIR}"
 cp -r WebContent "${BASE_DIR}/${WORK_DIR}"
-mkdir ${BASE_DIR}/${WORK_DIR}/bin
-cp bin/start.sh ${BASE_DIR}/${WORK_DIR}/bin
 
 ###############################
 echo ">>>>> prepare manifest.json"
