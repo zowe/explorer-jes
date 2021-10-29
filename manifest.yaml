@@ -17,7 +17,5 @@ build:
   number: "{{build.number}}"
   commitHash: "{{build.commitHash}}"
   timestamp: "{{build.timestamp}}"
-commands:
-  start: bin/start.sh
 appfwPlugins:
 - path: "."

@@ -48,16 +48,7 @@ RUN npm ci --no-audit --ignore-scripts \
     && cp manifest.yaml final \
     && cp pluginDefinition.prod.json final/pluginDefinition.json \
     && cp bin/start.sh final/bin \
-    && chmod +x final/bin/* \
-    && mkdir -p final/explorer-ui-server \
-    && cd explorer-ui-server \
-    && npm ci --no-audit \
-    && npm run build \
-    && cd dist \
-    && npm install --production \
-    && cd .. \
-    && cp -r dist/. ../final/explorer-ui-server/ \
-    && cp manifest.yaml ../final/explorer-ui-server/
+    && chmod +x final/bin/*
 
 ##################################
 # second stage
@@ -75,5 +66,4 @@ COPY --chown=zowe:zowe component/LICENSE /licenses
 
 ##################################
 # start command
-EXPOSE 8546
 ENTRYPOINT [ "bin/start.sh" ]

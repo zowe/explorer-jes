@@ -113,23 +113,6 @@ cat manifest.yaml | \
   > "${BASE_DIR}/${WORK_DIR}/manifest.yaml"
 
 ###############################
-echo ">>>>> download explorer-ui-server"
-cd "${BASE_DIR}/${WORK_DIR}"
-latest_tag=$(curl https://api.github.com/repos/zowe/explorer-ui-server/git/refs/tags -H "Accept: application/vnd.github.v3+json" -s | jq -r '[ .[].ref | sub("refs/tags/";"") | capture("(?<tag>v(?<major>[0-9]+).(?<minor>[0-9]+).(?<patch>[0-9]+))") | { tag: .tag, major: .major | tonumber, minor: .minor | tonumber, patch: .patch | tonumber } | { tag: .tag, seq: (.major * 1000000 + .minor * 1000 + .patch) }] | sort_by(.seq) | reverse | .[0] | .tag')
-checkout_branch="${EXPLORER_UI_SERVER_BRANCH:-${latest_tag:-master}}"
-echo "    - branch or tag: ${checkout_branch}"
-git clone --depth 1 --single-branch --branch "${checkout_branch}" https://github.com/zowe/explorer-ui-server.git
-cd explorer-ui-server
-ui_server_commit_hash=$(git rev-parse --verify HEAD)
-cat manifest.yaml | \
-  sed -e "s#{{build\.branch}}#${checkout_branch}#" \
-      -e "s#{{build\.number}}#${GITHUB_RUN_NUMBER}#" \
-      -e "s#{{build\.commitHash}}#${ui_server_commit_hash}#" \
-      -e "s#{{build\.timestamp}}#$(date +%s)#" \
-  > manifest.yaml
-rm -fr .pax .vscode dco_signoffs test .eslint* .editorconfig .nycrc sonar-project.properties explorer-ui-server.ppf Jenkinsfile .git .gitignore
-
-###############################
 # copy to target context
 echo ">>>>> copy to target build context"
 cp -r "${BASE_DIR}/${WORK_DIR}" "${BASE_DIR}/${linux_distro}/${cpu_arch}/component"
