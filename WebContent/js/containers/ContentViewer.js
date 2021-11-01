@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 import OrionEditor from 'orion-editor-component';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import CardContent from '@material-ui/core/CardContent';
 import ClearIcon from '@material-ui/icons/Clear';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -107,6 +108,62 @@ export class ContentViewer extends React.Component {
         }
     }
 
+    handleCloseRightTabs(index) {
+        const { selectedContent, dispatch } = this.props;
+        const openedFilesCount = this.props.content.size;
+        if (index < openedFilesCount - 1) {
+            for (let removeIndex = index + 1; removeIndex < openedFilesCount; removeIndex++) {
+                dispatch(removeContent(index + 1));
+            }
+            if (index < selectedContent) {
+                dispatch(changeSelectedContent(index));
+            }
+        }
+    }
+
+    handleCloseLeftTabs(index) {
+        const { selectedContent, dispatch } = this.props;
+        if (index > 0) {
+            for (let removeIndex = 0; removeIndex < index; removeIndex++) {
+                dispatch(removeContent(0));
+            }
+            if (index < selectedContent) {
+                dispatch(changeSelectedContent(selectedContent - index));
+            } else {
+                dispatch(changeSelectedContent(0));
+            }
+        }
+    }
+
+    handleCloseOtherTabs(index) {
+        const { selectedContent, dispatch } = this.props;
+        const openedFilesCount = this.props.content.size;
+        if (index < openedFilesCount - 1) {
+            for (let removeIndex = index + 1; removeIndex < openedFilesCount; removeIndex++) {
+                dispatch(removeContent(index + 1));
+            }
+            if (index < selectedContent) {
+                dispatch(changeSelectedContent(index));
+            }
+        }
+        dispatch(changeSelectedContent(0));
+
+        if (index > 0) {
+            for (let removeIndex = 0; removeIndex < index; removeIndex++) {
+                dispatch(removeContent(0));
+            }
+            dispatch(changeSelectedContent(0));
+        }
+    }
+
+    handleCloseAllTabs() {
+        const { dispatch } = this.props;
+        const openedFilesCount = this.props.content.size;
+        for (let index = 0; index < openedFilesCount; index++) {
+            dispatch(removeContent(0));
+        }
+    }
+
     handleKeyDownOnContentTabLabel(e, index) {
         if (e.key === 'Enter') { this.handleSelectedTabChange(index); }
     }
@@ -118,7 +175,38 @@ export class ContentViewer extends React.Component {
             tab.focus();
         }
     }
+    // renderTabInstanceMenu() {
+    //     const { content, selectedContent } = this.props;
+    //     const menuItems = [
+    //         <MenuItem key="open" onClick={() => { this.handleCloseTab(selectedContent); }}>
+    //             <u>O</u>pen
+    //         </MenuItem>,
+    //         <MenuItem key="purge" onClick={() => { this.handleCloseTab(selectedContent); }}>
+    //             Purge <span className="react-contextmenu-right"><u>Del</u>ete</span>
+    //         </MenuItem>,
+    //         <MenuItem key="getJCL" onClick={() => { this.handleCloseTab(selectedContent); }}>
+    //             Get <u>J</u>CL (SJ)
+    //         </MenuItem>,
+    //         <MenuItem key="downloadJCL" onClick={() => { this.handleCloseTab(selectedContent); }}>
+    //             <u>D</u>ownload JCL
+    //         </MenuItem>,
+    //         <MenuItem key="downloadAllFiles" onClick={() => { this.handleCloseTab(selectedContent); }}>
+    //             Download <u>A</u>ll Files
+    //         </MenuItem>,
+    //     ];
+    //     console.log(selectedContent);
 
+    //     return (
+    //         <ContextMenu
+    //             id={selectedContent}
+    //             style={{ zIndex: '100' }}
+    //             onShow={() => { this.setState({ menuVisible: true }); }}
+    //             onHide={() => { this.setState({ menuVisible: false }); }}
+    //         >
+    //             {menuItems}
+    //         </ContextMenu>
+    //     );
+    // }
     renderTabs() {
         const { content, selectedContent } = this.props;
         const unselectedTabStyle = { display: 'flex', float: 'left', alignItems: 'center', padding: '6px', cursor: 'pointer' };
@@ -134,26 +222,49 @@ export class ContentViewer extends React.Component {
                         aria-selected={index === selectedContent ? 'true' : 'false'}
                         aria-controls="content-viewer-body"
                     >
-                        <div
-                            style={index === selectedContent ? selectedTabStyle : unselectedTabStyle}
-                        >
+                        <ContextMenuTrigger id={index}>
                             <div
-                                className="content-tab-label"
-                                onClick={() => { this.handleSelectedTabChange(index); }}
-                                // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-                                tabIndex="0"
-                                onKeyDown={e => { return this.handleKeyDownOnContentTabLabel(e, index); }}
-                                ref={fileTab => { this.fileTabs[index] = fileTab; return this.fileTabs[index]; }}
+                                style={index === selectedContent ? selectedTabStyle : unselectedTabStyle}
                             >
-                                {tabContent.label}
+                                <div
+                                    className="content-tab-label"
+                                    onClick={() => { this.handleSelectedTabChange(index); }}
+                                    // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+                                    tabIndex="0"
+                                    onKeyDown={e => { return this.handleKeyDownOnContentTabLabel(e, index); }}
+                                    ref={fileTab => { this.fileTabs[index] = fileTab; return this.fileTabs[index]; }}
+                                >
+                                    {tabContent.label}
+                                </div>
+                                <ClearIcon
+                                    onClick={() => { this.handleCloseTab(index); }}
+                                    tabIndex="0"
+                                    onKeyDown={e => { if (e.key === 'Enter') this.handleCloseTab(index); }}
+                                />
                             </div>
-                            <ClearIcon
-                                onClick={() => { this.handleCloseTab(index); }}
-                                tabIndex="0"
-                                onKeyDown={e => { if (e.key === 'Enter') this.handleCloseTab(index); }}
-                            />
-                        </div>
-                        {tabContent.isFetching ? <LinearProgress class="progress-bar" style={{ width: '100%', height: '2px' }} /> : null}
+                            {tabContent.isFetching ? <LinearProgress class="progress-bar" style={{ width: '100%', height: '2px' }} /> : null}
+                            {/* {this.renderTabInstanceMenu()} */}
+                            <ContextMenu
+                                id={index}
+                                style={{ zIndex: '100' }}
+                            >
+                                <MenuItem key="close" onClick={() => { this.handleCloseTab(index); }}>
+                                    <u>C</u>lose
+                                </MenuItem>
+                                <MenuItem key="closeToTheLeft" onClick={() => { this.handleCloseLeftTabs(index); }}>
+                                    Close to the <u>L</u>eft
+                                </MenuItem>
+                                <MenuItem key="closeToTheRight" onClick={() => { this.handleCloseRightTabs(index); }}>
+                                    Close to the <u>R</u>ight
+                                </MenuItem>
+                                <MenuItem key="closeOthers" onClick={() => { this.handleCloseOtherTabs(index); }}>
+                                    Close <u>O</u>thers
+                                </MenuItem>
+                                <MenuItem key="closeAll" onClick={() => { this.handleCloseAllTabs(); }}>
+                                    Close <u>A</u>ll Files
+                                </MenuItem>
+                            </ContextMenu>
+                        </ContextMenuTrigger>
                     </div>
                 );
             });
