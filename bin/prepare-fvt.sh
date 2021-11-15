@@ -46,7 +46,7 @@ echo
 # validate parameters
 # set default values
 if [ -z "$FVT_ZOSMF_HOST" ]; then
-  FVT_ZOSMF_HOST=zzow01.zowe.marist.cloud
+  FVT_ZOSMF_HOST=zzow04.zowe.marist.cloud
 fi
 if [ -z "$FVT_ZOSMF_PORT" ]; then
   FVT_ZOSMF_PORT=10443
