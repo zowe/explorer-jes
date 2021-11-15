@@ -28,8 +28,17 @@ jobs:
           github-user: ${{ secrets.ZOWE_ROBOT_USER }}
           github-passwd: ${{ secrets.ZOWE_ROBOT_TOKEN }}
 
-  build-ubuntu-amd64:
+  validate-package-json:
     needs: check-permission
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Validate package.json
+        uses: zowe-actions/shared-actions/validate-package-json@main
+
+  build-ubuntu-amd64:
+    needs: validate-package-json
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -54,7 +63,7 @@ jobs:
       IMAGE_NAME_FULL_REMOTE: ${{ env.IMAGE_NAME_FULL_REMOTE }}
 
   build-ubuntu-s390x:
-    needs: check-permission
+    needs: validate-package-json
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -107,7 +116,7 @@ jobs:
 
   build-ubi-amd64:
     runs-on: ubuntu-latest
-    needs: check-permission
+    needs: validate-package-json
     steps:
       - uses: actions/checkout@v2
 
@@ -133,7 +142,7 @@ jobs:
 
   build-ubi-s390x:
     runs-on: ubuntu-latest
-    needs: check-permission
+    needs: validate-package-json
     steps:
       - uses: actions/checkout@v2
 
@@ -265,7 +274,7 @@ jobs:
 
   regular-build:
     runs-on: ubuntu-latest
-    needs: check-permission
+    needs: validate-package-json
     steps: 
       - name: '[Prep 1] Checkout'
         uses: actions/checkout@v2
