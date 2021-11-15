@@ -25,8 +25,7 @@ jobs:
         with:
           user: ${{ github.actor }}
           github-repo: ${{ github.repository }}
-          github-user: ${{ secrets.ZOWE_ROBOT_USER }}
-          github-passwd: ${{ secrets.ZOWE_ROBOT_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   validate-package-json:
     needs: check-permission
@@ -218,9 +217,8 @@ jobs:
       - name: '[Prep 3] Prepare workflow'
         uses: zowe-actions/shared-actions/prepare-workflow@main
         with:
-          github-user: ${{ secrets.ZOWE_ROBOT_USER }}
-          github-password: ${{ secrets.ZOWE_ROBOT_TOKEN }}
-          github-email: ${{ secrets.ZOWE_ROBOT_EMAIL }}
+          github-user: ${{ github.actor }}
+          github-email: 'dummy-email@email.com'
 
       - name: '[Prep 4] Setup Node'
         uses: actions/setup-node@v2
@@ -258,8 +256,8 @@ jobs:
 
       - name: "[Test 5] Start integration test"
         run: |
-          export ZOWE_USERNAME=${{ secrets.SSH_MARIST1_USERNAMEP }}
-          export ZOWE_PASSWORD=${{ secrets.SSH_MARIST1_PASSWORDP }}
+          export ZOWE_USERNAME=${{ secrets.SSH_MARIST_USERNAMEP }}
+          export ZOWE_PASSWORD=${{ secrets.SSH_MARIST_PASSWORDP }}
           ./bin/delete-fvt-jobs.sh
           echo "Starting integration test ..."
           export SERVER_HOST_NAME=${CUSTOM_FVT_SERVER_HOSTNAME:-${{ env.DEFAULT_FVT_SERVER_HOSTNAME }}}
@@ -299,9 +297,8 @@ jobs:
       - name: '[Prep 4] Prepare workflow'
         uses: zowe-actions/shared-actions/prepare-workflow@main
         with:
-          github-user: ${{ secrets.ZOWE_ROBOT_USER }}
-          github-password: ${{ secrets.ZOWE_ROBOT_TOKEN }}
-          github-email: ${{ secrets.ZOWE_ROBOT_EMAIL }}
+          github-user: ${{ github.actor }}
+          github-email: 'dummy-email@email.com'
           
       - name: '[Prep 5] Setup Node'
         uses: actions/setup-node@v2
@@ -353,3 +350,5 @@ jobs:
       - name: '[Release 2] NPM bump version (if necessary)' 
         if: ${{ success() && github.event.inputs.PERFORM_RELEASE == 'true' && env.IS_RELEASE_BRANCH == 'true' && env.IS_FORMAL_RELEASE_BRANCH == 'true' && env.PRE_RELEASE_STRING == ''}}
         uses: zowe-actions/nodejs-actions/bump-version@main
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
