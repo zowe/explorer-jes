@@ -1,6 +1,6 @@
 {
   "name": "explorer-jes",
-  "version": "1.0.19",
+  "version": "2.0.0",
   "types": "module",
   "dependencies": {
     "@material-ui/core": "4.11.4",
@@ -124,10 +124,9 @@
   "license": "EPL-2.0",
   "config": {
     "pluginId": "org.zowe.explorer-jes",
-    "pluginName": "JES Explorer",
-    "baseuri": "/ui/v1/explorer-jes"
+    "pluginName": "JES Explorer"
   },
   "proxy": {
-    "target": "https://tvt5010.svl.ibm.com:7554"
+    "target": "https://tvt5011.svl.ibm.com:7554"
   }
 }
