@@ -212,7 +212,6 @@ export class ContentViewer extends React.Component {
                                 />
                             </div>
                             {tabContent.isFetching ? <LinearProgress class="progress-bar" style={{ width: '100%', height: '2px' }} /> : null}
-                            {/* {this.renderTabInstanceMenu()} */}
                             <ContextMenu
                                 id={index}
                                 style={{ zIndex: '100' }}
