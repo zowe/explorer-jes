@@ -175,38 +175,7 @@ export class ContentViewer extends React.Component {
             tab.focus();
         }
     }
-    // renderTabInstanceMenu() {
-    //     const { content, selectedContent } = this.props;
-    //     const menuItems = [
-    //         <MenuItem key="open" onClick={() => { this.handleCloseTab(selectedContent); }}>
-    //             <u>O</u>pen
-    //         </MenuItem>,
-    //         <MenuItem key="purge" onClick={() => { this.handleCloseTab(selectedContent); }}>
-    //             Purge <span className="react-contextmenu-right"><u>Del</u>ete</span>
-    //         </MenuItem>,
-    //         <MenuItem key="getJCL" onClick={() => { this.handleCloseTab(selectedContent); }}>
-    //             Get <u>J</u>CL (SJ)
-    //         </MenuItem>,
-    //         <MenuItem key="downloadJCL" onClick={() => { this.handleCloseTab(selectedContent); }}>
-    //             <u>D</u>ownload JCL
-    //         </MenuItem>,
-    //         <MenuItem key="downloadAllFiles" onClick={() => { this.handleCloseTab(selectedContent); }}>
-    //             Download <u>A</u>ll Files
-    //         </MenuItem>,
-    //     ];
-    //     console.log(selectedContent);
 
-    //     return (
-    //         <ContextMenu
-    //             id={selectedContent}
-    //             style={{ zIndex: '100' }}
-    //             onShow={() => { this.setState({ menuVisible: true }); }}
-    //             onHide={() => { this.setState({ menuVisible: false }); }}
-    //         >
-    //             {menuItems}
-    //         </ContextMenu>
-    //     );
-    // }
     renderTabs() {
         const { content, selectedContent } = this.props;
         const unselectedTabStyle = { display: 'flex', float: 'left', alignItems: 'center', padding: '6px', cursor: 'pointer' };
