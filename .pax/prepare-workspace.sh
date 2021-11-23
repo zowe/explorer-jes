@@ -17,7 +17,7 @@
 # - import ui server dependency
 ################################################################################
 
-# contants
+# constants
 SCRIPT_NAME=$(basename "$0")
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 ROOT_DIR=$(cd "$SCRIPT_DIR" && cd .. && pwd)
@@ -45,7 +45,6 @@ cp package-lock.json "${PAX_WORKSPACE_DIR}/content/web"
 cp -r dist/. "${PAX_WORKSPACE_DIR}/content/web"
 mv "${PAX_WORKSPACE_DIR}/content/web/zlux-hooks/config"  "${PAX_WORKSPACE_DIR}/content/config"
 cp manifest.yaml "${PAX_WORKSPACE_DIR}/content"
-cp apiml-static-registration.yaml.template "${PAX_WORKSPACE_DIR}/content"
 cp pluginDefinition.prod.json "${PAX_WORKSPACE_DIR}/content/pluginDefinition.json"
 
 # update build information
@@ -60,11 +59,6 @@ sed -e "s|{{build\.branch}}|${BRANCH_NAME}|g" \
 mv "${PAX_WORKSPACE_DIR}/content/manifest.yaml.tmp" "${PAX_WORKSPACE_DIR}/content/manifest.yaml"
 echo "[${SCRIPT_NAME}] manifest:"
 cat "${PAX_WORKSPACE_DIR}/content/manifest.yaml"
-
-# copy start scripts to target folder
-echo "[${SCRIPT_NAME}] copying startup scripts ..."
-mkdir -p "${PAX_WORKSPACE_DIR}/content/bin"
-cp -r bin/start.sh "${PAX_WORKSPACE_DIR}/content/bin"
 
 # move content to another folder
 rm -fr "${PAX_WORKSPACE_DIR}/ascii"

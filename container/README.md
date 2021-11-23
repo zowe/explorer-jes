@@ -22,7 +22,6 @@ Image `zowe-docker-release.jfrog.io/ompzowe/explorer-jes:latest` should be able 
 
 Other environment variable(s) can be used:
 
-- `JES_EXPLORER_UI_PORT`: starting port, default is `8546`.
 - `ZOWE_EXPLORER_HOST`: domain name to access the container, default is `localhost`.
 - `ZOWE_IP_ADDRESS`: IP address to access the container, default is `127.0.0.1`.
 
@@ -32,8 +31,6 @@ Example commands:
 # pull image
 docker pull zowe-docker-release.jfrog.io/ompzowe/explorer-jes:latest
 # start container
-docker run -it --rm -p 8546:8546 \
-    -e KEYSTORE_KEY=/component/explorer-ui-server/configs/server.key \
-    -e KEYSTORE_CERTIFICATE=/component/explorer-ui-server/configs/server.cert \
+docker run -it --rm \
     zowe-docker-release.jfrog.io/ompzowe/explorer-jes:latest
 ```
