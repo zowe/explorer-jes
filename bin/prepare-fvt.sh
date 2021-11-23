@@ -132,6 +132,7 @@ cat >> "$FVT_WORKSPACE/docker-compose.yml" << EOF
       KEYSTORE_CERTIFICATE: /keystore/localhost.cert.pem
     image: "$IMAGE_NAME_FULL_REMOTE"
 EOF
+echo "$FVT_WORKSPACE/docker-compose.yml"  
 echo "[${SCRIPT_NAME}] starting docker compose"
 cd $FVT_WORKSPACE
 docker compose up -d
