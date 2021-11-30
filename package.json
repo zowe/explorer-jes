@@ -1,6 +1,6 @@
 {
   "name": "explorer-jes",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "types": "module",
   "dependencies": {
     "@material-ui/core": "4.11.4",
@@ -79,8 +79,8 @@
     "webpack-bundle-analyzer": "3.9.0",
     "webpack-cli": "4.9.1",
     "webpack-dev-server": "4.3.1",
-    "file-saver":"2.0.5",
-    "jszip":"3.7.1"
+    "file-saver": "2.0.5",
+    "jszip": "3.7.1"
   },
   "scripts": {
     "dev": "NODE_ENV='development' webpack serve --config ./webpack.config.js  --hot ",
