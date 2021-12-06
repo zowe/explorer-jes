@@ -5,6 +5,9 @@ All notable changes to the JES-Explorer will be documented in this file.
 ### New features and enhancements
 - Added the feature to download all files of a JOB in a zip format.
 
+### Bug fixes
+- Fixed a bug where using app2app params at launch would not use desired data
+
 ## <1.0.18>
 
 ### New features and enhancements
