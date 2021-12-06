@@ -60,7 +60,7 @@ describe('Action: jobNodes', () => {
 
             const rewiredGetURIQuery = rewiredJobNodes.__get__('getURIQuery');
             nock(BASE_URL)
-                .get(`/jobs${rewiredGetURIQuery(filtersResources.filters)}`)
+                .get(`/zosmf/restjobs/jobs${rewiredGetURIQuery(filtersResources.filters)}`)
                 .reply(200, jobNodesResources.jobFetchResponse);
             const store = mockStore();
             return store.dispatch(JobNodes.fetchJobs(filtersResources.filters))
@@ -89,7 +89,7 @@ describe('Action: jobNodes', () => {
 
             const rewiredGetURIQuery = rewiredJobNodes.__get__('getURIQuery');
             nock(BASE_URL)
-                .get(`/jobs${rewiredGetURIQuery(filtersResources.filters)}`)
+                .get(`/zosmf/restjobs/jobs${rewiredGetURIQuery(filtersResources.filters)}`)
                 .reply(500, { message: apiResponseMessage });
             const store = mockStore();
             return store.dispatch(JobNodes.fetchJobs(filtersResources.filters))
@@ -123,7 +123,7 @@ describe('Action: jobNodes', () => {
             ];
 
             nock(BASE_URL)
-                .get(`/jobs/${jobNodesResources.jobName}/${jobNodesResources.jobId}/files`)
+                .get(`/zosmf/restjobs/jobs/${jobNodesResources.jobName}/${jobNodesResources.jobId}/files`)
                 .reply(200, jobNodesResources.jobFiles);
 
             const store = mockStore();
@@ -156,7 +156,7 @@ describe('Action: jobNodes', () => {
             ];
 
             nock(BASE_URL)
-                .get(`/jobs/${jobNodesResources.jobName}/${jobNodesResources.jobId}/files`)
+                .get(`/zosmf/restjobs/jobs/${jobNodesResources.jobName}/${jobNodesResources.jobId}/files`)
                 .reply(500, { message: apiResponseMessage });
 
             const store = mockStore();
@@ -167,6 +167,9 @@ describe('Action: jobNodes', () => {
     });
 
     describe('purgeJob', () => {
+        before('init confirm for purge', () => {
+            global.confirm = () => { return true; };
+        });
         it('Should create an action to request a job purge and then receive confirmation', () => {
             const purgeSuccessMessage = rewiredJobNodes.__get__('PURGE_JOB_SUCCESS_MESSAGE');
 
@@ -201,7 +204,7 @@ describe('Action: jobNodes', () => {
             }));
 
             nock(BASE_URL)
-                .delete(`/jobs/${jobNodesResources.jobName}/${jobNodesResources.jobId}`)
+                .delete(`/zosmf/restjobs/jobs/${jobNodesResources.jobName}/${jobNodesResources.jobId}`)
                 .reply(200, '');
 
             return store.dispatch(JobNodes.purgeJob(jobNodesResources.jobName, jobNodesResources.jobId))
@@ -241,7 +244,7 @@ describe('Action: jobNodes', () => {
             }));
 
             nock(BASE_URL)
-                .delete(`/jobs/${jobNodesResources.jobName}/${jobNodesResources.jobId}`)
+                .delete(`/zosmf/restjobs/jobs/${jobNodesResources.jobName}/${jobNodesResources.jobId}`)
                 .reply(404, { message: fetchResponseMessage });
 
             return store.dispatch(JobNodes.purgeJob(jobNodesResources.jobName, jobNodesResources.jobId))
@@ -283,7 +286,7 @@ describe('Action: jobNodes', () => {
             }));
 
             nock(BASE_URL)
-                .put(`/jobs/${jobNodesResources.jobName}/${jobNodesResources.jobId}`)
+                .put(`/zosmf/restjobs/jobs/${jobNodesResources.jobName}/${jobNodesResources.jobId}`)
                 .reply(200, '');
 
             return store.dispatch(JobNodes.cancelJob(jobNodesResources.jobName, jobNodesResources.jobId))
@@ -323,78 +326,10 @@ describe('Action: jobNodes', () => {
             }));
 
             nock(BASE_URL)
-                .put(`/jobs/${jobNodesResources.jobName}/${jobNodesResources.jobId}`)
+                .put(`/zosmf/restjobs/jobs/${jobNodesResources.jobName}/${jobNodesResources.jobId}`)
                 .reply(404, { message: fetchResponseMessage });
 
             return store.dispatch(JobNodes.cancelJob(jobNodesResources.jobName, jobNodesResources.jobId))
-                .then(() => {
-                    expect(store.getActions()).toEqual(expectedActions);
-                });
-        });
-    });
-
-    describe('purgeJobs', () => {
-        it('Should create an action to request multiple jobs be purged and then receive confirmation', () => {
-            const purgeSuccessMessage = rewiredJobNodes.__get__('PURGE_JOBS_SUCCESS_MESSAGE');
-
-            const expectedActions = [
-                { type: JobNodes.REQUEST_PURGE_MULTIPLE_JOBS },
-                {
-                    type: snackbar.PUSH_NOTIFICATION_MESSAGE,
-                    message: Map({
-                        message: purgeSuccessMessage,
-                    }),
-                },
-                { type: JobNodes.UNSELECT_ALL_JOBS },
-                { type: JobNodes.RECEIVE_PURGE_MULTIPLE_JOBS },
-            ];
-
-            const store = mockStore(fromJS({
-                treeNodesJobs: {
-                    jobs: jobNodesResources.jobsStateWithOneJobSelected,
-                },
-            }));
-
-            nock(BASE_URL)
-                .delete('/jobs')
-                .reply(200, '');
-
-            return store.dispatch(JobNodes.purgeJobs(jobNodesResources.jobsStateWithOneJobSelected))
-                .then(() => {
-                    expect(store.getActions()).toEqual(expectedActions);
-                });
-        });
-
-        it('Should create an action to request multiple jobs be purged, fail and then invalidate', () => {
-            const purgeFailMessage = rewiredJobNodes.__get__('PURGE_JOBS_FAIL_MESSAGE');
-            const fetchResponseMessage = 'Job Not found';
-
-            const expectedActions = [
-                { type: JobNodes.REQUEST_PURGE_MULTIPLE_JOBS },
-                {
-                    type: snackbar.PUSH_NOTIFICATION_MESSAGE,
-                    message: Map({
-                        message: `${purgeFailMessage} : ${fetchResponseMessage}`,
-                    }),
-                },
-                {
-                    type: JobNodes.INVALIDATE_PURGE_JOB,
-                    jobName: undefined,
-                    jobId: undefined,
-                },
-            ];
-
-            const store = mockStore(fromJS({
-                treeNodesJobs: {
-                    jobs: jobNodesResources.jobsStateWithOneJobSelected,
-                },
-            }));
-
-            nock(BASE_URL)
-                .delete('/jobs')
-                .reply(404, { message: fetchResponseMessage });
-
-            return store.dispatch(JobNodes.purgeJobs(jobNodesResources.jobsStateWithOneJobSelected))
                 .then(() => {
                     expect(store.getActions()).toEqual(expectedActions);
                 });

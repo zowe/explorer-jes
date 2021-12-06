@@ -266,7 +266,7 @@ describe('JES explorer function verification tests', function () {
 
                 it('Should display context menu with expected items', async () => {
                     await loadJobsAndOpenContextMenu();
-                    const expectedContextMenuItems :string[] = ["Open", "Purge", "Get JCL (SJ)", "Download JCL"];
+                    const expectedContextMenuItems :string[] = ["Open", "Purge\nDelete", "Get JCL (SJ)", "Download JCL", "Download All Files"];
 
                     const contextMenuItems :string[] = await getContextMenuItems();
                     expect(contextMenuItems).to.eql(expectedContextMenuItems);
@@ -438,29 +438,39 @@ describe('JES explorer function verification tests', function () {
             afterEach(async () => {
                 await driver.manage().window().setRect({ width: 1600, height: 800 });
             });
-            const browserHeaderHeight = 74;
-            const jobTreeTitleHeight = 52;
-            const appBarHeight = 32;
+            beforeEach(async () => {
+                await driver.manage().window().setRect({ width: 1600, height: 300 });
+            });
+            
+            var initialWindowHeight = 300;
+
             it('Should handle resizing of tree card component (tree-text-content)', async () => {
+                const treeTextContext = await driver.findElement(By.id('tree-text-content'));
+                const treeTextContextHeight = await treeTextContext.getCssValue('height');
+                const treeTextContextHeightInt = parseInt(treeTextContextHeight.substr(0, treeTextContextHeight.length - 2), 10);
                 expect(await testWindowHeightChangeForcesComponentHeightChange(
-                    driver, 'tree-text-content', browserHeaderHeight + jobTreeTitleHeight)).to.be.true;
+                    driver, 'tree-text-content', initialWindowHeight - treeTextContextHeightInt)).to.be.true;
             });
             it('Should handle resizing just the tree (full-height-tree)', async () => {
-                const filterCardHeight = 48;
+                const fullHeightTree = await driver.findElement(By.id('full-height-tree'));
+                const fullHeightTreeHeight = await fullHeightTree.getCssValue('height');
+                const fullHeightTreeHeightInt = parseInt(fullHeightTreeHeight.substr(0, fullHeightTreeHeight.length - 2), 10);
                 expect(await testWindowHeightChangeForcesComponentHeightChange(
-                    driver, 'full-height-tree', browserHeaderHeight + jobTreeTitleHeight + filterCardHeight)).to.be.true;
+                    driver, 'full-height-tree', initialWindowHeight - fullHeightTreeHeightInt)).to.be.true;
             });
             it('Should handle resizing of editor card component (content-viewer)', async () => {
+                const contentViewer = await driver.findElement(By.id('content-viewer'));
+                const contentViewerHeight = await contentViewer.getCssValue('height');
+                const contentViewerHeightInt = parseInt(contentViewerHeight.substr(0, contentViewerHeight.length - 2), 10);
                 expect(await testWindowHeightChangeForcesComponentHeightChange(
-                    driver, 'content-viewer', browserHeaderHeight+appBarHeight)).to.be.true;
+                    driver, 'content-viewer', initialWindowHeight - contentViewerHeightInt)).to.be.true;
             });
             it('Should handle resizing just the editor text area (embeddedEditor)', async () => {
-                const contentViewerHeader = await driver.findElement(By.id('content-viewer-header'));
-                const contentViewerHeaderHeight = await contentViewerHeader.getCssValue('height');
-                const contentViewerHeaderHeightInt = parseInt(contentViewerHeaderHeight.substr(0, contentViewerHeaderHeight.length - 2), 10);
-                const contentViewerHeaderPadding = 16;
+                const embeddedEditor = await driver.findElement(By.id('embeddedEditor'));
+                const embeddedEditorHeight = await embeddedEditor.getCssValue('height');
+                const embeddedEditorHeightInt = parseInt(embeddedEditorHeight.substr(0, embeddedEditorHeight.length - 2), 10);
                 expect(await testWindowHeightChangeForcesComponentHeightChange(
-                    driver, 'embeddedEditor', browserHeaderHeight + appBarHeight + contentViewerHeaderHeightInt + contentViewerHeaderPadding)).to.be.true;
+                    driver, 'embeddedEditor', initialWindowHeight - embeddedEditorHeightInt)).to.be.true;
             });
         });
     });

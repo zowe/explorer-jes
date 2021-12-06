@@ -7,7 +7,7 @@
 #
 # SPDX-License-Identifier: EPL-2.0
 #
-# Copyright IBM Corporation 2018, 2020
+# Copyright IBM Corporation 2018, 2021
 ################################################################################
 
 ################################################################################
@@ -22,42 +22,35 @@
 # - ZOWE_EXPLORER_HOST
 # - ZOWE_IP_ADDRESS
 
-stop_jobs()
-{
-  kill -15 $pid
-}
-
-trap 'stop_jobs' INT
-
 NODE_BIN=${NODE_HOME}/bin/node
 
-cd "$ROOT_DIR/components/explorer-jes/bin"
-EXPLORER_PLUGIN_BASEURI=$($NODE_BIN -e "process.stdout.write(require('../app/package.json').config.baseuri)")
-EXPLORER_PLUGIN_NAME=$($NODE_BIN -e "process.stdout.write(require('../app/package.json').config.pluginName)")
+# start.sh should be initialized from component base directory
+EXPLORER_PLUGIN_BASEURI=$($NODE_BIN -e "process.stdout.write(require('./web/package.json').config.baseuri)")
+EXPLORER_PLUGIN_NAME=$($NODE_BIN -e "process.stdout.write(require('./web/package.json').config.pluginName)")
 
 # get current ui server directory
-EXPLORER_APP_DIR="${ROOT_DIR}/components/explorer-jes/app"
-SERVER_DIR="${ROOT_DIR}/components/explorer-ui-server"
+EXPLORER_APP_DIR="$(pwd)/web"
+SERVER_DIR="$(pwd)/explorer-ui-server"
+if [ ! -d "${SERVER_DIR}" ]; then
+  SERVER_DIR="$(cd ../explorer-ui-server; pwd)"
+fi
 
 JOB_NAME="${ZOWE_PREFIX}UJ"
 
 if [ -z "${ZOWE_EXPLORER_FRAME_ANCESTORS}" ]; then
-  ZOWE_EXPLORER_FRAME_ANCESTORS="${ZOWE_EXPLORER_HOST}:*,${ZOWE_IP_ADDRESS}:*"
+  ZOWE_EXPLORER_FRAME_ANCESTORS="${ZOWE_EXPLORER_HOST:-localhost}:*,${ZOWE_IP_ADDRESS:-127.0.0.1}:*"
 fi
 
 # start service
 _BPX_JOBNAME=${JOB_NAME} $NODE_BIN $SERVER_DIR/src/index.js \
-  --service ${EXPLORER_PLUGIN_NAME} \
-	--path ${EXPLORER_PLUGIN_BASEURI} \
-	--dir  ${EXPLORER_APP_DIR} \
-	--port ${JES_EXPLORER_UI_PORT} \
-	--key  ${KEYSTORE_KEY} \
-	--cert ${KEYSTORE_CERTIFICATE} \
-	--csp ${ZOWE_EXPLORER_FRAME_ANCESTORS} \
-	--keyring $KEYRING_NAME \
-	--keyring-owner $KEYRING_OWNER \
-	--keyring-label $KEY_ALIAS \
-	-v &
-pid=$?
-
-wait
+  --service "${EXPLORER_PLUGIN_NAME}" \
+	--path "${EXPLORER_PLUGIN_BASEURI}" \
+	--dir  "${EXPLORER_APP_DIR}" \
+	--port "${JES_EXPLORER_UI_PORT:-8546}" \
+	--key  "${KEYSTORE_KEY}" \
+	--cert "${KEYSTORE_CERTIFICATE}" \
+	--csp "${ZOWE_EXPLORER_FRAME_ANCESTORS}" \
+	--keyring "${KEYRING_NAME}" \
+	--keyring-owner "${KEYRING_OWNER}" \
+	--keyring-label "${KEY_ALIAS}" \
+	-v

@@ -8,7 +8,6 @@
  * Copyright IBM Corporation 2016, 2020
  */
 
-/* global document */
 import 'whatwg-fetch';
 
 import { Map } from 'immutable';

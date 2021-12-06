@@ -14,7 +14,9 @@ import { Map, List } from 'immutable';
 import { connect } from 'react-redux';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import Description from '@material-ui/icons/Description';
+import { hideMenu } from 'react-contextmenu/modules/actions';
 import { fetchJobFile, getFileLabel, changeSelectedContent, downloadFile } from '../actions/content';
+
 
 class JobFile extends React.Component {
     constructor(props) {
@@ -25,6 +27,10 @@ class JobFile extends React.Component {
         this.downloadJobFile = this.downloadJobFile.bind(this);
         this.openInNewWindow = this.openInNewWindow.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.state = {
+            menuShortCuts: true,
+            menuVisible: false,
+        };
     }
 
     isFileOpen() {
@@ -53,7 +59,7 @@ class JobFile extends React.Component {
 
     downloadJobFile() {
         const { job, file, dispatch } = this.props;
-        const url = `jobs/${job.get('jobName')}/${job.get('jobId')}/files/${file.id}/content`;
+        const url = `zosmf/restjobs/jobs/${job.get('jobName')}/${job.get('jobId')}/files/${file.id}/records`;
         downloadFile(job, file.label, url, dispatch);
     }
 
@@ -64,9 +70,31 @@ class JobFile extends React.Component {
         newWindow.focus();
     }
 
+    hideContextMenu() {
+        hideMenu();
+        this.setState({ menuVisible: false });
+    }
+
     handleKeyDown(e) {
-        if (e.key === 'Enter') {
+        if (e.metaKey || e.altKey || e.ctrlKey) {
+            return;
+        }
+        if (e.key === 'Enter' && this.state.menuVisible === false) {
             this.openFile();
+        }
+        if (this.state.menuShortCuts && this.state.menuVisible) {
+            if (e.key.toLowerCase() === 'd') {
+                this.downloadJobFile();
+                this.hideContextMenu();
+            }
+            if (e.key.toLowerCase() === 'o') {
+                this.openInNewWindow();
+                this.hideContextMenu();
+            }
+            if (e.key.toLowerCase() === 'r') {
+                this.refreshFile();
+                this.hideContextMenu();
+            }
         }
     }
 
@@ -74,23 +102,33 @@ class JobFile extends React.Component {
         const { job, file } = this.props;
         const menuItems = [
             <MenuItem onClick={this.downloadJobFile} key="download" >
-                Download
+                <u>D</u>ownload
             </MenuItem>,
             <MenuItem onClick={this.openInNewWindow} key="fullscreen" >
-                Open in Fullscreen
+                <u>O</u>pen in Fullscreen
             </MenuItem>,
         ];
 
         if (this.isFileOpen()) {
             menuItems.push(
                 <MenuItem onClick={() => { return this.refreshFile(); }} key="refresh" >
-                    Refresh Content
+                    <u>R</u>efresh Content
                 </MenuItem>,
             );
         }
         return (
-            <ContextMenu id={`${job.get('jobId')}${file.id}`} style={{ zIndex: '100' }}>
-                {menuItems}
+            <ContextMenu
+                id={`${job.get('jobId')}${file.id}`}
+                style={{ zIndex: '100' }}
+                onShow={() => { this.setState({ menuVisible: true }); }}
+                onHide={() => { this.setState({ menuVisible: false }); }}
+            >
+                <MenuItem onClick={this.downloadJobFile} >
+                    <u>D</u>ownload
+                </MenuItem>
+                <MenuItem onClick={this.openInNewWindow}>
+                    <u>O</u>pen in Fullscreen
+                </MenuItem>
             </ContextMenu>
         );
     }

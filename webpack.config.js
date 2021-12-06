@@ -48,13 +48,6 @@ const copyArray = [{
 },
 ];
 
-if (debug && OUTPUT_FOLDER === 'web') {
-    copyArray.push({
-        from: path.resolve(__dirname, './start.html'),
-        to: path.resolve(OUTPUT_FOLDER),
-    });
-}
-
 const copyTask = new CopyWebpackPlugin({
     patterns: copyArray,
 });
@@ -63,23 +56,26 @@ const cleanTask = new CleanWebpackPlugin();
 const rules = [
     {
         test: /\.jsx?$/,
-        loader: 'babel-loader',
+        use: {
+            loader:'babel-loader',
+            options: {
+                presets: ['@babel/react', '@babel/preset-env'],
+                plugins: [['react-html-attrs'], ['@babel/plugin-proposal-decorators',{ 'legacy': true}]],
+            },
+    },
         include: [
             path.join(__dirname, 'WebContent'),
             path.join(__dirname, 'tests'),
         ],
-        query: {
-            presets: ['react', 'es2015', 'stage-0'],
-            plugins: ['react-html-attrs', 'transform-class-properties', 'transform-decorators-legacy'],
-        },
+        
     },
     {
         test: /\.(png|jpg|svg)$/,
-        loader: 'url-loader?limit=1&name=img/[name].[ext]',
+        use: ['url-loader?limit=1&name=img/[name].[ext]'],
     },
     {
         test: /\.css$/,
-        loader: 'style-loader!css-loader',
+        use: ['style-loader','css-loader'],
     },
 ];
 

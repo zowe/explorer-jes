@@ -1,5 +1,24 @@
 # Change Log
 All notable changes to the JES-Explorer will be documented in this file.
+## <1.0.19>
+
+### New features and enhancements
+- Added the feature to download all files of a JOB in a zip format.
+
+## <1.0.18>
+
+### New features and enhancements
+- Replaced the File APIs with zOSMF APIs
+
+### New features and enhancements
+- Added actions and recognizers stored in JSON files. Other applications are able to open JES Explorer with pre-populated filter. Thanks @skurnevich
+
+## <1.0.9>
+
+### New features and enhancements
+- Introduces the menu shortcuts and confirmation dialog before canceling or purging the job for JES explorer. Thanks @Martin-Zeithaml
+- Refactor JES packagaing & installation scripts, and folder renames, to accomodate new iframe capability in ZLUX. Thanks @NakulManchanda
+- Added manifest for API ML & App Framework installation using new plugin installation process. Thanks @JadinLuong, @jackjia-ibm
 
 ## <1.0.8>
 
