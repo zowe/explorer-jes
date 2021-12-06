@@ -53,6 +53,7 @@ export class Filters extends React.Component {
         this.handleStatusChange = this.handleStatusChange.bind(this);
         this.handleJobIdChange = this.handleJobIdChange.bind(this);
         this.isOwnerAndPrefixWild = this.isOwnerAndPrefixWild.bind(this);
+        this.dispatchApp2AppData = this.dispatchApp2AppData.bind(this);
     }
 
     componentDidMount() {
@@ -89,20 +90,18 @@ export class Filters extends React.Component {
             let messageData;
             if (data && data.dispatchType && data.dispatchData) {
                 switch (data.dispatchType) {
-                    case 'launch':
-                    case 'message': {
-                        if (data.dispatchType === 'launch') {
-                            if (data.dispatchData.launchMetadata) {
-                                messageData = data.dispatchData.launchMetadata.data;
-                            }
+                    case 'launch': {
+                        if (data.dispatchData.launchMetadata) {
+                            messageData = data.dispatchData.launchMetadata;
                         } else {
                             messageData = data.dispatchData.data;
                         }
-
-                        if (messageData && messageData.owner && messageData.jobId) {
-                            dispatch(setFilters(messageData));
-                            dispatch(fetchJobs(messageData));
-                        }
+                        this.dispatchApp2AppData(messageData);
+                        break;
+                    }
+                    case 'message': {
+                        messageData = data.dispatchData.data;
+                        this.dispatchApp2AppData(messageData);
                         break;
                     }
                     default:
@@ -113,6 +112,13 @@ export class Filters extends React.Component {
         }
         window.addEventListener('message', e => { receiveMessage(e); }, false);
         window.top.postMessage('iframeload', '*');
+    }
+
+    dispatchApp2AppData(messageData) {
+        if (messageData && messageData.owner && messageData.jobId) {
+            dispatch(setFilters(messageData));
+            dispatch(fetchJobs(messageData));
+        }
     }
 
     setFocusOnOwner() {
