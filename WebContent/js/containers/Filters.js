@@ -96,12 +96,16 @@ export class Filters extends React.Component {
                         } else {
                             messageData = data.dispatchData.data;
                         }
-                        this.dispatchApp2AppData(messageData);
+                        if (dispatchApp2AppData) {
+                            this.dispatchApp2AppData(messageData);
+                        }
                         break;
                     }
                     case 'message': {
                         messageData = data.dispatchData.data;
-                        this.dispatchApp2AppData(messageData);
+                        if (dispatchApp2AppData) {
+                            this.dispatchApp2AppData(messageData);
+                        }
                         break;
                     }
                     default:
@@ -110,7 +114,7 @@ export class Filters extends React.Component {
                 }
             }
         }
-        window.addEventListener('message', e => { receiveMessage(e); }, false);
+        window.addEventListener('message', e => { receiveMessage(props, e); }, false);
         window.top.postMessage('iframeload', '*');
     }
 
