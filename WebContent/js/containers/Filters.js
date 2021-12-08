@@ -85,6 +85,7 @@ export class Filters extends React.Component {
             dispatch(setOwnerAndFetchJobs(username, this.props));
         }
 
+        const dispatchApp2AppData = this.dispatchApp2AppData;
         function receiveMessage(event) {
             const data = event.data;
             let messageData;
@@ -97,14 +98,14 @@ export class Filters extends React.Component {
                             messageData = data.dispatchData.data;
                         }
                         if (dispatchApp2AppData) {
-                            this.dispatchApp2AppData(messageData);
+                            dispatchApp2AppData(messageData);
                         }
                         break;
                     }
                     case 'message': {
                         messageData = data.dispatchData.data;
                         if (dispatchApp2AppData) {
-                            this.dispatchApp2AppData(messageData);
+                            dispatchApp2AppData(messageData);
                         }
                         break;
                     }
