@@ -114,7 +114,7 @@ export class Filters extends React.Component {
                 }
             }
         }
-        window.addEventListener('message', e => { receiveMessage(props, e); }, false);
+        window.addEventListener('message', e => { receiveMessage(e); }, false);
         window.top.postMessage('iframeload', '*');
     }
 
