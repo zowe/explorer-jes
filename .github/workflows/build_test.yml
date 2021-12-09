@@ -234,22 +234,7 @@ jobs:
           "${{ needs.build-ubuntu-amd64.outputs.IMAGE_NAME_FULL_REMOTE }}"
           sleep 120
 
-      - name: "[Test 2] Print container service logs - discovery-service"
-        run: |
-          cd .fvt
-          docker compose logs discovery-service
-      
-      - name: "[Test 3] Print container service logs - gateway-service"
-        run: |
-          cd .fvt
-          docker compose logs gateway-service
-
-      - name: "[Test 4] Print container service logs - explorer-jes"
-        run: |
-          cd .fvt
-          docker compose logs explorer-jes
-
-      - name: "[Test 5] Start integration test"
+      - name: "[Test 2] Start integration test"
         run: |
           export ZOWE_USERNAME=${{ secrets.SSH_MARIST_USERNAMEP }}
           export ZOWE_PASSWORD=${{ secrets.SSH_MARIST_PASSWORDP }}
@@ -264,6 +249,24 @@ jobs:
         #   CUSTOM_FVT_ZOSMF_HOST:
         #   CUSTOM_FVT_ZOSMF_PORT:
         #   CUSTOM_FVT_SERVER_HOSTNAME:
+
+      - name: "[Post Test 1] Print container service logs - discovery-service"
+        if: always()
+        run: |
+          cd .fvt
+          docker compose logs discovery-service
+      
+      - name: "[Post Test 2] Print container service logs - gateway-service"
+        if: always()
+        run: |
+          cd .fvt
+          docker compose logs gateway-service
+
+      - name: "[Post Test 3] Print container service logs - explorer-jes"
+        if: always()
+        run: |
+          cd .fvt
+          docker compose logs explorer-jes
 
   regular-build:
     runs-on: ubuntu-latest
