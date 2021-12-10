@@ -85,6 +85,9 @@ export class Filters extends React.Component {
             dispatch(setOwnerAndFetchJobs(username, this.props));
         }
 
+    }
+
+    componentWillUnmount() {
         const dispatchApp2AppData = this.dispatchApp2AppData;
         function receiveMessage(event) {
             const data = event.data;
