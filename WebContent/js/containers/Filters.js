@@ -54,40 +54,7 @@ export class Filters extends React.Component {
         this.handleJobIdChange = this.handleJobIdChange.bind(this);
         this.isOwnerAndPrefixWild = this.isOwnerAndPrefixWild.bind(this);
         this.dispatchApp2AppData = this.dispatchApp2AppData.bind(this);
-    }
 
-    componentDidMount() {
-        const { location, dispatch, owner, username } = this.props;
-        if (location && location.search) {
-            const urlQueryParams = queryString.parse(location.search);
-
-            if (Object.keys(urlQueryParams).length > 0) {
-                const queryFilters = {};
-                Object.keys(urlQueryParams).forEach(filter => {
-                    if (['owner', 'prefix', 'jobId', 'status'].indexOf(filter) > -1) {
-                        queryFilters[filter] = urlQueryParams[filter].toUpperCase();
-                    }
-                });
-                if (Object.keys(queryFilters).length > 0) {
-                    dispatch(setFilters(queryFilters));
-                    dispatch(fetchJobs(queryFilters));
-                }
-            }
-        }
-
-        const lastFilters = getStorageItem(LAST_FILTERS);
-        if (lastFilters > '') {
-            if (Object.keys(lastFilters).length > 0) {
-                dispatch(setFilters(lastFilters));
-                dispatch(fetchJobs(lastFilters));
-            }
-        } else if (owner === '' && (!location || !location.search || !location.search.includes('owner'))) {
-            dispatch(setOwnerAndFetchJobs(username, this.props));
-        }
-
-    }
-
-    componentWillUnmount() {
         const dispatchApp2AppData = this.dispatchApp2AppData;
         function receiveMessage(event) {
             const data = event.data;
@@ -120,6 +87,40 @@ export class Filters extends React.Component {
         }
         window.addEventListener('message', e => { receiveMessage(e); }, false);
         window.top.postMessage('iframeload', '*');
+    }
+
+    componentDidMount() {
+        const { location, dispatch, owner, username } = this.props;
+        if (location && location.search) {
+            const urlQueryParams = queryString.parse(location.search);
+
+            if (Object.keys(urlQueryParams).length > 0) {
+                const queryFilters = {};
+                Object.keys(urlQueryParams).forEach(filter => {
+                    if (['owner', 'prefix', 'jobId', 'status'].indexOf(filter) > -1) {
+                        queryFilters[filter] = urlQueryParams[filter].toUpperCase();
+                    }
+                });
+                if (Object.keys(queryFilters).length > 0) {
+                    dispatch(setFilters(queryFilters));
+                    dispatch(fetchJobs(queryFilters));
+                }
+            }
+        }
+
+        const lastFilters = getStorageItem(LAST_FILTERS);
+        if (lastFilters > '') {
+            if (Object.keys(lastFilters).length > 0) {
+                dispatch(setFilters(lastFilters));
+                dispatch(fetchJobs(lastFilters));
+            }
+        } else if (owner === '' && (!location || !location.search || !location.search.includes('owner'))) {
+            dispatch(setOwnerAndFetchJobs(username, this.props));
+        }
+    }
+
+    componentWillUnmount() {
+        
     }
 
     dispatchApp2AppData(messageData) {
