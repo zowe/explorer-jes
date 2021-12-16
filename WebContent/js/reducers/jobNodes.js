@@ -19,6 +19,7 @@ import {
     UNSELECT_ALL_JOBS,
     REQUEST_JOB_FILES,
     RECEIVE_JOB_FILES,
+    REQUEST_DELETE_JOB,
     INVALIDATE_JOBS,
     STOP_REFRESH_ICON,
 } from '../actions/jobNodes';
@@ -123,6 +124,8 @@ export default function JobNodes(state = INITIAL_STATE, action) {
             });
         case STOP_REFRESH_ICON:
             return state.set('isFetching', false);
+        case REQUEST_DELETE_JOB:
+            return state.set('jobs', state.get('jobs').remove(findKeyOfJob(state.get('jobs'), action.jobId)));
         default:
             return state;
     }
