@@ -54,34 +54,47 @@ export class Filters extends React.Component {
         this.handleJobIdChange = this.handleJobIdChange.bind(this);
         this.isOwnerAndPrefixWild = this.isOwnerAndPrefixWild.bind(this);
         this.dispatchApp2AppData = this.dispatchApp2AppData.bind(this);
+        window.registerLaunchMetadata();
 
         const dispatchApp2AppData = this.dispatchApp2AppData;
         function receiveMessage(event) {
             const data = event.data;
             let messageData;
-            if (data && data.dispatchType && data.dispatchData) {
-                switch (data.dispatchType) {
-                    case 'launch': {
-                        if (data.dispatchData.launchMetadata) {
-                            messageData = data.dispatchData.launchMetadata;
-                        } else {
+            if (data) {
+                if (data.dispatchType && data.dispatchData) {
+                    switch (data.dispatchType) {
+                        case 'launch': {
+                            if (data.dispatchData.launchMetadata) {
+                                messageData = data.dispatchData.launchMetadata;
+                            } else if (data.dispatchData.data) {
+                                messageData = data.dispatchData.data;
+                            } else {
+                                messageData = JSON.parse(localStorage.getItem("ZoweZLUX.iframe.launchMetadata"));
+                                if (messageData.data) {
+                                    messageData = messageData.data;
+                                }
+                            }
+                            if (dispatchApp2AppData) {
+                                dispatchApp2AppData(messageData);
+                            }
+                            break;
+                        }
+                        case 'message': {
                             messageData = data.dispatchData.data;
+                            if (dispatchApp2AppData) {
+                                dispatchApp2AppData(messageData);
+                            }
+                            break;
                         }
-                        if (dispatchApp2AppData) {
-                            dispatchApp2AppData(messageData);
-                        }
-                        break;
+                        default:
+                            // eslint-disable-next-line no-console
+                            console.warn(`Unknown app2app type=${data.dispatchType}`);
                     }
-                    case 'message': {
-                        messageData = data.dispatchData.data;
-                        if (dispatchApp2AppData) {
-                            dispatchApp2AppData(messageData);
-                        }
-                        break;
+                } else if (data.constructorData && data.constructorData.launchMetadata) {
+                    messageData = data.constructorData.launchMetadata.data;
+                    if (dispatchApp2AppData) {
+                        dispatchApp2AppData(messageData);
                     }
-                    default:
-                        // eslint-disable-next-line no-console
-                        console.warn(`Unknown app2app type=${data.dispatchType}`);
                 }
             }
         }
@@ -120,7 +133,6 @@ export class Filters extends React.Component {
     }
 
     componentWillUnmount() {
-        
     }
 
     dispatchApp2AppData(messageData) {

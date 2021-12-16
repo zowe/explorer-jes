@@ -26,3 +26,9 @@ async function sendJesNotificationsToZlux(message) {
         });
     }
 }
+
+async function registerLaunchMetadata() {
+    if (window.ZoweZLUX) { // TODO: Cannot use utilities/storageHelper.js for some reason
+        localStorage.setItem("ZoweZLUX.iframe.launchMetadata", JSON.stringify(ZoweZLUX.iframe.launchMetadata));
+    }
+}
