@@ -11,6 +11,7 @@
 import { atlasFetch } from '../utilities/urlUtils';
 import { constructAndPushMessage } from './snackbarNotifications';
 import { checkForValidationFailure, VALIDATION_FAILURE_MESSAGE } from './validation';
+
 export const TOGGLE_JOB = 'TOGGLE_JOB';
 
 export const REQUEST_JOBS = 'REQUEST_JOBS';
@@ -334,7 +335,7 @@ export function purgeJob(jobName, jobId) {
                     return response.text().then(() => {
                         dispatch(constructAndPushMessage(`${PURGE_JOB_SUCCESS_MESSAGE} ${jobName}/${jobId}`));
                         dispatch(unselectAllJobs());
-                        dispatch(deleteJob(jobName,jobId));
+                        dispatch(deleteJob(jobName, jobId));
                         return dispatch(receivePurge(jobName, jobId));
                     });
                 }
@@ -365,7 +366,6 @@ export function purgeJobs(jobs) {
         const mapSize = jobsToPurge.size;
         let iteration = 0;
         let failedJobs = '';
-        let purgedJobs = [];
         jobsToPurge.every(value => {
             const jobName = value.jobName;
             const jobId = value.jobId;
@@ -383,9 +383,8 @@ export function purgeJobs(jobs) {
                     iteration += 1;
                     if (!response.ok) {
                         failedJobs += `${jobName}/${jobId}, `;
-                    }
-                    else {
-                        dispatch(deleteJob(jobName,jobId));
+                    } else {
+                        dispatch(deleteJob(jobName, jobId));
                     }
                     // Check if any job Purge has failed during the operation and display the appropriate message accordingly
                     if (iteration === mapSize) {
