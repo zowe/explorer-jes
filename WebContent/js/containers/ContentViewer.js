@@ -135,7 +135,7 @@ export class ContentViewer extends React.Component {
         }
     }
 
-    handleCloseOtherTabs(index) {
+    handleCloseAllExceptTabs(index) {
         const { selectedContent, dispatch } = this.props;
         const openedFilesCount = this.props.content.size;
         if (index < openedFilesCount - 1) {
@@ -179,23 +179,23 @@ export class ContentViewer extends React.Component {
     renderTabContextMenu(index) {
         return (
             <ContextMenu
-                id={index}
+                id={index.toString()}
                 style={{ zIndex: '100' }}
             >
                 <MenuItem key="close" onClick={() => { this.handleCloseTab(index); }}>
-                    <u>C</u>lose
-                </MenuItem>
-                <MenuItem key="closeToTheLeft" onClick={() => { this.handleCloseLeftTabs(index); }}>
-                    Close to the <u>L</u>eft
-                </MenuItem>
-                <MenuItem key="closeToTheRight" onClick={() => { this.handleCloseRightTabs(index); }}>
-                    Close to the <u>R</u>ight
-                </MenuItem>
-                <MenuItem key="closeOthers" onClick={() => { this.handleCloseOtherTabs(index); }}>
-                    Close <u>O</u>thers
+                    Close
                 </MenuItem>
                 <MenuItem key="closeAll" onClick={() => { this.handleCloseAllTabs(); }}>
-                    Close <u>A</u>ll Files
+                    Close All
+                </MenuItem>
+                <MenuItem key="closeAllExcept" onClick={() => { this.handleCloseAllExceptTabs(index); }}>
+                    Close All Except
+                </MenuItem>
+                <MenuItem key="closeAllToTheLeft" onClick={() => { this.handleCloseLeftTabs(index); }}>
+                    Close All to the Left
+                </MenuItem>
+                <MenuItem key="closeAllToTheRight" onClick={() => { this.handleCloseRightTabs(index); }}>
+                    Close All to the Right
                 </MenuItem>
             </ContextMenu>
         );
@@ -216,7 +216,7 @@ export class ContentViewer extends React.Component {
                         aria-selected={index === selectedContent ? 'true' : 'false'}
                         aria-controls="content-viewer-body"
                     >
-                        <ContextMenuTrigger id={index}>
+                        <ContextMenuTrigger id={index.toString()}>
                             <div
                                 style={index === selectedContent ? selectedTabStyle : unselectedTabStyle}
                             >
