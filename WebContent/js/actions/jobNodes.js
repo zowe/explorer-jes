@@ -11,7 +11,6 @@
 import { atlasFetch } from '../utilities/urlUtils';
 import { constructAndPushMessage } from './snackbarNotifications';
 import { checkForValidationFailure, VALIDATION_FAILURE_MESSAGE } from './validation';
-
 export const TOGGLE_JOB = 'TOGGLE_JOB';
 
 export const REQUEST_JOBS = 'REQUEST_JOBS';
@@ -26,7 +25,7 @@ export const RECEIVE_JOB_FILES = 'RECEIVE_JOB_FILES';
 export const INVALIDATE_JOB_FILES = 'INVALIDATE_JOB_FILES';
 export const STOP_REFRESH_ICON = 'STOP_REFRESH_ICON';
 
-export const REQUEST_DELETE_JOB = 'REQUEST_DELETE_JOB';
+export const DELETE_JOB = 'DELETE_JOB';
 export const REQUEST_CANCEL_JOB = 'REQUEST_CANCEL_JOB';
 export const RECEIVE_CANCEL_JOB = 'RECEIVE_CANCEL_JOB';
 export const INVALIDATE_CANCEL_JOB = 'INVALIDATE_CANCEL_JOB';
@@ -117,9 +116,9 @@ function stopRefreshIcon() {
     };
 }
 
-function requestDelete(jobName, jobId) {
+function deleteJob(jobName, jobId) {
     return {
-        type: REQUEST_DELETE_JOB,
+        type: DELETE_JOB,
         jobName,
         jobId,
     };
@@ -335,7 +334,7 @@ export function purgeJob(jobName, jobId) {
                     return response.text().then(() => {
                         dispatch(constructAndPushMessage(`${PURGE_JOB_SUCCESS_MESSAGE} ${jobName}/${jobId}`));
                         dispatch(unselectAllJobs());
-                        dispatch(requestDelete(jobName,jobId));
+                        dispatch(deleteJob(jobName,jobId));
                         return dispatch(receivePurge(jobName, jobId));
                     });
                 }
@@ -386,7 +385,7 @@ export function purgeJobs(jobs) {
                         failedJobs += `${jobName}/${jobId}, `;
                     }
                     else {
-                        prugedJobs.push(jobId);
+                        dispatch(deleteJob(jobName,jobId));
                     }
                     // Check if any job Purge has failed during the operation and display the appropriate message accordingly
                     if (iteration === mapSize) {
