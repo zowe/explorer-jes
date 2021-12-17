@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the JES-Explorer will be documented in this file.
-## <1.0.19>
+
+## <1.0.20>
+
+### New features and enhancements
+- Added the different options to close opened file tabs.
 
 ### New features and enhancements
 - Added the feature to download all files of a JOB in a zip format.
