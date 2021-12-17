@@ -69,8 +69,8 @@ export class Filters extends React.Component {
                             } else if (data.dispatchData.data) {
                                 messageData = data.dispatchData.data;
                             } else {
-                                messageData = JSON.parse(localStorage.getItem("ZoweZLUX.iframe.launchMetadata"));
-                                if (messageData.data) {
+                                messageData = JSON.parse(localStorage.getItem('ZoweZLUX.iframe.launchMetadata'));
+                                if (messageData && messageData.data) {
                                     messageData = messageData.data;
                                 }
                             }
@@ -135,17 +135,17 @@ export class Filters extends React.Component {
     componentWillUnmount() {
     }
 
+    setFocusOnOwner() {
+        if (this.filterOwnerRef) {
+            this.filterOwnerRef.focusTextInput();
+        }
+    }
+
     dispatchApp2AppData(messageData) {
         const { dispatch } = this.props;
         if (messageData && messageData.owner && messageData.jobId) {
             dispatch(setFilters(messageData));
             dispatch(fetchJobs(messageData));
-        }
-    }
-
-    setFocusOnOwner() {
-        if (this.filterOwnerRef) {
-            this.filterOwnerRef.focusTextInput();
         }
     }
 
