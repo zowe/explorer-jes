@@ -21,6 +21,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Button from '@material-ui/core/Button';
 import CircularProgressIcon from '@material-ui/core/CircularProgress';
 import queryString from 'query-string';
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { fetchJobFileNoName, removeContent, updateContent, changeSelectedContent, submitJCL } from '../actions/content';
 
 export class ContentViewer extends React.Component {
@@ -107,6 +108,62 @@ export class ContentViewer extends React.Component {
         }
     }
 
+    handleCloseRightTabs(index) {
+        const { selectedContent, dispatch } = this.props;
+        const openedFilesCount = this.props.content.size;
+        if (index < openedFilesCount - 1) {
+            for (let removeIndex = index + 1; removeIndex < openedFilesCount; removeIndex++) {
+                dispatch(removeContent(index + 1));
+            }
+            if (index < selectedContent) {
+                dispatch(changeSelectedContent(index));
+            }
+        }
+    }
+
+    handleCloseLeftTabs(index) {
+        const { selectedContent, dispatch } = this.props;
+        if (index > 0) {
+            for (let removeIndex = 0; removeIndex < index; removeIndex++) {
+                dispatch(removeContent(0));
+            }
+            if (index < selectedContent) {
+                dispatch(changeSelectedContent(selectedContent - index));
+            } else {
+                dispatch(changeSelectedContent(0));
+            }
+        }
+    }
+
+    handleCloseAllExceptTabs(index) {
+        const { selectedContent, dispatch } = this.props;
+        const openedFilesCount = this.props.content.size;
+        if (index < openedFilesCount - 1) {
+            for (let removeIndex = index + 1; removeIndex < openedFilesCount; removeIndex++) {
+                dispatch(removeContent(index + 1));
+            }
+            if (index < selectedContent) {
+                dispatch(changeSelectedContent(index));
+            }
+        }
+        dispatch(changeSelectedContent(0));
+
+        if (index > 0) {
+            for (let removeIndex = 0; removeIndex < index; removeIndex++) {
+                dispatch(removeContent(0));
+            }
+            dispatch(changeSelectedContent(0));
+        }
+    }
+
+    handleCloseAllTabs() {
+        const { dispatch } = this.props;
+        const openedFilesCount = this.props.content.size;
+        for (let index = 0; index < openedFilesCount; index++) {
+            dispatch(removeContent(0));
+        }
+    }
+
     handleKeyDownOnContentTabLabel(e, index) {
         if (e.key === 'Enter') { this.handleSelectedTabChange(index); }
     }
@@ -117,6 +174,31 @@ export class ContentViewer extends React.Component {
         if (tab) {
             tab.focus();
         }
+    }
+
+    renderTabContextMenu(index) {
+        return (
+            <ContextMenu
+                id={index.toString()}
+                style={{ zIndex: '100' }}
+            >
+                <MenuItem key="close" onClick={() => { this.handleCloseTab(index); }}>
+                    Close
+                </MenuItem>
+                <MenuItem key="closeAll" onClick={() => { this.handleCloseAllTabs(); }}>
+                    Close All
+                </MenuItem>
+                <MenuItem key="closeAllExcept" onClick={() => { this.handleCloseAllExceptTabs(index); }}>
+                    Close All Except
+                </MenuItem>
+                <MenuItem key="closeAllToTheLeft" onClick={() => { this.handleCloseLeftTabs(index); }}>
+                    Close All to the Left
+                </MenuItem>
+                <MenuItem key="closeAllToTheRight" onClick={() => { this.handleCloseRightTabs(index); }}>
+                    Close All to the Right
+                </MenuItem>
+            </ContextMenu>
+        );
     }
 
     renderTabs() {
@@ -134,26 +216,29 @@ export class ContentViewer extends React.Component {
                         aria-selected={index === selectedContent ? 'true' : 'false'}
                         aria-controls="content-viewer-body"
                     >
-                        <div
-                            style={index === selectedContent ? selectedTabStyle : unselectedTabStyle}
-                        >
+                        <ContextMenuTrigger id={index.toString()}>
                             <div
-                                className="content-tab-label"
-                                onClick={() => { this.handleSelectedTabChange(index); }}
-                                // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-                                tabIndex="0"
-                                onKeyDown={e => { return this.handleKeyDownOnContentTabLabel(e, index); }}
-                                ref={fileTab => { this.fileTabs[index] = fileTab; return this.fileTabs[index]; }}
+                                style={index === selectedContent ? selectedTabStyle : unselectedTabStyle}
                             >
-                                {tabContent.label}
+                                <div
+                                    className="content-tab-label"
+                                    onClick={() => { this.handleSelectedTabChange(index); }}
+                                    // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+                                    tabIndex="0"
+                                    onKeyDown={e => { return this.handleKeyDownOnContentTabLabel(e, index); }}
+                                    ref={fileTab => { this.fileTabs[index] = fileTab; return this.fileTabs[index]; }}
+                                >
+                                    {tabContent.label}
+                                </div>
+                                <ClearIcon
+                                    onClick={() => { this.handleCloseTab(index); }}
+                                    tabIndex="0"
+                                    onKeyDown={e => { if (e.key === 'Enter') this.handleCloseTab(index); }}
+                                />
                             </div>
-                            <ClearIcon
-                                onClick={() => { this.handleCloseTab(index); }}
-                                tabIndex="0"
-                                onKeyDown={e => { if (e.key === 'Enter') this.handleCloseTab(index); }}
-                            />
-                        </div>
-                        {tabContent.isFetching ? <LinearProgress class="progress-bar" style={{ width: '100%', height: '2px' }} /> : null}
+                            {tabContent.isFetching ? <LinearProgress class="progress-bar" style={{ width: '100%', height: '2px' }} /> : null}
+                            {this.renderTabContextMenu(index)}
+                        </ContextMenuTrigger>
                     </div>
                 );
             });
