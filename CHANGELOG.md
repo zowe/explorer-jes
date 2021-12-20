@@ -5,7 +5,7 @@ All notable changes to the JES-Explorer will be documented in this file.
 
 ### New features and enhancements
 - JES-explorer no longer uses explorer-ui-server, but now depends on app-server. In a standard Zowe environment this will result in less processes, but does break links about getting to the explorer via APIML routes. The explorer is now available via the app-server's APIML route.
-
+- Added the different options to close opened file tabs.
 
 ## <1.0.19>
 
