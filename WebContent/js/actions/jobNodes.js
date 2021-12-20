@@ -162,7 +162,6 @@ function invalidatePurge(jobName, jobId) {
     };
 }
 
-
 function getURIQuery(filters) {
     let query = `?owner=${filters.owner ? filters.owner : '*'}&prefix=${filters.prefix ? filters.prefix : '*'}`;
 
