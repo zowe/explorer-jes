@@ -28,7 +28,6 @@ export const STOP_REFRESH_ICON = 'STOP_REFRESH_ICON';
 
 export const DELETE_JOB = 'DELETE_JOB';
 export const REQUEST_CANCEL_JOB = 'REQUEST_CANCEL_JOB';
-export const RECEIVE_CANCEL_JOB = 'RECEIVE_CANCEL_JOB';
 export const INVALIDATE_CANCEL_JOB = 'INVALIDATE_CANCEL_JOB';
 export const REQUEST_PURGE_JOB = 'REQUEST_PURGE_JOB';
 export const REQUEST_PURGE_MULTIPLE_JOBS = 'REQUEST_PURGE_MULTIPLE_JOBS';
@@ -129,14 +128,6 @@ function deleteJob(jobName, jobId) {
 function requestCancel(jobName, jobId) {
     return {
         type: REQUEST_CANCEL_JOB,
-        jobName,
-        jobId,
-    };
-}
-
-function receiveCancel(jobName, jobId) {
-    return {
-        type: RECEIVE_CANCEL_JOB,
         jobName,
         jobId,
     };
@@ -287,7 +278,7 @@ export function cancelJob(jobName, jobId) {
         return dispatch => { dispatch(constructAndPushMessage(`${CANCEL_JOB_CANCEL_MESSAGE} ${jobName}/${jobId}`)); };
     }
     return dispatch => {
-        dispatch(requestCancel(jobName, jobId));
+        //dispatch(requestCancel(jobName, jobId));
         return atlasFetch(`zosmf/restjobs/jobs/${jobName}/${jobId}`,
             {
                 credentials: 'include',
@@ -302,7 +293,7 @@ export function cancelJob(jobName, jobId) {
                 if (response.ok) {
                     return response.text().then(() => {
                         dispatch(constructAndPushMessage(`${CANCEL_JOB_SUCCESS_MESSAGE} ${jobName}/${jobId}`));
-                        return dispatch(receiveCancel(jobName, jobId));
+                        return dispatch(requestCancel(jobName, jobId));
                     });
                 }
                 return response.json().then(json => { throw Error(json && json.message ? json.message : ''); });

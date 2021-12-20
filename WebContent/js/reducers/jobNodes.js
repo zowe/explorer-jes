@@ -20,6 +20,7 @@ import {
     REQUEST_JOB_FILES,
     RECEIVE_JOB_FILES,
     DELETE_JOB,
+    REQUEST_CANCEL_JOB,
     INVALIDATE_JOBS,
     STOP_REFRESH_ICON,
 } from '../actions/jobNodes';
@@ -75,6 +76,11 @@ function invertJobSelectStatus(jobs, jobId) {
     return jobs.get(jobKey).set('isSelected', !jobs.get(jobKey).get('isSelected'));
 }
 
+function changeStatus(jobs, jobId, newStatus) {
+    const jobKey = findKeyOfJob(jobs, jobId);
+    return jobs.get(jobKey).set('status', newStatus);
+}
+
 function unselectAllJobs(jobs) {
     return jobs.map(job => {
         return job.set('isSelected', false);
@@ -125,7 +131,15 @@ export default function JobNodes(state = INITIAL_STATE, action) {
         case STOP_REFRESH_ICON:
             return state.set('isFetching', false);
         case DELETE_JOB:
-            return state.set('jobs', state.get('jobs').remove(findKeyOfJob(state.get('jobs'), action.jobId)));
+            return state.merge({
+                jobs: state.get('jobs').remove(findKeyOfJob(state.get('jobs'), action.jobId)),
+            });
+        case REQUEST_CANCEL_JOB:
+            //console.log(changeReturnCode(state.get('jobs'), action.jobId, 'CANCELED'));
+            console.log(state.get('jobs'));
+            return state.merge({
+                jobs: state.get('jobs').set(findKeyOfJob(state.get('jobs'), action.jobId), changeStatus(state.get('jobs'), action.jobId, 'CANCELED')),
+            });
         default:
             return state;
     }
