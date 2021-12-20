@@ -19,8 +19,8 @@ import {
     UNSELECT_ALL_JOBS,
     REQUEST_JOB_FILES,
     RECEIVE_JOB_FILES,
-    DELETE_JOB,
-    REQUEST_CANCEL_JOB,
+    RECEIVE_PURGE_JOB,
+    RECEIVE_CANCEL_JOB,
     INVALIDATE_JOBS,
     STOP_REFRESH_ICON,
 } from '../actions/jobNodes';
@@ -130,11 +130,11 @@ export default function JobNodes(state = INITIAL_STATE, action) {
             });
         case STOP_REFRESH_ICON:
             return state.set('isFetching', false);
-        case DELETE_JOB:
+        case RECEIVE_PURGE_JOB:
             return state.merge({
                 jobs: state.get('jobs').remove(findKeyOfJob(state.get('jobs'), action.jobId)),
             });
-        case REQUEST_CANCEL_JOB:
+        case RECEIVE_CANCEL_JOB:
             return state.merge({
                 jobs: state.get('jobs').set(findKeyOfJob(state.get('jobs'), action.jobId), changeStatus(state.get('jobs'), action.jobId, 'CANCELED')),
             });

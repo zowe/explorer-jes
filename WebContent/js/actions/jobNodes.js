@@ -26,12 +26,10 @@ export const RECEIVE_JOB_FILES = 'RECEIVE_JOB_FILES';
 export const INVALIDATE_JOB_FILES = 'INVALIDATE_JOB_FILES';
 export const STOP_REFRESH_ICON = 'STOP_REFRESH_ICON';
 
-export const DELETE_JOB = 'DELETE_JOB';
 export const REQUEST_CANCEL_JOB = 'REQUEST_CANCEL_JOB';
+export const RECEIVE_CANCEL_JOB = 'RECEIVE_CANCEL_JOB';
 export const INVALIDATE_CANCEL_JOB = 'INVALIDATE_CANCEL_JOB';
 export const REQUEST_PURGE_JOB = 'REQUEST_PURGE_JOB';
-export const REQUEST_PURGE_MULTIPLE_JOBS = 'REQUEST_PURGE_MULTIPLE_JOBS';
-export const RECEIVE_PURGE_MULTIPLE_JOBS = 'RECEIVE_PURGE_MULTIPLE_JOBS';
 export const RECEIVE_PURGE_JOB = 'RECEIVE_PURGE_JOB';
 export const INVALIDATE_PURGE_JOB = 'INVALIDATE_PURGE_JOB';
 
@@ -116,18 +114,17 @@ function stopRefreshIcon() {
     };
 }
 
-function deleteJob(jobName, jobId) {
+function requestCancel(jobName, jobId) {
     return {
-        type: DELETE_JOB,
+        type: REQUEST_CANCEL_JOB,
         jobName,
         jobId,
     };
 }
 
-
-function requestCancel(jobName, jobId) {
+function receiveCancel(jobName, jobId) {
     return {
-        type: REQUEST_CANCEL_JOB,
+        type: RECEIVE_CANCEL_JOB,
         jobName,
         jobId,
     };
@@ -176,6 +173,7 @@ function invalidatePurge(jobName, jobId) {
         jobId,
     };
 }
+
 
 function getURIQuery(filters) {
     let query = `?owner=${filters.owner ? filters.owner : '*'}&prefix=${filters.prefix ? filters.prefix : '*'}`;
@@ -278,6 +276,7 @@ export function cancelJob(jobName, jobId) {
         return dispatch => { dispatch(constructAndPushMessage(`${CANCEL_JOB_CANCEL_MESSAGE} ${jobName}/${jobId}`)); };
     }
     return dispatch => {
+        dispatch(requestCancel(jobName, jobId));
         return atlasFetch(`zosmf/restjobs/jobs/${jobName}/${jobId}`,
             {
                 credentials: 'include',
@@ -292,7 +291,7 @@ export function cancelJob(jobName, jobId) {
                 if (response.ok) {
                     return response.text().then(() => {
                         dispatch(constructAndPushMessage(`${CANCEL_JOB_SUCCESS_MESSAGE} ${jobName}/${jobId}`));
-                        return dispatch(requestCancel(jobName, jobId));
+                        return dispatch(receiveCancel(jobName, jobId));
                     });
                 }
                 return response.json().then(json => { throw Error(json && json.message ? json.message : ''); });
@@ -325,7 +324,6 @@ export function purgeJob(jobName, jobId) {
                     return response.text().then(() => {
                         dispatch(constructAndPushMessage(`${PURGE_JOB_SUCCESS_MESSAGE} ${jobName}/${jobId}`));
                         dispatch(unselectAllJobs());
-                        dispatch(deleteJob(jobName, jobId));
                         return dispatch(receivePurge(jobName, jobId));
                     });
                 }
@@ -347,7 +345,6 @@ export function purgeJobs(jobs) {
         return dispatch => { dispatch(constructAndPushMessage(`${PURGE_JOBS_CANCEL_MESSAGE}`)); };
     }
     return dispatch => {
-        dispatch(requestPurgeMultipleJobs());
         const selectedJobs = getSelectedJobs(jobs);
         const jobsToPurge = selectedJobs.map(job => {
             // eslint-disable-next-line quote-props, quotes
@@ -374,7 +371,7 @@ export function purgeJobs(jobs) {
                     if (!response.ok) {
                         failedJobs += `${jobName}/${jobId}, `;
                     } else {
-                        dispatch(deleteJob(jobName, jobId));
+                        dispatch(receivePurge(jobName, jobId));
                     }
                     // Check if any job Purge has failed during the operation and display the appropriate message accordingly
                     if (iteration === mapSize) {
