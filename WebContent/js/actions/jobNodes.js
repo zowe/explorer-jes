@@ -278,7 +278,6 @@ export function cancelJob(jobName, jobId) {
         return dispatch => { dispatch(constructAndPushMessage(`${CANCEL_JOB_CANCEL_MESSAGE} ${jobName}/${jobId}`)); };
     }
     return dispatch => {
-        //dispatch(requestCancel(jobName, jobId));
         return atlasFetch(`zosmf/restjobs/jobs/${jobName}/${jobId}`,
             {
                 credentials: 'include',

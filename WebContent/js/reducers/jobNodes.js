@@ -135,8 +135,6 @@ export default function JobNodes(state = INITIAL_STATE, action) {
                 jobs: state.get('jobs').remove(findKeyOfJob(state.get('jobs'), action.jobId)),
             });
         case REQUEST_CANCEL_JOB:
-            //console.log(changeReturnCode(state.get('jobs'), action.jobId, 'CANCELED'));
-            console.log(state.get('jobs'));
             return state.merge({
                 jobs: state.get('jobs').set(findKeyOfJob(state.get('jobs'), action.jobId), changeStatus(state.get('jobs'), action.jobId, 'CANCELED')),
             });
