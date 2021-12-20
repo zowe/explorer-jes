@@ -369,7 +369,6 @@ export function purgeJobs(jobs) {
                         } else {
                             dispatch(constructAndPushMessage(`${PURGE_JOBS_SUCCESS_MESSAGE}`));
                             dispatch(unselectAllJobs());
-                            return dispatch(receivePurgeMultipleJobs());
                         }
                     }
                     return true;
