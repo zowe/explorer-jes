@@ -146,23 +146,11 @@ function requestPurge(jobName, jobId) {
     };
 }
 
-function requestPurgeMultipleJobs() {
-    return {
-        type: REQUEST_PURGE_MULTIPLE_JOBS,
-    };
-}
-
 function receivePurge(jobName, jobId) {
     return {
         type: RECEIVE_PURGE_JOB,
         jobName,
         jobId,
-    };
-}
-
-function receivePurgeMultipleJobs() {
-    return {
-        type: RECEIVE_PURGE_MULTIPLE_JOBS,
     };
 }
 
