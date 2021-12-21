@@ -129,12 +129,13 @@ export default function JobNodes(state = INITIAL_STATE, action) {
             return state.merge({
                 jobs: state.get('jobs').remove(findKeyOfJob(state.get('jobs'), action.jobId)),
             });
-        case RECEIVE_CANCEL_JOB:
-            let jobs = state.get('jobs');
+        case RECEIVE_CANCEL_JOB: {
+            const jobs = state.get('jobs');
             const jobKey = findKeyOfJob(state.get('jobs'), action.jobId);
             return state.merge({
                 jobs: jobs.set(jobKey, jobs.get(jobKey).set('status', 'CANCELED')),
             });
+        }
         default:
             return state;
     }
