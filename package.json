@@ -83,7 +83,7 @@
     "webpack-dev-server": "4.3.1"
   },
   "scripts": {
-    "dev": "NODE_ENV='development' webpack serve --config ./webpack.config.js  --hot ",
+    "dev": "cross-env NODE_ENV='development' webpack serve --config ./webpack.config.js  --hot ",
     "start": "npm run build && cross-env NODE_ENV='development' OUTPUT_FOLDER='web' webpack --progress --color --watch ",
     "lint": "eslint ./WebContent/js/ ./tests/UnitTests",
     "test": "cross-env JUNIT_REPORT_PATH=target/report.xml nyc mocha --require @babel/register tests/UnitTests --recursive --color --reporter mocha-jenkins-reporter",
