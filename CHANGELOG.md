@@ -6,17 +6,14 @@ All notable changes to the JES-Explorer will be documented in this file.
 ### Bug fixes
 - Fixed a bug where using app2app params at launch would not use desired data
 
-## <1.0.19>
-
 ### New features and enhancements
+- Added the different options to close opened file tabs.
 - Added the feature to download all files of a JOB in a zip format.
 
 ## <1.0.18>
 
 ### New features and enhancements
 - Replaced the File APIs with zOSMF APIs
-
-### New features and enhancements
 - Added actions and recognizers stored in JSON files. Other applications are able to open JES Explorer with pre-populated filter. Thanks @skurnevich
 
 ## <1.0.9>
