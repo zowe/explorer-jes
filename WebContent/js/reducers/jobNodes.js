@@ -76,11 +76,6 @@ function invertJobSelectStatus(jobs, jobId) {
     return jobs.get(jobKey).set('isSelected', !jobs.get(jobKey).get('isSelected'));
 }
 
-function changeStatus(jobs, jobId, newStatus) {
-    const jobKey = findKeyOfJob(jobs, jobId);
-    return jobs.get(jobKey).set('status', newStatus);
-}
-
 function unselectAllJobs(jobs) {
     return jobs.map(job => {
         return job.set('isSelected', false);
@@ -135,8 +130,10 @@ export default function JobNodes(state = INITIAL_STATE, action) {
                 jobs: state.get('jobs').remove(findKeyOfJob(state.get('jobs'), action.jobId)),
             });
         case RECEIVE_CANCEL_JOB:
+            let jobs = state.get('jobs');
+            const jobKey = findKeyOfJob(state.get('jobs'), action.jobId);
             return state.merge({
-                jobs: state.get('jobs').set(findKeyOfJob(state.get('jobs'), action.jobId), changeStatus(state.get('jobs'), action.jobId, 'CANCELED')),
+                jobs: jobs.set(jobKey, jobs.get(jobKey).set('status', 'CANCELED')),
             });
         default:
             return state;
