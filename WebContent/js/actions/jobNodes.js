@@ -188,13 +188,32 @@ function getURIQuery(filters) {
 function filterByJobId(jobs, jobid, dispatch) {
     // filter for job Id as api doesn't support
     let jobFound = false;
-    jobs.forEach(job => {
-        if (job.jobid === jobid) {
-            jobFound = true;
-            dispatch(receiveSingleJob(job));
+    let jobArr = [...jobs];
+    for (let job of jobs) {
+        if (jobid[jobid.length-1] == '*') { // [...]* search case
+            for (let i = 0; (i<jobid.length-1) && (i<job.jobid.length); i++) {
+                if (job.jobid[i] != jobid[i]) { // Remove any non-matches
+                    jobArr.splice(jobArr.indexOf(job), 1);
+                    break;
+                }
+            }
         }
-    });
-    if (!jobFound) {
+        else if (job.jobid === jobid) { // [...] search case
+            jobFound = true;
+            jobArr = [job];
+            break; // Cancel the rest of the search, we found first instance
+        } else {
+            jobArr = [];
+        }
+    };
+    if (jobArr.length > 0) {
+        if (jobArr.length > 1) {
+            dispatch(receiveJobs(jobArr))
+        } else {
+            dispatch(receiveSingleJob(jobArr[0]));
+        }
+    }
+    else if (!jobFound) {
         dispatch(invalidateJobs());
     }
 }

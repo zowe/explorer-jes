@@ -21,7 +21,11 @@ export default class RefreshIcon extends React.Component {
 
     render() {
         const { isFetching } = this.props;
-        const iconStyle = { float: 'right', padding: '10px' };
+        const iconStyle = { float: 'right', 
+            padding: '10px', 
+            position: 'relative', 
+            marginTop: '-45px',
+            marginRight: '-20px'};
         const iconSize = 24;
         if (isFetching) {
             return (
