@@ -318,8 +318,10 @@ describe('JES explorer function verification tests', function () {
 
             describe('Post expansion', () => {
                 beforeEach(async () => {
-                    await reloadAndOpenFilterPanel(driver, false);
-                });
+                    await driver.wait(until.elementLocated(By.id('filter-view')), 10000);
+                    await driver.sleep(1000);
+                    const element = await driver.findElement(By.id('filter-view'));
+                    await element.click();                });
 
                 it('Should render filter-input-fields after expansion', async () => {
                     expect(await testElementAppearsXTimesById(driver, 'filter-owner-field', 1), 'filter-owner-field wrong').to.be.true;
