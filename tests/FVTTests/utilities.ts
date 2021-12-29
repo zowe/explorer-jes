@@ -223,11 +223,15 @@ export async function findAndClickApplyButton(driver) {
  * @param {WebDriver} driver selenium-webdriver
  */
 export async function reloadAndOpenFilterPanel(driver, hasJobs) {
-    //await driver.navigate().refresh();
+    await driver.navigate().refresh();
+    console.log('refresh WINDOW');
+
     await driver.wait(until.elementLocated(By.id('refresh-icon')), 60000);
+    console.log('refresh BUTTON got LOCATED');
+
     const refreshIcon :WebElement = await driver.findElement(By.id('refresh-icon'));
     await refreshIcon.click();
-    console.log('refresh got clicked');
+    console.log('refresh BUTTON got clicked');
     await driver.wait(until.elementLocated(By.id('filter-view')), 10000);
     await driver.sleep(1000);
     if (hasJobs) {
