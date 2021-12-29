@@ -152,7 +152,10 @@ describe('JES explorer function verification tests', function () {
             });
             describe('Job filtering', () => {
                 beforeEach(async () => {
-                    await reloadAndOpenFilterPanel(driver, false);
+                    await driver.wait(until.elementLocated(By.id('filter-view')), 10000);
+                    await driver.sleep(1000);
+                    const element = await driver.findElement(By.id('filter-view'));
+                    await element.click();
                 });
 
                 describe('Owner Filter', () => {
