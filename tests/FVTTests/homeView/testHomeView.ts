@@ -85,6 +85,7 @@ describe('JES explorer function verification tests', function () {
         describe('Tree interaction', () => {
             before('Reset prior to Tree interaction suite', async () => {
                 await loadPage(driver, BASE_URL_WITH_PATH);
+                console.log('loading page');
             });
 
             it('Should handle reloading jobs when clicking refresh icon', async () => {
