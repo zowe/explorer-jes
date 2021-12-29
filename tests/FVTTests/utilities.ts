@@ -224,7 +224,7 @@ export async function findAndClickApplyButton(driver) {
  */
 export async function reloadAndOpenFilterPanel(driver, hasJobs) {
     await driver.navigate().refresh();
-    await driver.wait(until.elementLocated(By.id('filter-view')), 20000);
+    await driver.wait(until.elementLocated(By.id('filter-view')), 30000);
     await driver.sleep(1000);
     if (hasJobs) {
         await driver.wait(until.elementLocated(By.className('job-instance')), 10000);
