@@ -8,7 +8,7 @@
  * Copyright IBM Corporation 2020
  */
 
-import { By, until } from 'selenium-webdriver';
+import { By, until, WebElement } from 'selenium-webdriver';
 import fetch from 'node-fetch';
 import https = require('https');
 
@@ -223,7 +223,10 @@ export async function findAndClickApplyButton(driver) {
  * @param {WebDriver} driver selenium-webdriver
  */
 export async function reloadAndOpenFilterPanel(driver, hasJobs) {
-    await driver.navigate().refresh();
+    //await driver.navigate().refresh();
+    await driver.wait(until.elementLocated(By.id('refresh-icon')), 60000);
+    const refreshIcon :WebElement = await driver.findElement(By.id('refresh-icon'));
+    await refreshIcon.click();
     console.log('refresh got clicked');
     await driver.wait(until.elementLocated(By.id('filter-view')), 10000);
     await driver.sleep(1000);
