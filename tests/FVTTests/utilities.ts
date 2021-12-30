@@ -224,7 +224,7 @@ export async function findAndClickApplyButton(driver) {
  */
 export async function reloadAndOpenFilterPanel(driver, hasJobs) {
     await driver.navigate().refresh();
-    await driver.wait(until.elementLocated(By.id('filter-view')), 100000);
+    await driver.wait(until.elementLocated(By.id('filter-view')), 10000);
     await driver.sleep(1000);
     if (hasJobs) {
         await driver.wait(until.elementLocated(By.className('job-instance')), 10000);
@@ -241,7 +241,15 @@ export async function reloadAndOpenFilterPanel(driver, hasJobs) {
  */
 export async function waitForAndExtractFilters(driver) {
     await driver.sleep(1000);
-    await driver.wait(until.elementLocated(By.className('tree-card')), 10000);
+    let retries = 0;
+    do{
+    try{
+        retries++;
+        await driver.wait(until.elementLocated(By.className('tree-card')), 10000);
+    } catch (NoSuchElementException){
+        driver.navigate().refresh();
+    }
+    } while(retries < 5);
     const filterSpans = await driver.findElements(By.css('.tree-card > div > div > span'));
     const filterText = await filterSpans[0].getText();
     return parseFilterText(filterText);
