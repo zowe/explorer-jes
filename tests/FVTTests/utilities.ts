@@ -223,6 +223,7 @@ export async function findAndClickApplyButton(driver) {
  * @param {WebDriver} driver selenium-webdriver
  */
 export async function reloadAndOpenFilterPanel(driver, hasJobs) {
+    await driver.sleep(1000);
     await driver.navigate().refresh();
     await driver.wait(until.elementLocated(By.id('filter-view')), 10000);
     await driver.sleep(1000);
