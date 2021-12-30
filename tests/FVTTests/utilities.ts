@@ -212,7 +212,7 @@ export function loadPageWithFilterOptions(pageUrl, defaultFilters = {}, config =
  */
 export async function findAndClickApplyButton(driver) {
     const applyButton = await driver.findElement(By.id('filters-apply-button'));
-    await driver.wait(until.elementIsVisible(applyButton), 10000);
+    await driver.wait(until.elementIsVisible(applyButton), 30000);
     await applyButton.click();
     await driver.sleep(1000); // Make sure we don't just notice the old jobs
     await driver.wait(until.elementLocated(By.id('job-list')), 10000);
@@ -224,7 +224,7 @@ export async function findAndClickApplyButton(driver) {
  */
 export async function reloadAndOpenFilterPanel(driver, hasJobs) {
     await driver.navigate().refresh();
-    await driver.wait(until.elementLocated(By.id('filter-view')), 10000);
+    await driver.wait(until.elementLocated(By.id('filter-view')), 100000);
     await driver.sleep(1000);
     if (hasJobs) {
         await driver.wait(until.elementLocated(By.className('job-instance')), 10000);
