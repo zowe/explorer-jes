@@ -224,8 +224,6 @@ export async function findAndClickApplyButton(driver) {
  */
 export async function reloadAndOpenFilterPanel(driver, hasJobs) {
     driver.getCurrentUrl().then(url => {console.log('THE URL BEFORE THE REFRESH IS : '+ url);return url;});
-    await driver.sleep(1000);
-
     await driver.navigate().refresh();
     await driver.sleep(1000);
 
