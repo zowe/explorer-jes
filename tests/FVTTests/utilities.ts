@@ -223,8 +223,13 @@ export async function findAndClickApplyButton(driver) {
  * @param {WebDriver} driver selenium-webdriver
  */
 export async function reloadAndOpenFilterPanel(driver, hasJobs) {
+    driver.getCurrentUrl().then(url => {console.log('THE URL BEFORE THE REFRESH IS : '+ url);return url;});
+    await driver.sleep(1000);
+
     await driver.navigate().refresh();
-    driver.switchTo().frame(0);
+    await driver.sleep(1000);
+
+    driver.getCurrentUrl().then(url => {'THE URL AFTER THE REFRESH IS : '+ console.log(url);return url;});
     await driver.wait(until.elementLocated(By.id('filter-view')), 10000);
     await driver.sleep(1000);
     if (hasJobs) {
