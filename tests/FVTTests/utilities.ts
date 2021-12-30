@@ -233,7 +233,8 @@ export async function reloadAndOpenFilterPanel(driver, hasJobs) {
         } catch (NoSuchElementException){
         driver.navigate().refresh();
     }
-    } while(retries < 5);    await driver.sleep(1000);
+    } while(retries < 5);
+    await driver.sleep(1000);
     if (hasJobs) {
         await driver.wait(until.elementLocated(By.className('job-instance')), 10000);
     }
