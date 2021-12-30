@@ -229,6 +229,7 @@ export async function reloadAndOpenFilterPanel(driver, hasJobs) {
     try{
         retries++;
         await driver.wait(until.elementLocated(By.className('tree-card')), 10000);
+        retries = 5;
     } catch (NoSuchElementException){
         driver.navigate().refresh();
     }
