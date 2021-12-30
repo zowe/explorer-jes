@@ -372,6 +372,8 @@ export function purgeJobs(jobs) {
                     iteration += 1;
                     if (!response.ok) {
                         failedJobs += `${jobName}/${jobId}, `;
+                    } else {
+                        dispatch(receivePurge(jobName, jobId));
                     }
                     // Check if any job Purge has failed during the operation and display the appropriate message accordingly
                     if (iteration === mapSize) {
