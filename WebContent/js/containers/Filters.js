@@ -54,7 +54,7 @@ export class Filters extends React.Component {
         this.handleJobIdChange = this.handleJobIdChange.bind(this);
         this.isOwnerAndPrefixWild = this.isOwnerAndPrefixWild.bind(this);
         this.dispatchApp2AppData = this.dispatchApp2AppData.bind(this);
-        //window.registerLaunchMetadata();
+        // window.registerLaunchMetadata();
 
         const dispatchApp2AppData = this.dispatchApp2AppData;
         function receiveMessage(event) {
