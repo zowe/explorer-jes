@@ -208,7 +208,7 @@ function filterByJobId(jobs, jobid, dispatch) {
     }
     if (jobArr.length > 0) {
         if (jobArr.length > 1) {
-            dispatch(receiveJobs(jobArr))
+            dispatch(receiveJobs(jobArr));
         } else {
             dispatch(receiveSingleJob(jobArr[0]));
         }
