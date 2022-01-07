@@ -191,24 +191,22 @@ function filterByJobId(jobs, jobid, dispatch) {
     let jobArr = [...jobs];
     jobs.forEach(job => {
         if (jobid[jobid.length - 1] === '*') { // [...]* search case
-            if (job.jobid.indexOf(jobid.substring(0, jobid.length-1)) != 0) { // Remove any non-matches
+            if (job.jobid.indexOf(jobid.substring(0, jobid.length - 1)) !== 0) { // Remove any non-matches
                 jobArr.splice(jobArr.indexOf(job), 1);
             }
         } else if (jobid[0] === '*') { // *[...] search case
-            let lastIndexOf = job.jobid.lastIndexOf(jobid.substring(1, jobid.length));
-            if (lastIndexOf && (lastIndexOf + (jobid.substring(1, jobid.length).length) != job.jobid.length)) {
+            const lastIndexOf = job.jobid.lastIndexOf(jobid.substring(1, jobid.length));
+            if (lastIndexOf && (lastIndexOf + (jobid.substring(1, jobid.length).length) !== job.jobid.length)) {
                 jobArr.splice(jobArr.indexOf(job), 1); // Remove any non-matches
             }
-        }
-        else if (job.jobid === jobid) { // [...] search case
+        } else if (job.jobid === jobid) { // [...] search case
             jobFound = true;
             jobArr = [job];
-            dispatch(receiveSingleJob(jobArr[0]));
-            return; // Cancel the rest of the search, we found first instance
+            return dispatch(receiveSingleJob(jobArr[0])); // Cancel the rest of the search, we found first instance
         } else {
             jobArr = [];
         }
-    })
+    });
     if (jobArr.length > 0) {
         if (jobArr.length > 1) {
             dispatch(receiveJobs(jobArr));
