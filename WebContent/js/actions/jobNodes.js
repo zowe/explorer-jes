@@ -213,8 +213,7 @@ function filterByJobId(jobs, jobid, dispatch) {
         } else {
             dispatch(receiveSingleJob(jobArr[0]));
         }
-    }
-    else if (!jobFound) {
+    } else if (!jobFound) {
         dispatch(invalidateJobs());
     }
 }
