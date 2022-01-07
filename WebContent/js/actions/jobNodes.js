@@ -189,23 +189,26 @@ function filterByJobId(jobs, jobid, dispatch) {
     // filter for job Id as api doesn't support
     let jobFound = false;
     let jobArr = [...jobs];
-    for (const job of jobs) {
+    jobs.forEach(job => {
         if (jobid[jobid.length - 1] === '*') { // [...]* search case
-            for (let i = 0; (i < jobid.length - 1) && (i < job.jobid.length); i++) {
-                if (job.jobid[i] !== jobid[i]) { // Remove any non-matches
-                    jobArr.splice(jobArr.indexOf(job), 1);
-                    break;
-                }
+            if (job.jobid.indexOf(jobid.substring(0, jobid.length-1)) != 0) { // Remove any non-matches
+                jobArr.splice(jobArr.indexOf(job), 1);
+            }
+        } else if (jobid[0] === '*') { // *[...] search case
+            let lastIndexOf = job.jobid.lastIndexOf(jobid.substring(1, jobid.length));
+            if (lastIndexOf && (lastIndexOf + (jobid.substring(1, jobid.length).length) != job.jobid.length)) {
+                jobArr.splice(jobArr.indexOf(job), 1); // Remove any non-matches
             }
         }
         else if (job.jobid === jobid) { // [...] search case
             jobFound = true;
             jobArr = [job];
-            break; // Cancel the rest of the search, we found first instance
+            dispatch(receiveSingleJob(jobArr[0]));
+            return; // Cancel the rest of the search, we found first instance
         } else {
             jobArr = [];
         }
-    }
+    })
     if (jobArr.length > 0) {
         if (jobArr.length > 1) {
             dispatch(receiveJobs(jobArr));
