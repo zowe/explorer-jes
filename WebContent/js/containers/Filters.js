@@ -57,7 +57,6 @@ export class Filters extends React.Component {
         if (window.registerLaunchMetadata) {
             window.registerLaunchMetadata();
         }
-
         const dispatchApp2AppData = this.dispatchApp2AppData;
         function receiveMessage(event) {
             const data = event.data;
