@@ -207,7 +207,7 @@ function filterByJobId(jobs, jobid, dispatch) {
         });
     } else {
         jobArr = [];
-        /* tslint:disable-next-line */
+        /* eslint-disable */
         jobs.forEach(job => {
             if (job.jobid === jobid) { // [...] search case
                 jobFound = true;
@@ -215,6 +215,7 @@ function filterByJobId(jobs, jobid, dispatch) {
                 return dispatch(receiveSingleJob(jobArr[0])); // Cancel the rest of the search, we found first instance
             }
         });
+        /* eslint-enable */
     }
     if (jobArr.length > 0) {
         if (jobArr.length > 1) {
