@@ -192,9 +192,9 @@ function filterByJobId(jobs, jobid, dispatch) {
     if (jobid[jobid.length - 1] === '*') { // [...]* search case
         const pattern = jobid.substring(0, jobid.length - 1);
         jobs.forEach(job => {
-                if (job.jobid.indexOf(pattern) !== 0) { // Remove any non-matches
-                    jobArr.splice(jobArr.indexOf(job), 1);
-                }
+            if (job.jobid.indexOf(pattern) !== 0) { // Remove any non-matches
+                jobArr.splice(jobArr.indexOf(job), 1);
+            }
         });
     } else if (jobid[0] === '*') { // *[...] search case
         const pattern = jobid.substring(1, jobid.length);
@@ -207,6 +207,7 @@ function filterByJobId(jobs, jobid, dispatch) {
         });
     } else {
         jobArr = [];
+        /* tslint:disable-next-line */
         jobs.forEach(job => {
             if (job.jobid === jobid) { // [...] search case
                 jobFound = true;
