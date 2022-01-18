@@ -189,24 +189,32 @@ function filterByJobId(jobs, jobid, dispatch) {
     // filter for job Id as api doesn't support
     let jobFound = false;
     let jobArr = [...jobs];
-    jobs.forEach(job => {
-        if (jobid[jobid.length - 1] === '*') { // [...]* search case
-            if (job.jobid.indexOf(jobid.substring(0, jobid.length - 1)) !== 0) { // Remove any non-matches
-                jobArr.splice(jobArr.indexOf(job), 1);
-            }
-        } else if (jobid[0] === '*') { // *[...] search case
-            const lastIndexOf = job.jobid.lastIndexOf(jobid.substring(1, jobid.length));
-            if (lastIndexOf && (lastIndexOf + (jobid.substring(1, jobid.length).length) !== job.jobid.length)) {
+    if (jobid[jobid.length - 1] === '*') { // [...]* search case
+        const pattern = jobid.substring(0, jobid.length - 1);
+        jobs.forEach(job => {
+                if (job.jobid.indexOf(pattern) !== 0) { // Remove any non-matches
+                    jobArr.splice(jobArr.indexOf(job), 1);
+                }
+        });
+    } else if (jobid[0] === '*') { // *[...] search case
+        const pattern = jobid.substring(1, jobid.length);
+        const patternLength = pattern.length;
+        jobs.forEach(job => {
+            const lastIndexOf = job.jobid.lastIndexOf(pattern);
+            if (lastIndexOf && (lastIndexOf + patternLength !== job.jobid.length)) {
                 jobArr.splice(jobArr.indexOf(job), 1); // Remove any non-matches
             }
-        } else if (job.jobid === jobid) { // [...] search case
-            jobFound = true;
-            jobArr = [job];
-            return dispatch(receiveSingleJob(jobArr[0])); // Cancel the rest of the search, we found first instance
-        } else {
-            jobArr = [];
-        }
-    });
+        });
+    } else {
+        jobArr = [];
+        jobs.forEach(job => {
+            if (job.jobid === jobid) { // [...] search case
+                jobFound = true;
+                jobArr = [job];
+                return dispatch(receiveSingleJob(jobArr[0])); // Cancel the rest of the search, we found first instance
+            }
+        });
+    }
     if (jobArr.length > 0) {
         if (jobArr.length > 1) {
             dispatch(receiveJobs(jobArr));
