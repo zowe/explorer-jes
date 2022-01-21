@@ -20,7 +20,7 @@ if [ -z "${FVT_GATEWAY_PORT}" ]; then
 fi
 
 APIML_URL="https://localhost:${FVT_GATEWAY_PORT}"
-APIML_LOGIN_ENDPOINT="${APIML_URL}/api/v1/gateway/auth/login"
+APIML_LOGIN_ENDPOINT="${APIML_URL}/gateway/api/v1/auth/login"
 ZOSMF_API_URL="${APIML_URL}/zosmf/restjobs/jobs"
 
 echo "Getting apimlAuthToken"

@@ -17,7 +17,7 @@ export async function getDriver():Promise<WebDriver> {
     let driver: WebDriver;
     try {
         driver = await getBrowserDriver(TEST_BROWSER) as WebDriver;
-        await setApimlAuthTokenCookie(driver, USERNAME, PASSWORD, `${BASE_URL}/api/v1/gateway/auth/login`, BASE_URL_WITH_PATH);
+        await setApimlAuthTokenCookie(driver, USERNAME, PASSWORD, `${BASE_URL}/gateway/api/v1/auth/login`, BASE_URL_WITH_PATH);
         return driver;
     } catch (err) {
         console.error(err);

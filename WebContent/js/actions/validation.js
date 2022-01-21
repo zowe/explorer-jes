@@ -64,7 +64,7 @@ function checkResponse(response) {
 export function validateUser() {
     return dispatch => {
         dispatch(requestValidation());
-        return fetch(`https://${whichServer()}/api/v1/gateway/auth/query`,
+        return fetch(`https://${whichServer()}/gateway/api/v1/auth/query`,
             { credentials: 'include',
                 'Access-Control-Allow-Credentials': 'true' },
         )
@@ -83,7 +83,7 @@ export function validateUser() {
 export function loginUser(username, password) {
     return dispatch => {
         dispatch(requestValidation());
-        return fetch(`https://${whichServer()}/api/v1/gateway/auth/login`,
+        return fetch(`https://${whichServer()}/gateway/api/v1/auth/login`,
             { method: 'POST',
                 credentials: 'include',
                 'Access-Control-Allow-Credentials': 'true',
