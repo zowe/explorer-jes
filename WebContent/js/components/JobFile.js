@@ -31,6 +31,15 @@ class JobFile extends React.Component {
             menuShortCuts: true,
             menuVisible: false,
         };
+
+        this.checkForShowDD();
+    }
+
+    checkForShowDD() {
+        const { file, showDD } = this.props;
+        if (file && file.label && file.label == showDD) {
+            this.openFile();
+        }
     }
 
     isFileOpen() {
@@ -171,7 +180,7 @@ JobFile.propTypes = {
 function mapStateToProps(state) {
     const contentRoot = state.get('content');
     return {
-        content: contentRoot.get('content'),
+        content: contentRoot.get('content')
     };
 }
 
