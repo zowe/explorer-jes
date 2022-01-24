@@ -145,10 +145,8 @@ export class Filters extends React.Component {
     dispatchApp2AppData(messageData) {
         const { dispatch } = this.props;
         if (messageData) {
-            if (messageData.owner && messageData.jobId) {
-                dispatch(setFilters(messageData));
-                dispatch(fetchJobs(messageData));
-            }
+            dispatch(setFilters(messageData));
+            dispatch(fetchJobs(messageData));
         }
     }
 

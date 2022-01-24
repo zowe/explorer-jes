@@ -35,12 +35,12 @@ class JobInstance extends React.Component {
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
         this.checkForExpand = this.checkForExpand.bind(this);
-        setTimeout ( this.checkForExpand, 1500 ); // Give time for UI code to render before toggling expand
+        setTimeout(this.checkForExpand, 1500); // Give time for UI code to render before toggling expand
     }
 
     checkForExpand() {
         const { expand, pos } = this.props;
-        if (typeof(expand) == "boolean" && expand && pos == 0) {
+        if (typeof (expand) == "boolean" && expand && pos == 0) {
             this.handleJobToggle();
         }
     }
@@ -327,6 +327,7 @@ class JobInstance extends React.Component {
 JobInstance.propTypes = {
     dispatch: PropTypes.func.isRequired,
     showDD: PropTypes.string,
+    expand: PropTypes.bool,
     job: PropTypes.instanceOf(Map).isRequired,
     jobs: PropTypes.instanceOf(List).isRequired,
     content: PropTypes.instanceOf(List),

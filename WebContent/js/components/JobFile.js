@@ -37,7 +37,7 @@ class JobFile extends React.Component {
 
     checkForShowDD() {
         const { file, showDD } = this.props;
-        if (file && file.label && file.label == showDD) {
+        if (file && file.label && file.label === showDD) {
             this.openFile();
         }
     }
@@ -169,6 +169,7 @@ class JobFile extends React.Component {
 
 JobFile.propTypes = {
     job: PropTypes.instanceOf(Map).isRequired,
+    showDD: PropTypes.string,
     content: PropTypes.instanceOf(List),
     file: PropTypes.shape({
         label: PropTypes.string.isRequired,
@@ -180,7 +181,7 @@ JobFile.propTypes = {
 function mapStateToProps(state) {
     const contentRoot = state.get('content');
     return {
-        content: contentRoot.get('content')
+        content: contentRoot.get('content'),
     };
 }
 
