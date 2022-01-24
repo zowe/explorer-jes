@@ -3,6 +3,11 @@ All notable changes to the JES-Explorer will be documented in this file.
 
 ## <1.0.20>
 
+### New features and enhancements
+- Added app2app arguments: 'expand' - boolean that says to expand the job. In a list of jobs, this expands the first result. 'showDD' - string that will auto-open any dataset definition with this name, when expanding job.
+
+## <1.0.20>
+
 ### Bug fixes
 - Fixed a bug where using app2app params at launch would not use desired data
 
