@@ -3,13 +3,17 @@ All notable changes to the JES-Explorer will be documented in this file.
 
 ## <1.0.20>
 
+### New features and enhancements
+- Update the Job tree when a job is deleted or cancelled
+
+## <1.0.20>
+
 ### Bug fixes
 - Fixed a bug where using app2app params at launch would not use desired data
 
 ### New features and enhancements
 - Added the different options to close opened file tabs.
 - Added the feature to download all files of a JOB in a zip format
-- Update the Job tree when a job is deleted or cancelled
 
 ## <1.0.18>
 
