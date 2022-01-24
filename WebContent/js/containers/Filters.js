@@ -211,6 +211,7 @@ export class Filters extends React.Component {
             <Accordion
                 id="filter-view"
                 expanded={this.state.toggled}
+                style={{ width: 'calc(100% - 20px)' }}
             >
                 <AccordionSummary
                     id="filter-view-header"

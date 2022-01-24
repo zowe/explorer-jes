@@ -188,13 +188,42 @@ function getURIQuery(filters) {
 function filterByJobId(jobs, jobid, dispatch) {
     // filter for job Id as api doesn't support
     let jobFound = false;
-    jobs.forEach(job => {
-        if (job.jobid === jobid) {
-            jobFound = true;
-            dispatch(receiveSingleJob(job));
+    let jobArr = [...jobs];
+    if (jobid[jobid.length - 1] === '*') { // [...]* search case
+        const pattern = jobid.substring(0, jobid.length - 1);
+        jobs.forEach(job => {
+            if (job.jobid.indexOf(pattern) !== 0) { // Remove any non-matches
+                jobArr.splice(jobArr.indexOf(job), 1);
+            }
+        });
+    } else if (jobid[0] === '*') { // *[...] search case
+        const pattern = jobid.substring(1, jobid.length);
+        const patternLength = pattern.length;
+        jobs.forEach(job => {
+            const lastIndexOf = job.jobid.lastIndexOf(pattern);
+            if (lastIndexOf && (lastIndexOf + patternLength !== job.jobid.length)) {
+                jobArr.splice(jobArr.indexOf(job), 1); // Remove any non-matches
+            }
+        });
+    } else {
+        jobArr = [];
+        /* eslint-disable */
+        jobs.forEach(job => {
+            if (job.jobid === jobid) { // [...] search case
+                jobFound = true;
+                jobArr = [job];
+                return dispatch(receiveSingleJob(jobArr[0])); // Cancel the rest of the search, we found first instance
+            }
+        });
+        /* eslint-enable */
+    }
+    if (jobArr.length > 0) {
+        if (jobArr.length > 1) {
+            dispatch(receiveJobs(jobArr));
+        } else {
+            dispatch(receiveSingleJob(jobArr[0]));
         }
-    });
-    if (!jobFound) {
+    } else if (!jobFound) {
         dispatch(invalidateJobs());
     }
 }
