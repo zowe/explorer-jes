@@ -134,7 +134,7 @@ function mapStateToProps(state) {
         status: filtersRoot.get('status'),
         expand: filtersRoot.get('expand'),
         isFetching: jobNodesRoot.get('isFetching'),
-        jobs: jobNodesRoot.get('jobs')
+        jobs: jobNodesRoot.get('jobs'),
     };
 }
 

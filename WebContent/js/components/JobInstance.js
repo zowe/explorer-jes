@@ -40,7 +40,7 @@ class JobInstance extends React.Component {
 
     checkForExpand() {
         const { expand, pos } = this.props;
-        if (typeof (expand) == "boolean" && expand && pos == 0) {
+        if (typeof (expand) === 'boolean' && expand && pos === 0) {
             this.handleJobToggle();
         }
     }
@@ -328,6 +328,7 @@ JobInstance.propTypes = {
     dispatch: PropTypes.func.isRequired,
     showDD: PropTypes.string,
     expand: PropTypes.bool,
+    pos: PropTypes.number,
     job: PropTypes.instanceOf(Map).isRequired,
     jobs: PropTypes.instanceOf(List).isRequired,
     content: PropTypes.instanceOf(List),
@@ -340,7 +341,7 @@ function mapStateToProps(state) {
     return {
         content: contentRoot.get('content'),
         jobs: jobs.get('jobs'),
-        showDD: filtersRoot.get('showDD')
+        showDD: filtersRoot.get('showDD'),
     };
 }
 
