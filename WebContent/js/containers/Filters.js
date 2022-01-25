@@ -54,8 +54,9 @@ export class Filters extends React.Component {
         this.handleJobIdChange = this.handleJobIdChange.bind(this);
         this.isOwnerAndPrefixWild = this.isOwnerAndPrefixWild.bind(this);
         this.dispatchApp2AppData = this.dispatchApp2AppData.bind(this);
-        window.registerLaunchMetadata();
-
+        if (window.registerLaunchMetadata) {
+            window.registerLaunchMetadata();
+        }
         const dispatchApp2AppData = this.dispatchApp2AppData;
         function receiveMessage(event) {
             const data = event.data;
@@ -210,6 +211,7 @@ export class Filters extends React.Component {
             <Accordion
                 id="filter-view"
                 expanded={this.state.toggled}
+                style={{ width: 'calc(100% - 20px)' }}
             >
                 <AccordionSummary
                     id="filter-view-header"

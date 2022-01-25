@@ -7,6 +7,7 @@ All notable changes to the JES-Explorer will be documented in this file.
 - Fixed a bug where using app2app params at launch would not use desired data
 
 ### New features and enhancements
+- Added '*' support for job id
 - Added the different options to close opened file tabs.
 - Added the feature to download all files of a JOB in a zip format.
 
