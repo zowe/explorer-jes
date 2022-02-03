@@ -21,7 +21,7 @@ export const validationQueryInvalidTokenResponse = {
     messages: [
         { messageType: 'ERROR',
             messageNumber: 'ZWEAG130E',
-            messageContent: "Token is not valid for URL '/api/v1/gateway/auth/query'",
+            messageContent: "Token is not valid for URL '/gateway/api/v1/auth/query'",
             messageKey: 'apiml.security.query.invalidToken',
         }],
 };
@@ -30,7 +30,7 @@ export const validationLoginInvalidPasswordResponse = {
     messages: [
         { messageType: 'ERROR',
             messageNumber: 'ZWEAG120E',
-            messageContent: "Invalid username or password for URL '/api/v1/gateway/auth/login'",
+            messageContent: "Invalid username or password for URL '/gateway/api/v1/auth/login'",
             messageKey: 'apiml.security.login.invalidCredentials',
         },
     ],
