@@ -26,15 +26,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-  validate-package-json:
-    needs: check-permission
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Validate package.json
-        uses: zowe-actions/shared-actions/validate-package-json@main
-
   build-ubuntu-amd64:
     needs: validate-package-json
     runs-on: ubuntu-latest
