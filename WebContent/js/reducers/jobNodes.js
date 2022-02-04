@@ -128,7 +128,7 @@ export default function JobNodes(state = INITIAL_STATE, action) {
         case RECEIVE_PURGE_JOB: {
             const jobs = state.get('jobs');
             return state.merge({
-                jobs: state.get('jobs').remove(findKeyOfJob(jobs, action.jobId)),
+                jobs: jobs.remove(findKeyOfJob(jobs, action.jobId)),
             });
         }
         case RECEIVE_CANCEL_JOB: {
