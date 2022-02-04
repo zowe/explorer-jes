@@ -126,12 +126,13 @@ export default function JobNodes(state = INITIAL_STATE, action) {
         case STOP_REFRESH_ICON:
             return state.set('isFetching', false);
         case RECEIVE_PURGE_JOB:
+            const jobs = state.get('jobs');
             return state.merge({
-                jobs: state.get('jobs').remove(findKeyOfJob(state.get('jobs'), action.jobId)),
+                jobs: jobs.remove(findKeyOfJob(jobs, action.jobId)),
             });
         case RECEIVE_CANCEL_JOB: {
             const jobs = state.get('jobs');
-            const jobKey = findKeyOfJob(state.get('jobs'), action.jobId);
+            const jobKey = findKeyOfJob(jobs, action.jobId);
             return state.merge({
                 jobs: jobs.set(jobKey, jobs.get(jobKey).set('status', 'CANCELED')),
             });
