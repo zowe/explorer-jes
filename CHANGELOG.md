@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to the JES-Explorer will be documented in this file.
 
+## <1.0.21>
+
+### New features and enhancements
+- Update the Job tree when a job is deleted or cancelled
+
 ## <1.0.20>
 
 ### Bug fixes
@@ -9,7 +14,7 @@ All notable changes to the JES-Explorer will be documented in this file.
 ### New features and enhancements
 - Added '*' support for job id
 - Added the different options to close opened file tabs.
-- Added the feature to download all files of a JOB in a zip format.
+- Added the feature to download all files of a JOB in a zip format
 
 ## <1.0.18>
 
