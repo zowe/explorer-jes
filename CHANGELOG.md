@@ -4,7 +4,9 @@ All notable changes to the JES-Explorer will be documented in this file.
 ## <1.0.21>
 
 ### New features and enhancements
-- Added app2app arguments: 'expand' - boolean that says to expand the job. In a list of jobs, this expands the first result. 'showDD' - string that will auto-open any dataset definition with this name, when expanding job.
+- Added app2app arguments: 'expand' - boolean that says to expand the job. In a list of jobs, this expands the first result. 
+'showDD' - string that will auto-open any dataset definition with this name, when expanding job.
+- Update the Job tree when a job is deleted or cancelled
 
 ## <1.0.20>
 
@@ -14,7 +16,7 @@ All notable changes to the JES-Explorer will be documented in this file.
 ### New features and enhancements
 - Added '*' support for job id
 - Added the different options to close opened file tabs.
-- Added the feature to download all files of a JOB in a zip format.
+- Added the feature to download all files of a JOB in a zip format
 
 ## <1.0.18>
 
