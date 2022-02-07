@@ -18,6 +18,8 @@ const FilterRecord = Record({
     owner: '',
     status: '',
     jobId: '*',
+    expand: false,
+    showDD: '',
     isToggled: false,
 });
 

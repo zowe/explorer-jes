@@ -65,11 +65,11 @@ class JobNodeTree extends React.Component {
     };
 
     renderJobs() {
-        const { jobs, isFetching, dispatch } = this.props;
+        const { jobs, isFetching, dispatch, expand } = this.props;
         if (jobs && jobs.size >= 1) {
             return jobs.map((job, index) => {
                 return (
-                    <JobInstance key={job.get('label')} job={job} dispatch={dispatch} pos={index} size={jobs.size} />
+                    <JobInstance key={job.get('label')} expand={expand} job={job} dispatch={dispatch} pos={index} size={jobs.size} />
                 );
             });
         } else if (!isFetching) {
@@ -118,6 +118,7 @@ JobNodeTree.propTypes = {
     owner: PropTypes.string,
     jobId: PropTypes.string,
     status: PropTypes.string,
+    expand: PropTypes.bool,
     dispatch: PropTypes.func.isRequired,
     isFetching: PropTypes.bool.isRequired,
     jobs: PropTypes.instanceOf(List),
@@ -131,6 +132,7 @@ function mapStateToProps(state) {
         owner: filtersRoot.get('owner'),
         jobId: filtersRoot.get('jobId'),
         status: filtersRoot.get('status'),
+        expand: filtersRoot.get('expand'),
         isFetching: jobNodesRoot.get('isFetching'),
         jobs: jobNodesRoot.get('jobs'),
     };
