@@ -74,6 +74,10 @@ body {
     cursor: pointer;
     color: #2E77A1;
 }
+.content-link:hover {
+    /* border: 1px solid #333333; */
+    background: #dedede;
+  }
 
 .action-layer {
     height: 100vh;

@@ -17,7 +17,6 @@ import Description from '@material-ui/icons/Description';
 import { hideMenu } from 'react-contextmenu/modules/actions';
 import { fetchJobFile, getFileLabel, changeSelectedContent, downloadFile } from '../actions/content';
 
-
 class JobFile extends React.Component {
     constructor(props) {
         super(props);
@@ -156,6 +155,7 @@ class JobFile extends React.Component {
                             role="treeitem"
                             aria-level="2"
                             aria-haspopup={true}
+                            style={this.state.menuVisible ? { border: '1px solid #333333' } : null}
                         >
                             <Description className="node-icon" />
                             <span className="job-file-label">{file.label}</span>

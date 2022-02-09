@@ -293,7 +293,6 @@ class JobInstance extends React.Component {
             <div
                 className="job-instance"
                 role="none"
-                style={job.get('isSelected') ? { background: '#dedede' } : null}
             >
                 <li role="none">
                     <ContextMenuTrigger id={job.get('label')}>
@@ -307,6 +306,7 @@ class JobInstance extends React.Component {
                             aria-expanded={job.get('isToggled').toString()}
                             aria-level="1"
                             aria-haspopup={true}
+                            style={job.get('isSelected') ? { background: '#dedede', border: '1px solid #333333' } : this.state.menuVisible ? { border: '1px solid #333333' } : null}
                         >
                             <LabelIcon className="node-icon" />
                             <span className="job-label">
@@ -315,7 +315,9 @@ class JobInstance extends React.Component {
                             </span>
                         </span>
                     </ContextMenuTrigger>
-                    <ul role="group">
+                    <ul role="group"
+                    style={{ background: '#F5F8F8'}}
+                    >
                         {job.get('isToggled') && this.renderJobFiles(job)}
                     </ul>
                 </li>

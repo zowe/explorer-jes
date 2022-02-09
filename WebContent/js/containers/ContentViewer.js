@@ -135,7 +135,7 @@ export class ContentViewer extends React.Component {
         }
     }
 
-    handleCloseAllExceptTabs(index) {
+    handleCloseOtherTabs(index) {
         const { selectedContent, dispatch } = this.props;
         const openedFilesCount = this.props.content.size;
         if (index < openedFilesCount - 1) {
@@ -188,14 +188,14 @@ export class ContentViewer extends React.Component {
                 <MenuItem key="closeAll" onClick={() => { this.handleCloseAllTabs(); }}>
                     Close All
                 </MenuItem>
-                <MenuItem key="closeAllExcept" onClick={() => { this.handleCloseAllExceptTabs(index); }}>
-                    Close All Except
+                <MenuItem key="closeOthers" onClick={() => { this.handleCloseOtherTabs(index); }}>
+                    Close Others
                 </MenuItem>
-                <MenuItem key="closeAllToTheLeft" onClick={() => { this.handleCloseLeftTabs(index); }}>
-                    Close All to the Left
+                <MenuItem key="closeToTheLeft" onClick={() => { this.handleCloseLeftTabs(index); }}>
+                    Close to the Left
                 </MenuItem>
-                <MenuItem key="closeAllToTheRight" onClick={() => { this.handleCloseRightTabs(index); }}>
-                    Close All to the Right
+                <MenuItem key="closeToTheRight" onClick={() => { this.handleCloseRightTabs(index); }}>
+                    Close to the Right
                 </MenuItem>
             </ContextMenu>
         );
