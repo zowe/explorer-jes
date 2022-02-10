@@ -315,8 +315,9 @@ class JobInstance extends React.Component {
                             </span>
                         </span>
                     </ContextMenuTrigger>
-                    <ul role="group"
-                    style={{ background: '#F5F8F8'}}
+                    <ul
+                        role="group"
+                        style={{ background: '#F5F8F8' }}
                     >
                         {job.get('isToggled') && this.renderJobFiles(job)}
                     </ul>
