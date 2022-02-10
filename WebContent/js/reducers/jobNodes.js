@@ -17,6 +17,8 @@ import {
     TOGGLE_JOB,
     INVERT_JOB_SELECT_STATUS,
     UNSELECT_ALL_JOBS,
+    UNSELECT_ALL_JOBS_FILES,
+    SELECT_FILE,
     REQUEST_JOB_FILES,
     RECEIVE_JOB_FILES,
     RECEIVE_PURGE_JOB,
@@ -82,11 +84,38 @@ function unselectAllJobs(jobs) {
     });
 }
 
+function unselectAllJobFiles(jobs) {
+    return jobs.map(job => {
+        if (job.get('files')) {
+            job.set('files', job.get('files').forEach(jobFile => {
+                const file = jobFile;
+                file.isSelected = false;
+            }));
+        }
+        return job;
+    });
+}
+
+function selectFile(jobs, jobId, label) {
+    return jobs.map(job => {
+        if (job.get('files') && job.get('jobId') === jobId) {
+            job.set('files', job.get('files').forEach(jobFile => {
+                const file = jobFile;
+                if (file.label === label) {
+                    file.isSelected = true;
+                }
+            }));
+        }
+        return job;
+    });
+}
+
 function extractJobFiles(jobFiles) {
     return jobFiles.map(file => {
         return {
             label: file.ddname,
             id: file.id,
+            isSelected: false,
         };
     });
 }
@@ -116,6 +145,14 @@ export default function JobNodes(state = INITIAL_STATE, action) {
         case UNSELECT_ALL_JOBS:
             return state.merge({
                 jobs: unselectAllJobs(state.get('jobs')),
+            });
+        case UNSELECT_ALL_JOBS_FILES:
+            return state.merge({
+                jobs: unselectAllJobFiles(state.get('jobs')),
+            });
+        case SELECT_FILE:
+            return state.merge({
+                jobs: selectFile(state.get('jobs'), action.jobId, action.label),
             });
         case REQUEST_JOB_FILES:
             return state.set('isFetching', true);

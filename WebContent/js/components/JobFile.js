@@ -16,6 +16,8 @@ import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import Description from '@material-ui/icons/Description';
 import { hideMenu } from 'react-contextmenu/modules/actions';
 import { fetchJobFile, getFileLabel, changeSelectedContent, downloadFile } from '../actions/content';
+import { selectFile, unselectAllJobFiles, unselectAllJobs } from '../actions/jobNodes';
+
 
 class JobFile extends React.Component {
     constructor(props) {
@@ -58,6 +60,9 @@ class JobFile extends React.Component {
         } else {
             dispatch(fetchJobFile(job.get('jobName'), job.get('jobId'), file.label, file.id));
         }
+        dispatch(unselectAllJobFiles());
+        dispatch(unselectAllJobs());
+        dispatch(selectFile(job.get('jobId'), file.label));
     }
 
     refreshFile() {
@@ -155,7 +160,7 @@ class JobFile extends React.Component {
                             role="treeitem"
                             aria-level="2"
                             aria-haspopup={true}
-                            style={this.state.menuVisible ? { border: '1px solid #333333' } : null}
+                            style={this.state.menuVisible ? { border: '1px solid #333333' } : file.isSelected ? { background: '#dedede', border: '1px solid #333333' } : null}
                         >
                             <Description className="node-icon" />
                             <span className="job-file-label">{file.label}</span>
@@ -172,6 +177,7 @@ JobFile.propTypes = {
     showDD: PropTypes.string,
     content: PropTypes.instanceOf(List),
     file: PropTypes.shape({
+        isSelected: PropTypes.bool.isRequired,
         label: PropTypes.string.isRequired,
         id: PropTypes.number.isRequired,
     }),

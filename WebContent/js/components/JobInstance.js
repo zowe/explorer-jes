@@ -15,7 +15,7 @@ import { connect } from 'react-redux';
 import LabelIcon from '@material-ui/icons/Label';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { hideMenu } from 'react-contextmenu/modules/actions';
-import { fetchJobFiles, toggleJob, invertJobSelectStatus, unselectAllJobs, cancelJob, purgeJob, purgeJobs, getSelectedJobs } from '../actions/jobNodes';
+import { fetchJobFiles, toggleJob, invertJobSelectStatus, unselectAllJobs, cancelJob, purgeJob, purgeJobs, getSelectedJobs, unselectAllJobFiles } from '../actions/jobNodes';
 import { getJCL, getFileLabel, changeSelectedContent, fetchConcatenatedJobFiles, downloadAllJobFiles, downloadFile } from '../actions/content';
 import JobFile from './JobFile';
 import JobStep from './JobStep';
@@ -51,6 +51,7 @@ class JobInstance extends React.Component {
             this.handleSelectChange();
         } else {
             dispatch(unselectAllJobs());
+            dispatch(unselectAllJobFiles());
             this.handleSelectChange();
             this.state.singleClickTimeout = setTimeout(() => {
                 if (!this.state.preventSingleClick) {
@@ -230,7 +231,14 @@ class JobInstance extends React.Component {
         const { job, dispatch, showDD } = this.props;
         const files = job.get('files');
         return files.map(file => {
-            return (<JobFile key={file.id} job={job} showDD={showDD} dispatch={dispatch} file={file} />);
+            return (<JobFile
+                key={file.id}
+                job={job}
+                showDD={showDD}
+                dispatch={dispatch}
+                file={file}
+                style={file.isSelected ? { background: '#dedede', border: '1px solid #333333' } : null}
+            />);
         });
     }
 
