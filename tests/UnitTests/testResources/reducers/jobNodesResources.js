@@ -224,10 +224,12 @@ export const receivedJobFiles = Map({
                 files: [
                     {
                         label: 'JESMSGLG',
+                        isSelected: false,
                         id: 2,
                     },
                     {
                         label: 'JESJCL',
+                        isSelected: false,
                         id: 3,
                     },
                 ],
