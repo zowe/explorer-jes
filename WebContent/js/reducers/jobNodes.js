@@ -18,6 +18,7 @@ import {
     INVERT_JOB_SELECT_STATUS,
     UNSELECT_ALL_JOBS,
     UNSELECT_ALL_JOBS_FILES,
+    HIGHLIGHT_SELECTED,
     SELECT_FILE,
     REQUEST_JOB_FILES,
     RECEIVE_JOB_FILES,
@@ -41,7 +42,7 @@ function extractJobs(jobs) {
             returnCode: job.retcode,
             status: job.status,
             isToggled: false,
-            isSelected: false,
+            selectionType: '',
             files: List(),
         };
     });
@@ -56,7 +57,7 @@ function extractJob(job) {
             returnCode: job.retcode,
             status: job.status,
             isToggled: false,
-            isSelected: false,
+            selectionType: '',
             files: List(),
         }),
     ]);
@@ -75,12 +76,12 @@ function toggleJob(jobs, jobId) {
 
 function invertJobSelectStatus(jobs, jobId) {
     const jobKey = findKeyOfJob(jobs, jobId);
-    return jobs.get(jobKey).set('isSelected', !jobs.get(jobKey).get('isSelected'));
+    return jobs.get(jobKey).set('selectionType', jobs.get(jobKey).get('selectionType') !== '' ? '' : 'selected');
 }
 
 function unselectAllJobs(jobs) {
     return jobs.map(job => {
-        return job.set('isSelected', false);
+        return job.set('selectionType', '');
     });
 }
 
@@ -89,7 +90,24 @@ function unselectAllJobFiles(jobs) {
         if (job.get('files')) {
             job.set('files', job.get('files').forEach(jobFile => {
                 const file = jobFile;
-                file.isSelected = false;
+                file.selectionType = '';
+            }));
+        }
+        return job;
+    });
+}
+
+function highlightSelected(jobs) {
+    return jobs.map(job => {
+        if (job.get('selectionType') === 'selected') {
+            return job.set('selectionType', 'highlighted');
+        }
+        if (job.get('files')) {
+            job.set('files', job.get('files').forEach(jobFile => {
+                const file = jobFile;
+                if (file.selectionType === 'selected') {
+                    file.selectionType = 'highlighted';
+                }
             }));
         }
         return job;
@@ -102,7 +120,7 @@ function selectFile(jobs, jobId, label) {
             job.set('files', job.get('files').forEach(jobFile => {
                 const file = jobFile;
                 if (file.label === label) {
-                    file.isSelected = true;
+                    file.selectionType = 'selected';
                 }
             }));
         }
@@ -115,7 +133,7 @@ function extractJobFiles(jobFiles) {
         return {
             label: file.ddname,
             id: file.id,
-            isSelected: false,
+            selectionType: '',
         };
     });
 }
@@ -149,6 +167,10 @@ export default function JobNodes(state = INITIAL_STATE, action) {
         case UNSELECT_ALL_JOBS_FILES:
             return state.merge({
                 jobs: unselectAllJobFiles(state.get('jobs')),
+            });
+        case HIGHLIGHT_SELECTED:
+            return state.merge({
+                jobs: highlightSelected(state.get('jobs')),
             });
         case SELECT_FILE:
             return state.merge({

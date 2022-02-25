@@ -16,7 +16,7 @@ import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import Description from '@material-ui/icons/Description';
 import { hideMenu } from 'react-contextmenu/modules/actions';
 import { fetchJobFile, getFileLabel, changeSelectedContent, downloadFile } from '../actions/content';
-import { selectFile, unselectAllJobFiles, unselectAllJobs } from '../actions/jobNodes';
+import { selectFile, unselectAllJobFiles, unselectAllJobs, highlightSelected } from '../actions/jobNodes';
 
 
 class JobFile extends React.Component {
@@ -88,6 +88,13 @@ class JobFile extends React.Component {
         this.setState({ menuVisible: false });
     }
 
+    handleContextMenu() {
+        const { dispatch, file } = this.props;
+        if (file.selectionType !== 'selected') {
+            dispatch(highlightSelected());
+        }
+    }
+
     handleKeyDown(e) {
         if (e.metaKey || e.altKey || e.ctrlKey) {
             return;
@@ -113,6 +120,7 @@ class JobFile extends React.Component {
 
     renderJobFileMenu() {
         const { job, file } = this.props;
+
         const menuItems = [
             <MenuItem onClick={this.downloadJobFile} key="download" >
                 <u>D</u>ownload
@@ -155,12 +163,16 @@ class JobFile extends React.Component {
                         <span
                             className="content-link"
                             onClick={() => { this.openFile(); }}
+                            onContextMenu={() => { this.handleContextMenu(); }}
                             onKeyDown={this.handleKeyDown}
                             tabIndex="0"
                             role="treeitem"
                             aria-level="2"
                             aria-haspopup={true}
-                            style={this.state.menuVisible ? { border: '1px solid #333333' } : file.isSelected ? { background: '#dedede', border: '1px solid #333333' } : null}
+                            style={this.state.menuVisible ? { border: '1px solid #333333' }
+                                : file.selectionType === 'selected' ? { background: '#dedede', border: '1px solid #333333' }
+                                    : file.selectionType === 'highlighted' ? { background: '#dedede' }
+                                        : null}
                         >
                             <Description className="node-icon" />
                             <span className="job-file-label">{file.label}</span>
@@ -177,7 +189,7 @@ JobFile.propTypes = {
     showDD: PropTypes.string,
     content: PropTypes.instanceOf(List),
     file: PropTypes.shape({
-        isSelected: PropTypes.bool.isRequired,
+        selectionType: PropTypes.string.isRequired,
         label: PropTypes.string.isRequired,
         id: PropTypes.number.isRequired,
     }),

@@ -15,7 +15,7 @@ module.exports = {
         "arrow-body-style": ["error", "always"],
         "arrow-parens": ["error", "as-needed"],
         "react/jsx-boolean-value":["error", "always"],
-        "max-len": ["error", 180],
+        "max-len": ["error", 200],
         "jsx-a11y/label-has-for": 0,
         "react/require-default-props": 0,
         "no-underscore-dangle":0,
