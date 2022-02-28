@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
     inputs:
       PERFORM_RELEASE:
-        description: '[Release] perform release'
+        description: 'Perform release?'
         required: false
-        default: 'false'
+        default: false
         type: boolean
 
 env:
