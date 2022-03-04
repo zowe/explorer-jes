@@ -15,7 +15,7 @@ import { connect } from 'react-redux';
 import LabelIcon from '@material-ui/icons/Label';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { hideMenu } from 'react-contextmenu/modules/actions';
-import { fetchJobFiles, toggleJob, invertJobSelectStatus, unselectAllJobs, cancelJob, purgeJob, purgeJobs, getSelectedJobs, unselectAllJobFiles } from '../actions/jobNodes';
+import { fetchJobFiles, toggleJob, invertJobSelectStatus, unselectAllJobs, highlightSelected, cancelJob, purgeJob, purgeJobs, getSelectedJobs, unselectAllJobFiles } from '../actions/jobNodes';
 import { getJCL, getFileLabel, changeSelectedContent, fetchConcatenatedJobFiles, downloadAllJobFiles, downloadFile } from '../actions/content';
 import JobFile from './JobFile';
 import JobStep from './JobStep';
@@ -66,6 +66,13 @@ class JobInstance extends React.Component {
     hideContextMenu() {
         hideMenu();
         this.setState({ menuVisible: false });
+    }
+
+    handleContextMenu() {
+        const { dispatch, job } = this.props;
+        if (job.get('selectionType') !== 'selected') {
+            dispatch(highlightSelected());
+        }
     }
 
     handleKeyDown(e) {
@@ -167,7 +174,7 @@ class JobInstance extends React.Component {
     handlePurge() {
         const { dispatch, job, jobs } = this.props;
         // If only one job is selected
-        if (!job.get('isSelected') || getSelectedJobs(jobs).size === 1) {
+        if (!job.get('selectionType') === '' || getSelectedJobs(jobs).size === 1) {
             return dispatch(purgeJob(job.get('jobName'), job.get('jobId')));
         }
         return dispatch(purgeJobs(jobs));
@@ -237,7 +244,9 @@ class JobInstance extends React.Component {
                 showDD={showDD}
                 dispatch={dispatch}
                 file={file}
-                style={file.isSelected ? { background: '#dedede', border: '1px solid #333333' } : null}
+                style={file.selectionType === 'selected' ? { background: '#dedede', border: '1px solid #333333' }
+                    : file.selectionType === 'highlighted' ? { background: '#dedede', border: null } 
+                        : null}
             />);
         });
     }
@@ -307,6 +316,7 @@ class JobInstance extends React.Component {
                         <span
                             className="content-link"
                             onClick={e => { this.handleSingleClick(e); }}
+                            onContextMenu={e => { this.handleContextMenu(e); }}
                             onDoubleClick={() => { this.handleOpenAllFiles(); }}
                             tabIndex="0"
                             onKeyDown={this.handleKeyDown}
@@ -314,7 +324,10 @@ class JobInstance extends React.Component {
                             aria-expanded={job.get('isToggled').toString()}
                             aria-level="1"
                             aria-haspopup={true}
-                            style={job.get('isSelected') ? { background: '#dedede', border: '1px solid #333333' } : this.state.menuVisible ? { border: '1px solid #333333' } : null}
+                            style={this.state.menuVisible ? { border: '1px solid #333333' }
+                                : job.get('selectionType') === 'selected' ? { background: '#dedede', border: '1px solid #333333' }
+                                    : job.get('selectionType') === 'highlighted' ? { background: '#dedede', border: null }
+                                        : null}
                         >
                             <LabelIcon className="node-icon" />
                             <span className="job-label">
