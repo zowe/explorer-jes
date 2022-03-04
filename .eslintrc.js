@@ -20,6 +20,7 @@ module.exports = {
         "react/require-default-props": 0,
         "no-underscore-dangle":0,
         "no-nested-ternary":0,
+        "no-trailing-spaces":0,
         "jsx-a11y/no-static-element-interactions":0,
         "lines-between-class-members": ["error", "always"],
         "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
