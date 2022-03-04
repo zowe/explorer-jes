@@ -7,6 +7,7 @@ All notable changes to the JES-Explorer will be documented in this file.
 - Added app2app arguments: 'expand' - boolean that says to expand the job. In a list of jobs, this expands the first result. 
 'showDD' - string that will auto-open any dataset definition with this name, when expanding job.
 - Update the Job tree when a job is deleted or cancelled
+- Highlight the Selected Jobs and Job Files
 
 ## <1.0.20>
 

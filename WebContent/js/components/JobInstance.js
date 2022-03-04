@@ -15,7 +15,7 @@ import { connect } from 'react-redux';
 import LabelIcon from '@material-ui/icons/Label';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { hideMenu } from 'react-contextmenu/modules/actions';
-import { fetchJobFiles, toggleJob, invertJobSelectStatus, unselectAllJobs, cancelJob, purgeJob, purgeJobs, getSelectedJobs } from '../actions/jobNodes';
+import { fetchJobFiles, toggleJob, invertJobSelectStatus, unselectAllJobs, highlightSelected, cancelJob, purgeJob, purgeJobs, getSelectedJobs, unselectAllJobFiles } from '../actions/jobNodes';
 import { getJCL, getFileLabel, changeSelectedContent, fetchConcatenatedJobFiles, downloadAllJobFiles, downloadFile } from '../actions/content';
 import JobFile from './JobFile';
 import JobStep from './JobStep';
@@ -51,6 +51,7 @@ class JobInstance extends React.Component {
             this.handleSelectChange();
         } else {
             dispatch(unselectAllJobs());
+            dispatch(unselectAllJobFiles());
             this.handleSelectChange();
             this.state.singleClickTimeout = setTimeout(() => {
                 if (!this.state.preventSingleClick) {
@@ -65,6 +66,13 @@ class JobInstance extends React.Component {
     hideContextMenu() {
         hideMenu();
         this.setState({ menuVisible: false });
+    }
+
+    handleContextMenu() {
+        const { dispatch, job } = this.props;
+        if (job.get('selectionType') !== 'selected') {
+            dispatch(highlightSelected());
+        }
     }
 
     handleKeyDown(e) {
@@ -166,7 +174,7 @@ class JobInstance extends React.Component {
     handlePurge() {
         const { dispatch, job, jobs } = this.props;
         // If only one job is selected
-        if (!job.get('isSelected') || getSelectedJobs(jobs).size === 1) {
+        if (!job.get('selectionType') === '' || getSelectedJobs(jobs).size === 1) {
             return dispatch(purgeJob(job.get('jobName'), job.get('jobId')));
         }
         return dispatch(purgeJobs(jobs));
@@ -230,7 +238,16 @@ class JobInstance extends React.Component {
         const { job, dispatch, showDD } = this.props;
         const files = job.get('files');
         return files.map(file => {
-            return (<JobFile key={file.id} job={job} showDD={showDD} dispatch={dispatch} file={file} />);
+            return (<JobFile
+                key={file.id}
+                job={job}
+                showDD={showDD}
+                dispatch={dispatch}
+                file={file}
+                style={file.selectionType === 'selected' ? { background: '#dedede', border: '1px solid #333333' }
+                    : file.selectionType === 'highlighted' ? { background: '#dedede', border: null } 
+                        : null}
+            />);
         });
     }
 
@@ -293,13 +310,13 @@ class JobInstance extends React.Component {
             <div
                 className="job-instance"
                 role="none"
-                style={job.get('isSelected') ? { background: '#dedede' } : null}
             >
                 <li role="none">
                     <ContextMenuTrigger id={job.get('label')}>
                         <span
                             className="content-link"
                             onClick={e => { this.handleSingleClick(e); }}
+                            onContextMenu={e => { this.handleContextMenu(e); }}
                             onDoubleClick={() => { this.handleOpenAllFiles(); }}
                             tabIndex="0"
                             onKeyDown={this.handleKeyDown}
@@ -307,6 +324,10 @@ class JobInstance extends React.Component {
                             aria-expanded={job.get('isToggled').toString()}
                             aria-level="1"
                             aria-haspopup={true}
+                            style={this.state.menuVisible ? { border: '1px solid #333333' }
+                                : job.get('selectionType') === 'selected' ? { background: '#dedede', border: '1px solid #333333' }
+                                    : job.get('selectionType') === 'highlighted' ? { background: '#dedede', border: null }
+                                        : null}
                         >
                             <LabelIcon className="node-icon" />
                             <span className="job-label">
@@ -315,7 +336,10 @@ class JobInstance extends React.Component {
                             </span>
                         </span>
                     </ContextMenuTrigger>
-                    <ul role="group">
+                    <ul
+                        role="group"
+                        style={{ background: '#F5F8F8' }}
+                    >
                         {job.get('isToggled') && this.renderJobFiles(job)}
                     </ul>
                 </li>
