@@ -1,6 +1,6 @@
 {
   "name": "explorer-jes",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "types": "module",
   "dependencies": {
     "@material-ui/core": "4.11.4",
@@ -79,11 +79,11 @@
     "webpack-bundle-analyzer": "3.9.0",
     "webpack-cli": "4.9.1",
     "webpack-dev-server": "4.3.1",
-    "file-saver":"2.0.5",
-    "jszip":"3.7.1"
+    "file-saver": "2.0.5",
+    "jszip": "3.7.1"
   },
   "scripts": {
-    "dev": "NODE_ENV='development' webpack serve --config ./webpack.config.js  --hot ",
+    "dev": "cross-env NODE_ENV='development' webpack serve --config ./webpack.config.js  --hot ",
     "start": "npm run build && cross-env NODE_ENV='development' OUTPUT_FOLDER='web' webpack --progress --color --watch ",
     "lint": "eslint ./WebContent/js/ ./tests/UnitTests",
     "test": "cross-env JUNIT_REPORT_PATH=target/report.xml nyc mocha --require @babel/register tests/UnitTests --recursive --color --reporter mocha-jenkins-reporter",

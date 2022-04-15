@@ -88,8 +88,8 @@ Append with your `API Gateway` `Hostname` and `Port`
 
 For example:
 ```
-  <script type="text/javascript" src="https://mymainframe.com:7554/ui/v1/zlux/lib/org.zowe.zlux.logger/0.9.0/logger.js"></script>
-  <script type="text/javascript" src="https://mymainframe.com:7554/ui/v1/zlux/ZLUX/plugins/org.zowe.zlux.bootstrap/web/iframe-adapter.js"></script>
+  <script type="text/javascript" src="https://mymainframe.com:7554/zlux/ui/v1/lib/org.zowe.zlux.logger/0.9.0/logger.js"></script>
+  <script type="text/javascript" src="https://mymainframe.com:7554/zlux/ui/v1/ZLUX/plugins/org.zowe.zlux.bootstrap/web/iframe-adapter.js"></script>
 ```
 
 Build web folder
