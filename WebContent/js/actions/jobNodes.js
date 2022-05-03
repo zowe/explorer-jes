@@ -8,7 +8,7 @@
  * Copyright IBM Corporation 2016, 2020
  */
 
-import { atlasFetch } from '../utilities/urlUtils';
+import { encodeURLComponent, atlasFetch } from '../utilities/urlUtils';
 import { constructAndPushMessage } from './snackbarNotifications';
 import { checkForValidationFailure, VALIDATION_FAILURE_MESSAGE } from './validation';
 
@@ -177,7 +177,7 @@ function invalidatePurge(jobName, jobId) {
 }
 
 function getURIQuery(filters) {
-    let query = `?owner=${filters.owner ? filters.owner : '*'}&prefix=${filters.prefix ? filters.prefix : '*'}`;
+    let query = `?owner=${filters.owner ? encodeURLComponent(filters.owner) : '*'}&prefix=${filters.prefix ? encodeURLComponent(filters.prefix) : '*'}`;
 
     if (filters.status && filters.status !== '*') {
         query += `&status=${filters.status}`;
