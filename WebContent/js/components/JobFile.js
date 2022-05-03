@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import Description from '@material-ui/icons/Description';
 import { hideMenu } from 'react-contextmenu/modules/actions';
+import { encodeURLComponent } from '../utilities/urlUtils';
 import { fetchJobFile, getFileLabel, changeSelectedContent, downloadFile } from '../actions/content';
 import { selectFile, unselectAllJobFiles, unselectAllJobs, highlightSelected } from '../actions/jobNodes';
 
@@ -72,7 +73,7 @@ class JobFile extends React.Component {
 
     downloadJobFile() {
         const { job, file, dispatch } = this.props;
-        const url = `zosmf/restjobs/jobs/${job.get('jobName')}/${job.get('jobId')}/files/${file.id}/records`;
+        const url = `zosmf/restjobs/jobs/${encodeURLComponent(job.get('jobName'))}/${encodeURLComponent(job.get('jobId'))}/files/${file.id}/records`;
         downloadFile(job, file.label, url, dispatch);
     }
 
