@@ -82,7 +82,7 @@ export function fetchJobFile(jobName, jobId, fileName, fileId, refreshFile) {
     return dispatch => {
         const fileLabel = getFileLabel(jobId, fileName);
         dispatch(requestContent(jobName, jobId, fileName, fileId, fileLabel, refreshFile));
-        return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${encodeURLComponent(jobId)}/files/${fileId}/records`, { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
+        return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}/files/${fileId}/records`, { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));
             })
@@ -103,7 +103,7 @@ export function fetchConcatenatedJobFiles(jobName, jobId, refreshFile) {
     return dispatch => {
         const fileLabel = getFileLabel(jobName, jobId);
         dispatch(requestContent(jobName, jobId, jobId, jobId, fileLabel, refreshFile));
-        return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${encodeURLComponent(jobId)}/files`, { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
+        return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}/files`, { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));
             })
@@ -114,7 +114,7 @@ export function fetchConcatenatedJobFiles(jobName, jobId, refreshFile) {
                 const jobFiles = JSON.parse(text);
                 if (jobFiles && jobFiles.constructor === Array) {
                     jobFiles.forEach(job => {
-                        return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(job.jobname)}/${encodeURLComponent(job.jobid)}/files/${job.id}/records`,
+                        return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(job.jobname)}/${job.jobid}/files/${job.id}/records`,
                             { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
                             .then(response => {
                                 return dispatch(checkForValidationFailure(response));
@@ -142,7 +142,7 @@ export function fetchConcatenatedJobFiles(jobName, jobId, refreshFile) {
 export function downloadAllJobFiles(jobName, jobId) {
     return dispatch => {
         // fetch the list of files for a Job
-        return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${encodeURLComponent(jobId)}/files`, { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
+        return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}/files`, { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));
             })
@@ -154,7 +154,7 @@ export function downloadAllJobFiles(jobName, jobId) {
                 // fetch the content of each file and download these respective files in a zip file format
                 if (jobFiles && jobFiles.constructor === Array) {
                     jobFiles.forEach(job => {
-                        return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(job.jobname)}/${encodeURLComponent(job.jobid)}/files/${job.id}/records`,
+                        return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(job.jobname)}/${job.jobid}/files/${job.id}/records`,
                             { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
                             .then(response => {
                                 return dispatch(checkForValidationFailure(response));
@@ -183,7 +183,7 @@ export function downloadAllJobFiles(jobName, jobId) {
 }
 
 function getFileNameFromJob(jobName, jobId, fileId) {
-    const contentPath = `zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${encodeURLComponent(jobId)}/files`;
+    const contentPath = `zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}/files`;
     return atlasFetch(contentPath, { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
         .then(response => {
             if (response.ok) {
@@ -204,7 +204,7 @@ function getFileNameFromJob(jobName, jobId, fileId) {
 
 export function fetchJobFileNoName(jobName, jobId, fileId) {
     return dispatch => {
-        const contentPath = `zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${encodeURLComponent(jobId)}/files/${fileId}/records`;
+        const contentPath = `zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}/files/${fileId}/records`;
         dispatch(requestContent(jobName, jobId, '', fileId, getFileLabel(jobId)));
         return atlasFetch(contentPath, { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
             .then(response => {
@@ -261,7 +261,7 @@ export function getJCL(jobName, jobId) {
     return dispatch => {
         const fileLabel = getFileLabel(jobId, 'JCL');
         dispatch(requestContent(jobName, jobId, 'JCL', 0, fileLabel));
-        return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${encodeURLComponent(jobId)}/files/JCL/records`, { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
+        return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}/files/JCL/records`, { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));
             })
