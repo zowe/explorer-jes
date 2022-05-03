@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import Description from '@material-ui/icons/Description';
 import { hideMenu } from 'react-contextmenu/modules/actions';
+import { encodeURLComponent } from '../utilities/urlUtils';
 import { fetchJobFile, getFileLabel, changeSelectedContent, downloadFile } from '../actions/content';
 
 
@@ -59,14 +60,14 @@ class JobFile extends React.Component {
 
     downloadJobFile() {
         const { job, file, dispatch } = this.props;
-        const url = `zosmf/restjobs/jobs/${job.get('jobName')}/${job.get('jobId')}/files/${file.id}/records`;
+        const url = `zosmf/restjobs/jobs/${encodeURLComponent(job.get('jobName'))}/${job.get('jobId')}/files/${file.id}/records`;
         downloadFile(job, file.label, url, dispatch);
     }
 
     openInNewWindow() {
         const { job, file } = this.props;
         const baseURI = `${window.location.origin}${window.location.pathname}`;
-        const newWindow = window.open(`${baseURI}#/viewer?jobName=${job.get('jobName')}&jobId=${job.get('jobId')}&fileId=${file.id}`, '_blank');
+        const newWindow = window.open(`${baseURI}#/viewer?jobName=${encodeURLComponent(job.get('jobName'))}&jobId=${job.get('jobId')}&fileId=${file.id}`, '_blank');
         newWindow.focus();
     }
 
