@@ -178,7 +178,6 @@ class JobInstance extends React.Component {
             return dispatch(purgeJobs(jobs));
         }
         return dispatch(purgeJob(job.get('jobName'), job.get('jobId')));
-
     }
 
     handleCancel() {
