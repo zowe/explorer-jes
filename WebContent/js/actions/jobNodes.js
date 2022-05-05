@@ -8,7 +8,7 @@
  * Copyright IBM Corporation 2016, 2020
  */
 
-import { atlasFetch } from '../utilities/urlUtils';
+import { encodeURLComponent, atlasFetch } from '../utilities/urlUtils';
 import { constructAndPushMessage } from './snackbarNotifications';
 import { checkForValidationFailure, VALIDATION_FAILURE_MESSAGE } from './validation';
 
@@ -177,7 +177,7 @@ function invalidatePurge(jobName, jobId) {
 }
 
 function getURIQuery(filters) {
-    let query = `?owner=${filters.owner ? filters.owner : '*'}&prefix=${filters.prefix ? filters.prefix : '*'}`;
+    let query = `?owner=${filters.owner ? encodeURLComponent(filters.owner) : '*'}&prefix=${filters.prefix ? encodeURLComponent(filters.prefix) : '*'}`;
 
     if (filters.status && filters.status !== '*') {
         query += `&status=${filters.status}`;
@@ -237,7 +237,7 @@ export function fetchJobs(filters) {
 
 function getJobFiles(jobName, jobId) {
     return dispatch => {
-        return atlasFetch(`zosmf/restjobs/jobs/${jobName}/${jobId}/files`, { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
+        return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}/files`, { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));
             })
@@ -278,7 +278,7 @@ export function cancelJob(jobName, jobId) {
     }
     return dispatch => {
         dispatch(requestCancel(jobName, jobId));
-        return atlasFetch(`zosmf/restjobs/jobs/${jobName}/${jobId}`,
+        return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}`,
             {
                 credentials: 'include',
                 method: 'PUT',
@@ -310,7 +310,7 @@ export function purgeJob(jobName, jobId) {
     }
     return dispatch => {
         dispatch(requestPurge(jobName, jobId));
-        return atlasFetch(`zosmf/restjobs/jobs/${jobName}/${jobId}`,
+        return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}`,
             {
                 credentials: 'include',
                 method: 'DELETE',
@@ -358,7 +358,7 @@ export function purgeJobs(jobs) {
         jobsToPurge.every(value => {
             const jobName = value.jobName;
             const jobId = value.jobId;
-            return atlasFetch(`zosmf/restjobs/jobs/${jobName}/${jobId}`,
+            return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}`,
                 {
                     credentials: 'include',
                     method: 'DELETE',

@@ -19,6 +19,7 @@ import { fetchJobFiles, toggleJob, invertJobSelectStatus, unselectAllJobs, cance
 import { getJCL, getFileLabel, changeSelectedContent, fetchConcatenatedJobFiles, downloadAllJobFiles, downloadFile } from '../actions/content';
 import JobFile from './JobFile';
 import JobStep from './JobStep';
+import { encodeURLComponent } from '../utilities/urlUtils';
 
 
 class JobInstance extends React.Component {
@@ -156,11 +157,11 @@ class JobInstance extends React.Component {
 
     handlePurge() {
         const { dispatch, job, jobs } = this.props;
-        // If only one job is selected
-        if (!job.get('isSelected') || getSelectedJobs(jobs).size === 1) {
-            return dispatch(purgeJob(job.get('jobName'), job.get('jobId')));
+        // If more than one jobs are selected
+        if (getSelectedJobs(jobs).size && getSelectedJobs(jobs).size !== 1) {
+            return dispatch(purgeJobs(jobs));
         }
-        return dispatch(purgeJobs(jobs));
+        return dispatch(purgeJob(job.get('jobName'), job.get('jobId')));
     }
 
     handleCancel() {
@@ -180,7 +181,7 @@ class JobInstance extends React.Component {
 
     handleDownloadJCL() {
         const { dispatch, job } = this.props;
-        const url = `zosmf/restjobs/jobs/${job.get('jobName')}/${job.get('jobId')}/files/JCL/records`;
+        const url = `zosmf/restjobs/jobs/${encodeURLComponent(job.get('jobName'))}/${job.get('jobId')}/files/JCL/records`;
         downloadFile(job, 'JCL', url, dispatch);
     }
 

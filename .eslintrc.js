@@ -19,6 +19,7 @@ module.exports = {
         "jsx-a11y/label-has-for": 0,
         "react/require-default-props": 0,
         "no-underscore-dangle":0,
+        "no-alert":0,
         "jsx-a11y/no-static-element-interactions":0,
         "lines-between-class-members": ["error", "always"],
         "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
