@@ -5,6 +5,7 @@ All notable changes to the JES-Explorer will be documented in this file.
 
 ### Bug fixes
 - Fixed bug where URL requests fail when using '#' character in prefix.
+- Highlight the Selected Jobs and Job Files
 
 ## <2.0.0>
 

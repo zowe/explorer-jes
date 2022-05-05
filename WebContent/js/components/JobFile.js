@@ -17,7 +17,7 @@ import Description from '@material-ui/icons/Description';
 import { hideMenu } from 'react-contextmenu/modules/actions';
 import { encodeURLComponent } from '../utilities/urlUtils';
 import { fetchJobFile, getFileLabel, changeSelectedContent, downloadFile } from '../actions/content';
-
+import { selectFile, unselectAllJobFiles, unselectAllJobs, highlightSelected } from '../actions/jobNodes';
 
 class JobFile extends React.Component {
     constructor(props) {
@@ -51,6 +51,9 @@ class JobFile extends React.Component {
         } else {
             dispatch(fetchJobFile(job.get('jobName'), job.get('jobId'), file.label, file.id));
         }
+        dispatch(unselectAllJobFiles());
+        dispatch(unselectAllJobs());
+        dispatch(selectFile(job.get('jobId'), file.label));
     }
 
     refreshFile() {
@@ -74,6 +77,13 @@ class JobFile extends React.Component {
     hideContextMenu() {
         hideMenu();
         this.setState({ menuVisible: false });
+    }
+
+    handleContextMenu() {
+        const { dispatch, file } = this.props;
+        if (file.selectionType !== 'selected') {
+            dispatch(highlightSelected());
+        }
     }
 
     handleKeyDown(e) {
@@ -143,11 +153,16 @@ class JobFile extends React.Component {
                         <span
                             className="content-link"
                             onClick={() => { this.openFile(); }}
+                            onContextMenu={() => { this.handleContextMenu(); }}
                             onKeyDown={this.handleKeyDown}
                             tabIndex="0"
                             role="treeitem"
                             aria-level="2"
                             aria-haspopup={true}
+                            style={this.state.menuVisible ? { border: '1px solid #333333' }
+                                : file.selectionType === 'selected' ? { background: '#dedede', border: '1px solid #333333' }
+                                    : file.selectionType === 'highlighted' ? { background: '#dedede' }
+                                        : null}
                         >
                             <Description className="node-icon" />
                             <span className="job-file-label">{file.label}</span>
@@ -163,6 +178,7 @@ JobFile.propTypes = {
     job: PropTypes.instanceOf(Map).isRequired,
     content: PropTypes.instanceOf(List),
     file: PropTypes.shape({
+        selectionType: PropTypes.string.isRequired,
         label: PropTypes.string.isRequired,
         id: PropTypes.number.isRequired,
     }),

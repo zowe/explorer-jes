@@ -20,6 +20,9 @@ export const RECEIVE_SINGLE_JOB = 'RECEIVE_SINGLE_JOB';
 export const INVALIDATE_JOBS = 'INVALIDATE_JOBS';
 export const INVERT_JOB_SELECT_STATUS = 'INVERT_JOB_SELECT_STATUS';
 export const UNSELECT_ALL_JOBS = 'UNSELECT_ALL_JOBS';
+export const UNSELECT_ALL_JOBS_FILES = 'UNSELECT_ALL_JOBS_FILES';
+export const HIGHLIGHT_SELECTED = 'HIGHLIGHT_SELECTED';
+export const SELECT_FILE = 'SELECT_FILE';
 
 export const REQUEST_JOB_FILES = 'REQUEST_JOB_FILES';
 export const RECEIVE_JOB_FILES = 'RECEIVE_JOB_FILES';
@@ -83,6 +86,25 @@ export function invertJobSelectStatus(jobId) {
 export function unselectAllJobs() {
     return {
         type: UNSELECT_ALL_JOBS,
+    };
+}
+
+export function unselectAllJobFiles() {
+    return {
+        type: UNSELECT_ALL_JOBS_FILES,
+    };
+}
+
+export function highlightSelected() {
+    return {
+        type: HIGHLIGHT_SELECTED,
+    };
+}
+export function selectFile(jobId, label) {
+    return {
+        type: SELECT_FILE,
+        jobId,
+        label,
     };
 }
 
@@ -337,7 +359,7 @@ export function purgeJob(jobName, jobId) {
 }
 
 export function getSelectedJobs(jobs) {
-    return jobs.filter(job => { return job.get('isSelected'); });
+    return jobs.filter(job => { return job.get('selectionType'); });
 }
 
 export function purgeJobs(jobs) {
