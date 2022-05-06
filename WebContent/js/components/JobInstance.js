@@ -166,7 +166,7 @@ class JobInstance extends React.Component {
     handlePurge() {
         const { dispatch, job, jobs } = this.props;
         // If only one job is selected
-        if (!job.get('selectionType') === '' || getSelectedJobs(jobs).size === 1) {
+        if (job.get('selectionType') === '' || getSelectedJobs(jobs).size === 1) {
             return dispatch(purgeJob(job.get('jobName'), job.get('jobId')));
         }
         return dispatch(purgeJobs(jobs));
