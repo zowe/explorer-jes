@@ -18,7 +18,7 @@ npm install
 
 ### Build for Development
 
-Modify the `proxy.target` property in `package.json` to a host and port that has the Zowe Jobs API server available
+Modify the `proxy.target` property in `package.json` to a host and port that has the Zowe Jobs API server available (i.e. like the API ML Gateway)
 
 ```
 npm run dev 

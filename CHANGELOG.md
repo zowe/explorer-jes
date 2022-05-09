@@ -5,6 +5,9 @@ All notable changes to the JES-Explorer will be documented in this file.
 
 ### Bug fixes
 - Fixed bug where URL requests fail when using '#' character in prefix.
+- Fixed a bug where using app2app params at launch would not use desired data
+
+### New features and enhancements
 - Highlight the Selected Jobs and Job Files
 - Update the Job tree when a job is deleted or cancelled
 
