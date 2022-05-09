@@ -32,6 +32,14 @@ class JobFile extends React.Component {
             menuShortCuts: true,
             menuVisible: false,
         };
+        this.checkForShowDD();
+    }
+
+    checkForShowDD() {
+        const { file, showDD } = this.props;
+        if (file && file.label && file.label === showDD) {
+            this.openFile();
+        }
     }
 
     isFileOpen() {
@@ -176,6 +184,7 @@ class JobFile extends React.Component {
 
 JobFile.propTypes = {
     job: PropTypes.instanceOf(Map).isRequired,
+    showDD: PropTypes.string,
     content: PropTypes.instanceOf(List),
     file: PropTypes.shape({
         selectionType: PropTypes.string.isRequired,

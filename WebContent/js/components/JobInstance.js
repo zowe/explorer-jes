@@ -35,6 +35,15 @@ class JobInstance extends React.Component {
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.checkForExpand = this.checkForExpand.bind(this);
+        setTimeout(this.checkForExpand, 1500); // Give time for UI code to render before toggling expand
+    }
+
+    checkForExpand() {
+        const { expand, pos } = this.props;
+        if (typeof (expand) === 'boolean' && expand && pos === 0) {
+            this.handleJobToggle();
+        }
     }
 
     handleSingleClick(e) {
@@ -227,12 +236,13 @@ class JobInstance extends React.Component {
     }
 
     renderJobFiles() {
-        const { job, dispatch } = this.props;
+        const { job, dispatch, showDD } = this.props;
         const files = job.get('files');
         return files.map(file => {
             return (<JobFile
                 key={file.id}
                 job={job}
+                showDD={showDD}
                 dispatch={dispatch}
                 file={file}
                 style={file.selectionType === 'selected' ? { background: '#dedede', border: '1px solid #333333' }
@@ -341,6 +351,9 @@ class JobInstance extends React.Component {
 
 JobInstance.propTypes = {
     dispatch: PropTypes.func.isRequired,
+    showDD: PropTypes.string,
+    expand: PropTypes.bool,
+    pos: PropTypes.number,
     job: PropTypes.instanceOf(Map).isRequired,
     jobs: PropTypes.instanceOf(List).isRequired,
     content: PropTypes.instanceOf(List),
@@ -348,10 +361,12 @@ JobInstance.propTypes = {
 
 function mapStateToProps(state) {
     const contentRoot = state.get('content');
+    const filtersRoot = state.get('filters');
     const jobs = state.get('jobNodes');
     return {
         content: contentRoot.get('content'),
         jobs: jobs.get('jobs'),
+        showDD: filtersRoot.get('showDD'),
     };
 }
 

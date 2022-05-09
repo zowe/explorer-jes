@@ -111,7 +111,7 @@ export class Filters extends React.Component {
             if (Object.keys(urlQueryParams).length > 0) {
                 const queryFilters = {};
                 Object.keys(urlQueryParams).forEach(filter => {
-                    if (['owner', 'prefix', 'jobId', 'status'].indexOf(filter) > -1) {
+                    if (['owner', 'prefix', 'jobId', 'status', 'expand', 'showDD'].indexOf(filter) > -1) {
                         queryFilters[filter] = urlQueryParams[filter].toUpperCase();
                     }
                 });
@@ -139,6 +139,14 @@ export class Filters extends React.Component {
     setFocusOnOwner() {
         if (this.filterOwnerRef) {
             this.filterOwnerRef.focusTextInput();
+        }
+    }
+
+    dispatchApp2AppData(messageData) {
+        const { dispatch } = this.props;
+        if (messageData) {
+            dispatch(setFilters(messageData));
+            dispatch(fetchJobs(messageData));
         }
     }
 
