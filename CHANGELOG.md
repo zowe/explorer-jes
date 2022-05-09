@@ -10,6 +10,7 @@ All notable changes to the JES-Explorer will be documented in this file.
 ### New features and enhancements
 - Highlight the Selected Jobs and Job Files
 - Update the Job tree when a job is deleted or cancelled
+- Added '*' support for job id
 
 ## <2.0.0>
 
