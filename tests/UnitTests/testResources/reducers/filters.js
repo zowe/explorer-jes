@@ -18,6 +18,8 @@ export const BASE_FILTER_RECORD =
         owner: '',
         status: '',
         jobId: '*',
+        expand: false,
+        showDD: '',
         isToggled: false,
     });
 
@@ -27,6 +29,8 @@ export const USER_SET_FILTER_RECORD =
         owner: DEFAULT_USER,
         status: '',
         jobId: '*',
+        expand: false,
+        showDD: '',
         isToggled: true,
     });
 
@@ -45,6 +49,8 @@ export const TOGGLED_FILTER_RECORD =
         owner: '',
         status: '',
         jobId: '*',
+        expand: false,
+        showDD: '',
         isToggled: true,
     });
 
@@ -54,6 +60,8 @@ export const PREFIXED_FILTER_RECORD =
         owner: '',
         status: '',
         jobId: '*',
+        expand: false,
+        showDD: '',
         isToggled: false,
     });
 
@@ -63,6 +71,8 @@ export const FULLY_SET_FILTER_RECORD =
         owner: DEFAULT_USER,
         status: 'ACTIVE',
         jobId: '*',
+        expand: false,
+        showDD: '',
         isToggled: true,
     });
 
@@ -72,6 +82,8 @@ export const SPECIAL_CHARS_FILTER_RECORD =
         owner: "!@£$%^&*&^%$£@'test'",
         status: 'ACTIVE',
         jobId: '*',
+        expand: false,
+        showDD: '',
         isToggled: true,
     });
 

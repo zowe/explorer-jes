@@ -20,6 +20,9 @@ export const RECEIVE_SINGLE_JOB = 'RECEIVE_SINGLE_JOB';
 export const INVALIDATE_JOBS = 'INVALIDATE_JOBS';
 export const INVERT_JOB_SELECT_STATUS = 'INVERT_JOB_SELECT_STATUS';
 export const UNSELECT_ALL_JOBS = 'UNSELECT_ALL_JOBS';
+export const UNSELECT_ALL_JOBS_FILES = 'UNSELECT_ALL_JOBS_FILES';
+export const HIGHLIGHT_SELECTED = 'HIGHLIGHT_SELECTED';
+export const SELECT_FILE = 'SELECT_FILE';
 
 export const REQUEST_JOB_FILES = 'REQUEST_JOB_FILES';
 export const RECEIVE_JOB_FILES = 'RECEIVE_JOB_FILES';
@@ -83,6 +86,25 @@ export function invertJobSelectStatus(jobId) {
 export function unselectAllJobs() {
     return {
         type: UNSELECT_ALL_JOBS,
+    };
+}
+
+export function unselectAllJobFiles() {
+    return {
+        type: UNSELECT_ALL_JOBS_FILES,
+    };
+}
+
+export function highlightSelected() {
+    return {
+        type: HIGHLIGHT_SELECTED,
+    };
+}
+export function selectFile(jobId, label) {
+    return {
+        type: SELECT_FILE,
+        jobId,
+        label,
     };
 }
 
@@ -188,13 +210,42 @@ function getURIQuery(filters) {
 function filterByJobId(jobs, jobid, dispatch) {
     // filter for job Id as api doesn't support
     let jobFound = false;
-    jobs.forEach(job => {
-        if (job.jobid === jobid) {
-            jobFound = true;
-            dispatch(receiveSingleJob(job));
+    let jobArr = [...jobs];
+    if (jobid[jobid.length - 1] === '*') { // [...]* search case
+        const pattern = jobid.substring(0, jobid.length - 1);
+        jobs.forEach(job => {
+            if (job.jobid.indexOf(pattern) !== 0) { // Remove any non-matches
+                jobArr.splice(jobArr.indexOf(job), 1);
+            }
+        });
+    } else if (jobid[0] === '*') { // *[...] search case
+        const pattern = jobid.substring(1, jobid.length);
+        const patternLength = pattern.length;
+        jobs.forEach(job => {
+            const lastIndexOf = job.jobid.lastIndexOf(pattern);
+            if (lastIndexOf && (lastIndexOf + patternLength !== job.jobid.length)) {
+                jobArr.splice(jobArr.indexOf(job), 1); // Remove any non-matches
+            }
+        });
+    } else {
+        jobArr = [];
+        /* eslint-disable */
+        jobs.forEach(job => {
+            if (job.jobid === jobid) { // [...] search case
+                jobFound = true;
+                jobArr = [job];
+                return dispatch(receiveSingleJob(jobArr[0])); // Cancel the rest of the search, we found first instance
+            }
+        });
+        /* eslint-enable */
+    }
+    if (jobArr.length > 0) {
+        if (jobArr.length > 1) {
+            dispatch(receiveJobs(jobArr));
+        } else {
+            dispatch(receiveSingleJob(jobArr[0]));
         }
-    });
-    if (!jobFound) {
+    } else if (!jobFound) {
         dispatch(invalidateJobs());
     }
 }
@@ -337,7 +388,7 @@ export function purgeJob(jobName, jobId) {
 }
 
 export function getSelectedJobs(jobs) {
-    return jobs.filter(job => { return job.get('isSelected'); });
+    return jobs.filter(job => { return job.get('selectionType'); });
 }
 
 export function purgeJobs(jobs) {
@@ -372,6 +423,8 @@ export function purgeJobs(jobs) {
                     iteration += 1;
                     if (!response.ok) {
                         failedJobs += `${jobName}/${jobId}, `;
+                    } else {
+                        dispatch(receivePurge(jobName, jobId));
                     }
                     // Check if any job Purge has failed during the operation and display the appropriate message accordingly
                     if (iteration === mapSize) {

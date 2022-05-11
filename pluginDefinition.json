@@ -1,6 +1,6 @@
 {
   "identifier": "org.zowe.explorer-jes",
-  "apiVersion": "1.0.0",
+  "apiVersion": "2.0.0",
   "pluginVersion": "2.0.0",
   "pluginType": "application",
   "webContent": {

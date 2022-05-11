@@ -53,6 +53,54 @@ export class Filters extends React.Component {
         this.handleStatusChange = this.handleStatusChange.bind(this);
         this.handleJobIdChange = this.handleJobIdChange.bind(this);
         this.isOwnerAndPrefixWild = this.isOwnerAndPrefixWild.bind(this);
+        this.dispatchApp2AppData = this.dispatchApp2AppData.bind(this);
+        if (window.registerLaunchMetadata) {
+            window.registerLaunchMetadata();
+        }
+        const dispatchApp2AppData = this.dispatchApp2AppData;
+        function receiveMessage(event) {
+            const data = event.data;
+            let messageData;
+            if (data) {
+                if (data.dispatchType && data.dispatchData) {
+                    switch (data.dispatchType) {
+                        case 'launch': {
+                            if (data.dispatchData.launchMetadata) {
+                                messageData = data.dispatchData.launchMetadata;
+                            } else if (data.dispatchData.data) {
+                                messageData = data.dispatchData.data;
+                            } else {
+                                messageData = JSON.parse(localStorage.getItem('ZoweZLUX.iframe.launchMetadata'));
+                                if (messageData && messageData.data) {
+                                    messageData = messageData.data;
+                                }
+                            }
+                            if (dispatchApp2AppData) {
+                                dispatchApp2AppData(messageData);
+                            }
+                            break;
+                        }
+                        case 'message': {
+                            messageData = data.dispatchData.data;
+                            if (dispatchApp2AppData) {
+                                dispatchApp2AppData(messageData);
+                            }
+                            break;
+                        }
+                        default:
+                            // eslint-disable-next-line no-console
+                            console.warn(`Unknown app2app type=${data.dispatchType}`);
+                    }
+                } else if (data.constructorData && data.constructorData.launchMetadata) {
+                    messageData = data.constructorData.launchMetadata.data;
+                    if (dispatchApp2AppData) {
+                        dispatchApp2AppData(messageData);
+                    }
+                }
+            }
+        }
+        window.addEventListener('message', e => { receiveMessage(e); }, false);
+        window.top.postMessage('iframeload', '*');
     }
 
     componentDidMount() {
@@ -63,7 +111,7 @@ export class Filters extends React.Component {
             if (Object.keys(urlQueryParams).length > 0) {
                 const queryFilters = {};
                 Object.keys(urlQueryParams).forEach(filter => {
-                    if (['owner', 'prefix', 'jobId', 'status'].indexOf(filter) > -1) {
+                    if (['owner', 'prefix', 'jobId', 'status', 'expand', 'showDD'].indexOf(filter) > -1) {
                         queryFilters[filter] = urlQueryParams[filter].toUpperCase();
                     }
                 });
@@ -83,41 +131,22 @@ export class Filters extends React.Component {
         } else if (owner === '' && (!location || !location.search || !location.search.includes('owner'))) {
             dispatch(setOwnerAndFetchJobs(username, this.props));
         }
+    }
 
-        function receiveMessage(event) {
-            const data = event.data;
-            let messageData;
-            if (data && data.dispatchType && data.dispatchData) {
-                switch (data.dispatchType) {
-                    case 'launch':
-                    case 'message': {
-                        if (data.dispatchType === 'launch') {
-                            if (data.dispatchData.launchMetadata) {
-                                messageData = data.dispatchData.launchMetadata.data;
-                            }
-                        } else {
-                            messageData = data.dispatchData.data;
-                        }
-
-                        if (messageData && messageData.owner && messageData.jobId) {
-                            dispatch(setFilters(messageData));
-                            dispatch(fetchJobs(messageData));
-                        }
-                        break;
-                    }
-                    default:
-                        // eslint-disable-next-line no-console
-                        console.warn(`Unknown app2app type=${data.dispatchType}`);
-                }
-            }
-        }
-        window.addEventListener('message', e => { receiveMessage(e); }, false);
-        window.top.postMessage('iframeload', '*');
+    componentWillUnmount() {
     }
 
     setFocusOnOwner() {
         if (this.filterOwnerRef) {
             this.filterOwnerRef.focusTextInput();
+        }
+    }
+
+    dispatchApp2AppData(messageData) {
+        const { dispatch } = this.props;
+        if (messageData) {
+            dispatch(setFilters(messageData));
+            dispatch(fetchJobs(messageData));
         }
     }
 
@@ -182,6 +211,7 @@ export class Filters extends React.Component {
             <Accordion
                 id="filter-view"
                 expanded={this.state.toggled}
+                style={{ width: 'calc(100% - 20px)' }}
             >
                 <AccordionSummary
                     id="filter-view-header"
