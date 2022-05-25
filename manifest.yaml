@@ -16,6 +16,8 @@ build:
   branch: "{{build.branch}}"
   number: "{{build.number}}"
   commitHash: "{{build.commitHash}}"
-  timestamp: "{{build.timestamp}}"
+  timestamp: {{build.timestamp}}
 appfwPlugins:
 - path: "."
+schemas:
+  configs: "schemas/trivial-schema.json"
