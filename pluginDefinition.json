@@ -12,7 +12,7 @@
       "imageSrc": "img/explorer-JES.png"
     },
     "descriptionKey": "",
-    "descriptionDefault": "",
+    "descriptionDefault": "IBM z/OS Jobs UI service",
     "isSingleWindowApp": true,
     "defaultWindowStyle": {
       "width": 1400,
