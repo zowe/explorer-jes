@@ -246,10 +246,10 @@ jobs:
           export TEST_BROWSER=firefox
           npm run test:fvt
         # Uncomment the env part to customize test parameters
-        #env:
-        #   CUSTOM_FVT_ZOSMF_HOST:
-        #   CUSTOM_FVT_ZOSMF_PORT:
-        #   CUSTOM_FVT_SERVER_HOSTNAME:
+        env:
+          CUSTOM_FVT_ZOSMF_HOST: zzow04.zowe.marist.cloud
+          CUSTOM_FVT_ZOSMF_PORT: 10443
+          CUSTOM_FVT_SERVER_HOSTNAME: zzow04.zowe.marist.cloud
 
       - name: "[Post Test 1] Print container service logs - discovery-service"
         if: always()
