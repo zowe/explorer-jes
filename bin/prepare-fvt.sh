@@ -18,21 +18,13 @@
 # constants
 SCRIPT_NAME=$(basename "$0")
 OLD_PWD=$(pwd)
-echo "[${OLD_PWD}] old pass"
 SCRIPT_PWD=$(cd "$(dirname "$0")" && pwd)
-echo "[${SCRIPT_PWD}] script pass"
 ROOT_DIR=$(cd "$SCRIPT_PWD" && cd .. && pwd)
-echo "[${ROOT_DIR}] root pass"
 FVT_UTILITIES_SCRIPTS_DIR=node_modules/explorer-fvt-utilities/scripts
-echo "[${FVT_UTILITIES_SCRIPTS_DIR}] fvt utl"
 FVT_WORKSPACE="${ROOT_DIR}/.fvt"
-echo "[${FVT_WORKSPACE}] fvt workspace"
 FVT_KEYSTORE_DIR=keystore
-echo "[${FVT_KEYSTORE_DIR}] Key Dir"
 FVT_CONFIG_DIR=configs
-echo "[${FVT_CONFIG_DIR}] config"
 FVT_LOGS_DIR=logs
-echo "[${FVT_LOGS_DIR}] logs"
 
 FVT_EXPLORER_UI_PORT=10071
 FVT_GATEWAY_HOST=explorer-jes
@@ -40,18 +32,13 @@ FVT_GATEWAY_HOST=explorer-jes
 ################################################################################
 # variables
 FVT_ZOSMF_HOST=$1
-echo "[${FVT_ZOSMF_HOST}] host"
 FVT_ZOSMF_PORT=$2
-echo "[${FVT_ZOSMF_PORT}] port"
 IMAGE_NAME_FULL_REMOTE=$3
-echo "[${IMAGE_NAME_FULL_REMOTE}] name"
 
 ################################################################################
 cd "${ROOT_DIR}"
 EXPLORER_PLUGIN_BASEURI="/ui/v1/explorer-jes"
-echo "[${EXPLORER_PLUGIN_BASEURI}] plugin baseURL"
 EXPLORER_PLUGIN_NAME=$(node -e "process.stdout.write(require('./package.json').config.pluginName)")
-echo "[${EXPLORER_PLUGIN_NAME}] plugin name"
 echo "[${SCRIPT_NAME}] FVT Test for ${EXPLORER_PLUGIN_NAME}"
 echo
 
