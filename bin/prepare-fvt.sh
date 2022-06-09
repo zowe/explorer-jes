@@ -48,7 +48,7 @@ echo "[${IMAGE_NAME_FULL_REMOTE}] name"
 
 ################################################################################
 cd "${ROOT_DIR}"
-EXPLORER_PLUGIN_BASEURI=$(node -e "process.stdout.write(require('./package.json').config.baseuri)")
+EXPLORER_PLUGIN_BASEURI=""baseuri": "/ui/v1/explorer-jes"
 echo "[${EXPLORER_PLUGIN_BASEURI}] plugin baseURL"
 EXPLORER_PLUGIN_NAME=$(node -e "process.stdout.write(require('./package.json').config.pluginName)")
 echo "[${EXPLORER_PLUGIN_NAME}] plugin name"
