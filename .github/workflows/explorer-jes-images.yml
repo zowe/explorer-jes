@@ -27,13 +27,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-          
-      - name: '[Prep 5] Setup Node'
-        uses: actions/setup-node@v2
+
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
+
+      - uses: actions/setup-node@v2
         with:
           node-version: 10.18.1
 
-      - uses: zowe-actions/shared-actions/prepare-workflow@main
+      - name: '[Setup] NodeJS project setup'
+        uses: zowe-actions/nodejs-actions/setup@main
+        with:
+          package-name: 'org.zowe.explorer-jes'
+
+      - name: '[Build] Nodejs project build'
+        run: npm run prod
 
       - uses: zowe-actions/shared-actions/docker-prepare@main
         with:
@@ -55,12 +62,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: '[Prep 5] Setup Node'
-        uses: actions/setup-node@v2
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
+
+      - uses: actions/setup-node@v2
         with:
           node-version: 10.18.1
 
-      - uses: zowe-actions/shared-actions/prepare-workflow@main
+      - name: '[Setup] NodeJS project setup'
+        uses: zowe-actions/nodejs-actions/setup@main
+        with:
+          package-name: 'org.zowe.explorer-jes'
+
+      - name: '[Build] Nodejs project build'
+        run: npm run prod
 
       - uses: zowe-actions/shared-actions/docker-prepare@main
         with:
@@ -89,12 +103,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: '[Prep 5] Setup Node'
-        uses: actions/setup-node@v2
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
+
+      - uses: actions/setup-node@v2
         with:
           node-version: 10.18.1
 
-      - uses: zowe-actions/shared-actions/prepare-workflow@main
 
       - uses: zowe-actions/shared-actions/docker-prepare@main
         with:
@@ -116,12 +130,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: '[Prep 5] Setup Node'
-        uses: actions/setup-node@v2
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
+
+      - uses: actions/setup-node@v2
         with:
           node-version: 10.18.1
 
-      - uses: zowe-actions/shared-actions/prepare-workflow@main
+      - name: '[Setup] NodeJS project setup'
+        uses: zowe-actions/nodejs-actions/setup@main
+        with:
+          package-name: 'org.zowe.explorer-jes'
+
+      - name: '[Build] Nodejs project build'
+        run: npm run prod
 
       - uses: zowe-actions/shared-actions/docker-prepare@main
         with:
@@ -146,12 +167,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: '[Prep 5] Setup Node'
-        uses: actions/setup-node@v2
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
+
+      - uses: actions/setup-node@v2
         with:
           node-version: 10.18.1
 
-      - uses: zowe-actions/shared-actions/prepare-workflow@main
+      - name: '[Setup] NodeJS project setup'
+        uses: zowe-actions/nodejs-actions/setup@main
+        with:
+          package-name: 'org.zowe.explorer-jes'
+
+      - name: '[Build] Nodejs project build'
+        run: npm run prod
 
       - uses: zowe-actions/shared-actions/docker-prepare@main
         with:
@@ -183,12 +211,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: '[Prep 5] Setup Node'
-        uses: actions/setup-node@v2
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
+
+      - uses: actions/setup-node@v2
         with:
           node-version: 10.18.1
-
-      - uses: zowe-actions/shared-actions/prepare-workflow@main
 
       - uses: zowe-actions/shared-actions/docker-prepare@main
         with:
