@@ -58,7 +58,7 @@ sed -e "s|{{build\.branch}}|${BRANCH_NAME}|g" \
     -e "s|{{build\.number}}|${BUILD_NUMBER}|g" \
     -e "s|{{build\.commitHash}}|${commit_hash}|g" \
     -e "s|{{build\.timestamp}}|${current_timestamp}|g" \
-    -e "s|{{version}}|${current_version}|g" \
+    -e "s|^version:.*$|version: ${current_version}|g" \
     "manifest.yaml" > "${PAX_WORKSPACE_DIR}/content/manifest.yaml"
 echo "[${SCRIPT_NAME}] manifest.yaml:"
 cat "${PAX_WORKSPACE_DIR}/content/manifest.yaml"
