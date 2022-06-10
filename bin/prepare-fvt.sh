@@ -151,6 +151,7 @@ cat >> "$FVT_WORKSPACE/docker-compose.yml" << EOF
 EOF
 echo "[${SCRIPT_NAME}] display docker-compose.yml"
 cd "${FVT_WORKSPACE}"
+cat "$FVT_WORKSPACE/docker-compose.yml"
 
 ################################################################################
 echo "[${SCRIPT_NAME}] test folder prepared:"
@@ -162,7 +163,6 @@ echo
 # start services
 # NOTE: to kill all processes on Mac
 #        ps aux | grep .fvt | grep -v grep | awk '{print $2}' | xargs kill -9
-cat "$FVT_WORKSPACE/docker-compose.yml"
 echo "[${SCRIPT_NAME}] starting docker compose"
 cd "${FVT_WORKSPACE}"
 docker compose up -d
