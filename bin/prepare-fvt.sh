@@ -88,7 +88,7 @@ cd "${ROOT_DIR}"
 ./${FVT_UTILITIES_SCRIPTS_DIR}/prepare-zosmf-config.sh "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}" "$FVT_ZOSMF_HOST" "$FVT_ZOSMF_PORT"
 
 ################################################################################
-echo "[${SCRIPT_NAME}] writing Explorer Jes UI config for APIML ..."
+echo "[${SCRIPT_NAME}] writing ${EXPLORER_PLUGIN_NAME} config for APIML ..."
 cat > "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}/${EXPLORER_PLUGIN_NAME}.yml" << EOF
 services:
 - serviceId: ${EXPLORER_PLUGIN_NAME}
@@ -105,11 +105,11 @@ EOF
 echo
 
 ################################################################################
-echo "[${SCRIPT_NAME}] writing Explorer Jes web server config for nginx ..."
+echo "[${SCRIPT_NAME}] writing ${EXPLORER_PLUGIN_NAME} web server config for nginx ..."
 cat > "${FVT_WORKSPACE}/${FVT_NGINX_DIR}/default.conf" << EOF
 server {
     listen              8443 ssl;
-    server_name         explorer-jes;
+    server_name         ${EXPLORER_PLUGIN_NAME};
     ssl_certificate     /keystore/localhost.cert.pem;
     ssl_certificate_key /keystore/localhost.private.pem;
     ssl_protocols       TLSv1.2 TLSv1.3;
@@ -132,8 +132,7 @@ cd "${ROOT_DIR}"
   "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}" \
   "${FVT_WORKSPACE}/${FVT_LOGS_DIR}"
 echo
-echo "[${SCRIPT_NAME}] preparing explorer in docker compose ..."
-# append the explore-jes image config to the same docker-compose.yml file
+echo "[${SCRIPT_NAME}] preparing ${EXPLORER_PLUGIN_NAME} in docker compose ..."
 cat >> "$FVT_WORKSPACE/docker-compose.yml" << EOF
   
   ${EXPLORER_PLUGIN_NAME}:
@@ -144,7 +143,6 @@ cat >> "$FVT_WORKSPACE/docker-compose.yml" << EOF
     image: nginx
 EOF
 echo "[${SCRIPT_NAME}] preparing test pod in docker compose ..."
-# append the explore-jes image config to the same docker-compose.yml file
 cat >> "$FVT_WORKSPACE/docker-compose.yml" << EOF
   
   test-pod:
