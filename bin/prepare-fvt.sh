@@ -158,8 +158,6 @@ cd "${FVT_WORKSPACE}"
 find . -print
 echo
 
-exit 1
-
 ################################################################################
 # start services
 # NOTE: to kill all processes on Mac
