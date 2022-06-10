@@ -50,7 +50,7 @@ if [ -z "$FVT_ZOSMF_PORT" ]; then
 fi
 
 ################################################################################
-# prepare pax workspace
+# prepare fvt workspace
 echo "[${SCRIPT_NAME}] cleaning FVT workspace ..."
 if [ -d "${FVT_WORKSPACE}" ]; then
   rm -fr "${FVT_WORKSPACE}"
@@ -62,7 +62,7 @@ mkdir -p "${FVT_WORKSPACE}/${FVT_LOGS_DIR}"
 echo
 
 ################################################################################
-# write zosmf config
+# prepare explorer ui build
 echo "[${SCRIPT_NAME}] prepare ${EXPLORER_PLUGIN_NAME} for testing ..."
 ${PAX_WORKSPACE}/prepare-workspace.sh
 mkdir -p "${FVT_WORKSPACE}/${EXPLORER_PLUGIN_NAME}"
