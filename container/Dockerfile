@@ -12,7 +12,7 @@
 # base image tag
 ARG ZOWE_BASE_IMAGE=latest-ubuntu
 
-FROM zowe-docker-release.jfrog.io/ompzowe/base-node:${ZOWE_BASE_IMAGE} AS builder
+FROM zowe-docker-release.jfrog.io/ompzowe/base-node:${ZOWE_BASE_IMAGE}
 
 ##################################
 # labels
@@ -27,38 +27,9 @@ LABEL name="JES Explorer" \
 ##################################
 # switch context
 USER zowe
-WORKDIR /home/zowe
-
-##################################
-# copy files
-COPY --chown=zowe:zowe component .
-
-##################################
-# build component
-# pretty same as .pax/prepare-workspace.sh. any way we can merge?
-RUN npm ci --no-audit --ignore-scripts \
-    && npm run prod \
-    && mkdir -p final/web \
-    && cp README.md final \
-    && cp package.json final/web \
-    && cp package-lock.json final/web \
-    && cp -r dist/. final/web \
-    && mv final/web/zlux-hooks/config final/config \
-    && cp manifest.yaml final \
-    && cp pluginDefinition.prod.json final/pluginDefinition.json
-
-##################################
-# second stage
-FROM zowe-docker-release.jfrog.io/ompzowe/base-node:${ZOWE_BASE_IMAGE}
-
-##################################
-# switch context
-USER zowe
 WORKDIR /component
 
 ##################################
 # copy files
-COPY --from=builder --chown=zowe:zowe /home/zowe/final ./
+COPY --chown=zowe:zowe component .
 COPY --chown=zowe:zowe component/LICENSE /licenses
-
-RUN find /component
