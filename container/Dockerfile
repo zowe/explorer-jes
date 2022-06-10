@@ -60,3 +60,5 @@ WORKDIR /component
 # copy files
 COPY --from=builder --chown=zowe:zowe /home/zowe/final ./
 COPY --chown=zowe:zowe component/LICENSE /licenses
+
+RUN find /component

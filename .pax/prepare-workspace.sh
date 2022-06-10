@@ -39,26 +39,35 @@ fi
 # copy explorer-jes to target folder
 echo "[${SCRIPT_NAME}] copying explorer JES backend ..."
 mkdir -p "${PAX_WORKSPACE_DIR}/content/web"
-cp README.md "${PAX_WORKSPACE_DIR}/content/web"
+cp README.md "${PAX_WORKSPACE_DIR}/content"
+cp LICENSE "${PAX_WORKSPACE_DIR}/content"
+cp CHANGELOG.md "${PAX_WORKSPACE_DIR}/content"
+# do we need these?
 cp package.json "${PAX_WORKSPACE_DIR}/content/web"
 cp package-lock.json "${PAX_WORKSPACE_DIR}/content/web"
 cp -r dist/. "${PAX_WORKSPACE_DIR}/content/web"
 mv "${PAX_WORKSPACE_DIR}/content/web/zlux-hooks/config"  "${PAX_WORKSPACE_DIR}/content/config"
-cp manifest.yaml "${PAX_WORKSPACE_DIR}/content"
-cp pluginDefinition.prod.json "${PAX_WORKSPACE_DIR}/content/pluginDefinition.json"
 
 # update build information
 # BRANCH_NAME and BUILD_NUMBER is Jenkins environment variable
+echo "[${SCRIPT_NAME}] copy and update manifest.yaml"
 commit_hash=$(git rev-parse --verify HEAD)
 current_timestamp=$(date +%s%3N)
+current_version=$(node -e "process.stdout.write(require('./package.json').version)")
 sed -e "s|{{build\.branch}}|${BRANCH_NAME}|g" \
     -e "s|{{build\.number}}|${BUILD_NUMBER}|g" \
     -e "s|{{build\.commitHash}}|${commit_hash}|g" \
     -e "s|{{build\.timestamp}}|${current_timestamp}|g" \
-    "${PAX_WORKSPACE_DIR}/content/manifest.yaml" > "${PAX_WORKSPACE_DIR}/content/manifest.yaml.tmp"
-mv "${PAX_WORKSPACE_DIR}/content/manifest.yaml.tmp" "${PAX_WORKSPACE_DIR}/content/manifest.yaml"
-echo "[${SCRIPT_NAME}] manifest:"
+    -e "s|{{version}}|${current_version}|g" \
+    "manifest.yaml" > "${PAX_WORKSPACE_DIR}/content/manifest.yaml"
+echo "[${SCRIPT_NAME}] manifest.yaml:"
 cat "${PAX_WORKSPACE_DIR}/content/manifest.yaml"
+
+echo "[${SCRIPT_NAME}] copy and update pluginDefinition.json"
+sed -e "s|{{version}}|${current_version}|g" \
+    "pluginDefinition.prod.json" > "${PAX_WORKSPACE_DIR}/content/pluginDefinition.json"
+echo "[${SCRIPT_NAME}] pluginDefinition.json:"
+cat "${PAX_WORKSPACE_DIR}/content/pluginDefinition.json"
 
 # move content to another folder
 rm -fr "${PAX_WORKSPACE_DIR}/ascii"

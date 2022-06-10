@@ -62,6 +62,7 @@ package_release=$(echo "${package_version}" | awk -F. '{print $1;}')
 # copy Dockerfile
 echo ">>>>> copy Dockerfile to ${linux_distro}/${cpu_arch}/Dockerfile"
 cd "${BASE_DIR}"
+rm -fr "${linux_distro}/${cpu_arch}"
 mkdir -p "${linux_distro}/${cpu_arch}"
 if [ ! -f Dockerfile ]; then
   echo "Error: Dockerfile file is missing."
@@ -75,45 +76,20 @@ rm -fr "${BASE_DIR}/${WORK_DIR}"
 mkdir -p "${BASE_DIR}/${WORK_DIR}"
 
 ###############################
-echo ">>>>> prepare basic files"
+echo ">>>>> prepare build"
 cd "${REPO_ROOT_DIR}"
-cp README.md "${BASE_DIR}/${WORK_DIR}"
-cp LICENSE "${BASE_DIR}/${WORK_DIR}"
-cp CHANGELOG.md "${BASE_DIR}/${WORK_DIR}"
-cp package.json "${BASE_DIR}/${WORK_DIR}"
-cp package-lock.json "${BASE_DIR}/${WORK_DIR}"
-cp pluginDefinition.json "${BASE_DIR}/${WORK_DIR}"
-cp pluginDefinition.prod.json "${BASE_DIR}/${WORK_DIR}"
-cp webpack.config.js "${BASE_DIR}/${WORK_DIR}"
-cp jsconfig.json "${BASE_DIR}/${WORK_DIR}"
-cp .npmrc "${BASE_DIR}/${WORK_DIR}"
-cp .npmignore "${BASE_DIR}/${WORK_DIR}"
-cp -r plugin-definition "${BASE_DIR}/${WORK_DIR}"
-cp -r WebContent "${BASE_DIR}/${WORK_DIR}"
-
-###############################
-echo ">>>>> prepare manifest.json"
-cd "${REPO_ROOT_DIR}"
-if [ -n "${GITHUB_PR_ID}" ]; then
-  GITHUB_BRANCH=PR-${GITHUB_PR_ID}
-else
-  GITHUB_BRANCH=${GITHUB_REF#refs/heads/}
-fi
-echo "    - branch: ${GITHUB_BRANCH}"
-echo "    - build number: ${GITHUB_RUN_NUMBER}"
-echo "    - commit hash: ${GITHUB_SHA}"
-# assume to run in Github Actions
-cat manifest.yaml | \
-  sed -e "s#{{build\.branch}}#${GITHUB_BRANCH}#" \
-      -e "s#{{build\.number}}#${GITHUB_RUN_NUMBER}#" \
-      -e "s#{{build\.commitHash}}#${GITHUB_SHA}#" \
-      -e "s#{{build\.timestamp}}#$(date +%s)#" \
-  > "${BASE_DIR}/${WORK_DIR}/manifest.yaml"
+./.pax/prepare-workspace.sh
+cp -r .pax/ascii/. "${BASE_DIR}/${WORK_DIR}"
+cp -r .pax/content/. "${BASE_DIR}/${WORK_DIR}"
 
 ###############################
 # copy to target context
 echo ">>>>> copy to target build context"
 cp -r "${BASE_DIR}/${WORK_DIR}" "${BASE_DIR}/${linux_distro}/${cpu_arch}/component"
+
+###############################
+echo ">>>>> list files"
+find "${BASE_DIR}/${WORK_DIR}"
 
 ###############################
 # done
