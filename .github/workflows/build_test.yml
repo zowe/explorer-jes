@@ -181,6 +181,20 @@ jobs:
           artifacts: .pax/explorer-jes.pax
           perform-release: ${{ github.event.inputs.PERFORM_RELEASE }}
 
+      - name: 'Call build image workflow'
+        if: ${{ success() && github.event.inputs.PERFORM_RELEASE == 'true' && env.IS_RELEASE_BRANCH == 'true' }}
+        uses: zowe-actions/shared-actions/workflow-remote-call-wait@main
+        with:
+          github-token: ${{ secrets.ZOWE_ROBOT_TOKEN }}
+          owner: zowe
+          repo: explorer-jes
+          workflow-filename: explorer-jes-images.yml
+          branch-name: ${{ env.BRANCH_NAME }}
+          poll-frequency: 1
+          inputs-json-string: '{"release":"true"}'
+        # env:
+        #   DEBUG: 'workflow-remote-call-wait'
+
       - name: '[Release 1] Release (if necessary)'
         if: ${{ success() && github.event.inputs.PERFORM_RELEASE == 'true' && env.IS_RELEASE_BRANCH == 'true' }}
         uses: zowe-actions/shared-actions/release@main
