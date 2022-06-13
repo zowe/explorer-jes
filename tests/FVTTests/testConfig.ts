@@ -7,7 +7,7 @@ const {
 } = process.env;
 
 const BASE_URL = `https://${SERVER_HOST_NAME}:${SERVER_HTTPS_PORT}`;
-const BASE_URL_WITH_PATH = `${BASE_URL}/ui/v1/explorer-jes`;
+const BASE_URL_WITH_PATH = `${BASE_URL}/explorer-jes/ui/v1`;
 const FILTER_BASE_URL = `${BASE_URL_WITH_PATH}/#/`;
 const VIEWER_BASE_URL = `${BASE_URL_WITH_PATH}/#/viewer`;
 const loadUrlWithSearchFilters = loadPageWithFilterOptions(FILTER_BASE_URL, DEFAULT_SEARCH_FILTERS);
