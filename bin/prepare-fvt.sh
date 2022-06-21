@@ -22,23 +22,20 @@ SCRIPT_PWD=$(cd "$(dirname "$0")" && pwd)
 ROOT_DIR=$(cd "$SCRIPT_PWD" && cd .. && pwd)
 FVT_UTILITIES_SCRIPTS_DIR=node_modules/explorer-fvt-utilities/scripts
 FVT_WORKSPACE="${ROOT_DIR}/.fvt"
+PAX_WORKSPACE="${ROOT_DIR}/.pax"
 FVT_KEYSTORE_DIR=keystore
 FVT_CONFIG_DIR=configs
+FVT_NGINX_DIR=nginx
 FVT_LOGS_DIR=logs
-
-FVT_EXPLORER_UI_PORT=10071
-FVT_GATEWAY_HOST=explorer-jes
 
 ################################################################################
 # variables
 FVT_ZOSMF_HOST=$1
 FVT_ZOSMF_PORT=$2
-IMAGE_NAME_FULL_REMOTE=$3
 
 ################################################################################
 cd "${ROOT_DIR}"
-EXPLORER_PLUGIN_BASEURI=$(node -e "process.stdout.write(require('./package.json').config.baseuri)")
-EXPLORER_PLUGIN_NAME=$(node -e "process.stdout.write(require('./package.json').config.pluginName)")
+EXPLORER_PLUGIN_NAME=$(node -e "process.stdout.write(require('./package.json').name)")
 echo "[${SCRIPT_NAME}] FVT Test for ${EXPLORER_PLUGIN_NAME}"
 echo
 
@@ -53,15 +50,24 @@ if [ -z "$FVT_ZOSMF_PORT" ]; then
 fi
 
 ################################################################################
-# prepare pax workspace
+# prepare fvt workspace
 echo "[${SCRIPT_NAME}] cleaning FVT workspace ..."
 if [ -d "${FVT_WORKSPACE}" ]; then
   rm -fr "${FVT_WORKSPACE}"
 fi
 mkdir -p "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}"
+mkdir -p "${FVT_WORKSPACE}/${FVT_NGINX_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_LOGS_DIR}"
 echo
+
+################################################################################
+# prepare explorer ui build
+echo "[${SCRIPT_NAME}] prepare ${EXPLORER_PLUGIN_NAME} for testing ..."
+${PAX_WORKSPACE}/prepare-workspace.sh
+mkdir -p "${FVT_WORKSPACE}/${EXPLORER_PLUGIN_NAME}"
+cp -r "${PAX_WORKSPACE}/ascii/". "${FVT_WORKSPACE}/${EXPLORER_PLUGIN_NAME}"
+cp -r "${PAX_WORKSPACE}/content/". "${FVT_WORKSPACE}/${EXPLORER_PLUGIN_NAME}"
 
 ################################################################################
 # generate certificates
@@ -82,21 +88,70 @@ cd "${ROOT_DIR}"
 ./${FVT_UTILITIES_SCRIPTS_DIR}/prepare-zosmf-config.sh "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}" "$FVT_ZOSMF_HOST" "$FVT_ZOSMF_PORT"
 
 ################################################################################
-echo "[${SCRIPT_NAME}] writing Explorer Jes UI config for APIML ..."
-cat > "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}/jobs-ui.yml" << EOF
+echo "[${SCRIPT_NAME}] writing ${EXPLORER_PLUGIN_NAME} config for APIML ..."
+cat > "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}/${EXPLORER_PLUGIN_NAME}.yml" << EOF
 services:
-- serviceId: explorer-jes
-  title: IBM z/OS Jobs UI
-  description: IBM z/OS Jobs UI service
+- serviceId: ${EXPLORER_PLUGIN_NAME}
+  title: IBM z/OS Explorer UI
+  description: IBM z/OS Explorer UI service
   catalogUiTileId:
   instanceBaseUrls:
-  - https://${FVT_GATEWAY_HOST}:${FVT_EXPLORER_UI_PORT}/
+  - https://${EXPLORER_PLUGIN_NAME}:8443/
   homePageRelativeUrl:
   routedServices:
   - gatewayUrl: ui/v1
-    serviceRelativeUrl: ${EXPLORER_PLUGIN_BASEURI}
+    serviceRelativeUrl: /web
 EOF
 echo
+
+################################################################################
+echo "[${SCRIPT_NAME}] writing ${EXPLORER_PLUGIN_NAME} web server config for nginx ..."
+cat > "${FVT_WORKSPACE}/${FVT_NGINX_DIR}/default.conf" << EOF
+server {
+    listen              8443 ssl;
+    server_name         ${EXPLORER_PLUGIN_NAME};
+    ssl_certificate     /keystore/localhost.cert.pem;
+    ssl_certificate_key /keystore/localhost.private.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+    }
+}
+EOF
+echo
+
+################################################################################
+echo "[${SCRIPT_NAME}] preparing APIML in docker compose ..."
+cd "${ROOT_DIR}"
+./${FVT_UTILITIES_SCRIPTS_DIR}/prepare-apiml.sh \
+  "${FVT_WORKSPACE}" \
+  "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}" \
+  "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}" \
+  "${FVT_WORKSPACE}/${FVT_LOGS_DIR}"
+echo
+echo "[${SCRIPT_NAME}] preparing ${EXPLORER_PLUGIN_NAME} in docker compose ..."
+cat >> "$FVT_WORKSPACE/docker-compose.yml" << EOF
+  
+  ${EXPLORER_PLUGIN_NAME}:
+    volumes:
+      - ${FVT_WORKSPACE}/${EXPLORER_PLUGIN_NAME}:/usr/share/nginx/html
+      - ${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}:/keystore
+      - ${FVT_WORKSPACE}/${FVT_NGINX_DIR}:/etc/nginx/conf.d
+    image: nginx
+EOF
+echo "[${SCRIPT_NAME}] preparing test pod in docker compose ..."
+cat >> "$FVT_WORKSPACE/docker-compose.yml" << EOF
+  
+  test-pod:
+    image: jackjiaibm/ubuntu-toolbox
+    command: ["/bin/sh", "-c", "sleep 3600"]
+EOF
+echo "[${SCRIPT_NAME}] display docker-compose.yml"
+cd "${FVT_WORKSPACE}"
+cat "$FVT_WORKSPACE/docker-compose.yml"
 
 ################################################################################
 echo "[${SCRIPT_NAME}] test folder prepared:"
@@ -108,32 +163,8 @@ echo
 # start services
 # NOTE: to kill all processes on Mac
 #        ps aux | grep .fvt | grep -v grep | awk '{print $2}' | xargs kill -9
-cd "${ROOT_DIR}"
-echo "[${SCRIPT_NAME}] preparing APIML in docker compose ..."
-cd "${ROOT_DIR}"
-./${FVT_UTILITIES_SCRIPTS_DIR}/prepare-apiml.sh \
-  "${FVT_WORKSPACE}" \
-  "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}" \
-  "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}" \
-  "${FVT_WORKSPACE}/${FVT_LOGS_DIR}"
-echo
-echo "[${SCRIPT_NAME}] preparing explorer in docker compose ..."
-# append the explore-jes image config to the same docker-compose.yml file
-cat >> "$FVT_WORKSPACE/docker-compose.yml" << EOF
-  
-  explorer-jes:
-    ports:
-      - ${FVT_EXPLORER_UI_PORT}:${FVT_EXPLORER_UI_PORT}
-    volumes:
-      - ${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}:/keystore
-    environment:
-      JES_EXPLORER_UI_PORT: ${FVT_EXPLORER_UI_PORT}
-      KEYSTORE_KEY: /keystore/localhost.private.pem
-      KEYSTORE_CERTIFICATE: /keystore/localhost.cert.pem
-    image: "$IMAGE_NAME_FULL_REMOTE"
-EOF
 echo "[${SCRIPT_NAME}] starting docker compose"
-cd $FVT_WORKSPACE
+cd "${FVT_WORKSPACE}"
 docker compose up -d
 
 ################################################################################
