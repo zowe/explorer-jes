@@ -1,7 +1,7 @@
 {
   "identifier": "org.zowe.explorer-jes",
-  "apiVersion": "1.0.0",
-  "pluginVersion": "2.0.0",
+  "apiVersion": "{{version}}",
+  "pluginVersion": "{{version}}",
   "pluginType": "application",
   "webContent": {
     "framework": "iframe",

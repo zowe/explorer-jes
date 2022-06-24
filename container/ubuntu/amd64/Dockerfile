@@ -19,8 +19,8 @@ FROM zowe-docker-release.jfrog.io/ompzowe/base-node:${ZOWE_BASE_IMAGE}
 LABEL name="JES Explorer" \
       maintainer="jack-tiefeng.jia@ibm.com" \
       vendor="Zowe" \
-      version="0.0.0" \
-      release="0" \
+      version="2.0.2" \
+      release="2" \
       summary="IBM z/OS Jobs UI service" \
       description="This Zowe UI component can display jobs running on z/OS"
 
