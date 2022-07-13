@@ -189,7 +189,7 @@ jobs:
           owner: zowe
           repo: explorer-jes
           workflow-filename: explorer-jes-images.yml
-          branch-name: ${{ env.BRANCH_NAME }}
+          branch-name: ${{ env.GITHUB_REF_NAME }}
           poll-frequency: 1
           inputs-json-string: '{"release":"true"}'
         # env:

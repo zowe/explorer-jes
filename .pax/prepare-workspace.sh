@@ -48,10 +48,11 @@ cp manifest.yaml "${PAX_WORKSPACE_DIR}/content"
 cp pluginDefinition.prod.json "${PAX_WORKSPACE_DIR}/content/pluginDefinition.json"
 
 # update build information
-# BRANCH_NAME and BUILD_NUMBER is Jenkins environment variable
+# GITHUB_REF_NAME is github actions build-in environment variable
+# BUILD_NUMBER is prepared by zowe-actions/shared-actions/prepare-workflow
 commit_hash=$(git rev-parse --verify HEAD)
 current_timestamp=$(date +%s%3N)
-sed -e "s|{{build\.branch}}|${BRANCH_NAME}|g" \
+sed -e "s|{{build\.branch}}|${GITHUB_REF_NAME}|g" \
     -e "s|{{build\.number}}|${BUILD_NUMBER}|g" \
     -e "s|{{build\.commitHash}}|${commit_hash}|g" \
     -e "s|{{build\.timestamp}}|${current_timestamp}|g" \
