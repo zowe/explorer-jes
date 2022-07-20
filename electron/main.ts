@@ -10,7 +10,6 @@ const createMainWindow = () => {
       nodeIntegration: false
     }
   });
-  console.log('imhere baby')
   const startURL = 'https://localhost:8080';
 
   mainWindow.loadURL(startURL);
