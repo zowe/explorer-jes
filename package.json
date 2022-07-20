@@ -2,6 +2,7 @@
   "name": "explorer-jes",
   "version": "2.0.3",
   "types": "module",
+  "main": "electron/main.ts",
   "dependencies": {
     "@material-ui/core": "4.11.4",
     "@material-ui/icons": "4.11.2",
@@ -43,10 +44,12 @@
     "chai-things": "0.2.0",
     "clean-webpack-plugin": "3.0.0",
     "compression-webpack-plugin": "6.1.1",
+    "concurrently": "^7.3.0",
     "copy-webpack-plugin": "6.4.1",
     "cross-env": "5.2.1",
     "css-loader": "6.5.1",
     "dotenv": "6.2.0",
+    "electron": "^19.0.8",
     "es6-promise": "4.1.0",
     "eslint": "7.32.0",
     "eslint-config-airbnb": "15.1.0",
@@ -77,6 +80,7 @@
     "terser-webpack-plugin": "3.1.0",
     "ts-node": "8.10.2",
     "typescript": "3.9.9",
+    "wait-on": "^6.0.1",
     "webpack": "5.59.1",
     "webpack-bundle-analyzer": "4.5.0",
     "webpack-cli": "4.9.1",
@@ -92,7 +96,8 @@
     "prod": "cross-env NODE_ENV='production' webpack --mode production",
     "build": "cross-env NODE_ENV='development' OUTPUT_FOLDER='web' webpack --progress --color",
     "prod:analyze": "cross-env ANALYZE=true npm run prod",
-    "preCommit": "npm-run-all --aggregate-output --parallel --print-label lint test prod"
+    "preCommit": "npm-run-all --aggregate-output --parallel --print-label lint test prod",
+    "electron:start": "concurrently \"npm run dev\" \"wait-on https://localhost:8080 && electron .\""
   },
   "nyc": {
     "reporter": [
@@ -123,6 +128,6 @@
   "author": "IBM",
   "license": "EPL-2.0",
   "proxy": {
-    "target": "https://tvt5010.svl.ibm.com:7554"
+    "target": "https://vm30042.svl.ibm.com:7554"
   }
 }
