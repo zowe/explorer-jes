@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to the JES-Explorer will be documented in this file.
 
+## <2.0.3>
+
+### New features and enhancements
+- Show the number of filtered Jobs found.
+
 ## <2.0.1>
 
 ### Bug fixes
