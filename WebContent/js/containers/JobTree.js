@@ -54,9 +54,10 @@ class JobNodeTree extends React.Component {
     }
 
     getFilterValues() {
-        const { owner, prefix, jobId, status } = this.props;
-        let filtersString = `Owner= ${owner} Prefix= ${prefix || '*'} JobId= ${jobId}`;
-        if (status) { filtersString += ` Status= ${status}`; }
+        const { owner, prefix, jobId, status, jobs } = this.props;
+        let filtersString = `Owner= ${owner}, Prefix= ${prefix || '*'}, JobId= ${jobId}`;
+        if (status) { filtersString += `, Status= ${status}`; }
+        if (jobs.size > 0) { filtersString += ` [ ${jobs.size} Jobs Found]`; }
         return filtersString;
     }
 
