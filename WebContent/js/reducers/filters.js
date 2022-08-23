@@ -17,6 +17,7 @@ const FilterRecord = Record({
     prefix: '*',
     owner: '',
     status: '',
+    sortBy: 'DEFAULT',
     jobId: '*',
     expand: false,
     showDD: '',

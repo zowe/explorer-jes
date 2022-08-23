@@ -66,9 +66,20 @@ class JobNodeTree extends React.Component {
     };
 
     renderJobs() {
-        const { jobs, isFetching, dispatch, expand } = this.props;
-        if (jobs && jobs.size >= 1) {
-            return jobs.map((job, index) => {
+        const { jobs, isFetching, sortBy, dispatch, expand } = this.props;
+        let sortedJobs = jobs;
+        if (sortBy === 'JOB ID') {
+            sortedJobs = jobs.sort((a, b) => {
+                return a.get('jobId') > b.get('jobId') ? 1 : -1;
+            });
+        } else if (sortBy === 'PREFIX') {
+            sortedJobs = jobs.sort((a, b) => {
+                return a.get('jobName') > b.get('jobName') ? 1 : -1;
+            });
+        }
+        // const sortedJobs = jobs;
+        if (sortedJobs && sortedJobs.size >= 1) {
+            return sortedJobs.map((job, index) => {
                 return (
                     <JobInstance key={job.get('label')} expand={expand} job={job} dispatch={dispatch} pos={index} size={jobs.size} />
                 );
@@ -119,6 +130,7 @@ JobNodeTree.propTypes = {
     owner: PropTypes.string,
     jobId: PropTypes.string,
     status: PropTypes.string,
+    sortBy: PropTypes.string,
     expand: PropTypes.bool,
     dispatch: PropTypes.func.isRequired,
     isFetching: PropTypes.bool.isRequired,
@@ -133,6 +145,7 @@ function mapStateToProps(state) {
         owner: filtersRoot.get('owner'),
         jobId: filtersRoot.get('jobId'),
         status: filtersRoot.get('status'),
+        sortBy: filtersRoot.get('sortBy'),
         expand: filtersRoot.get('expand'),
         isFetching: jobNodesRoot.get('isFetching'),
         jobs: jobNodesRoot.get('jobs'),

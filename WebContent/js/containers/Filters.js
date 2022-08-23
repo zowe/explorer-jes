@@ -30,11 +30,18 @@ import { setFilters, resetFilters, setOwnerAndFetchJobs } from '../actions/filte
 import { fetchJobs } from '../actions/jobNodes';
 
 const STATUS_TYPES = ['ACTIVE'];
+const SORTING_TYPES = ['DEFAULT', 'PREFIX', 'JOB ID'];
 
 export class Filters extends React.Component {
     static renderStatusOptions() {
         return STATUS_TYPES.map(status => {
             return <MenuItem id={`status-${status}`} key={status} value={status}>{status}</MenuItem>;
+        });
+    }
+
+    static renderSortingOptions() {
+        return SORTING_TYPES.map(sortBy => {
+            return <MenuItem id={`sortBy-${sortBy}`} key={sortBy} value={sortBy}>{sortBy}</MenuItem>;
         });
     }
 
@@ -51,6 +58,7 @@ export class Filters extends React.Component {
         this.handlePrefixChange = this.handlePrefixChange.bind(this);
         this.handleOwnerChange = this.handleOwnerChange.bind(this);
         this.handleStatusChange = this.handleStatusChange.bind(this);
+        this.handleSortingChange = this.handleSortingChange.bind(this);
         this.handleJobIdChange = this.handleJobIdChange.bind(this);
         this.isOwnerAndPrefixWild = this.isOwnerAndPrefixWild.bind(this);
         this.dispatchApp2AppData = this.dispatchApp2AppData.bind(this);
@@ -176,6 +184,13 @@ export class Filters extends React.Component {
         }));
     }
 
+    handleSortingChange(event) {
+        const { dispatch } = this.props;
+        dispatch(setFilters({
+            sortBy: event.target.value,
+        }));
+    }
+
     handleJobIdChange(value) {
         const { dispatch } = this.props;
         dispatch(setFilters({
@@ -206,7 +221,7 @@ export class Filters extends React.Component {
     }
 
     render() {
-        const { prefix, owner, status, jobId } = this.props;
+        const { prefix, owner, status, sortBy, jobId } = this.props;
         return (
             <Accordion
                 id="filter-view"
@@ -272,6 +287,20 @@ export class Filters extends React.Component {
                                     {Filters.renderStatusOptions()}
                                 </Select>
                             </FormControl>
+                            <FormControl
+                                style={{ width: '50%' }}
+                                id="filter-status-field"
+                            >
+                                <InputLabel>Sort By</InputLabel>
+                                <Select
+                                    label="SortBy"
+                                    value={sortBy}
+                                    onChange={this.handleSortingChange}
+                                    disabled={!this.state.toggled}
+                                >
+                                    {Filters.renderSortingOptions()}
+                                </Select>
+                            </FormControl>
                         </div>
                     </AccordionDetails>
                     <AccordionActions>
@@ -306,6 +335,7 @@ Filters.propTypes = {
     owner: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
     jobId: PropTypes.string.isRequired,
+    sortBy: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
     location: PropTypes.shape({
         search: PropTypes.string,
@@ -322,6 +352,7 @@ function mapStateToProps(state) {
         owner: filterRoot.get('owner'),
         status: filterRoot.get('status'),
         jobId: filterRoot.get('jobId'),
+        sortBy: filterRoot.get('sortBy'),
         isToggled: filterRoot.get('isToggled'),
         username: validationRoot.get('username'),
     };
