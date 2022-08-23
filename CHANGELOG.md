@@ -5,6 +5,7 @@ All notable changes to the JES-Explorer will be documented in this file.
 
 ### New features and enhancements
 - Show the number of filtered Jobs found.
+- Add the filter option to sort the jobs by PREFIX and JOB ID.
 
 ## <2.0.1>
 
