@@ -79,11 +79,15 @@ function dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, file
 }
 
 export function fetchJobFile(jobName, jobId, fileName, fileId, refreshFile) {
-    return dispatch => {
+    return async dispatch => {
         const fileLabel = getFileLabel(jobId, fileName);
+        let reachedEOF = false;
+        let fetchLines = 0;
         dispatch(requestContent(jobName, jobId, fileName, fileId, fileLabel, refreshFile));
-        return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}/files/${fileId}/records`,
-            { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
+        
+        while (!reachedEOF) {
+            await atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}/files/${fileId}/records`,
+            { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*', 'X-IBM-Record-Range': `${fetchLines}-${fetchLines + 100000}` } })
             .then(response => {
                 return dispatch(checkForValidationFailure(response));
             })
@@ -91,12 +95,35 @@ export function fetchJobFile(jobName, jobId, fileName, fileId, refreshFile) {
                 return checkResponse(response);
             })
             .then(text => {
-                return dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, getFileLabel(jobId, fileName), text);
+              fetchLines = fetchLines + 100001;
+              return   dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, getFileLabel(jobId, fileName), text);
             })
             .catch(e => {
-                dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileName}`));
-                return dispatch(invalidateContent(fileLabel, fileId));
+                reachedEOF =true;
+                if (e.message.includes("Range start is beyond end of spool file")){
+                    console.log('end of file has reached');
+                } else {
+                    dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileName}`));
+                    return dispatch(invalidateContent(fileLabel, fileId));
+                }
+
             });
+        }
+        // return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}/files/${fileId}/records`,
+        //     { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*', 'X-IBM-Record-Range': '55-100' } })
+        //     .then(response => {
+        //         return dispatch(checkForValidationFailure(response));
+        //     })
+        //     .then(response => {
+        //         return checkResponse(response);
+        //     })
+        //     .then(text => {
+        //         return dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, getFileLabel(jobId, fileName), text);
+        //     })
+        //     .catch(e => {
+        //         dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileName}`));
+        //         return dispatch(invalidateContent(fileLabel, fileId));
+        //     });
     };
 }
 
@@ -124,12 +151,14 @@ export function fetchConcatenatedJobFiles(jobName, jobId, refreshFile) {
                                 return checkResponse(response);
                             })
                             .then(response => {
+                                // console.log(response);
+                                console.log(response.length - response.replaceAll('\n','').length + 1);
                                 concatenatedText += `\n ${response}`;
                                 index += 1;
+                                dispatchReceiveContent(dispatch, job.jobname, job.jobid, job.jobid, job.jobid, fileLabel, concatenatedText);
                                 if (index === jobFiles.length) {
-                                    return dispatchReceiveContent(dispatch, job.jobname, job.jobid, job.jobid, job.jobid, fileLabel, concatenatedText);
+                                    return true; 
                                 }
-                                return true;
                             });
                     });
                 }

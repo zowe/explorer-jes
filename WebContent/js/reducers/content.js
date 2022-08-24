@@ -71,7 +71,7 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
                 content: state.get('content').set(getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId),
                     {
                         label: action.fileLabel,
-                        content: action.content,
+                        content: `${state.get('content').get(0).content}` + action.content,
                         id: action.fileLabel + action.fileId,
                         isFetching: false,
                         readOnly: action.readOnly,

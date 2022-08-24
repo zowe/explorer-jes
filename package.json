@@ -29,6 +29,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "7.15.8",
     "@babel/plugin-proposal-decorators": "7.15.8",
+    "@babel/plugin-transform-runtime": "^7.18.10",
     "@babel/preset-env": "7.15.8",
     "@babel/preset-react": "7.14.5",
     "@babel/register": "7.15.3",
@@ -123,6 +124,6 @@
   "author": "IBM",
   "license": "EPL-2.0",
   "proxy": {
-    "target": "https://tvt5010.svl.ibm.com:7554"
+    "target": "https://vm30042.svl.ibm.com:7554"
   }
 }
