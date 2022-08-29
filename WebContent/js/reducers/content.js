@@ -20,6 +20,8 @@ import {
     RECEIVE_SUBMIT_JCL,
     INVALIDATE_SUBMIT_JCL,
     INVALIDATE_CONTENT,
+    ADD_REQUEST,
+    REMOVE_REQUEST,
 } from '../actions/content';
 
 export const DEFAULT_TITLE = 'JES Explorer';
@@ -35,6 +37,8 @@ const INITIAL_CONTENT_STATE = Map({
     selectedContent: 0, // Index of the current active tab content
     isSubmittingJCL: false,
     title: DEFAULT_TITLE,
+    contentRequests: [],
+    list: List([])
 });
 
 function getIndexOfContentFromId(contentList, label, fileId) {
@@ -113,6 +117,17 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
             return state.merge({
                 content: state.get('content').delete(getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId)),
             });
+        case ADD_REQUEST:
+            console.log('the contentREquests is:' + state.get('list')) ; 
+            // state.get('list').set(0, action.fileLabel)
+            return state.merge({
+                list: state.get('list').set(state.get('list').size, action.fileLabel),
+            });
+        case REMOVE_REQUEST:
+            return state.merge({
+                list: state.get('list').delete(state.get('list').indexOf(action.fileLabel)),
+            });
+            
         default:
             return state;
     }

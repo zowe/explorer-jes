@@ -21,6 +21,8 @@ export const REMOVE_CONTENT = 'REMOVE_CONTENT';
 export const UPDATE_CONTENT = 'UPDATE_CONTENT';
 export const CHANGE_SELECTED_CONTENT = 'CHANGE_SELECTED_CONTENT';
 export const INVALIDATE_CONTENT = 'INVALIDATE_CONTENT';
+export const ADD_REQUEST = 'ADD_REQUEST';
+export const REMOVE_REQUEST = 'REMOVE_REQUEST';
 
 export const REQUEST_SUBMIT_JCL = 'REQUEST_SUBMIT_JCL';
 export const RECEIVE_SUBMIT_JCL = 'RECEIVE_SUBMIT_JCL';
@@ -60,6 +62,21 @@ export function invalidateContent(fileLabel, fileId) {
     };
 }
 
+export function addRequest(fileLabel, requestType) {
+    return {
+        type: ADD_REQUEST,
+        fileLabel,
+        requestType,
+    };
+}
+
+export function removeRequest(fileLabel) {
+    return {
+        type: REMOVE_REQUEST,
+        fileLabel,
+    };
+}
+
 export function getFileLabel(jobId, fileName = '') {
     return `${jobId}-${fileName}`;
 }
@@ -78,16 +95,36 @@ function dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, file
     throw Error(text || NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE);
 }
 
+// function checkAndAbort(controller, getstate, fileLabel){
+//     while(true){
+//         if (getstate().get('content').get('list').indexOf(fileLabel) === -1) {
+//             console.log('the item is not in the list');
+//             controller.abort();
+//             break;
+//         }
+//         else {
+//             console.log('the item is in the list');
+//         }
+//     }
+// }
+
 export function fetchJobFile(jobName, jobId, fileName, fileId, refreshFile) {
-    return async dispatch => {
-        const fileLabel = getFileLabel(jobId, fileName);
+    return async (dispatch, getstate) => {
+        const controller = new AbortController();
+        const signal = controller.signal;
+        const linesToFetch = 10000;
         let reachedEOF = false;
         let fetchLines = 0;
+        let startLine = 0;
+        const fileLabel = getFileLabel(jobId, fileName);
+        console.log('state is:'+ getstate().get('content').get('list'));
         dispatch(requestContent(jobName, jobId, fileName, fileId, fileLabel, refreshFile));
-        
-        while (!reachedEOF) {
+        await dispatch(addRequest(fileLabel));
+        while (!reachedEOF && getstate().get('content').get('list').indexOf(fileLabel) !== -1) {
+            setTimeout(1000);
+            console.log('la la la  is:' + getstate().get('content').get('list'));
             await atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}/files/${fileId}/records`,
-            { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*', 'X-IBM-Record-Range': `${fetchLines}-${fetchLines + 100000}` } })
+            { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*', 'X-IBM-Record-Range': `${fetchLines}-${fetchLines + 50000}` },signal})
             .then(response => {
                 return dispatch(checkForValidationFailure(response));
             })
@@ -95,20 +132,26 @@ export function fetchJobFile(jobName, jobId, fileName, fileId, refreshFile) {
                 return checkResponse(response);
             })
             .then(text => {
-              fetchLines = fetchLines + 100001;
-              return   dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, getFileLabel(jobId, fileName), text);
+                fetchLines = fetchLines + 100001;
+                if(getstate().get('content').get('list').indexOf(fileLabel) !== -1){
+                    dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, getFileLabel(jobId, fileName), text);
+                    reachedEOF = true;
+                    return dispatch(removeRequest(fileLabel));
+                }
             })
             .catch(e => {
                 reachedEOF =true;
+                dispatch(removeRequest(fileLabel));
                 if (e.message.includes("Range start is beyond end of spool file")){
                     console.log('end of file has reached');
                 } else {
                     dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileName}`));
                     return dispatch(invalidateContent(fileLabel, fileId));
                 }
-
-            });
+            })
         }
+    
+
         // return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}/files/${fileId}/records`,
         //     { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*', 'X-IBM-Record-Range': '55-100' } })
         //     .then(response => {

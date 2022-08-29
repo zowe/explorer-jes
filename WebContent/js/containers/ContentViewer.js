@@ -22,7 +22,7 @@ import Button from '@material-ui/core/Button';
 import CircularProgressIcon from '@material-ui/core/CircularProgress';
 import queryString from 'query-string';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
-import { fetchJobFileNoName, removeContent, updateContent, changeSelectedContent, submitJCL } from '../actions/content';
+import { fetchJobFileNoName, removeContent, removeRequest, updateContent, changeSelectedContent, submitJCL } from '../actions/content';
 
 export class ContentViewer extends React.Component {
     constructor(props) {
@@ -100,7 +100,9 @@ export class ContentViewer extends React.Component {
     }
 
     handleCloseTab(removeIndex) {
-        const { selectedContent, dispatch } = this.props;
+        const { selectedContent, content, dispatch } = this.props;
+        console.log(' Remove this name of the tab is:'+ content.get(removeIndex).label);
+        dispatch(removeRequest(content.get(removeIndex).label));
         dispatch(removeContent(removeIndex));
         // Do we need to change the selectedContent
         if (removeIndex <= selectedContent && selectedContent >= 1) {

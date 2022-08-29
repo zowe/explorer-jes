@@ -119,7 +119,7 @@ const HomeView = props => {
                         className={`component col ${collapsed ? 'col-11-8' : 'col-9-2'}`}
                         style={(collapsed || windowWidth <= widthForFullScreen) ? {} : { width: `calc(100% - ${treeWidthPercent * 100}% - 2%)` }}
                         region="content-viewer"
-                        aria-label="Content Viewer"
+                        aria-label="Content Viewefr"
                     >
                         <ConnectedContentViewer />
                     </div>
