@@ -22,7 +22,7 @@ import Button from '@material-ui/core/Button';
 import CircularProgressIcon from '@material-ui/core/CircularProgress';
 import queryString from 'query-string';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
-import { fetchJobFileNoName, removeContent, removeRequest, updateContent, changeSelectedContent, submitJCL } from '../actions/content';
+import { fetchJobFileNoName, removeContent, removeActiveRequest, updateContent, changeSelectedContent, submitJCL } from '../actions/content';
 
 export class ContentViewer extends React.Component {
     constructor(props) {
@@ -101,8 +101,7 @@ export class ContentViewer extends React.Component {
 
     handleCloseTab(removeIndex) {
         const { selectedContent, content, dispatch } = this.props;
-        console.log(' Remove this name of the tab is:'+ content.get(removeIndex).label);
-        dispatch(removeRequest(content.get(removeIndex).label));
+        dispatch(removeActiveRequest(content.get(removeIndex).label));
         dispatch(removeContent(removeIndex));
         // Do we need to change the selectedContent
         if (removeIndex <= selectedContent && selectedContent >= 1) {
@@ -111,40 +110,46 @@ export class ContentViewer extends React.Component {
     }
 
     handleCloseRightTabs(index) {
-        const { selectedContent, dispatch } = this.props;
+        const { selectedContent, content, dispatch } = this.props;
         const openedFilesCount = this.props.content.size;
         if (index < openedFilesCount - 1) {
             for (let removeIndex = index + 1; removeIndex < openedFilesCount; removeIndex++) {
+                dispatch(removeActiveRequest(content.get(removeIndex).label));
                 dispatch(removeContent(index + 1));
             }
             if (index < selectedContent) {
+                dispatch(removeActiveRequest(content.get(removeIndex).label));
                 dispatch(changeSelectedContent(index));
             }
         }
     }
 
     handleCloseLeftTabs(index) {
-        const { selectedContent, dispatch } = this.props;
+        const { selectedContent, content, dispatch } = this.props;
         if (index > 0) {
             for (let removeIndex = 0; removeIndex < index; removeIndex++) {
                 dispatch(removeContent(0));
             }
             if (index < selectedContent) {
+                dispatch(removeActiveRequest(content.get(removeIndex).label));
                 dispatch(changeSelectedContent(selectedContent - index));
             } else {
+                dispatch(removeActiveRequest(content.get(removeIndex).label));
                 dispatch(changeSelectedContent(0));
             }
         }
     }
 
     handleCloseAllExceptTabs(index) {
-        const { selectedContent, dispatch } = this.props;
+        const { selectedContent, content, dispatch } = this.props;
         const openedFilesCount = this.props.content.size;
         if (index < openedFilesCount - 1) {
             for (let removeIndex = index + 1; removeIndex < openedFilesCount; removeIndex++) {
+                dispatch(removeActiveRequest(content.get(removeIndex).label));
                 dispatch(removeContent(index + 1));
             }
             if (index < selectedContent) {
+                dispatch(removeActiveRequest(content.get(removeIndex).label));
                 dispatch(changeSelectedContent(index));
             }
         }
@@ -159,9 +164,10 @@ export class ContentViewer extends React.Component {
     }
 
     handleCloseAllTabs() {
-        const { dispatch } = this.props;
+        const { dispatch, content } = this.props;
         const openedFilesCount = this.props.content.size;
         for (let index = 0; index < openedFilesCount; index++) {
+            dispatch(removeActiveRequest(content.get(0).label));
             dispatch(removeContent(0));
         }
     }

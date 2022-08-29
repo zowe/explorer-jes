@@ -21,8 +21,8 @@ export const REMOVE_CONTENT = 'REMOVE_CONTENT';
 export const UPDATE_CONTENT = 'UPDATE_CONTENT';
 export const CHANGE_SELECTED_CONTENT = 'CHANGE_SELECTED_CONTENT';
 export const INVALIDATE_CONTENT = 'INVALIDATE_CONTENT';
-export const ADD_REQUEST = 'ADD_REQUEST';
-export const REMOVE_REQUEST = 'REMOVE_REQUEST';
+export const ADD_ACTIVE_REQUEST = 'ADD_ACTIVE_REQUEST';
+export const REMOVE_ACTIVE_REQUEST = 'REMOVE_ACTIVE_REQUEST';
 
 export const REQUEST_SUBMIT_JCL = 'REQUEST_SUBMIT_JCL';
 export const RECEIVE_SUBMIT_JCL = 'RECEIVE_SUBMIT_JCL';
@@ -62,17 +62,17 @@ export function invalidateContent(fileLabel, fileId) {
     };
 }
 
-export function addRequest(fileLabel, requestType) {
+export function addActiveRequest(fileLabel, requestType) {
     return {
-        type: ADD_REQUEST,
+        type: ADD_ACTIVE_REQUEST,
         fileLabel,
         requestType,
     };
 }
 
-export function removeRequest(fileLabel) {
+export function removeActiveRequest(fileLabel) {
     return {
-        type: REMOVE_REQUEST,
+        type: REMOVE_ACTIVE_REQUEST,
         fileLabel,
     };
 }
@@ -95,34 +95,18 @@ function dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, file
     throw Error(text || NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE);
 }
 
-// function checkAndAbort(controller, getstate, fileLabel){
-//     while(true){
-//         if (getstate().get('content').get('list').indexOf(fileLabel) === -1) {
-//             console.log('the item is not in the list');
-//             controller.abort();
-//             break;
-//         }
-//         else {
-//             console.log('the item is in the list');
-//         }
-//     }
-// }
 
 export function fetchJobFile(jobName, jobId, fileName, fileId, refreshFile) {
     return async (dispatch, getstate) => {
         const controller = new AbortController();
         const signal = controller.signal;
         const linesToFetch = 10000;
-        let reachedEOF = false;
+        let stopFetching = false;
         let fetchLines = 0;
-        let startLine = 0;
         const fileLabel = getFileLabel(jobId, fileName);
-        console.log('state is:'+ getstate().get('content').get('list'));
         dispatch(requestContent(jobName, jobId, fileName, fileId, fileLabel, refreshFile));
-        await dispatch(addRequest(fileLabel));
-        while (!reachedEOF && getstate().get('content').get('list').indexOf(fileLabel) !== -1) {
-            setTimeout(1000);
-            console.log('la la la  is:' + getstate().get('content').get('list'));
+        await dispatch(addActiveRequest(fileLabel));
+        while (! stopFetching && getstate().get('content').get('list').indexOf(fileLabel) !== -1) {
             await atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}/files/${fileId}/records`,
             { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*', 'X-IBM-Record-Range': `${fetchLines}-${fetchLines + 50000}` },signal})
             .then(response => {
@@ -132,41 +116,23 @@ export function fetchJobFile(jobName, jobId, fileName, fileId, refreshFile) {
                 return checkResponse(response);
             })
             .then(text => {
-                fetchLines = fetchLines + 100001;
+                fetchLines = fetchLines + 50001;
                 if(getstate().get('content').get('list').indexOf(fileLabel) !== -1){
                     dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, getFileLabel(jobId, fileName), text);
-                    reachedEOF = true;
-                    return dispatch(removeRequest(fileLabel));
+                     stopFetching = true;
+                    return dispatch(removeActiveRequest(fileLabel));
                 }
             })
             .catch(e => {
-                reachedEOF =true;
-                dispatch(removeRequest(fileLabel));
+                dispatch(removeActiveRequest(fileLabel));
                 if (e.message.includes("Range start is beyond end of spool file")){
-                    console.log('end of file has reached');
+                     stopFetching = true;
                 } else {
                     dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileName}`));
                     return dispatch(invalidateContent(fileLabel, fileId));
                 }
             })
         }
-    
-
-        // return atlasFetch(`zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}/files/${fileId}/records`,
-        //     { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*', 'X-IBM-Record-Range': '55-100' } })
-        //     .then(response => {
-        //         return dispatch(checkForValidationFailure(response));
-        //     })
-        //     .then(response => {
-        //         return checkResponse(response);
-        //     })
-        //     .then(text => {
-        //         return dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, getFileLabel(jobId, fileName), text);
-        //     })
-        //     .catch(e => {
-        //         dispatch(constructAndPushMessage(`${e.message} - ${jobName}:${jobId}:${fileName}`));
-        //         return dispatch(invalidateContent(fileLabel, fileId));
-        //     });
     };
 }
 
@@ -195,7 +161,6 @@ export function fetchConcatenatedJobFiles(jobName, jobId, refreshFile) {
                             })
                             .then(response => {
                                 // console.log(response);
-                                console.log(response.length - response.replaceAll('\n','').length + 1);
                                 concatenatedText += `\n ${response}`;
                                 index += 1;
                                 dispatchReceiveContent(dispatch, job.jobname, job.jobid, job.jobid, job.jobid, fileLabel, concatenatedText);

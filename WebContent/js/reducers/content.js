@@ -20,8 +20,8 @@ import {
     RECEIVE_SUBMIT_JCL,
     INVALIDATE_SUBMIT_JCL,
     INVALIDATE_CONTENT,
-    ADD_REQUEST,
-    REMOVE_REQUEST,
+    ADD_ACTIVE_REQUEST,
+    REMOVE_ACTIVE_REQUEST,
 } from '../actions/content';
 
 export const DEFAULT_TITLE = 'JES Explorer';
@@ -117,13 +117,13 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
             return state.merge({
                 content: state.get('content').delete(getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId)),
             });
-        case ADD_REQUEST:
-            console.log('the contentREquests is:' + state.get('list')) ; 
-            // state.get('list').set(0, action.fileLabel)
+        case ADD_ACTIVE_REQUEST:
+            console.log('adding:' + action.fileLabel + ' old list was '+ state.get('list'))
             return state.merge({
                 list: state.get('list').set(state.get('list').size, action.fileLabel),
             });
-        case REMOVE_REQUEST:
+        case REMOVE_ACTIVE_REQUEST:
+            console.log('removing:' + action.fileLabel + ' old list was '+ state.get('list'))
             return state.merge({
                 list: state.get('list').delete(state.get('list').indexOf(action.fileLabel)),
             });
