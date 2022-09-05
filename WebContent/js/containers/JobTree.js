@@ -54,10 +54,9 @@ class JobNodeTree extends React.Component {
     }
 
     getFilterValues() {
-        const { owner, prefix, jobId, status, jobs } = this.props;
-        let filtersString = `Owner= ${owner}, Prefix= ${prefix || '*'}, JobId= ${jobId}`;
-        if (status) { filtersString += `, Status= ${status}`; }
-        if (jobs.size > 0) { filtersString += ` [${jobs.size} Jobs Found]`; }
+        const { owner, prefix, jobId, status } = this.props;
+        let filtersString = `Owner= ${owner} Prefix= ${prefix || '*'} JobId= ${jobId}`;
+        if (status) { filtersString += ` Status= ${status}`; }
         return filtersString;
     }
 
@@ -100,12 +99,15 @@ class JobNodeTree extends React.Component {
     }
 
     render() {
-        const { dispatch, isFetching } = this.props;
+        const { dispatch, isFetching, jobs } = this.props;
         const NOT_EXPANDED_FILTER_OFFSET_HEIGHT = 100;
         const EXPANDED_FILTER_OFFSET_HEIGHT = 333;
         return (
             <Card class="tree-card">
                 <CardHeader subheader={this.getFilterValues()} />
+                <div style={{ 'padding-right': '33px', 'text-align':'right', color: '#2E77A1', display: jobs.size > 0 ? '': 'none'}} >
+                    Jobs Found: {jobs.size}
+                </div>
                 <CardContent id="tree-text-content">
                     <ConnectedFilter updateFiltersToggledFunc={this.updateFiltersToggled} />
                     <RefreshIcon
