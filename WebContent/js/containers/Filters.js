@@ -289,7 +289,7 @@ export class Filters extends React.Component {
                             </FormControl>
                             <FormControl
                                 style={{ width: '50%' }}
-                                id="filter-status-field"
+                                id="filter-sort-field"
                             >
                                 <InputLabel>Sort By</InputLabel>
                                 <Select
