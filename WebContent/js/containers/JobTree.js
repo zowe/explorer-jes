@@ -105,7 +105,7 @@ class JobNodeTree extends React.Component {
         return (
             <Card class="tree-card">
                 <CardHeader subheader={this.getFilterValues()} />
-                <div style={{ 'paddingRight': '33px', 'textAlign':'right', color: '#2E77A1', display: jobs.size > 0 ? '': 'none'}} >
+                <div style={{ paddingRight: '33px', textAlign: 'right', color: '#2E77A1', display: jobs.size > 0 ? '' : 'none' }} >
                     Jobs Found: {jobs.size}
                 </div>
                 <CardContent id="tree-text-content">
