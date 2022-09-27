@@ -61,7 +61,7 @@ describe('JES explorer home view with filter parameters in url query', function 
         describe('basic url load test', () => {
             it('Should handle setting all filters from url query', async () => {
                 const filters = {
-                    owner: 'IZU*', prefix: 'pre*', jobId: 'st', status: 'INPUT',
+                    owner: 'IZU*', prefix: 'pre*', jobId: 'st', status: 'INPUT'
                 };
                 const expectedFilter = { ...DEFAULT_SEARCH_FILTERS, ...filters };
 

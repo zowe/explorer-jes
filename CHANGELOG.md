@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to the JES-Explorer will be documented in this file.
 
+## <2.0.3>
+
+### New features and enhancements
+- Show the number of filtered Jobs found.
+- Add the filter option to sort the jobs by PREFIX and JOB ID.
+
 ## <2.0.1>
 
 ### Bug fixes

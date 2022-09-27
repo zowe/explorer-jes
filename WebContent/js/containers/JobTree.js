@@ -65,9 +65,20 @@ class JobNodeTree extends React.Component {
     };
 
     renderJobs() {
-        const { jobs, isFetching, dispatch, expand } = this.props;
-        if (jobs && jobs.size >= 1) {
-            return jobs.map((job, index) => {
+        const { jobs, isFetching, sortBy, dispatch, expand } = this.props;
+        let sortedJobs = jobs;
+        if (sortBy === 'JOB ID') {
+            sortedJobs = jobs.sort((a, b) => {
+                return a.get('jobId') > b.get('jobId') ? 1 : -1;
+            });
+        } else if (sortBy === 'PREFIX') {
+            sortedJobs = jobs.sort((a, b) => {
+                return a.get('jobName') > b.get('jobName') ? 1 : -1;
+            });
+        }
+        // const sortedJobs = jobs;
+        if (sortedJobs && sortedJobs.size >= 1) {
+            return sortedJobs.map((job, index) => {
                 return (
                     <JobInstance key={job.get('label')} expand={expand} job={job} dispatch={dispatch} pos={index} size={jobs.size} />
                 );
@@ -88,12 +99,15 @@ class JobNodeTree extends React.Component {
     }
 
     render() {
-        const { dispatch, isFetching } = this.props;
+        const { dispatch, isFetching, jobs } = this.props;
         const NOT_EXPANDED_FILTER_OFFSET_HEIGHT = 100;
         const EXPANDED_FILTER_OFFSET_HEIGHT = 333;
         return (
             <Card class="tree-card">
                 <CardHeader subheader={this.getFilterValues()} />
+                <div style={{ paddingRight: '33px', textAlign: 'right', color: '#2E77A1', display: jobs.size > 0 ? '' : 'none' }} >
+                    Jobs Found: {jobs.size}
+                </div>
                 <CardContent id="tree-text-content">
                     <ConnectedFilter updateFiltersToggledFunc={this.updateFiltersToggled} />
                     <RefreshIcon
@@ -118,6 +132,7 @@ JobNodeTree.propTypes = {
     owner: PropTypes.string,
     jobId: PropTypes.string,
     status: PropTypes.string,
+    sortBy: PropTypes.string,
     expand: PropTypes.bool,
     dispatch: PropTypes.func.isRequired,
     isFetching: PropTypes.bool.isRequired,
@@ -132,6 +147,7 @@ function mapStateToProps(state) {
         owner: filtersRoot.get('owner'),
         jobId: filtersRoot.get('jobId'),
         status: filtersRoot.get('status'),
+        sortBy: filtersRoot.get('sortBy'),
         expand: filtersRoot.get('expand'),
         isFetching: jobNodesRoot.get('isFetching'),
         jobs: jobNodesRoot.get('jobs'),
