@@ -12,7 +12,6 @@ export const ENABLE_REDUX_LOGGER = 'ZoweJes.enableReduxLogger';
 export const NOTIFICATION_DURATION = 'ZoweJes.notificationDuration';
 export const LAST_FILTERS = 'ZoweJes.lastFilters';
 
-
 export function getStorageItem(storageKey) {
     try {
         return JSON.parse(window.localStorage.getItem(storageKey));

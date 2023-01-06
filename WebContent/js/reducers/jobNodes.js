@@ -142,7 +142,7 @@ function createJobWithFiles(jobs, jobId, jobFiles) {
     return jobs.get(findKeyOfJob(jobs, jobId)).set('files', extractJobFiles(jobFiles));
 }
 
-export default function JobNodes(state = INITIAL_STATE, action) {
+export default function JobNodes(action, state = INITIAL_STATE) {
     switch (action.type) {
         case REQUEST_JOBS:
             return state.set('isFetching', true);

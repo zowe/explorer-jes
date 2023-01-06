@@ -15,7 +15,7 @@ const INITIAL_STATE = Map({
     messages: new List([]),
 });
 
-export default function snackbarNotifications(state = INITIAL_STATE, action) {
+export default function snackbarNotifications(action, state = INITIAL_STATE) {
     switch (action.type) {
         case PUSH_NOTIFICATION_MESSAGE:
             return state.set('messages', state.get('messages').push(action.message));

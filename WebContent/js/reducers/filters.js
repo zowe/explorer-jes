@@ -26,7 +26,7 @@ const FilterRecord = Record({
 
 const INITIAL_STATE = new FilterRecord();
 
-export default function content(state = INITIAL_STATE, action) {
+export default function content(action, state = INITIAL_STATE) {
     switch (action.type) {
         case TOGGLE_FILTERS:
             return state.set('isToggled', action.isToggled);

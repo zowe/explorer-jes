@@ -24,7 +24,7 @@ const INITIAL_CONTENT_STATE = Map({
     forceLogin: false,
 });
 
-export default function content(state = INITIAL_CONTENT_STATE, action) {
+export default function content(action, state = INITIAL_CONTENT_STATE) {
     switch (action.type) {
         case REQUEST_VALIDATION:
             return state.merge({

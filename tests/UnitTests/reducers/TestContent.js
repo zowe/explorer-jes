@@ -82,7 +82,7 @@ describe('Reducer: content', () => {
     });
 
     it('Should hande UPDATE_CONTENT', () => {
-        const updatedContent = contentResources.updatedContent;
+        const { updatedContent } = contentResources;
         const action = { type: contentActions.UPDATE_CONTENT, content: updatedContent };
         expect(content(contentResources.receivedContent, action)).toEqual(contentResources.receivedContentUpdated);
     });

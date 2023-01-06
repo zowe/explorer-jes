@@ -8,14 +8,13 @@
  * Copyright IBM Corporation 2018, 2020
  */
 
-
 export function encodeURLComponent(URL) {
     return encodeURIComponent(URL);
 }
 
 export function whichServer() {
-    let server = location.host;
-    if (location.hostname === 'tester.test.com') {
+    let server = window.location.host;
+    if (window.location.hostname === 'tester.test.com') {
         server = 'tester.test.com:7443';
     }
     return server;

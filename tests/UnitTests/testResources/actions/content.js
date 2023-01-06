@@ -8,13 +8,13 @@
  * Copyright IBM Corporation 2018, 2019
  */
 
-export const jobFileContents = '//TSTJIMS  JOB (ADL),ATLAS,MSGCLASS=0,CLASS=A,TIME=1440\n' +
-'//*        THIS JOB SIMULATES AN IMS REGION FOR 60 SECONDS\n' +
-'//IMS      EXEC PGM=DFSMVRC0\n' +
-'//STEPLIB  DD DSN=ATLAS.TEST.LOAD,DISP=SHR\n' +
-'//SYSPRINT DD SYSOUT=*\n' +
-'//SYSOUT   DD SYSOUT=*\n' +
-'//*\n';
+export const jobFileContents = '//TSTJIMS  JOB (ADL),ATLAS,MSGCLASS=0,CLASS=A,TIME=1440\n'
++ '//*        THIS JOB SIMULATES AN IMS REGION FOR 60 SECONDS\n'
++ '//IMS      EXEC PGM=DFSMVRC0\n'
++ '//STEPLIB  DD DSN=ATLAS.TEST.LOAD,DISP=SHR\n'
++ '//SYSPRINT DD SYSOUT=*\n'
++ '//SYSOUT   DD SYSOUT=*\n'
++ '//*\n';
 
 export const DSRequestFailed = "Request for content using z/OSMF failed for dataset 'ATLAS.TEST.JCL(TSTJIS)'";
 
@@ -48,8 +48,10 @@ export const fileList = [{
     'record-count': 24,
     class: 'X',
     jobname: 'ZWEACTPJ',
-    procstep: null },
-{ recfm: 'V',
+    procstep: null,
+},
+{ 
+    ecfm: 'V',
     'records-url': 'https://TVT5011.svl.ibm.com:443/zosmf/restjobs/jobs/J0004074TVT5011.DA48EC13.......%3A/files/3/records',
     stepname: 'JES2',
     subsystem: 'JES2',
@@ -62,7 +64,8 @@ export const fileList = [{
     'record-count': 29,
     class: 'X',
     jobname: 'ZWEACTPJ',
-    procstep: null }];
+    procstep: null,
+}];
 
 export const jobJCL = '//TESTJOBX JOB (),MSGCLASS=H EXEC PGM=IEFBR14';
 

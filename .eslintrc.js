@@ -22,6 +22,7 @@ module.exports = {
         "no-nested-ternary":0,
         "no-trailing-spaces":0,
         "no-alert":0,
+        "react/no-unknown-property": [0, "ignore"],
         "jsx-a11y/no-static-element-interactions":0,
         "lines-between-class-members": ["error", "always"],
         "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
