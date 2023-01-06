@@ -62,7 +62,7 @@
     "html-webpack-plugin": "4.5.2",
     "isomorphic-fetch": "3.0.0",
     "jszip": "3.7.1",
-    "mocha": "^9.2.2",
+    "mocha": "9.2.2",
     "mocha-jenkins-reporter": "0.4.7",
     "nock": "9.6.1",
     "node-fetch-cjs": "3.2.1",
