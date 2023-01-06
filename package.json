@@ -27,7 +27,7 @@
     "whatwg-fetch": "2.0.4"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "7.15.8",
+    "@babel/eslint-parser": "7.19.1",
     "@babel/plugin-proposal-decorators": "7.15.8",
     "@babel/preset-env": "7.15.8",
     "@babel/preset-react": "7.14.5",
@@ -48,21 +48,21 @@
     "css-loader": "6.5.1",
     "dotenv": "6.2.0",
     "es6-promise": "4.1.0",
-    "eslint": "7.32.0",
-    "eslint-config-airbnb": "15.1.0",
-    "eslint-plugin-import": "2.25.2",
-    "eslint-plugin-jsx-a11y": "5.1.1",
-    "eslint-plugin-mocha": "4.12.1",
-    "eslint-plugin-node": "5.2.1",
-    "eslint-plugin-react": "7.23.2",
+    "eslint": "8.30.0",
+    "eslint-config-airbnb": "19.0.4",
+    "eslint-plugin-import": "2.26.0",
+    "eslint-plugin-jsx-a11y": "6.1.1",
+    "eslint-plugin-mocha": "10.1.0",
+    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-react": "7.31.11",
     "expect": "1.20.2",
-    "explorer-fvt-utilities": "2.0.2",
+    "explorer-fvt-utilities": "2.0.3",
     "file-loader": "6.2.0",
     "file-saver": "2.0.5",
     "html-webpack-plugin": "4.5.2",
     "isomorphic-fetch": "3.0.0",
     "jszip": "3.7.1",
-    "mocha": "9.2.1",
+    "mocha": "^9.2.2",
     "mocha-jenkins-reporter": "0.4.7",
     "nock": "9.6.1",
     "node-fetch-cjs": "3.2.1",
@@ -123,6 +123,6 @@
   "author": "IBM",
   "license": "EPL-2.0",
   "proxy": {
-    "target": "https://tvt5010.svl.ibm.com:7554"
+    "target": "https://vm30042.svl.ibm.com:7554"
   }
 }
