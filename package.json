@@ -1,6 +1,6 @@
 {
   "name": "explorer-jes",
-  "version": "2.0.6",
+  "version": "2.0.5",
   "types": "module",
   "dependencies": {
     "@material-ui/core": "4.11.4",
