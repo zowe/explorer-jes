@@ -36,7 +36,7 @@ COPY --chown=zowe:zowe component .
 ##################################
 # build component
 # pretty same as .pax/prepare-workspace.sh. any way we can merge?
-RUN npm ci --no-audit --ignore-scripts \
+RUN npm ci --legacy-peer-deps --no-audit --ignore-scripts \
     && npm run prod \
     && mkdir -p final/web \
     && mkdir -p final/bin \
