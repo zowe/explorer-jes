@@ -323,7 +323,7 @@ export function fetchJobFiles(jobName, jobId) {
 }
 
 export function cancelJob(jobName, jobId) {
-    const confirmCancel = window.confirm(`Cancel the job ${jobName}/${jobId}?`);
+    const confirmCancel = confirm(`Cancel the job ${jobName}/${jobId}?`); //eslint-disable-line
     if (confirmCancel === false) {
         return dispatch => { dispatch(constructAndPushMessage(`${CANCEL_JOB_CANCEL_MESSAGE} ${jobName}/${jobId}`)); };
     }
@@ -355,7 +355,7 @@ export function cancelJob(jobName, jobId) {
 }
 
 export function purgeJob(jobName, jobId) {
-    const confirmPurge = window.confirm(`Purge the job ${jobName}/${jobId}?`);
+    const confirmPurge = confirm(`Purge the job ${jobName}/${jobId}?`); //eslint-disable-line
     if (confirmPurge === false) {
         return dispatch => { dispatch(constructAndPushMessage(`${PURGE_JOB_CANCEL_MESSAGE} ${jobName}/${jobId}`)); };
     }
@@ -391,7 +391,7 @@ export function getSelectedJobs(jobs) {
 }
 
 export function purgeJobs(jobs) {
-    const confirmPurge = window.confirm('Purge the jobs?');
+    const confirmPurge = confirm('Purge the jobs?'); //eslint-disable-line
     if (confirmPurge === false) {
         return dispatch => { dispatch(constructAndPushMessage(`${PURGE_JOBS_CANCEL_MESSAGE}`)); };
     }
