@@ -34,7 +34,7 @@ class JobNodeTree extends React.Component {
             filtersToggled: false,
         };
     }
-
+    /* eslint-disable */
     componentWillReceiveProps(nextProps) {
         const { owner, dispatch, isFetching } = this.props;
         if (!isFetching && owner === LOADING_MESSAGE && nextProps.owner && nextProps.owner !== LOADING_MESSAGE) {
@@ -54,18 +54,30 @@ class JobNodeTree extends React.Component {
     }
 
     getFilterValues() {
-        const { owner, prefix, jobId, status } = this.props;
+        const {
+            owner,
+            prefix,
+            jobId,
+            status,
+        } = this.props;
         let filtersString = `Owner= ${owner} Prefix= ${prefix || '*'} JobId= ${jobId}`;
         if (status) { filtersString += ` Status= ${status}`; }
         return filtersString;
     }
 
     updateFiltersToggled = () => {
+        /* eslint-disable */
         this.setState({ filtersToggled: !this.state.filtersToggled });
     };
 
     renderJobs() {
-        const { jobs, isFetching, sortBy, dispatch, expand } = this.props;
+        const {
+            jobs,
+            isFetching,
+            sortBy,
+            dispatch,
+            expand,
+        } = this.props;
         let sortedJobs = jobs;
         if (sortBy === 'JOB ID') {
             sortedJobs = jobs.sort((a, b) => {
@@ -83,7 +95,8 @@ class JobNodeTree extends React.Component {
                     <JobInstance key={job.get('label')} expand={expand} job={job} dispatch={dispatch} pos={index} size={jobs.size} />
                 );
             });
-        } else if (!isFetching) {
+        }
+        if (!isFetching) {
             return (
                 <div className="job-instance" role="none">
                     <li
@@ -105,8 +118,15 @@ class JobNodeTree extends React.Component {
         return (
             <Card class="tree-card">
                 <CardHeader subheader={this.getFilterValues()} />
-                <div style={{ paddingRight: '33px', textAlign: 'right', color: '#2E77A1', display: jobs.size > 0 ? '' : 'none' }} >
-                    Jobs Found: {jobs.size}
+                <div style={{
+                    paddingRight: '33px',
+                    textAlign: 'right',
+                    color: '#2E77A1',
+                    display: jobs.size > 0 ? '' : 'none',
+                }}
+                >
+                    Jobs Found: 
+                    {jobs.size}
                 </div>
                 <CardContent id="tree-text-content">
                     <ConnectedFilter updateFiltersToggledFunc={this.updateFiltersToggled} />

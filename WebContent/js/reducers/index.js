@@ -20,5 +20,6 @@ const REDUCERS = {
     jobNodes,
     filters,
     validation,
-    snackbarNotifications };
+    snackbarNotifications,
+};
 export default combineReducers(REDUCERS);

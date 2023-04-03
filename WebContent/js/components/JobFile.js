@@ -35,65 +35,6 @@ class JobFile extends React.Component {
         this.checkForShowDD();
     }
 
-    checkForShowDD() {
-        const { file, showDD } = this.props;
-        if (file && file.label && file.label === showDD) {
-            this.openFile();
-        }
-    }
-
-    isFileOpen() {
-        const { content, job, file } = this.props;
-        return content.filter(x => { return x.id === getFileLabel(job.get('jobId'), file.label) + file.id; }).size > 0;
-    }
-
-    openFile() {
-        const { content, dispatch, job, file } = this.props;
-        if (this.isFileOpen()) {
-            // Find which index the file is open in and change to it
-            content.forEach(x => {
-                if (x.id === getFileLabel(job.get('jobId'), file.label) + file.id) {
-                    dispatch(changeSelectedContent(content.indexOf(x)));
-                }
-            });
-        } else {
-            dispatch(fetchJobFile(job.get('jobName'), job.get('jobId'), file.label, file.id));
-        }
-        dispatch(unselectAllJobFiles());
-        dispatch(unselectAllJobs());
-        dispatch(selectFile(job.get('jobId'), file.label));
-    }
-
-    refreshFile() {
-        const { dispatch, job, file } = this.props;
-        dispatch(fetchJobFile(job.get('jobName'), job.get('jobId'), file.label, file.id, true));
-    }
-
-    downloadJobFile() {
-        const { job, file, dispatch } = this.props;
-        const url = `zosmf/restjobs/jobs/${encodeURLComponent(job.get('jobName'))}/${job.get('jobId')}/files/${file.id}/records`;
-        downloadFile(job, file.label, url, dispatch);
-    }
-
-    openInNewWindow() {
-        const { job, file } = this.props;
-        const baseURI = `${window.location.origin}${window.location.pathname}`;
-        const newWindow = window.open(`${baseURI}#/viewer?jobName=${encodeURLComponent(job.get('jobName'))}&jobId=${job.get('jobId')}&fileId=${file.id}`, '_blank');
-        newWindow.focus();
-    }
-
-    hideContextMenu() {
-        hideMenu();
-        this.setState({ menuVisible: false });
-    }
-
-    handleContextMenu() {
-        const { dispatch, file } = this.props;
-        if (file.selectionType !== 'selected') {
-            dispatch(highlightSelected());
-        }
-    }
-
     handleKeyDown(e) {
         if (e.metaKey || e.altKey || e.ctrlKey) {
             return;
@@ -117,20 +58,80 @@ class JobFile extends React.Component {
         }
     }
 
+    handleContextMenu() {
+        const { dispatch, file } = this.props;
+        if (file.selectionType !== 'selected') {
+            dispatch(highlightSelected());
+        }
+    }
+
+    hideContextMenu() {
+        hideMenu();
+        this.setState({ menuVisible: false });
+    }
+
+    refreshFile() {
+        const { dispatch, job, file } = this.props;
+        dispatch(fetchJobFile(job.get('jobName'), job.get('jobId'), file.label, file.id, true));
+    }
+
+    downloadJobFile() {
+        const { job, file, dispatch } = this.props;
+        const url = `zosmf/restjobs/jobs/${encodeURLComponent(job.get('jobName'))}/${job.get('jobId')}/files/${file.id}/records`;
+        downloadFile(job, file.label, url, dispatch);
+    }
+
+    openInNewWindow() {
+        const { job, file } = this.props;
+        const baseURI = `${window.location.origin}${window.location.pathname}`;
+        const newWindow = window.open(`${baseURI}#/viewer?jobName=${encodeURLComponent(job.get('jobName'))}&jobId=${job.get('jobId')}&fileId=${file.id}`, '_blank');
+        newWindow.focus();
+    }
+
+    openFile() {
+        const { content, dispatch, job, file } = this.props;
+        if (this.isFileOpen()) {
+            // Find which index the file is open in and change to it
+            content.forEach(x => {
+                if (x.id === getFileLabel(job.get('jobId'), file.label) + file.id) {
+                    dispatch(changeSelectedContent(content.indexOf(x)));
+                }
+            });
+        } else {
+            dispatch(fetchJobFile(job.get('jobName'), job.get('jobId'), file.label, file.id));
+        }
+        dispatch(unselectAllJobFiles());
+        dispatch(unselectAllJobs());
+        dispatch(selectFile(job.get('jobId'), file.label));
+    }
+
+    isFileOpen() {
+        const { content, job, file } = this.props;
+        return content.filter(x => { return x.id === getFileLabel(job.get('jobId'), file.label) + file.id; }).size > 0;
+    }
+
+    checkForShowDD() {
+        const { file, showDD } = this.props;
+        if (file && file.label && file.label === showDD) {
+            this.openFile();
+        }
+    }
+
+    /* eslint-disable */
     renderJobFileMenu() {
         const { job, file } = this.props;
         const menuItems = [
-            <MenuItem onClick={this.downloadJobFile} key="download" >
+            <MenuItem onClick={this.downloadJobFile} key="download">
                 <u>D</u>ownload
             </MenuItem>,
-            <MenuItem onClick={this.openInNewWindow} key="fullscreen" >
+            <MenuItem onClick={this.openInNewWindow} key="fullscreen">
                 <u>O</u>pen in Fullscreen
             </MenuItem>,
         ];
 
         if (this.isFileOpen()) {
             menuItems.push(
-                <MenuItem onClick={() => { return this.refreshFile(); }} key="refresh" >
+                <MenuItem onClick={() => { return this.refreshFile(); }} key="refresh">
                     <u>R</u>efresh Content
                 </MenuItem>,
             );
@@ -142,7 +143,7 @@ class JobFile extends React.Component {
                 onShow={() => { this.setState({ menuVisible: true }); }}
                 onHide={() => { this.setState({ menuVisible: false }); }}
             >
-                <MenuItem onClick={this.downloadJobFile} >
+                <MenuItem onClick={this.downloadJobFile}>
                     <u>D</u>ownload
                 </MenuItem>
                 <MenuItem onClick={this.openInNewWindow}>

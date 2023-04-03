@@ -40,6 +40,7 @@ class TopBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            // eslint-disable-next-line
             auth: true,
             anchorEl: null,
         };
@@ -53,18 +54,19 @@ class TopBar extends React.Component {
         this.setState({ anchorEl: null });
     };
 
+    /* eslint-disable */
     render() {
         const { anchorEl } = this.state;
         const { validated, username, classes } = this.props;
         const open = Boolean(anchorEl);
         const id = open ? 'simple-popover' : undefined;
         return (
-            <AppBar position="static" id="app-bar" >
+            <AppBar position="static" id="app-bar">
                 <Toolbar
                     className={classNames(classes.customizeToolbar)}
                     variant="dense"
                 >
-                    <Typography type="title" color="inherit" style={{ flex: 1 }} >
+                    <Typography type="title" color="inherit" style={{ flex: 1 }}>
                         JES Explorer
                         <Typography variant="caption" color="inherit" style={{ flex: 1, paddingLeft: '5px' }}>v{ APP_VERSION }</Typography>
                     </Typography>
@@ -89,8 +91,8 @@ class TopBar extends React.Component {
                     >
                         <SettingForm />
                     </Popover>
-                    {validated &&
-                    <Tooltip title={username} placement="bottom">
+                    {validated
+                    && <Tooltip title={username} placement="bottom">
                         <IconButton color="inherit">
                             <Avatar className={classes.small}>{username.charAt(0).toUpperCase()}</Avatar>
                         </IconButton>
@@ -99,7 +101,6 @@ class TopBar extends React.Component {
             </AppBar>);
     }
 }
-
 
 TopBar.propTypes = {
     validated: PropTypes.bool.isRequired,

@@ -6,11 +6,14 @@ module.exports = {
         "import"
     ],
     "rules": {
+        "react/jsx-curly-brace-presence": 'off',
         "react/jsx-filename-extension": 0,
         "react/no-did-update-set-state": 0,
         "indent": ["error", 4,{ "SwitchCase": 1 }],
+        'react/destructuring-assignment': 'off',
         "react/jsx-indent": ["error", 4],
         "react/jsx-indent-props": ["error", 4],
+        "react/jsx-wrap-multilines": 'off',
         "jsx-a11y/href-no-hash":0,
         "arrow-body-style": ["error", "always"],
         "arrow-parens": ["error", "as-needed"],
@@ -22,6 +25,8 @@ module.exports = {
         "no-nested-ternary":0,
         "no-trailing-spaces":0,
         "no-alert":0,
+        "object-curly-newline": 'off',
+        'prefer-destructuring': 'off',
         "jsx-a11y/no-static-element-interactions":0,
         "lines-between-class-members": ["error", "always"],
         "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],

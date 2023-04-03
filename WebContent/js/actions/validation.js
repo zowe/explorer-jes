@@ -66,8 +66,7 @@ export function validateUser() {
         dispatch(requestValidation());
         return fetch(`https://${whichServer()}/gateway/api/v1/auth/query`,
             { credentials: 'include',
-                'Access-Control-Allow-Credentials': 'true' },
-        )
+                'Access-Control-Allow-Credentials': 'true' })
             .then(response => {
                 return checkResponse(response);
             })

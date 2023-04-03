@@ -11,12 +11,10 @@
 import { Map, List } from 'immutable';
 import * as snackbarNotificationsResources from '../actions/snackbarNotifications';
 
-export const baseNotifications =
-Map({
+export const baseNotifications = Map({
     messages: new List([]),
 });
 
-export const oneMessageNotifications =
-Map({
+export const oneMessageNotifications = Map({
     messages: new List([snackbarNotificationsResources.sampleMessage]),
 });

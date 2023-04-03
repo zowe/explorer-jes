@@ -21,7 +21,6 @@ import JobFile from './JobFile';
 import JobStep from './JobStep';
 import { encodeURLComponent } from '../utilities/urlUtils';
 
-
 class JobInstance extends React.Component {
     constructor(props) {
         super(props);
@@ -37,13 +36,6 @@ class JobInstance extends React.Component {
         this.handleKeyDown = this.handleKeyDown.bind(this);
         this.checkForExpand = this.checkForExpand.bind(this);
         setTimeout(this.checkForExpand, 1500); // Give time for UI code to render before toggling expand
-    }
-
-    checkForExpand() {
-        const { expand, pos } = this.props;
-        if (typeof (expand) === 'boolean' && expand && pos === 0) {
-            this.handleJobToggle();
-        }
     }
 
     handleSingleClick(e) {
@@ -62,11 +54,6 @@ class JobInstance extends React.Component {
                 this.setState({ keyEnterCount: 0 });
             }, 500);
         }
-    }
-
-    hideContextMenu() {
-        hideMenu();
-        this.setState({ menuVisible: false });
     }
 
     handleContextMenu() {
@@ -139,18 +126,15 @@ class JobInstance extends React.Component {
         }
     }
 
-    isFileOpen(fileLabel) {
-        const { content } = this.props;
-        return content.filter(x => { return x.label === fileLabel; }).size > 0;
+    handleDownloadJCL() {
+        const { dispatch, job } = this.props;
+        const url = `zosmf/restjobs/jobs/${encodeURLComponent(job.get('jobName'))}/${job.get('jobId')}/files/JCL/records`;
+        downloadFile(job, 'JCL', url, dispatch);
     }
 
-    findAndSwitchToContent(fileLabel) {
-        const { content, dispatch } = this.props;
-        content.forEach(x => {
-            if (x.label === fileLabel) {
-                dispatch(changeSelectedContent(content.indexOf(x)));
-            }
-        });
+    handleDownloadALlFiles() {
+        const { job, dispatch } = this.props;
+        dispatch(downloadAllJobFiles(job.get('jobName'), job.get('jobId')));
     }
 
     handleOpenAllFiles() {
@@ -165,11 +149,6 @@ class JobInstance extends React.Component {
         } else {
             dispatch(fetchConcatenatedJobFiles(job.get('jobName'), job.get('jobId')));
         }
-    }
-
-    refreshFile() {
-        const { dispatch, job } = this.props;
-        dispatch(fetchConcatenatedJobFiles(job.get('jobName'), job.get('jobId'), true));
     }
 
     handlePurge() {
@@ -196,15 +175,35 @@ class JobInstance extends React.Component {
         }
     }
 
-    handleDownloadJCL() {
+    refreshFile() {
         const { dispatch, job } = this.props;
-        const url = `zosmf/restjobs/jobs/${encodeURLComponent(job.get('jobName'))}/${job.get('jobId')}/files/JCL/records`;
-        downloadFile(job, 'JCL', url, dispatch);
+        dispatch(fetchConcatenatedJobFiles(job.get('jobName'), job.get('jobId'), true));
     }
 
-    handleDownloadALlFiles() {
-        const { job, dispatch } = this.props;
-        dispatch(downloadAllJobFiles(job.get('jobName'), job.get('jobId')));
+    findAndSwitchToContent(fileLabel) {
+        const { content, dispatch } = this.props;
+        content.forEach(x => {
+            if (x.label === fileLabel) {
+                dispatch(changeSelectedContent(content.indexOf(x)));
+            }
+        });
+    }
+
+    isFileOpen(fileLabel) {
+        const { content } = this.props;
+        return content.filter(x => { return x.label === fileLabel; }).size > 0;
+    }
+
+    checkForExpand() {
+        const { expand, pos } = this.props;
+        if (typeof (expand) === 'boolean' && expand && pos === 0) {
+            this.handleJobToggle();
+        }
+    }
+
+    hideContextMenu() {
+        hideMenu();
+        this.setState({ menuVisible: false });
     }
 
     renderJobStatus() {
@@ -215,6 +214,7 @@ class JobInstance extends React.Component {
         const errorReturnCodes = ['abend', 'jcl error', 'sys fail', 'conv error', 'sec error'];
         const completeReturnCodes = ['cc', 'canceled'];
         const jobStatus = job.get('status');
+        /* eslint-disable */
         if (jobStatus) {
             if (jobStatus.toLowerCase().includes('output')) {
                 const jobReturnCode = job.get('returnCode');
