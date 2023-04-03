@@ -41,7 +41,8 @@ function getIndexOfContentFromId(contentList, label, fileId) {
     return contentList.indexOf(
         contentList.filter(contentItem => {
             return contentItem.id === label + fileId;
-        }).first());
+        }).first(),
+    );
 }
 
 export default function content(state = INITIAL_CONTENT_STATE, action) {

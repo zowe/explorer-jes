@@ -196,7 +196,6 @@ describe('Action: jobNodes', () => {
             const node = new Map();
             node.set('label', jobNodesResources.jobId);
 
-
             const store = mockStore(fromJS({
                 treeNodesJobs: {
                     jobs: node,
@@ -235,7 +234,6 @@ describe('Action: jobNodes', () => {
 
             const node = new Map();
             node.set('label', jobNodesResources.jobId);
-
 
             const store = mockStore(fromJS({
                 treeNodesJobs: {
@@ -278,7 +276,6 @@ describe('Action: jobNodes', () => {
             const node = new Map();
             node.set('label', jobNodesResources.jobId);
 
-
             const store = mockStore(fromJS({
                 treeNodesJobs: {
                     jobs: node,
@@ -317,7 +314,6 @@ describe('Action: jobNodes', () => {
 
             const node = new Map();
             node.set('label', jobNodesResources.jobId);
-
 
             const store = mockStore(fromJS({
                 treeNodesJobs: {

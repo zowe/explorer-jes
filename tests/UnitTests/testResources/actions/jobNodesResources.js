@@ -10,8 +10,7 @@
 
 import { List, Map } from 'immutable';
 
-export const jobFetchResponse =
-[{
+export const jobFetchResponse = [{
     owner: 'JCAIN',
     phase: 20,
     subsystem: 'JES2',
@@ -24,8 +23,10 @@ export const jobFetchResponse =
     'files-url': 'https://TVT5011.svl.ibm.com:443/zosmf/restjobs/jobs/J0004089TVT5011.DA4A12D8.......%3A/files',
     jobname: 'TEST',
     status: 'OUTPUT',
-    retcode: 'CANCELED' },
-{ owner: 'JCAIN',
+    retcode: 'CANCELED',
+},
+{
+    owner: 'JCAIN',
     phase: 20,
     subsystem: 'JES2',
     'phase-name': 'Job is on the hard copy queue',
@@ -37,8 +38,10 @@ export const jobFetchResponse =
     'files-url': 'https://TVT5011.svl.ibm.com:443/zosmf/restjobs/jobs/J0004026TVT5011.DA47BBDA.......%3A/files',
     jobname: 'TEST1',
     status: 'OUTPUT',
-    retcode: 'ABEND S222' },
-{ owner: 'JCAIN',
+    retcode: 'ABEND S222',
+},
+{
+    owner: 'JCAIN',
     phase: 20,
     subsystem: 'JES2',
     'phase-name': 'Job is on the hard copy queue',
@@ -50,7 +53,8 @@ export const jobFetchResponse =
     'files-url': 'https://TVT5011.svl.ibm.com:443/zosmf/restjobs/jobs/T0003683TVT5011.DA4158FF.......%3A/files',
     jobname: 'TEST1',
     status: 'OUTPUT',
-    retcode: 'ABEND S222' }];
+    retcode: 'ABEND S222',
+}];
 
 export const jobFetchResponseSingleJobName = [{
     owner: 'JCAIN',
@@ -65,7 +69,8 @@ export const jobFetchResponseSingleJobName = [{
     'files-url': 'https://TVT5011.svl.ibm.com:443/zosmf/restjobs/jobs/J0004092TVT5011.DA4A17D2.......%3A/files',
     jobname: 'TEST',
     status: 'OUTPUT',
-    retcode: 'CANCELED' }];
+    retcode: 'CANCELED',
+}];
 
 export const jobFiles = [{
     recfm: 'UA',
@@ -81,8 +86,10 @@ export const jobFiles = [{
     'record-count': 24,
     class: 'X',
     jobname: 'ZWEACTPJ',
-    procstep: null },
-{ recfm: 'V',
+    procstep: null,
+},
+{
+    recfm: 'V',
     'records-url': 'https://TVT5011.svl.ibm.com:443/zosmf/restjobs/jobs/J0004076TVT5011.DA48EE8E.......%3A/files/3/records',
     stepname: 'JES2',
     subsystem: 'JES2',
@@ -95,7 +102,8 @@ export const jobFiles = [{
     'record-count': 29,
     class: 'X',
     jobname: 'ZWEACTPJ',
-    procstep: null }];
+    procstep: null,
+}];
 
 export const jobName = 'TESTJOB';
 export const jobId = 'JOB1234';

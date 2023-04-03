@@ -144,25 +144,6 @@ export class Filters extends React.Component {
     componentWillUnmount() {
     }
 
-    setFocusOnOwner() {
-        if (this.filterOwnerRef) {
-            this.filterOwnerRef.focusTextInput();
-        }
-    }
-
-    dispatchApp2AppData(messageData) {
-        const { dispatch } = this.props;
-        if (messageData) {
-            dispatch(setFilters(messageData));
-            dispatch(fetchJobs(messageData));
-        }
-    }
-
-    isOwnerAndPrefixWild() {
-        const { prefix, owner } = this.props;
-        return prefix === '*' && owner === '*';
-    }
-
     handlePrefixChange(value) {
         const { dispatch } = this.props;
         dispatch(setFilters({
@@ -198,6 +179,25 @@ export class Filters extends React.Component {
         }));
     }
 
+    setFocusOnOwner() {
+        if (this.filterOwnerRef) {
+            this.filterOwnerRef.focusTextInput();
+        }
+    }
+
+    dispatchApp2AppData(messageData) {
+        const { dispatch } = this.props;
+        if (messageData) {
+            dispatch(setFilters(messageData));
+            dispatch(fetchJobs(messageData));
+        }
+    }
+
+    isOwnerAndPrefixWild() {
+        const { prefix, owner } = this.props;
+        return prefix === '*' && owner === '*';
+    }
+
     resetValues() {
         const { username, dispatch } = this.props;
         dispatch(resetFilters(username));
@@ -214,6 +214,7 @@ export class Filters extends React.Component {
 
     toggleFilters() {
         const { updateFiltersToggledFunc } = this.props;
+        /* eslint-disable */
         this.setState({ toggled: !this.state.toggled });
         if (updateFiltersToggledFunc) {
             updateFiltersToggledFunc();

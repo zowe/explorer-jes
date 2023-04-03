@@ -12,104 +12,95 @@ import { Record } from 'immutable';
 
 export const DEFAULT_USER = 'JCAIN';
 
-export const BASE_FILTER_RECORD =
-    Record({
-        prefix: '*',
-        owner: '',
-        status: '',
-        sortBy: 'DEFAULT',
-        jobId: '*',
-        expand: false,
-        showDD: '',
-        isToggled: false,
-    });
+export const BASE_FILTER_RECORD = Record({
+    prefix: '*',
+    owner: '',
+    status: '',
+    sortBy: 'DEFAULT',
+    jobId: '*',
+    expand: false,
+    showDD: '',
+    isToggled: false,
+});
 
-export const USER_SET_FILTER_RECORD =
-    Record({
-        prefix: '*',
-        owner: DEFAULT_USER,
-        status: '',
-        sortBy: 'DEFAULT',
-        jobId: '*',
-        expand: false,
-        showDD: '',
-        isToggled: true,
-    });
+export const USER_SET_FILTER_RECORD = Record({
+    prefix: '*',
+    owner: DEFAULT_USER,
+    status: '',
+    sortBy: 'DEFAULT',
+    jobId: '*',
+    expand: false,
+    showDD: '',
+    isToggled: true,
+});
 
-export const OWNER_SET_FILTER_RECORD =
-    Record({
-        prefix: '*',
-        owner: DEFAULT_USER,
-        status: '',
-        sortBy: 'DEFAULT',
-        jobId: '*',
-        isToggled: false,
-    });
+export const OWNER_SET_FILTER_RECORD = Record({
+    prefix: '*',
+    owner: DEFAULT_USER,
+    status: '',
+    sortBy: 'DEFAULT',
+    jobId: '*',
+    isToggled: false,
+});
 
-export const TOGGLED_FILTER_RECORD =
-    Record({
-        prefix: '*',
-        owner: '',
-        status: '',
-        sortBy: 'DEFAULT',
-        jobId: '*',
-        expand: false,
-        showDD: '',
-        isToggled: true,
-    });
+export const TOGGLED_FILTER_RECORD = Record({
+    prefix: '*',
+    owner: '',
+    status: '',
+    sortBy: 'DEFAULT',
+    jobId: '*',
+    expand: false,
+    showDD: '',
+    isToggled: true,
+});
 
-export const PREFIXED_FILTER_RECORD =
-    Record({
-        prefix: 'test',
-        owner: '',
-        status: '',
-        sortBy: 'DEFAULT',
-        jobId: '*',
-        expand: false,
-        showDD: '',
-        isToggled: false,
-    });
+export const PREFIXED_FILTER_RECORD = Record({
+    prefix: 'test',
+    owner: '',
+    status: '',
+    sortBy: 'DEFAULT',
+    jobId: '*',
+    expand: false,
+    showDD: '',
+    isToggled: false,
+});
 
-export const FULLY_SET_FILTER_RECORD =
-    Record({
-        prefix: 'test',
-        owner: DEFAULT_USER,
-        status: 'ACTIVE',
-        sortBy: 'DEFAULT',
-        jobId: '*',
-        expand: false,
-        showDD: '',
-        isToggled: true,
-    });
+export const FULLY_SET_FILTER_RECORD = Record({
+    prefix: 'test',
+    owner: DEFAULT_USER,
+    status: 'ACTIVE',
+    sortBy: 'DEFAULT',
+    jobId: '*',
+    expand: false,
+    showDD: '',
+    isToggled: true,
+});
 
-export const SPECIAL_CHARS_FILTER_RECORD =
-    Record({
-        prefix: '"test"',
-        owner: "!@£$%^&*&^%$£@'test'",
-        status: 'ACTIVE',
-        sortBy: 'DEFAULT',
-        jobId: '*',
-        expand: false,
-        showDD: '',
-        isToggled: true,
-    });
+export const SPECIAL_CHARS_FILTER_RECORD = Record({
+    prefix: '"test"',
+    owner: "!@£$%^&*&^%$£@'test'",
+    status: 'ACTIVE',
+    sortBy: 'DEFAULT',
+    jobId: '*',
+    expand: false,
+    showDD: '',
+    isToggled: true,
+});
 
-export const USER_SPECIAL_CHARS_FILTER_RECORD =
-    Record({
-        prefix: '*',
-        owner: "!@£$%^&*&^%$£@'test'{C}<I>[C]`S`汉语/漢語Wałęsa æøå",
-        status: '',
-        sortBy: 'DEFAULT',
-        jobId: '*',
-        isToggled: true,
-    });
+export const USER_SPECIAL_CHARS_FILTER_RECORD = Record({
+    prefix: '*',
+    owner: "!@£$%^&*&^%$£@'test'{C}<I>[C]`S`汉语/漢語Wałęsa æøå",
+    status: '',
+    sortBy: 'DEFAULT',
+    jobId: '*',
+    isToggled: true,
+});
 
-export const LOADING_FILTER_RECORD =
-    Record({
-        prefix: '*',
-        owner: '',
-        status: '',
-        sortBy: 'DEFAULT',
-        jobId: '*',
-        isToggled: false,
-    });
+export const LOADING_FILTER_RECORD = Record({
+    prefix: '*',
+    owner: '',
+    status: '',
+    sortBy: 'DEFAULT',
+    jobId: '*',
+    isToggled: false,
+});

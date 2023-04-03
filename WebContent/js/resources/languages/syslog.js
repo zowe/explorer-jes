@@ -14,9 +14,9 @@ module.exports = hljs => {
         keywords: {
             keyword: 'TO FOR END FROM WITH ON',
             //   literal: "INVALIDATE PENDING REQUEST REJECTED FAILED ENDED STARTED INSUFFICIENT",
-            built_in: 'UID GID SID FID ID CL APPL CODE COMMAND EVENT NODE RC JOBNAME' +
-        ' TIME USER GROUP NAME INTENT ALLOWED EFFECTIVE ACCESS REAL OLU ALIAS DLU' +
-        ' SENSE',
+            built_in: 'UID GID SID FID ID CL APPL CODE COMMAND EVENT NODE RC JOBNAME'
+        + ' TIME USER GROUP NAME INTENT ALLOWED EFFECTIVE ACCESS REAL OLU ALIAS DLU'
+        + ' SENSE',
         },
         contains: [
             hljs.APOS_STRING_MODE,
