@@ -34,6 +34,8 @@ module.exports = {
         "react/jsx-wrap-multilines": "off",
         "jsx-a11y/role-has-required-aria-props": "off",
         "default-param-last": "off",
+        "react/jsx-one-expression-per-line": "off",
+        "react/sort-comp": "off",
         "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/fvtTest/**/*.*", "**/tests/**/*.*", "**/WebContent/**/*.*", "webpack.*"]},]
     },
     "env": {

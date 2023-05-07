@@ -65,4 +65,3 @@ UpperCaseTextField.propTypes = {
     value: PropTypes.string,
     disabled: PropTypes.bool,
 };
-

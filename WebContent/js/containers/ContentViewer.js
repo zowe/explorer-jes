@@ -7,7 +7,6 @@
  *
  * Copyright IBM Corporation 2016, 2019
  */
-/* eslint-disable */
 
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -39,7 +38,7 @@ export class ContentViewer extends React.Component {
 
         this.fileTabs = [];
         this.state = {
-            height: 0,
+            height: 0, // eslint-disable-line
             currentContent: '',
             submitJCLButtonOffset: window.innerWidth - 120,
         };
@@ -48,7 +47,7 @@ export class ContentViewer extends React.Component {
     componentDidMount() {
         window.addEventListener('resize', this.updateSubmitJCLButtonOffset);
     }
-
+    // eslint-disable-next-line
     componentWillReceiveProps(nextProps) {
         const { locationSearch, content, dispatch } = this.props;
         const { content: newContent } = nextProps;
@@ -245,12 +244,13 @@ export class ContentViewer extends React.Component {
             });
         }
         return (
-            <div style={{ padding: '6px' }} >
+            <div style={{ padding: '6px' }}>
                 Content viewer
             </div>
         );
     }
 
+    /* eslint-disable react/jsx-indent-props */
     renderSubmitButton() {
         const { content, selectedContent, isSubmittingJCL, dispatch } = this.props;
         if (content && content.get(selectedContent) && !content.get(selectedContent).readOnly
@@ -264,19 +264,19 @@ export class ContentViewer extends React.Component {
                     ref={this.onButtonRef}
                     onClick={() => { dispatch(submitJCL(this.state.currentContent)); }}
                 >
-                    {isSubmittingJCL ?
-                        <CircularProgressIcon
+                    {isSubmittingJCL
+                        ? <CircularProgressIcon
                             id="loading-icon"
                             size={20}
                             style={{ color: 'white' }}
                         />
-                        :
-                        <div>SUBMIT</div>}
+                        : <div>SUBMIT</div>}
                 </Button>
             );
         }
         return null;
     }
+    /* eslint-enable react/jsx-indent-props */
 
     renderSubheader() {
         return (
@@ -304,7 +304,7 @@ export class ContentViewer extends React.Component {
                 <CardContent id="content-viewer-body" style={cardTextStyle} role="tabpanel">
                     <OrionEditor
                         content={(content.get(selectedContent) && content.get(selectedContent).content) || ' '}
-                        syntax={'text/jclcontext'}
+                        syntax="text/jclcontext"
                         languageFilesHost={locationHost}
                         readonly={content.get(selectedContent) ? content.get(selectedContent).readOnly : true}
                         editorReady={this.editorReady}

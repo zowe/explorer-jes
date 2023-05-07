@@ -7,7 +7,6 @@
  *
  * Copyright IBM Corporation 2016, 2019
  */
-/* eslint-disable */
 
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -35,7 +34,7 @@ class JobNodeTree extends React.Component {
             filtersToggled: false,
         };
     }
-
+    // eslint-disable-next-line
     componentWillReceiveProps(nextProps) {
         const { owner, dispatch, isFetching } = this.props;
         if (!isFetching && owner === LOADING_MESSAGE && nextProps.owner && nextProps.owner !== LOADING_MESSAGE) {
@@ -62,7 +61,7 @@ class JobNodeTree extends React.Component {
     }
 
     updateFiltersToggled = () => {
-        this.setState({ filtersToggled: !this.state.filtersToggled });
+        this.setState({ filtersToggled: !this.state.filtersToggled }); // eslint-disable-line
     };
 
     renderJobs() {
@@ -84,8 +83,8 @@ class JobNodeTree extends React.Component {
                     <JobInstance key={job.get('label')} expand={expand} job={job} dispatch={dispatch} pos={index} size={jobs.size} />
                 );
             });
-        } else if (!isFetching) {
-        return (
+        } else if (!isFetching) { // eslint-disable-line
+            return (
                 <div
                     className="job-instance"
                     role="none"
@@ -97,7 +96,8 @@ class JobNodeTree extends React.Component {
                         <ErrorIcon className="node-icon" />
                         <span className="job-label">{NO_JOBS_FOUND_MESSAGE}</span>
                     </li>
-                </div>);
+                </div>
+            );
         }
         return null;
     }

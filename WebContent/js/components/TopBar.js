@@ -7,7 +7,6 @@
  *
  * Copyright IBM Corporation 2020
  */
-/* eslint-disable */
 
 import React from 'react';
 import { connect } from 'react-redux';
@@ -41,7 +40,7 @@ class TopBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            auth: true,
+            auth: true, // eslint-disable-line
             anchorEl: null,
         };
     }
@@ -60,12 +59,12 @@ class TopBar extends React.Component {
         const open = Boolean(anchorEl);
         const id = open ? 'simple-popover' : undefined;
         return (
-            <AppBar position="static" id="app-bar" >
+            <AppBar position="static" id="app-bar">
                 <Toolbar
                     className={classNames(classes.customizeToolbar)}
                     variant="dense"
                 >
-                    <Typography type="title" color="inherit" style={{ flex: 1 }} >
+                    <Typography type="title" color="inherit" style={{ flex: 1 }}>
                         JES Explorer
                         <Typography variant="caption" color="inherit" style={{ flex: 1, paddingLeft: '5px' }}>v{ APP_VERSION }</Typography>
                     </Typography>
@@ -90,17 +89,18 @@ class TopBar extends React.Component {
                     >
                         <SettingForm />
                     </Popover>
-                    {validated &&
-                    <Tooltip title={username} placement="bottom">
-                        <IconButton color="inherit">
-                            <Avatar className={classes.small}>{username.charAt(0).toUpperCase()}</Avatar>
-                        </IconButton>
-                    </Tooltip>}
+                    {
+                        <Tooltip title={username} placement="bottom">
+                            <IconButton color="inherit">
+                                <Avatar className={classes.small}>{username.charAt(0).toUpperCase()}</Avatar>
+                            </IconButton>
+                        </Tooltip> && validated
+                    }
                 </Toolbar>
-            </AppBar>);
+            </AppBar>
+        );
     }
 }
-
 
 TopBar.propTypes = {
     validated: PropTypes.bool.isRequired,

@@ -7,7 +7,6 @@
  *
  * Copyright IBM Corporation 2016, 2020
  */
-/* eslint-disable */
 
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -215,12 +214,13 @@ export class Filters extends React.Component {
 
     toggleFilters() {
         const { updateFiltersToggledFunc } = this.props;
-        this.setState({ toggled: !this.state.toggled });
+        this.setState({ toggled: !this.state.toggled }); // eslint-disable-line
         if (updateFiltersToggledFunc) {
             updateFiltersToggledFunc();
         }
     }
 
+    /* eslint-disable */
     render() {
         const { prefix, owner, status, sortBy, jobId } = this.props;
         return (
@@ -329,6 +329,7 @@ export class Filters extends React.Component {
             </Accordion>
         );
     }
+    /* eslint-enable */
 }
 
 Filters.propTypes = {
