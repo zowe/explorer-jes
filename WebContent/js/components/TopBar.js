@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2020
  */
+/* eslint-disable */
 
 import React from 'react';
 import { connect } from 'react-redux';

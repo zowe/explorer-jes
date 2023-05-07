@@ -198,7 +198,6 @@ describe('Action: content', () => {
         });
     });
 
-
     describe('updateContent', () => {
         it('Should create an action to update content', () => {
             const content = 'hello world new content';

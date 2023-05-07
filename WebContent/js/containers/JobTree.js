@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2016, 2019
  */
+/* eslint-disable */
 
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -84,8 +85,11 @@ class JobNodeTree extends React.Component {
                 );
             });
         } else if (!isFetching) {
-            return (
-                <div className="job-instance" role="none">
+        return (
+                <div
+                    className="job-instance"
+                    role="none"
+                >
                     <li
                         role="treeitem"
                         aria-level="1"
@@ -105,8 +109,9 @@ class JobNodeTree extends React.Component {
         return (
             <Card class="tree-card">
                 <CardHeader subheader={this.getFilterValues()} />
-                <div style={{ paddingRight: '33px', textAlign: 'right', color: '#2E77A1', display: jobs.size > 0 ? '' : 'none' }} >
-                    Jobs Found: {jobs.size}
+                <div style={{ paddingRight: '33px', textAlign: 'right', color: '#2E77A1', display: jobs.size > 0 ? '' : 'none' }}>
+                    Jobs Found:
+                    {jobs.size}
                 </div>
                 <CardContent id="tree-text-content">
                     <ConnectedFilter updateFiltersToggledFunc={this.updateFiltersToggled} />

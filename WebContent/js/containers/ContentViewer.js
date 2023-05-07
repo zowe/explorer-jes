@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2016, 2019
  */
+/* eslint-disable */
 
 import PropTypes from 'prop-types';
 import React from 'react';

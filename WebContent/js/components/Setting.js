@@ -20,7 +20,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import styled from 'styled-components';
 import { ENABLE_REDUX_LOGGER, NOTIFICATION_DURATION, getStorageItem, setStorageItem } from '../utilities/storageHelper';
 
-
 const Settings = styled.div`
     width: 180px;
     padding: 15px;
@@ -58,7 +57,6 @@ const styles = {
         color: 'grey',
     },
 };
-
 
 class SettingFormBase extends React.Component {
     constructor(props) {
@@ -108,9 +106,9 @@ class SettingFormBase extends React.Component {
                                 onChange={this.handleChange}
                                 name={NOTIFICATION_DURATION}
                             >
-                                <MenuItem id="notification-small" key="small" value="5000" >Small(5s)</MenuItem>
-                                <MenuItem id="notification-medium" key="medium" value="10000" >Medium(10s)</MenuItem>
-                                <MenuItem id="notification-large" key="large" value="15000" >Large(15s)</MenuItem>
+                                <MenuItem id="notification-small" key="small" value="5000">Small(5s)</MenuItem>
+                                <MenuItem id="notification-medium" key="medium" value="10000">Medium(10s)</MenuItem>
+                                <MenuItem id="notification-large" key="large" value="15000">Large(15s)</MenuItem>
                             </TextField>
                         </FormControl>
                     </SettingSection>
@@ -118,11 +116,11 @@ class SettingFormBase extends React.Component {
                     <SettingSection>
                         <FormControl>
                             <FormControlLabel
-                                control={<Switch
+                                control={(<Switch
                                     name={ENABLE_REDUX_LOGGER}
                                     checked={enableReduxLogger}
                                     onChange={this.handleChange}
-                                />}
+                                />)}
                                 label="Browser Console Logging"
                                 classes={{ label: classes.customizeLabel }}
                             />
@@ -130,7 +128,8 @@ class SettingFormBase extends React.Component {
                     </SettingSection>
                 </form>
                 <H5 style={{ color: 'red' }}>*Preferences change require reload</H5>
-            </Settings>);
+            </Settings>
+        );
     }
 }
 

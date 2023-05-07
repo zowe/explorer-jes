@@ -25,6 +25,15 @@ module.exports = {
         "jsx-a11y/no-static-element-interactions":0,
         "lines-between-class-members": ["error", "always"],
         "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+        "react/no-unknown-property": "off",
+        "prefer-destructuring": "off",
+        "no-restricted-globals": "off",
+        "react/destructuring-assignment": "off",
+        "react/function-component-definition": "off",
+        "object-curly-newline": "off",
+        "react/jsx-wrap-multilines": "off",
+        "jsx-a11y/role-has-required-aria-props": "off",
+        "default-param-last": "off",
         "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/fvtTest/**/*.*", "**/tests/**/*.*", "**/WebContent/**/*.*", "webpack.*"]},]
     },
     "env": {

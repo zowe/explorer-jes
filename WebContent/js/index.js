@@ -32,9 +32,7 @@ if (getStorageItem(ENABLE_REDUX_LOGGER) === true) {
     appMiddleware = applyMiddleware(thunk);
 }
 
-const store = appMiddleware(createStore)(rootReducer, Map({}),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-);
+const store = appMiddleware(createStore)(rootReducer, Map({}), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 const theme = createMuiTheme({
     overrides: {
@@ -69,5 +67,6 @@ ReactDOM.render(
                 </Switch>
             </HashRouter>
         </Provider>
-    </MuiThemeProvider>
-    , document.getElementById('app'));
+    </MuiThemeProvider>,
+    document.getElementById('app'),
+);
