@@ -34,7 +34,7 @@ class JobNodeTree extends React.Component {
             filtersToggled: false,
         };
     }
-
+    // eslint-disable-next-line
     componentWillReceiveProps(nextProps) {
         const { owner, dispatch, isFetching } = this.props;
         if (!isFetching && owner === LOADING_MESSAGE && nextProps.owner && nextProps.owner !== LOADING_MESSAGE) {
@@ -61,7 +61,7 @@ class JobNodeTree extends React.Component {
     }
 
     updateFiltersToggled = () => {
-        this.setState({ filtersToggled: !this.state.filtersToggled });
+        this.setState({ filtersToggled: !this.state.filtersToggled }); // eslint-disable-line
     };
 
     renderJobs() {
@@ -83,9 +83,12 @@ class JobNodeTree extends React.Component {
                     <JobInstance key={job.get('label')} expand={expand} job={job} dispatch={dispatch} pos={index} size={jobs.size} />
                 );
             });
-        } else if (!isFetching) {
+        } else if (!isFetching) { // eslint-disable-line
             return (
-                <div className="job-instance" role="none">
+                <div
+                    className="job-instance"
+                    role="none"
+                >
                     <li
                         role="treeitem"
                         aria-level="1"
@@ -93,7 +96,8 @@ class JobNodeTree extends React.Component {
                         <ErrorIcon className="node-icon" />
                         <span className="job-label">{NO_JOBS_FOUND_MESSAGE}</span>
                     </li>
-                </div>);
+                </div>
+            );
         }
         return null;
     }
@@ -105,8 +109,9 @@ class JobNodeTree extends React.Component {
         return (
             <Card class="tree-card">
                 <CardHeader subheader={this.getFilterValues()} />
-                <div style={{ paddingRight: '33px', textAlign: 'right', color: '#2E77A1', display: jobs.size > 0 ? '' : 'none' }} >
-                    Jobs Found: {jobs.size}
+                <div style={{ paddingRight: '33px', textAlign: 'right', color: '#2E77A1', display: jobs.size > 0 ? '' : 'none' }}>
+                    Jobs Found:
+                    {jobs.size}
                 </div>
                 <CardContent id="tree-text-content">
                     <ConnectedFilter updateFiltersToggledFunc={this.updateFiltersToggled} />

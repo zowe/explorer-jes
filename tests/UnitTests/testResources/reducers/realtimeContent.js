@@ -22,16 +22,16 @@ export const fetchingSyslog = Map({
     unreadLines: 0,
 });
 
-export const basicContent = 'ER                                        528 00000080  $HASP836         JOERBLDQ=NONE,DSLIMIT=10M,SAPI_OPT=NO,WS_OPT=NO\n' +
-'NC0000000 MV2E     17095 14:10:45.94 *AXR022E 00000280  $DOUTDEF\n' +
-'MR0000000 MV2E     17095 14:10:45.94 *AXR022E 00000080  $HASP836 OUTDEF 530\n' +
-'DR                                        530 00000080  $HASP836 OUTDEF  COPIES=255,DMNDSET=NO,JOENUM=20000,\n' +
-'DR                                        530 00000080  $HASP836         JOEFREE=19315,JOEWARN=80,OUTTIME=CREATE,\n' +
-'DR                                        530 00000080  $HASP836         PRTYLOW=2,PRTYHIGH=10,PRTYOUT=NO,PRYORATE=0,\n' +
-'DR                                        530 00000080  $HASP836         SEGLIM=100,STDFORM=STD,USERSET=NO,\n' +
-'ER                                        530 00000080  $HASP836         JOERBLDQ=NONE,DSLIMIT=10M,SAPI_OPT=NO,WS_OPT=NO\n' +
-'NC0000000 MV2E     17095 14:10:45.94 *AXR032E 00000280  $DQ\n' +
-'NR0000000 MV2E     17095 14:10:45.94 *AXR032E 00000080  $HASP647      1 XEQ A        MV2E';
+export const basicContent = 'ER                                        528 00000080  $HASP836         JOERBLDQ=NONE,DSLIMIT=10M,SAPI_OPT=NO,WS_OPT=NO\n'
++ 'NC0000000 MV2E     17095 14:10:45.94 *AXR022E 00000280  $DOUTDEF\n'
++ 'MR0000000 MV2E     17095 14:10:45.94 *AXR022E 00000080  $HASP836 OUTDEF 530\n'
++ 'DR                                        530 00000080  $HASP836 OUTDEF  COPIES=255,DMNDSET=NO,JOENUM=20000,\n'
++ 'DR                                        530 00000080  $HASP836         JOEFREE=19315,JOEWARN=80,OUTTIME=CREATE,\n'
++ 'DR                                        530 00000080  $HASP836         PRTYLOW=2,PRTYHIGH=10,PRTYOUT=NO,PRYORATE=0,\n'
++ 'DR                                        530 00000080  $HASP836         SEGLIM=100,STDFORM=STD,USERSET=NO,\n'
++ 'ER                                        530 00000080  $HASP836         JOERBLDQ=NONE,DSLIMIT=10M,SAPI_OPT=NO,WS_OPT=NO\n'
++ 'NC0000000 MV2E     17095 14:10:45.94 *AXR032E 00000280  $DQ\n'
++ 'NR0000000 MV2E     17095 14:10:45.94 *AXR032E 00000080  $HASP647      1 XEQ A        MV2E';
 
 export const fetchedSyslog = Map({
     content: `${basicContent}`,

@@ -10,14 +10,16 @@
 
 export const message = {
     data:
-        { messages:
+        {
+            messages:
             [
-                { product:
+                {
+                    product:
                 {
                     name: 'CICS',
                     version: '5.3',
                 },
-                message:
+                    message:
                     {
                         msgNumber: '0000',
                         msgProgram: '',

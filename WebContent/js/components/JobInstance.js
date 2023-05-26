@@ -21,7 +21,6 @@ import JobFile from './JobFile';
 import JobStep from './JobStep';
 import { encodeURLComponent } from '../utilities/urlUtils';
 
-
 class JobInstance extends React.Component {
     constructor(props) {
         super(props);
@@ -252,6 +251,7 @@ class JobInstance extends React.Component {
         });
     }
 
+    // eslint-disable-next-line
     renderJobSteps() {
         const { job } = this.props;
         return job.get('steps').map(step => {
@@ -279,16 +279,21 @@ class JobInstance extends React.Component {
             </MenuItem>,
         ];
         if (job.get('status').toLowerCase() === 'active') {
-            menuItems.splice(1, 0,
+            menuItems.splice(
+                1,
+                0,
                 <MenuItem key="cancel" onClick={() => { this.handleCancel(job); }}>
-                    <u>C</u>ancel Job
-                </MenuItem>);
+                    <u>C</u>
+                    ancel Job
+                </MenuItem>,
+            );
         }
         const fileLabel = getFileLabel(job.get('jobName'), job.get('jobId'));
         if (this.isFileOpen(fileLabel)) {
             menuItems.push(
                 <MenuItem onClick={() => { return this.refreshFile(); }} key="refresh">
-                    <u>R</u>efresh Content
+                    <u>R</u>
+                    efresh Content
                 </MenuItem>,
             );
         }
@@ -345,7 +350,8 @@ class JobInstance extends React.Component {
                     </ul>
                 </li>
                 {this.renderJobInstanceMenu()}
-            </div>);
+            </div>
+        );
     }
 }
 

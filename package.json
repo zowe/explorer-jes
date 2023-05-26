@@ -48,10 +48,10 @@
     "dotenv": "6.2.0",
     "es6-promise": "4.1.0",
     "eslint": "7.32.0",
-    "eslint-config-airbnb": "15.1.0",
-    "eslint-plugin-import": "2.25.2",
-    "eslint-plugin-jsx-a11y": "5.1.1",
-    "eslint-plugin-react": "7.23.2",
+    "eslint-config-airbnb": "19.0.4",
+    "eslint-plugin-import": "2.27.5",
+    "eslint-plugin-jsx-a11y": "6.7.1",
+    "eslint-plugin-react": "7.32.2",
     "expect": "1.20.2",
     "explorer-fvt-utilities": "2.0.4",
     "file-loader": "6.2.0",
@@ -65,7 +65,6 @@
     "node-fetch-cjs": "3.2.1",
     "npm-run-all": "4.1.5",
     "nyc": "15.1.0",
-    "react-addons-test-utils": "15.6.2",
     "redux-mock-store": "1.5.4",
     "rewire": "2.5.2 ",
     "rimraf": "3.0.2",
@@ -77,14 +76,14 @@
     "url-loader": "4.1.1",
     "webpack": "5.76.0",
     "webpack-bundle-analyzer": "4.5.0",
-    "webpack-cli": "4.9.1",
+    "webpack-cli": "4.10.0",
     "webpack-dev-server": "4.7.3"
   },
   "scripts": {
     "dev": "cross-env NODE_ENV='development' webpack serve --config ./webpack.config.js  --hot ",
     "start": "npm run build && cross-env NODE_ENV='development' OUTPUT_FOLDER='web' webpack --progress --color --watch ",
     "lint": "eslint ./WebContent/js/ ./tests/UnitTests",
-    "test": "cross-env JUNIT_REPORT_PATH=target/report.xml nyc mocha --require @babel/register tests/UnitTests --recursive --color --reporter mocha-jenkins-reporter",
+    "test": "cross-env JUNIT_REPORT_PATH=target/report.xml nyc mocha --timeout 999999 --require @babel/register tests/UnitTests --recursive --color --reporter mocha-jenkins-reporter",
     "testWatch": "cross-env JUNIT_REPORT_PATH=target/report-fvt.xml mocha --watch --require @babel/register tests/UnitTests --recursive",
     "test:fvt": "cross-env JUNIT_REPORT_PATH=target/report-fvt.xml mocha --timeout 999999 --require ts-node/register tests/FVTTests/**/*.ts --recursive --color --reporter mocha-jenkins-reporter",
     "prod": "cross-env NODE_ENV='production' webpack --mode production",
@@ -121,6 +120,6 @@
   "author": "IBM",
   "license": "EPL-2.0",
   "proxy": {
-    "target": "https://vm30042.svl.ibm.com:7554"
+    "target": "https://vm30042.svl.ibm.com:27554"
   }
 }

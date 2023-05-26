@@ -41,7 +41,8 @@ function getIndexOfContentFromId(contentList, label, fileId) {
     return contentList.indexOf(
         contentList.filter(contentItem => {
             return contentItem.id === label + fileId;
-        }).first());
+        }).first(),
+    );
 }
 
 export default function content(state = INITIAL_CONTENT_STATE, action) {
@@ -57,25 +58,29 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
             });
         case REFRESH_CONTENT:
             return state.merge({
-                content: state.get('content').set(getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId),
+                content: state.get('content').set(
+                    getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId),
                     {
                         label: action.fileLabel,
                         id: action.fileLabel + action.fileId,
                         content: '',
                         isFetching: true,
-                    }),
+                    },
+                ),
             });
         case RECEIVE_CONTENT:
             return state.merge({
                 title: `${DEFAULT_TITLE} [${action.fileLabel}]`,
-                content: state.get('content').set(getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId),
+                content: state.get('content').set(
+                    getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId),
                     {
                         label: action.fileLabel,
                         content: action.content,
                         id: action.fileLabel + action.fileId,
                         isFetching: false,
                         readOnly: action.readOnly,
-                    }),
+                    },
+                ),
             });
         case REMOVE_CONTENT:
             return state.merge({

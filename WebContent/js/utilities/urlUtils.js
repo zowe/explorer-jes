@@ -8,7 +8,6 @@
  * Copyright IBM Corporation 2018, 2020
  */
 
-
 export function encodeURLComponent(URL) {
     return encodeURIComponent(URL);
 }

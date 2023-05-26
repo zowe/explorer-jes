@@ -53,7 +53,8 @@ class LoginDialog extends React.Component {
                     role="status"
                 >
                     {validationMessage}
-                </div>);
+                </div>
+            );
         }
         return null;
     }
@@ -78,8 +79,8 @@ class LoginDialog extends React.Component {
 
     render() {
         const { isValidating } = this.props;
-        const dialogContent = isValidating ? <CircularProgress /> :
-            (<form onSubmit={this.handleLogin} style={{ width: '500px' }}>
+        const dialogContent = isValidating ? <CircularProgress /> : (
+            <form onSubmit={this.handleLogin} style={{ width: '500px' }}>
                 <TextField
                     id="username"
                     label="Username*"
@@ -99,34 +100,34 @@ class LoginDialog extends React.Component {
                 />
                 <input type="submit" style={{ display: 'none' }} />
                 {this.getDialogErrorMessage()}
-            </form>);
+            </form>
+        );
 
-        const dialogAction = !isValidating ? (<Button onClick={this.handleLogin} >Login</Button>) : null;
+        const dialogAction = !isValidating ? (<Button onClick={this.handleLogin}>Login</Button>) : null;
 
-        const dialogTitle = !isValidating ?
-            (
-                <DialogTitle style={{ textAlign: 'center' }}>
-                    <img
-                        style={{ width: '100px', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
-                        src={ZoweIcon}
-                        alt="logo"
-                    />
-                    Zowe Login
-                </DialogTitle>
-            )
+        const dialogTitle = !isValidating ? (
+            <DialogTitle style={{ textAlign: 'center' }}>
+                <img
+                    style={{ width: '100px', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
+                    src={ZoweIcon}
+                    alt="logo"
+                />
+                Zowe Login
+            </DialogTitle>
+        )
             : null;
 
         return (
             <Dialog
                 id="login-dialog"
                 open={true}
-                type={'primary'}
+                type="primary"
             >
                 {dialogTitle}
-                <DialogContent >
+                <DialogContent>
                     {dialogContent}
                 </DialogContent>
-                <DialogActions >
+                <DialogActions>
                     {dialogAction}
                 </DialogActions>
             </Dialog>

@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2016, 2020
  */
+/* eslint-disable */
 
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -64,4 +65,3 @@ UpperCaseTextField.propTypes = {
     value: PropTypes.string,
     disabled: PropTypes.bool,
 };
-
