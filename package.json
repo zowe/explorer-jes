@@ -8,7 +8,7 @@
     "babel-polyfill": "6.26.0",
     "classnames": "2.3.1",
     "immutable": "3.8.2",
-    "orion-editor-component": "0.0.14",
+    "orion-editor-component": "0.0.16",
     "prop-types": "15.7.2",
     "query-string": "6.14.1",
     "react": "16.14.0",
