@@ -43,7 +43,7 @@ echo
 # validate parameters
 # set default values
 if [ -z "$FVT_ZOSMF_HOST" ]; then
-  FVT_ZOSMF_HOST=zzow04.zowe.marist.cloud
+  FVT_ZOSMF_HOST=zzow08.zowe.marist.cloud # todo: replace with org secret
 fi
 if [ -z "$FVT_ZOSMF_PORT" ]; then
   FVT_ZOSMF_PORT=10443
@@ -74,7 +74,7 @@ cp -r "${PAX_WORKSPACE}/content/". "${FVT_WORKSPACE}/${EXPLORER_PLUGIN_NAME}"
 echo "[${SCRIPT_NAME}] generating certificates ..."
 cd "${ROOT_DIR}"
 ./${FVT_UTILITIES_SCRIPTS_DIR}/generate-certificates.sh "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}"
-echo 
+echo
 echo "[${SCRIPT_NAME}] fixing certificates permission caused by github actions ..."
 cd ${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}
 chmod 644 "localhost.cert.pem" "localhost.private.pem"
@@ -89,7 +89,7 @@ cd "${ROOT_DIR}"
 
 ################################################################################
 echo "[${SCRIPT_NAME}] writing ${EXPLORER_PLUGIN_NAME} config for APIML ..."
-cat > "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}/${EXPLORER_PLUGIN_NAME}.yml" << EOF
+cat >"${FVT_WORKSPACE}/${FVT_CONFIG_DIR}/${EXPLORER_PLUGIN_NAME}.yml" <<EOF
 services:
 - serviceId: ${EXPLORER_PLUGIN_NAME}
   title: IBM z/OS Explorer UI
@@ -106,7 +106,7 @@ echo
 
 ################################################################################
 echo "[${SCRIPT_NAME}] writing ${EXPLORER_PLUGIN_NAME} web server config for nginx ..."
-cat > "${FVT_WORKSPACE}/${FVT_NGINX_DIR}/default.conf" << EOF
+cat >"${FVT_WORKSPACE}/${FVT_NGINX_DIR}/default.conf" <<EOF
 server {
     listen              8443 ssl;
     server_name         ${EXPLORER_PLUGIN_NAME};
@@ -133,7 +133,7 @@ cd "${ROOT_DIR}"
   "${FVT_WORKSPACE}/${FVT_LOGS_DIR}"
 echo
 echo "[${SCRIPT_NAME}] preparing ${EXPLORER_PLUGIN_NAME} in docker compose ..."
-cat >> "$FVT_WORKSPACE/docker-compose.yml" << EOF
+cat >>"$FVT_WORKSPACE/docker-compose.yml" <<EOF
   
   ${EXPLORER_PLUGIN_NAME}:
     volumes:
@@ -143,7 +143,7 @@ cat >> "$FVT_WORKSPACE/docker-compose.yml" << EOF
     image: nginx
 EOF
 echo "[${SCRIPT_NAME}] preparing test pod in docker compose ..."
-cat >> "$FVT_WORKSPACE/docker-compose.yml" << EOF
+cat >>"$FVT_WORKSPACE/docker-compose.yml" <<EOF
   
   test-pod:
     image: jackjiaibm/ubuntu-toolbox
