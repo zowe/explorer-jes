@@ -21,10 +21,11 @@ export function whichServer() {
 }
 
 // zosmf/
-const ZOSMF_PREFIX_LENGTH=6;
+const ZOSMF_PREFIX_LENGTH = 6;
 
 export function atlasFetch(endpoint, content) {
-  // In v3, /ibmzosmf/api/v1 endpoint removes /zosmf part of a /zosmf URL, so string must be trimmed.
-  endpoint = endpoint.substring(ZOSMF_PREFIX_LENGTH);
-  return fetch(`https://${whichServer()}/ibmzosmf/api/v1/${endpoint}`, content);
+    // In v3, /ibmzosmf/api/v1 endpoint removes /zosmf part of a /zosmf URL, so string must be trimmed.
+    endpoint = endpoint.substring(ZOSMF_PREFIX_LENGTH);
+
+    return fetch(`https://${whichServer()}/ibmzosmf/api/v1/${endpoint}`, content);
 }
