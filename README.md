@@ -115,6 +115,6 @@ Either use [Redux Dev Tool Browser Extension](https://github.com/reduxjs/redux-d
 Or enable redux logs by setting `enableReduxLogger` variable `true` in your local storage.
 
 ### Redux Logger - Enable/Disable
-Use preferences menu on top right corner to turn on or off browser settings, and refresh browser to have settings take effect.
+Use preferences menu on top right corner to turn on or off browser settings, and refresh browser to have settings take effect..
 ![Logger Preference](loggerPreference.jpg)
 
