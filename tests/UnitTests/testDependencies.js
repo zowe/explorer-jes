@@ -9,7 +9,6 @@
  */
 
 import 'isomorphic-fetch';
-import 'es6-promise';
 import {
     LOCAL_HOST_SERVER_WITH_PROTOCOL as LOCAL_SERVER,
     LOCAL_HOSTNAME,
@@ -26,7 +25,6 @@ require.extensions['.jpg'] = () => {
 };
 
 require('@babel/register')();
-require('babel-polyfill');
 
 global.location = {
     hostname: LOCAL_HOSTNAME,

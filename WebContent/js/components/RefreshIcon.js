@@ -17,7 +17,7 @@ export default class RefreshIcon extends React.Component {
     handleSubmit = () => {
         const { submitAction } = this.props;
         submitAction();
-    }
+    };
 
     render() {
         const { isFetching } = this.props;
