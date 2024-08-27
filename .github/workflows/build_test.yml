@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - v2.x/master 
+      - v3.x/master 
   pull_request:
     types: [opened, synchronize]
   workflow_dispatch:
@@ -116,7 +117,7 @@ jobs:
 
   regular-build:
     runs-on: ubuntu-latest
-    needs: validate-package-json
+#    needs: validate-package-json
     steps: 
       - name: '[Prep 1] Checkout'
         uses: actions/checkout@v2
