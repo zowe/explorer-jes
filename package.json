@@ -6,7 +6,7 @@
     "@material-ui/core": "4.12.4",
     "@material-ui/icons": "4.11.3",
     "classnames": "2.5.1",
-    "immutable": "4.3.7",
+    "immutable": "3.8.2",
     "orion-editor-component": "0.0.16",
     "prop-types": "15.8.1",
     "query-string": "9.1.0",
