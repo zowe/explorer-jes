@@ -75,7 +75,7 @@ class LoginDialog extends React.Component {
         const { dispatch } = this.props;
         this.setState({ firstLoginAttempted: true });
         return dispatch(loginUser(this.state.username, this.state.password));
-    }
+    };
 
     render() {
         const { isValidating } = this.props;

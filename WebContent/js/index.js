@@ -8,8 +8,6 @@
  * Copyright IBM Corporation 2016, 2020
  */
 
-import 'whatwg-fetch';
-
 import { Map } from 'immutable';
 import React from 'react';
 import ReactDOM from 'react-dom';

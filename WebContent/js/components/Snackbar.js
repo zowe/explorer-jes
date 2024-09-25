@@ -42,7 +42,7 @@ class AtlasSnackbar extends React.Component {
 
         this.setState({ open: false });
         dispatch(popMessage());
-    }
+    };
 
     render() {
         const { snackbarNotificationsMessages } = this.props;

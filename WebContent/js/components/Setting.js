@@ -87,7 +87,7 @@ class SettingFormBase extends React.Component {
         });
 
         setStorageItem(ev.target.name, value);
-    }
+    };
 
     render() {
         const { notificationDuration, enableReduxLogger } = this.state;
