@@ -21,14 +21,14 @@
     "redux-immutable": "4.0.0",
     "redux-logger": "3.0.6",
     "redux-thunk": "2.3.0",
-    "styled-components": "6.1.12"
+    "styled-components": "^6.1.17"
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.25.1",
     "@babel/plugin-proposal-decorators": "7.24.7",
-    "@babel/preset-stage-0": "7.8.3",
     "@babel/preset-env": "7.25.4",
     "@babel/preset-react": "7.24.7",
+    "@babel/preset-stage-0": "7.8.3",
     "@babel/register": "7.24.6",
     "@babel/traverse": "7.25.4",
     "@types/chai": "4.3.18",
