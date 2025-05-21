@@ -158,8 +158,8 @@ jobs:
       - name: '[Build] Nodejs project build'
         run: npm run prod
 
-#      - name: '[Test] Nodejs project unit test'
-#        run: npm run test
+      - name: '[Test] Nodejs project unit test'
+        run: npm run test
 
       - name: '[Scan 1] Fix code coverage paths'
         working-directory: ./coverage
