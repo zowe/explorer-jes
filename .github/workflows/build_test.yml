@@ -174,6 +174,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
           sonar.projectVersion: ${{ env.P_VERSION }}
           sonar.links.ci: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          sonar.branch.name: v3.x/master
 
       - name: '[Packaging] Make pax'
         uses: zowe-actions/shared-actions/make-pax@main
