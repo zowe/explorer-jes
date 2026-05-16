@@ -103,6 +103,7 @@ const plugins = debug ? [cleanTask, definePlugin, copyTask, htmlTask] : [cleanTa
     new CompressionPlugin({
         threshold: 100000,
         minRatio: 0.8,
+        deleteOriginalAssets: true,
     }),
     copyTask,
     htmlTask,
@@ -122,7 +123,11 @@ const optimization = {
                 warnings: false,
             },
         },
-        extractComments: false,
+        extractComments: {
+            condition: /^\**!|@preserve|@license|@cc_on/i,
+            filename: 'ATTRIBUTION.txt',
+            banner: false,
+        },
     })],
 };
 
