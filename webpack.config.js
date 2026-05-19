@@ -84,7 +84,7 @@ const htmlTask = new HtmlWebpackPlugin({ template: './WebContent/index.html' });
 const entry = path.join(__dirname, 'WebContent/js/index.js');
 const output = {
     path: path.join(__dirname, OUTPUT_FOLDER),
-    filename: 'app.[hash].min.js',
+    filename: 'app.[fullhash].min.js',
 };
 
 const defineEnvConstants = {

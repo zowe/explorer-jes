@@ -108,8 +108,11 @@ class JobNodeTree extends React.Component {
         const EXPANDED_FILTER_OFFSET_HEIGHT = 333;
         return (
             <Card class="tree-card">
-                <CardHeader subheader={this.getFilterValues()} />
-                <div style={{ paddingRight: '33px', textAlign: 'right', color: '#2E77A1', display: jobs.size > 0 ? '' : 'none' }}>
+                <CardHeader
+                    subheader={this.getFilterValues()}
+                    style={{ padding: '12px 16px 4px', borderBottom: 'none' }}
+                />
+                <div style={{ paddingRight: '16px', textAlign: 'right', color: '#818cf8', display: jobs.size > 0 ? '' : 'none', fontSize: '12px', fontWeight: 600 }}>
                     Jobs Found:
                     {jobs.size}
                 </div>

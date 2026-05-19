@@ -21,18 +21,24 @@ export default class RefreshIcon extends React.Component {
 
     render() {
         const { isFetching } = this.props;
-        const iconStyle = { float: 'right',
-            padding: '10px',
+        const iconStyle = {
+            float: 'right',
+            padding: '8px',
             position: 'relative',
-            marginTop: '-45px',
-            marginRight: '-20px' };
-        const iconSize = 24;
+            marginTop: '-42px',
+            marginRight: '-12px',
+            cursor: 'pointer',
+            color: '#818cf8',
+            transition: 'all 200ms ease',
+            borderRadius: '8px',
+        };
+        const iconSize = 22;
         if (isFetching) {
             return (
                 <CircularProgressMui
                     id="loading-icon"
                     size={iconSize}
-                    style={iconStyle}
+                    style={{ ...iconStyle, color: '#818cf8' }}
                 />
             );
         }

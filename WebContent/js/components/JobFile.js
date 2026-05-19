@@ -172,9 +172,9 @@ class JobFile extends React.Component {
                             role="treeitem"
                             aria-level="2"
                             aria-haspopup={true}
-                            style={this.state.menuVisible ? { border: '1px solid #333333' }
-                                : file.selectionType === 'selected' ? { background: '#dedede', border: '1px solid #333333' }
-                                    : file.selectionType === 'highlighted' ? { background: '#dedede' }
+                            style={this.state.menuVisible ? { border: '1px solid rgba(129, 140, 248, 0.4)' }
+                                : file.selectionType === 'selected' ? { background: 'rgba(129, 140, 248, 0.12)', border: '1px solid rgba(129, 140, 248, 0.4)' }
+                                    : file.selectionType === 'highlighted' ? { background: 'rgba(129, 140, 248, 0.06)' }
                                         : null}
                         >
                             <Description className="node-icon" />

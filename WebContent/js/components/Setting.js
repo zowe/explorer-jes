@@ -21,34 +21,41 @@ import styled from 'styled-components';
 import { ENABLE_REDUX_LOGGER, NOTIFICATION_DURATION, getStorageItem, setStorageItem } from '../utilities/storageHelper';
 
 const Settings = styled.div`
-    width: 180px;
-    padding: 15px;
-    margin: 0px 0px 15px;
-    fontSize: 13px;
-    color: #39464e;
-    fontFamily: "Roboto", "Helvetica", "Arial", sans-serif;
+    width: 220px;
+    padding: 20px;
+    margin: 0;
+    font-size: 13px;
+    color: #eef0ff;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 `;
 const H3 = styled.h3`
-    border-top-color:rgb(233, 233, 233);
-    border-top-style:solid;
-    border-top-width:1px;
-    color:rgb(57, 70, 78);
-    font-size:13px;
-    font-weight:700;
-    padding-top:8px;
+    border-top: 1px solid rgba(99, 102, 241, 0.1);
+    color: #5a5d8a;
+    font-size: 11px;
+    font-weight: 600;
+    padding-top: 12px;
+    margin-top: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 `;
 
 const H5 = styled.h5`
-    color: red;
+    color: #fb7185;
+    font-size: 11px;
 `;
 
 const Heading3 = styled.h3`
+    font-size: 15px;
+    font-weight: 700;
+    color: #eef0ff;
+    margin-bottom: 4px;
 `;
 
 const SettingSection = styled.div`
     width: 100%;
     display: grid;
-    grid-template-columns: 100%
+    grid-template-columns: 100%;
+    gap: 8px;
 `;
 
 const styles = {
@@ -127,7 +134,7 @@ class SettingFormBase extends React.Component {
                         </FormControl>
                     </SettingSection>
                 </form>
-                <H5 style={{ color: 'red' }}>*Preferences change require reload</H5>
+                <H5 style={{ color: '#fb7185' }}>*Preferences change require reload</H5>
             </Settings>
         );
     }

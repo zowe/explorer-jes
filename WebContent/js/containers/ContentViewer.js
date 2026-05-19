@@ -203,8 +203,28 @@ export class ContentViewer extends React.Component {
 
     renderTabs() {
         const { content, selectedContent } = this.props;
-        const unselectedTabStyle = { display: 'flex', float: 'left', alignItems: 'center', padding: '6px', cursor: 'pointer' };
-        const selectedTabStyle = { ...{ color: 'black', backgroundColor: 'white' }, ...unselectedTabStyle };
+        const baseTabStyle = {
+            display: 'flex',
+            float: 'left',
+            alignItems: 'center',
+            padding: '8px 14px',
+            cursor: 'pointer',
+            fontSize: '12px',
+            fontWeight: 500,
+            transition: 'all 200ms ease',
+            borderBottom: '2px solid transparent',
+            color: '#5a5d8a',
+        };
+        const selectedTabStyle = {
+            ...baseTabStyle,
+            color: '#818cf8',
+            backgroundColor: 'rgba(129, 140, 248, 0.06)',
+            borderBottomColor: '#818cf8',
+            fontWeight: 600,
+        };
+        const unselectedTabStyle = {
+            ...baseTabStyle,
+        };
         if (content.size > 0) {
             return content.map((tabContent, index) => {
                 return (
@@ -244,7 +264,7 @@ export class ContentViewer extends React.Component {
             });
         }
         return (
-            <div style={{ padding: '6px' }}>
+            <div style={{ padding: '12px 16px', color: '#5a5d8a', fontWeight: 500, fontSize: '13px' }}>
                 Content viewer
             </div>
         );
@@ -268,7 +288,7 @@ export class ContentViewer extends React.Component {
                         ? <CircularProgressIcon
                             id="loading-icon"
                             size={20}
-                            style={{ color: 'white' }}
+                            style={{ color: '#eef0ff' }}
                         />
                         : <div>SUBMIT</div>}
                 </Button>
@@ -299,7 +319,7 @@ export class ContentViewer extends React.Component {
                 <CardHeader
                     id="content-viewer-header"
                     subheader={this.renderSubheader()}
-                    style={{ paddingBottom: 0, whiteSpace: 'nowrap', overflowY: 'hidden', overflowX: 'scroll' }}
+                    style={{ paddingBottom: 0, paddingTop: 0, whiteSpace: 'nowrap', overflowY: 'hidden', overflowX: 'auto', borderBottom: '1px solid rgba(99, 102, 241, 0.08)', background: '#0f1022' }}
                 />
                 <CardContent id="content-viewer-body" style={cardTextStyle} role="tabpanel">
                     <OrionEditor
