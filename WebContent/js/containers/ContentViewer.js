@@ -180,7 +180,6 @@ export class ContentViewer extends React.Component {
         return (
             <ContextMenu
                 id={index.toString()}
-                style={{ zIndex: '100' }}
             >
                 <MenuItem key="close" onClick={() => { this.handleCloseTab(index); }}>
                     Close

@@ -119,25 +119,6 @@ class JobFile extends React.Component {
 
     renderJobFileMenu() {
         const { job, file } = this.props;
-        const menuItems = [
-            <MenuItem onClick={this.downloadJobFile} key="download">
-                <u>D</u>
-                ownload
-            </MenuItem>,
-            <MenuItem onClick={this.openInNewWindow} key="fullscreen">
-                <u>O</u>
-                pen in Fullscreen
-            </MenuItem>,
-        ];
-
-        if (this.isFileOpen()) {
-            menuItems.push(
-                <MenuItem onClick={() => { return this.refreshFile(); }} key="refresh">
-                    <u>R</u>
-                    efresh Content
-                </MenuItem>,
-            );
-        }
         return (
             <ContextMenu
                 id={`${job.get('jobId')}${file.id}`}
@@ -145,13 +126,16 @@ class JobFile extends React.Component {
                 onHide={() => { this.setState({ menuVisible: false }); }}
             >
                 <MenuItem onClick={this.downloadJobFile}>
-                    <u>D</u>
-                    ownload
+                    Download
                 </MenuItem>
                 <MenuItem onClick={this.openInNewWindow}>
-                    <u>O</u>
-                    pen in Fullscreen
+                    Open in Fullscreen
                 </MenuItem>
+                {this.isFileOpen() && (
+                    <MenuItem onClick={() => { return this.refreshFile(); }}>
+                        Refresh Content
+                    </MenuItem>
+                )}
             </ContextMenu>
         );
     }

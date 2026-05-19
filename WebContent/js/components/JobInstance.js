@@ -263,19 +263,19 @@ class JobInstance extends React.Component {
         const { job } = this.props;
         const menuItems = [
             <MenuItem key="open" onClick={() => { this.handleOpenAllFiles(job); }}>
-                <u>O</u>pen
+                Open
             </MenuItem>,
             <MenuItem key="purge" onClick={() => { this.handlePurge(job); }}>
-                Purge <span className="react-contextmenu-right"><u>Del</u>ete</span>
+                Purge
             </MenuItem>,
             <MenuItem key="getJCL" onClick={() => { this.handleGetJCL(job); }}>
-                Get <u>J</u>CL (SJ)
+                Get JCL
             </MenuItem>,
             <MenuItem key="downloadJCL" onClick={() => { this.handleDownloadJCL(); }}>
-                <u>D</u>ownload JCL
+                Download JCL
             </MenuItem>,
             <MenuItem key="downloadAllFiles" onClick={() => { this.handleDownloadALlFiles(); }}>
-                Download <u>A</u>ll Files
+                Download All Files
             </MenuItem>,
         ];
         if (job.get('status').toLowerCase() === 'active') {
@@ -283,8 +283,7 @@ class JobInstance extends React.Component {
                 1,
                 0,
                 <MenuItem key="cancel" onClick={() => { this.handleCancel(job); }}>
-                    <u>C</u>
-                    ancel Job
+                    Cancel Job
                 </MenuItem>,
             );
         }
@@ -292,8 +291,7 @@ class JobInstance extends React.Component {
         if (this.isFileOpen(fileLabel)) {
             menuItems.push(
                 <MenuItem onClick={() => { return this.refreshFile(); }} key="refresh">
-                    <u>R</u>
-                    efresh Content
+                    Refresh Content
                 </MenuItem>,
             );
         }
@@ -345,7 +343,7 @@ class JobInstance extends React.Component {
                         <ul
                             role="group"
                             className="job-files-list"
-                            style={{ background: 'var(--bg-surface)', borderRadius: '8px', margin: '4px 0 6px 16px', padding: '6px 4px', border: '1px solid var(--border-subtle)' }}
+                            style={{ margin: '2px 0 4px 18px', padding: '2px 0', listStyle: 'none' }}
                         >
                             {this.renderJobFiles(job)}
                         </ul>
