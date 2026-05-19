@@ -352,6 +352,56 @@ body {
     border-bottom: 1px solid rgba(0,0,0,0.06) !important;
 }
 
+/* Light theme text visibility fixes */
+[data-theme="light"] .MuiTab-root {
+    color: #475569 !important;
+}
+
+[data-theme="light"] .MuiTab-root.Mui-selected {
+    color: #4f46e5 !important;
+}
+
+[data-theme="light"] .MuiInputBase-input,
+[data-theme="light"] .MuiInputBase-input::placeholder {
+    color: #1e293b !important;
+    opacity: 0.7;
+}
+
+[data-theme="light"] .MuiInputLabel-root {
+    color: #475569 !important;
+}
+
+[data-theme="light"] .react-contextmenu {
+    background-color: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .react-contextmenu-item {
+    color: #1e293b;
+}
+
+[data-theme="light"] .react-contextmenu-item:hover {
+    color: #4f46e5;
+    background-color: rgba(79, 70, 229, 0.08);
+}
+
+[data-theme="light"] .job-label,
+[data-theme="light"] .job-file-label,
+[data-theme="light"] .node-label {
+    color: #1e293b;
+}
+
+[data-theme="light"] .node-icon {
+    color: #64748b;
+}
+
+[data-theme="light"] .MuiTooltip-tooltip {
+    background: #1e293b !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
 /* ===== MUI OVERRIDES ===== */
 .MuiCardHeader-subheader {
     font-size: 10.5px !important;
@@ -457,22 +507,22 @@ body {
 
 @keyframes fade-in {
     from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
+    to { opacity: 1; transform: none; }
 }
 
 @keyframes fade-in-up {
     from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
+    to { opacity: 1; transform: none; }
 }
 
 @keyframes slide-in-right {
     from { opacity: 0; transform: translateX(-8px); }
-    to { opacity: 1; transform: translateX(0); }
+    to { opacity: 1; transform: none; }
 }
 
 @keyframes scale-in {
     from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
+    to { opacity: 1; transform: none; }
 }
 
 @keyframes shimmer {
@@ -627,4 +677,63 @@ body {
 /* ===== SNACKBAR ANIMATION ===== */
 .MuiSnackbar-root {
     animation: fade-in-up 300ms cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* ===== MVS EXPLORER ===== */
+.mvs-explorer-root {
+    animation: fade-in 200ms ease both;
+}
+
+.mvs-node-row:hover {
+    background: var(--bg-hover) !important;
+}
+
+.mvs-node-row:hover .mvs-node-actions {
+    opacity: 1 !important;
+}
+
+.mvs-member-row:hover {
+    background: var(--bg-hover) !important;
+}
+
+.mvs-member-row:hover .mvs-node-actions {
+    opacity: 1 !important;
+}
+
+.mvs-members-list {
+    animation: fade-in 200ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.mvs-dataset-tree .mvs-tree-node {
+    animation: fade-in 150ms ease both;
+}
+
+/* ===== USS EXPLORER ===== */
+.uss-explorer-root {
+    animation: fade-in 200ms ease both;
+}
+
+.uss-node-row:hover {
+    background: var(--bg-hover) !important;
+}
+
+.uss-node-row:hover .uss-node-actions {
+    opacity: 1 !important;
+}
+
+.uss-file-row:hover {
+    background: var(--bg-hover) !important;
+}
+
+.uss-file-row:hover .uss-node-actions {
+    opacity: 1 !important;
+}
+
+.uss-children-list {
+    animation: fade-in 150ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.uss-file-tree .uss-node-row,
+.uss-file-tree .uss-file-row {
+    animation: fade-in 120ms ease both;
 }
