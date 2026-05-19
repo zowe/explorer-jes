@@ -111,6 +111,7 @@ class JobNodeTree extends React.Component {
                 <CardHeader
                     subheader={this.getFilterValues()}
                     style={{ padding: '12px 16px 4px', borderBottom: 'none' }}
+                    subheaderTypographyProps={{ style: { color: 'inherit', fontSize: '12px', fontWeight: 500, letterSpacing: '0.3px' } }}
                 />
                 <div style={{ paddingRight: '16px', textAlign: 'right', color: '#818cf8', display: jobs.size > 0 ? '' : 'none', fontSize: '12px', fontWeight: 600 }}>
                     Jobs Found:

@@ -32,7 +32,7 @@ export default class RefreshIcon extends React.Component {
             transition: 'all 200ms ease',
             borderRadius: '8px',
         };
-        const iconSize = 22;
+        const iconSize = 32;
         if (isFetching) {
             return (
                 <CircularProgressMui

@@ -264,7 +264,7 @@ export class ContentViewer extends React.Component {
             });
         }
         return (
-            <div style={{ padding: '12px 16px', color: '#5a5d8a', fontWeight: 500, fontSize: '13px' }}>
+            <div style={{ padding: '12px 16px', color: 'inherit', fontWeight: 500, fontSize: '13px' }}>
                 Content viewer
             </div>
         );

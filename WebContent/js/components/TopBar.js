@@ -20,10 +20,13 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
 import SettingsIcon from '@material-ui/icons/Settings';
+import Brightness4Icon from '@material-ui/icons/Brightness4';
+import Brightness7Icon from '@material-ui/icons/Brightness7';
 import Popover from '@material-ui/core/Popover';
 import Tooltip from '@material-ui/core/Tooltip';
 import SettingForm from './Setting';
 import ViewSwitcher from './ViewSwitcher';
+import { useThemeMode } from '../themes/ThemeContext';
 
 const styles = {
     customizeToolbar: {
@@ -77,9 +80,25 @@ class TopBar extends React.Component {
 
     render() {
         const { anchorEl } = this.state;
-        const { validated, username, classes, activeView, onViewChange } = this.props;
+        const { validated, username, classes, activeView, onViewChange, themeMode, toggleTheme } = this.props;
         const open = Boolean(anchorEl);
         const id = open ? 'simple-popover' : undefined;
+        const isDark = themeMode === 'dark';
+        const titleStyle = {
+            ...styles.title,
+            color: isDark ? '#eef0ff' : '#1e293b',
+            background: isDark
+                ? 'linear-gradient(135deg, #eef0ff, #a5b4fc)'
+                : 'linear-gradient(135deg, #1e293b, #4f46e5)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+        };
+        const avatarStyle = isDark ? classes.small : {
+            ...styles.small,
+            background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(124, 58, 237, 0.15))',
+            border: '1px solid rgba(79, 70, 229, 0.2)',
+            color: '#1e293b',
+        };
         return (
             <AppBar position="static" id="app-bar" elevation={0}>
                 <Toolbar
@@ -87,11 +106,19 @@ class TopBar extends React.Component {
                     variant="dense"
                 >
                     <Typography type="title" color="inherit" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={styles.title}>Zowe Explorer</span>
+                        <span style={titleStyle}>Zowe Explorer</span>
                         <Typography variant="caption" color="inherit" style={styles.version}>v{ APP_VERSION }</Typography>
                     </Typography>
                     {onViewChange && <ViewSwitcher activeView={activeView} onViewChange={onViewChange} />}
                     <div style={{ flex: 1 }} />
+                    <Tooltip title={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'} placement="bottom">
+                        <IconButton color="inherit" onClick={toggleTheme} style={{ marginRight: '4px' }}>
+                            {themeMode === 'dark'
+                                ? <Brightness7Icon style={{ fontSize: '20px' }} />
+                                : <Brightness4Icon style={{ fontSize: '20px' }} />
+                            }
+                        </IconButton>
+                    </Tooltip>
                     <Tooltip title="Settings" placement="bottom">
                         <IconButton color="inherit" aria-describedby={id} onClick={this.handleClick} style={{ marginRight: '4px' }}>
                             <SettingsIcon style={{ fontSize: '20px' }} />
@@ -131,6 +158,8 @@ TopBar.propTypes = {
     username: PropTypes.string.isRequired,
     activeView: PropTypes.string,
     onViewChange: PropTypes.func,
+    themeMode: PropTypes.string,
+    toggleTheme: PropTypes.func,
     // eslint-disable-next-line react/forbid-prop-types
     classes: PropTypes.object.isRequired,
 };
@@ -143,5 +172,11 @@ function mapStateToProps(state) {
     };
 }
 
-const ConnectedTopBar = connect(mapStateToProps)(withStyles(styles)(TopBar));
+const StyledTopBar = connect(mapStateToProps)(withStyles(styles)(TopBar));
+
+// Wrapper to inject theme context into class component
+const ConnectedTopBar = (props) => {
+    const { mode, toggleTheme } = useThemeMode();
+    return <StyledTopBar {...props} themeMode={mode} toggleTheme={toggleTheme} />;
+};
 export default ConnectedTopBar;

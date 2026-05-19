@@ -22,7 +22,6 @@ import debounce from '../../utilities/debouncer';
 import TopBar from '../../components/TopBar';
 
 const HomeView = props => {
-    const isEmbedded = window.top !== window;
     const { validated } = props;
     const gridOfTwelveCol3 = 0.238;
     const widthForFullScreen = 600;
@@ -137,7 +136,7 @@ const HomeView = props => {
     if (validated) {
         return (
             <div className="row group" role="main" aria-label="Home" style={{ height: '100vh', overflow: 'hidden' }}>
-                { !isEmbedded && <TopBar activeView={activeView} onViewChange={setActiveView} /> }
+                <TopBar activeView={activeView} onViewChange={setActiveView} />
                 {activeView === 'jes' ? renderJESView() : renderIPView()}
             </div>
         );

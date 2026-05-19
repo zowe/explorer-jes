@@ -37,6 +37,30 @@
     --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
 }
 
+/* ===== LIGHT THEME TOKENS ===== */
+[data-theme="light"], [data-theme="light"] :root {
+    --bg-deep: #f8fafc;
+    --bg-base: #ffffff;
+    --bg-surface: #f1f5f9;
+    --bg-elevated: #ffffff;
+    --bg-hover: #e2e8f0;
+    --bg-glass: rgba(255, 255, 255, 0.9);
+    --border-subtle: rgba(0, 0, 0, 0.04);
+    --border-default: rgba(0, 0, 0, 0.08);
+    --border-accent: rgba(79, 70, 229, 0.3);
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --accent-indigo: #4f46e5;
+    --accent-violet: #7c3aed;
+    --accent-cyan: #0891b2;
+    --accent-emerald: #059669;
+    --accent-rose: #e11d48;
+    --accent-amber: #d97706;
+    --glow-indigo: 0 2px 8px rgba(79, 70, 229, 0.1);
+    --glow-cyan: 0 2px 8px rgba(8, 145, 178, 0.08);
+}
+
 /* ===== RESET ===== */
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -82,6 +106,10 @@ body {
 #tree-text-content {
     padding-bottom: 0 !important;
     padding-top: 0 !important;
+}
+
+#tree-text-content #full-height-tree {
+    margin-top: 8px;
 }
 
 /* ===== SIDEBAR ===== */
@@ -301,6 +329,12 @@ body {
     box-shadow: 0 1px 0 var(--border-subtle), 0 4px 20px rgba(0,0,0,0.3) !important;
     border-bottom: 1px solid var(--border-subtle) !important;
     backdrop-filter: blur(20px) !important;
+}
+
+[data-theme="light"] #app-bar {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%) !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
+    border-bottom: 1px solid rgba(0,0,0,0.06) !important;
 }
 
 /* ===== MUI OVERRIDES ===== */
