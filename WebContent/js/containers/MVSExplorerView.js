@@ -661,7 +661,7 @@ const MVSEditor = ({ file, content, etag, isFetchingContent, isSaving, saveError
 
 const MVSExplorerView = ({ dispatch, DSPath, datasets, isFetchingDatasets, datasetsError,
     members, toggledDatasets, isFetchingMembers,
-    file, content, etag, isFetchingContent, isSaving, contentError, saveError }) => {
+    file, content, etag, isFetchingContent, isSaving, contentError, saveError, username }) => {
 
     const [qualifier, setQualifier] = useState('');
     const debounceRef = useRef(null);
@@ -673,21 +673,23 @@ const MVSExplorerView = ({ dispatch, DSPath, datasets, isFetchingDatasets, datas
     const [renameTarget, setRenameTarget] = useState('');
     const [deleteTarget, setDeleteTarget] = useState(null);
 
-    // On mount, set default qualifier
+    // On mount, set default qualifier using username
     useEffect(() => {
-        if (!DSPath && !qualifier) {
-            setQualifier('*');
+        if (!DSPath && !qualifier && username) {
+            const defaultQualifier = `${username.toUpperCase()}.*`;
+            setQualifier(defaultQualifier);
         }
-    }, []);
+    }, [username]);
 
     // Debounced search (1500ms after typing stops)
     useEffect(() => {
         if (debounceRef.current) clearTimeout(debounceRef.current);
-        if (qualifier.trim() && qualifier.trim() !== DSPath) {
+        const trimmed = qualifier.trim();
+        if (trimmed && trimmed !== '*' && trimmed !== DSPath) {
             debounceRef.current = setTimeout(() => {
                 dispatch(resetDSChildren());
-                dispatch(fetchDatasets(qualifier.trim()));
-                dispatch(setMVSPath(qualifier.trim()));
+                dispatch(fetchDatasets(trimmed));
+                dispatch(setMVSPath(trimmed));
             }, 1500);
         }
         return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
@@ -695,10 +697,11 @@ const MVSExplorerView = ({ dispatch, DSPath, datasets, isFetchingDatasets, datas
 
     const handleSearch = useCallback(() => {
         if (debounceRef.current) clearTimeout(debounceRef.current);
-        if (qualifier.trim()) {
+        const trimmed = qualifier.trim();
+        if (trimmed && trimmed !== '*') {
             dispatch(resetDSChildren());
-            dispatch(fetchDatasets(qualifier.trim()));
-            dispatch(setMVSPath(qualifier.trim()));
+            dispatch(fetchDatasets(trimmed));
+            dispatch(setMVSPath(trimmed));
         }
     }, [qualifier, dispatch]);
 
@@ -885,6 +888,7 @@ MVSExplorerView.propTypes = {
 
 function mapStateToProps(state) {
     const mvs = state.get('mvsExplorer');
+    const validationRoot = state.get('validation');
     return {
         DSPath: mvs.get('DSPath'),
         datasets: mvs.get('datasets'),
@@ -900,6 +904,7 @@ function mapStateToProps(state) {
         isSaving: mvs.get('isSaving'),
         saveError: mvs.get('saveError'),
         contentError: mvs.get('contentError'),
+        username: validationRoot.get('username'),
     };
 }
 

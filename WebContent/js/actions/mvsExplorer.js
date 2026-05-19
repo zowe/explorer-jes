@@ -130,6 +130,10 @@ export function toggleDSNode(DSName) {
  */
 export function fetchDatasets(qualifier) {
     return async (dispatch) => {
+        if (!qualifier || qualifier === '*') {
+            dispatch({ type: INVALIDATE_DS_CHILDREN, error: 'Please enter a valid dataset qualifier (e.g. USERID.*)' });
+            return;
+        }
         dispatch({ type: REQUEST_DS_CHILDREN });
         try {
             const response = await zosmfFetch(`/restfiles/ds?dslevel=${encodeURIComponent(qualifier)}`, {
