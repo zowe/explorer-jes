@@ -208,9 +208,9 @@ class JobInstance extends React.Component {
 
     renderJobStatus() {
         const { job } = this.props;
-        const statusStyleActive = { display: 'inline', color: '#818cf8', fontWeight: 600, fontSize: '11px' };
-        const statusStyleAbend = { color: '#fb7185', display: 'inline', fontWeight: 600, fontSize: '11px' };
-        const statusStyleComplete = { color: '#5a5d8a', display: 'inline', fontWeight: 500, fontSize: '11px' };
+        const statusStyleActive = { display: 'inline', color: 'var(--accent-indigo)', fontWeight: 600, fontSize: '11px' };
+        const statusStyleAbend = { color: 'var(--accent-rose)', display: 'inline', fontWeight: 600, fontSize: '11px' };
+        const statusStyleComplete = { color: 'var(--text-muted)', display: 'inline', fontWeight: 500, fontSize: '11px' };
         const errorReturnCodes = ['abend', 'jcl error', 'sys fail', 'conv error', 'sec error'];
         const completeReturnCodes = ['cc', 'canceled'];
         const jobStatus = job.get('status');
@@ -244,8 +244,8 @@ class JobInstance extends React.Component {
                 showDD={showDD}
                 dispatch={dispatch}
                 file={file}
-                style={file.selectionType === 'selected' ? { background: 'rgba(129, 140, 248, 0.12)', border: '1px solid rgba(129, 140, 248, 0.4)', borderRadius: '6px' }
-                    : file.selectionType === 'highlighted' ? { background: 'rgba(129, 140, 248, 0.06)', border: null, borderRadius: '6px' } 
+                style={file.selectionType === 'selected' ? { background: 'rgba(99, 102, 241, 0.12)', border: '1px solid var(--accent-indigo)', borderRadius: '6px' }
+                    : file.selectionType === 'highlighted' ? { background: 'rgba(99, 102, 241, 0.06)', border: null, borderRadius: '6px' } 
                         : null}
             />);
         });
@@ -330,8 +330,8 @@ class JobInstance extends React.Component {
                             aria-expanded={job.get('isToggled').toString()}
                             aria-level="1"
                             aria-haspopup={true}
-                            style={this.state.menuVisible ? { border: '1px solid #6366f1', borderRadius: '6px' }
-                                : job.get('selectionType') === 'selected' ? { background: 'rgba(99, 102, 241, 0.08)', border: '1px solid #6366f1', borderRadius: '6px' }
+                            style={this.state.menuVisible ? { border: '1px solid var(--accent-indigo)', borderRadius: '6px' }
+                                : job.get('selectionType') === 'selected' ? { background: 'rgba(99, 102, 241, 0.08)', border: '1px solid var(--accent-indigo)', borderRadius: '6px' }
                                     : job.get('selectionType') === 'highlighted' ? { background: 'rgba(99, 102, 241, 0.05)', border: 'none', borderRadius: '6px' }
                                         : null}
                         >
@@ -344,7 +344,7 @@ class JobInstance extends React.Component {
                     </ContextMenuTrigger>
                     <ul
                         role="group"
-                        style={{ background: 'rgba(15, 16, 34, 0.6)', borderRadius: '6px', margin: '2px 0 4px 12px', padding: '4px 0', border: '1px solid rgba(99, 102, 241, 0.06)' }}
+                        style={{ background: 'var(--bg-surface)', borderRadius: '6px', margin: '2px 0 4px 12px', padding: '4px 0', border: '1px solid var(--border-subtle)' }}
                     >
                         {job.get('isToggled') && this.renderJobFiles(job)}
                     </ul>

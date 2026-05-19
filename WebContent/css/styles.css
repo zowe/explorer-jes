@@ -112,6 +112,21 @@ body {
     margin-top: 8px;
 }
 
+#full-height-tree {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+}
+
+#full-height-tree::-webkit-scrollbar { width: 5px; }
+#full-height-tree::-webkit-scrollbar-track { background: transparent; }
+#full-height-tree::-webkit-scrollbar-thumb {
+    background: var(--border-default);
+    border-radius: 10px;
+}
+#full-height-tree::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-indigo);
+}
+
 /* ===== SIDEBAR ===== */
 #explorer-sidebar {
     background: var(--bg-base);
@@ -424,7 +439,177 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-right {
+    from { opacity: 0; transform: translateX(-8px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scale-in {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
 @keyframes shimmer {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
+}
+
+@keyframes status-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.4); }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes bar-grow {
+    from { width: 0%; }
+    to { width: var(--target-width, 100%); }
+}
+
+/* ===== IP EXPLORER ANIMATIONS ===== */
+.ip-fade-in {
+    animation: fade-in-up 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.ip-card-animate {
+    animation: fade-in-up 400ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.ip-stat-card {
+    transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.ip-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glow-indigo);
+    border-color: var(--border-accent) !important;
+}
+
+.ip-resource-chip {
+    transition: all 200ms ease !important;
+    animation: fade-in-up 300ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.ip-resource-chip:hover {
+    transform: translateX(4px);
+    border-color: var(--border-accent) !important;
+    background: var(--bg-hover) !important;
+}
+
+.ip-table-row {
+    transition: all 150ms ease !important;
+}
+
+.ip-table-row:hover {
+    background: var(--bg-hover) !important;
+}
+
+.ip-table-row td {
+    transition: all 150ms ease;
+}
+
+.ip-status-dot {
+    animation: status-pulse 2s ease-in-out infinite;
+}
+
+.ip-refresh-btn:hover svg {
+    animation: spin 600ms ease-in-out;
+}
+
+.ip-bar-row {
+    animation: slide-in-right 350ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.ip-bar-fill {
+    animation: bar-grow 800ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.ip-view-toggle {
+    transition: all 200ms ease;
+}
+
+/* ===== JES EXPLORER ANIMATIONS ===== */
+.job-instance {
+    animation: fade-in 200ms ease both;
+}
+
+.content-link {
+    transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.content-link:hover {
+    transform: translateX(2px);
+}
+
+#filter-view {
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+#filter-view:hover {
+    border-color: var(--border-accent) !important;
+}
+
+#filters-apply-button {
+    transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+#filters-apply-button:active {
+    transform: scale(0.96) !important;
+}
+
+.collapse-btn {
+    transition: all 200ms ease !important;
+}
+
+.collapse-btn:hover {
+    transform: scale(1.1);
+}
+
+/* ===== GLOBAL TRANSITIONS ===== */
+.MuiTab-root {
+    transition: all 200ms ease !important;
+}
+
+.MuiChip-root {
+    transition: all 150ms ease !important;
+}
+
+.MuiChip-root:hover {
+    transform: scale(1.05);
+}
+
+.MuiTableRow-root {
+    transition: background-color 150ms ease !important;
+}
+
+/* ===== VIEW SWITCH ANIMATION ===== */
+.ip-explorer-root > div {
+    animation: scale-in 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== LOADING SHIMMER ===== */
+.ip-shimmer {
+    background: linear-gradient(90deg, var(--bg-surface) 25%, var(--bg-hover) 50%, var(--bg-surface) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--radius-sm);
+}
+
+/* ===== CONTEXT MENU ANIMATION ===== */
+.react-contextmenu {
+    animation: scale-in 150ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transform-origin: top left;
+}
+
+/* ===== SNACKBAR ANIMATION ===== */
+.MuiSnackbar-root {
+    animation: fade-in-up 300ms cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }

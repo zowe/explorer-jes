@@ -213,13 +213,13 @@ export class ContentViewer extends React.Component {
             fontWeight: 500,
             transition: 'all 200ms ease',
             borderBottom: '2px solid transparent',
-            color: '#5a5d8a',
+            color: 'var(--text-muted)',
         };
         const selectedTabStyle = {
             ...baseTabStyle,
-            color: '#818cf8',
+            color: 'var(--accent-indigo)',
             backgroundColor: 'rgba(129, 140, 248, 0.06)',
-            borderBottomColor: '#818cf8',
+            borderBottomColor: 'var(--accent-indigo)',
             fontWeight: 600,
         };
         const unselectedTabStyle = {
@@ -288,7 +288,7 @@ export class ContentViewer extends React.Component {
                         ? <CircularProgressIcon
                             id="loading-icon"
                             size={20}
-                            style={{ color: '#eef0ff' }}
+                    style={{ color: 'var(--text-primary)' }}
                         />
                         : <div>SUBMIT</div>}
                 </Button>
@@ -319,7 +319,7 @@ export class ContentViewer extends React.Component {
                 <CardHeader
                     id="content-viewer-header"
                     subheader={this.renderSubheader()}
-                    style={{ paddingBottom: 0, paddingTop: 0, whiteSpace: 'nowrap', overflowY: 'hidden', overflowX: 'auto', borderBottom: '1px solid rgba(99, 102, 241, 0.08)', background: '#0f1022' }}
+                    style={{ paddingBottom: 0, paddingTop: 0, whiteSpace: 'nowrap', overflowY: 'hidden', overflowX: 'auto', borderBottom: '1px solid var(--border-subtle)', background: 'var(--bg-surface)' }}
                 />
                 <CardContent id="content-viewer-body" style={cardTextStyle} role="tabpanel">
                     <OrionEditor

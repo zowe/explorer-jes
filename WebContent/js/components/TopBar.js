@@ -42,22 +42,19 @@ const styles = {
         border: '1px solid rgba(129, 140, 248, 0.3)',
         backdropFilter: 'blur(10px)',
         fontWeight: 700,
-        color: '#eef0ff',
+        color: 'var(--text-primary)',
     },
     title: {
         fontWeight: 700,
         fontSize: '15px',
         letterSpacing: '-0.3px',
-        color: '#eef0ff',
-        background: 'linear-gradient(135deg, #eef0ff, #a5b4fc)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
+        color: 'var(--text-primary)',
     },
     version: {
         opacity: 0.5,
         fontSize: '10px',
         fontWeight: 500,
-        color: '#8b8fba',
+        color: 'var(--text-muted)',
     },
 };
 const APP_VERSION = process.env.APP_VERSION;
@@ -83,21 +80,11 @@ class TopBar extends React.Component {
         const { validated, username, classes, activeView, onViewChange, themeMode, toggleTheme } = this.props;
         const open = Boolean(anchorEl);
         const id = open ? 'simple-popover' : undefined;
-        const isDark = themeMode === 'dark';
         const titleStyle = {
-            ...styles.title,
-            color: isDark ? '#eef0ff' : '#1e293b',
-            background: isDark
-                ? 'linear-gradient(135deg, #eef0ff, #a5b4fc)'
-                : 'linear-gradient(135deg, #1e293b, #4f46e5)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-        };
-        const avatarStyle = isDark ? classes.small : {
-            ...styles.small,
-            background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(124, 58, 237, 0.15))',
-            border: '1px solid rgba(79, 70, 229, 0.2)',
-            color: '#1e293b',
+            fontWeight: 700,
+            fontSize: '15px',
+            letterSpacing: '-0.3px',
+            color: 'var(--text-primary)',
         };
         return (
             <AppBar position="static" id="app-bar" elevation={0}>
@@ -107,7 +94,6 @@ class TopBar extends React.Component {
                 >
                     <Typography type="title" color="inherit" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span style={titleStyle}>Zowe Explorer</span>
-                        <Typography variant="caption" color="inherit" style={styles.version}>v{ APP_VERSION }</Typography>
                     </Typography>
                     {onViewChange && <ViewSwitcher activeView={activeView} onViewChange={onViewChange} />}
                     <div style={{ flex: 1 }} />

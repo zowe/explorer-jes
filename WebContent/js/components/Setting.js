@@ -25,12 +25,12 @@ const Settings = styled.div`
     padding: 20px;
     margin: 0;
     font-size: 13px;
-    color: #eef0ff;
+    color: var(--text-primary);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 `;
 const H3 = styled.h3`
-    border-top: 1px solid rgba(99, 102, 241, 0.1);
-    color: #5a5d8a;
+    border-top: 1px solid var(--border-subtle);
+    color: var(--text-muted);
     font-size: 11px;
     font-weight: 600;
     padding-top: 12px;
@@ -40,14 +40,14 @@ const H3 = styled.h3`
 `;
 
 const H5 = styled.h5`
-    color: #fb7185;
+    color: var(--accent-rose);
     font-size: 11px;
 `;
 
 const Heading3 = styled.h3`
     font-size: 15px;
     font-weight: 700;
-    color: #eef0ff;
+    color: var(--text-primary);
     margin-bottom: 4px;
 `;
 

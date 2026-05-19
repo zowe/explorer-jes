@@ -21,8 +21,8 @@ const styles = {
         marginLeft: '24px',
         padding: '3px',
         borderRadius: '8px',
-        background: 'rgba(99, 102, 241, 0.06)',
-        border: '1px solid rgba(99, 102, 241, 0.1)',
+        background: 'var(--bg-hover)',
+        border: '1px solid var(--border-subtle)',
     },
     navItem: {
         display: 'flex',
@@ -39,22 +39,22 @@ const styles = {
         position: 'relative',
     },
     active: {
-        background: 'rgba(129, 140, 248, 0.2)',
-        color: '#eef0ff',
-        boxShadow: '0 0 12px rgba(129, 140, 248, 0.15)',
-        border: '1px solid rgba(129, 140, 248, 0.3)',
+        background: 'var(--accent-indigo)',
+        color: '#ffffff',
+        boxShadow: '0 0 12px rgba(129, 140, 248, 0.2)',
+        border: '1px solid transparent',
     },
     inactive: {
         background: 'transparent',
-        color: 'rgba(139, 143, 186, 0.8)',
+        color: 'var(--text-muted)',
         border: '1px solid transparent',
     },
     dot: {
         width: '5px',
         height: '5px',
         borderRadius: '50%',
-        background: '#818cf8',
-        boxShadow: '0 0 6px rgba(129, 140, 248, 0.6)',
+        background: '#ffffff',
+        boxShadow: '0 0 6px rgba(255, 255, 255, 0.6)',
     },
 };
 

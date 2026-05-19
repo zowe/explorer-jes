@@ -22,7 +22,30 @@ export const SET_TCPIP_NAME = 'SET_TCPIP_NAME';
 export const RECEIVE_TCPIP_INFO = 'RECEIVE_TCPIP_INFO';
 
 // The IP Explorer plugin data service base URL on Zowe
-const IP_PLUGIN_BASE = '/ZLUX/plugins/org.zowe.explorer-ip/services/ipExplorer/_current';
+// Dynamically detect the ZLUX base path prefix from the current page URL.
+// The app is served from: {prefix}/ZLUX/plugins/org.zowe.explorer-jes/web/...
+// We need to call: {prefix}/ZLUX/plugins/org.zowe.explorer-ip/services/ipExplorer/1.0.0/...
+function getZluxBasePath() {
+    const path = window.location.pathname;
+    const zluxIndex = path.indexOf('/ZLUX/plugins/');
+    if (zluxIndex > 0) {
+        return path.substring(0, zluxIndex);
+    }
+    // Fallback: check if running inside iframe and try parent
+    try {
+        if (window.top !== window) {
+            const parentPath = window.top.location.pathname;
+            const parentIdx = parentPath.indexOf('/ZLUX/plugins/');
+            if (parentIdx > 0) {
+                return parentPath.substring(0, parentIdx);
+            }
+        }
+    } catch (e) { /* cross-origin, ignore */ }
+    return '';
+}
+
+const ZLUX_PREFIX = getZluxBasePath();
+const IP_PLUGIN_BASE = `${ZLUX_PREFIX}/ZLUX/plugins/org.zowe.explorer-ip/services/ipExplorer/1.0.0`;
 
 function requestConnections() {
     return { type: REQUEST_CONNECTIONS };

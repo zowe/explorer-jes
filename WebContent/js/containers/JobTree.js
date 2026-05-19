@@ -104,8 +104,8 @@ class JobNodeTree extends React.Component {
 
     render() {
         const { dispatch, isFetching, jobs } = this.props;
-        const NOT_EXPANDED_FILTER_OFFSET_HEIGHT = 100;
-        const EXPANDED_FILTER_OFFSET_HEIGHT = 333;
+        const NOT_EXPANDED_FILTER_OFFSET_HEIGHT = 148;
+        const EXPANDED_FILTER_OFFSET_HEIGHT = 381;
         return (
             <Card class="tree-card">
                 <CardHeader
@@ -113,7 +113,7 @@ class JobNodeTree extends React.Component {
                     style={{ padding: '12px 16px 4px', borderBottom: 'none' }}
                     subheaderTypographyProps={{ style: { color: 'inherit', fontSize: '12px', fontWeight: 500, letterSpacing: '0.3px' } }}
                 />
-                <div style={{ paddingRight: '16px', textAlign: 'right', color: '#818cf8', display: jobs.size > 0 ? '' : 'none', fontSize: '12px', fontWeight: 600 }}>
+                <div style={{ paddingRight: '16px', textAlign: 'right', color: 'var(--accent-indigo)', display: jobs.size > 0 ? '' : 'none', fontSize: '12px', fontWeight: 600 }}>
                     Jobs Found:
                     {jobs.size}
                 </div>
