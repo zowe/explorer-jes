@@ -628,3 +628,62 @@ body {
 .MuiSnackbar-root {
     animation: fade-in-up 300ms cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }
+
+/* ===== MVS EXPLORER ===== */
+.mvs-explorer-root {
+    animation: fade-in 200ms ease both;
+}
+
+.mvs-node-row:hover {
+    background: var(--bg-hover) !important;
+}
+
+.mvs-node-row:hover .mvs-node-actions {
+    opacity: 1 !important;
+}
+
+.mvs-member-row:hover {
+    background: var(--bg-hover) !important;
+}
+
+.mvs-member-row:hover .mvs-node-actions {
+    opacity: 1 !important;
+}
+
+.mvs-members-list {
+    animation: fade-in 200ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.mvs-dataset-tree .mvs-tree-node {
+    animation: fade-in 150ms ease both;
+}
+
+/* ===== USS EXPLORER ===== */
+.uss-explorer-root {
+    animation: fade-in 200ms ease both;
+}
+
+.uss-node-row:hover {
+    background: var(--bg-hover) !important;
+}
+
+.uss-node-row:hover .uss-node-actions {
+    opacity: 1 !important;
+}
+
+.uss-file-row:hover {
+    background: var(--bg-hover) !important;
+}
+
+.uss-file-row:hover .uss-node-actions {
+    opacity: 1 !important;
+}
+
+.uss-children-list {
+    animation: fade-in 150ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.uss-file-tree .uss-node-row,
+.uss-file-tree .uss-file-row {
+    animation: fade-in 120ms ease both;
+}

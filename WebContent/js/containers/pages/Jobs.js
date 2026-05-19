@@ -16,8 +16,11 @@ import IconButton from '@material-ui/core/IconButton';
 import JobTree from '../JobTree';
 import ConnectedContentViewer from '../ContentViewer';
 import ConnectedIPExplorerView from '../IPExplorerView';
+import ConnectedMVSExplorerView from '../MVSExplorerView';
+import ConnectedUSSExplorerView from '../USSExplorerView';
 import LoginDialog from '../../components/dialogs/LoginDialog';
 import ConnectedSnackbar from '../../components/Snackbar';
+import NotificationSnackbar from '../../components/NotificationSnackbar';
 import debounce from '../../utilities/debouncer';
 import TopBar from '../../components/TopBar';
 
@@ -133,11 +136,36 @@ const HomeView = props => {
         </div>
     );
 
+    const renderMVSView = () => (
+        <div style={{ height: 'calc(100vh - 48px)', width: '100%' }}>
+            <ConnectedMVSExplorerView />
+            <NotificationSnackbar />
+            <ConnectedSnackbar />
+        </div>
+    );
+
+    const renderUSSView = () => (
+        <div style={{ height: 'calc(100vh - 48px)', width: '100%' }}>
+            <ConnectedUSSExplorerView />
+            <NotificationSnackbar />
+            <ConnectedSnackbar />
+        </div>
+    );
+
+    const renderActiveView = () => {
+        switch (activeView) {
+            case 'ip': return renderIPView();
+            case 'mvs': return renderMVSView();
+            case 'uss': return renderUSSView();
+            default: return renderJESView();
+        }
+    };
+
     if (validated) {
         return (
             <div className="row group" role="main" aria-label="Home" style={{ height: '100vh', overflow: 'hidden' }}>
                 <TopBar activeView={activeView} onViewChange={setActiveView} />
-                {activeView === 'jes' ? renderJESView() : renderIPView()}
+                {renderActiveView()}
             </div>
         );
     }

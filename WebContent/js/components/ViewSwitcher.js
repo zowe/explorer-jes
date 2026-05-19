@@ -61,6 +61,8 @@ const styles = {
 const ViewSwitcher = ({ activeView, onViewChange }) => {
     const views = [
         { id: 'jes', label: 'JES Jobs', icon: '📋' },
+        { id: 'mvs', label: 'Datasets', icon: '💾' },
+        { id: 'uss', label: 'USS Files', icon: '📁' },
         { id: 'ip', label: 'IP Network', icon: '🌐' },
     ];
 

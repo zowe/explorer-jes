@@ -15,6 +15,9 @@ import filters from './filters';
 import validation from './validation';
 import snackbarNotifications from './snackbarNotifications';
 import ipExplorer from './ipExplorer';
+import mvsExplorer from './mvsExplorer';
+import ussExplorer from './ussExplorer';
+import notifications from './notifications';
 
 const REDUCERS = {
     content,
@@ -23,5 +26,8 @@ const REDUCERS = {
     validation,
     snackbarNotifications,
     ipExplorer,
+    mvsExplorer,
+    ussExplorer,
+    notifications,
 };
 export default combineReducers(REDUCERS);
