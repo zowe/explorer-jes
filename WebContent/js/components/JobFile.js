@@ -141,7 +141,6 @@ class JobFile extends React.Component {
         return (
             <ContextMenu
                 id={`${job.get('jobId')}${file.id}`}
-                style={{ zIndex: '100' }}
                 onShow={() => { this.setState({ menuVisible: true }); }}
                 onHide={() => { this.setState({ menuVisible: false }); }}
             >

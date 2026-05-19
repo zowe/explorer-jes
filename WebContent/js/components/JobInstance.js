@@ -300,7 +300,6 @@ class JobInstance extends React.Component {
         return (
             <ContextMenu
                 id={job.get('label')}
-                style={{ zIndex: '100' }}
                 onShow={() => { this.setState({ menuVisible: true }); }}
                 onHide={() => { this.setState({ menuVisible: false }); }}
             >
@@ -342,12 +341,15 @@ class JobInstance extends React.Component {
                             </span>
                         </span>
                     </ContextMenuTrigger>
-                    <ul
-                        role="group"
-                        style={{ background: 'var(--bg-surface)', borderRadius: '6px', margin: '2px 0 4px 12px', padding: '4px 0', border: '1px solid var(--border-subtle)' }}
-                    >
-                        {job.get('isToggled') && this.renderJobFiles(job)}
-                    </ul>
+                    {job.get('isToggled') && (
+                        <ul
+                            role="group"
+                            className="job-files-list"
+                            style={{ background: 'var(--bg-surface)', borderRadius: '8px', margin: '4px 0 6px 16px', padding: '6px 4px', border: '1px solid var(--border-subtle)' }}
+                        >
+                            {this.renderJobFiles(job)}
+                        </ul>
+                    )}
                 </li>
                 {this.renderJobInstanceMenu()}
             </div>

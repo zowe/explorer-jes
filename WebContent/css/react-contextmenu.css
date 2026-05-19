@@ -9,9 +9,9 @@
  */
 
 .react-contextmenu {
-    min-width: 200px;
+    min-width: 160px;
     padding: 6px;
-    margin: 4px 0 0;
+    margin: 0;
     font-size: 12.5px;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     color: var(--text-primary);
@@ -23,10 +23,13 @@
     outline: none;
     opacity: 0;
     pointer-events: none;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--border-subtle);
-    backdrop-filter: blur(20px);
-    transform: translateY(-4px) scale(0.97);
-    transition: opacity 150ms ease, transform 150ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(16px);
+    transition: opacity 120ms ease, transform 120ms cubic-bezier(0.2, 0, 0.13, 1.5);
+    transform: scale(0.95);
+    transform-origin: top left;
+    z-index: 10000 !important;
+    position: fixed !important;
 }
 
 .react-contextmenu-right {
@@ -38,11 +41,11 @@
 .react-contextmenu.react-contextmenu--visible {
     opacity: 1;
     pointer-events: auto;
-    transform: translateY(0) scale(1);
+    transform: scale(1);
 }
 
 .react-contextmenu-item {
-    padding: 8px 12px;
+    padding: 7px 12px;
     font-weight: 500;
     line-height: 1.4;
     color: var(--text-primary);
@@ -52,7 +55,10 @@
     border: 0;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 150ms ease;
+    transition: background-color 100ms ease, color 100ms ease, transform 100ms ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .react-contextmenu-item.react-contextmenu-item--active,
@@ -62,6 +68,7 @@
     background-color: rgba(129, 140, 248, 0.1);
     border-color: transparent;
     text-decoration: none;
+    transform: translateX(2px);
 }
 
 .react-contextmenu-item.react-contextmenu-item--disabled,

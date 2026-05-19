@@ -46,7 +46,7 @@ const styles = {
     },
     inactive: {
         background: 'transparent',
-        color: 'var(--text-muted)',
+        color: 'var(--text-secondary)',
         border: '1px solid transparent',
     },
     dot: {
