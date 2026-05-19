@@ -469,16 +469,7 @@ body {
     to { transform: rotate(360deg); }
 }
 
-@keyframes bar-grow {
-    from { width: 0%; }
-    to { width: var(--target-width, 100%); }
-}
-
 /* ===== IP EXPLORER ANIMATIONS ===== */
-.ip-fade-in {
-    animation: fade-in-up 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
 .ip-card-animate {
     animation: fade-in-up 400ms cubic-bezier(0.4, 0, 0.2, 1) both;
 }
@@ -526,10 +517,6 @@ body {
 
 .ip-bar-row {
     animation: slide-in-right 350ms cubic-bezier(0.4, 0, 0.2, 1) both;
-}
-
-.ip-bar-fill {
-    animation: bar-grow 800ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .ip-view-toggle {
@@ -591,8 +578,12 @@ body {
 }
 
 /* ===== VIEW SWITCH ANIMATION ===== */
-.ip-explorer-root > div {
+.ip-dashboard {
     animation: scale-in 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ip-fade-in {
+    animation: fade-in-up 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 /* ===== LOADING SHIMMER ===== */

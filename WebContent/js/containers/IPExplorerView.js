@@ -8,7 +8,7 @@
  * Copyright Contributors to the Zowe Project.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { List } from 'immutable';
@@ -38,8 +38,12 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import DeviceHubIcon from '@material-ui/icons/DeviceHub';
 import StorageIcon from '@material-ui/icons/Storage';
+import SettingsEthernetIcon from '@material-ui/icons/SettingsEthernet';
 import { fetchConnections, fetchReservedPortsList, fetchDefaultTcpipName, fetchTcpipInfo, setIpTab, setIpFilter } from '../actions/ipExplorer';
 
+// ─────────────────────────────────────────────────────────────────────
+// CONSTANTS
+// ─────────────────────────────────────────────────────────────────────
 const CONNECTION_COLUMNS = [
     { id: 'localPort', label: 'Port', numeric: true },
     { id: 'localIPaddress', label: 'Local IP Address', numeric: false },
@@ -58,6 +62,9 @@ const RESERVED_COLUMNS = [
     { id: 'protocol', label: 'Protocol', numeric: false },
 ];
 
+// ─────────────────────────────────────────────────────────────────────
+// UTILITIES
+// ─────────────────────────────────────────────────────────────────────
 function stableSort(array, comparator) {
     const stabilized = array.map((el, index) => [el, index]);
     stabilized.sort((a, b) => {
@@ -85,7 +92,159 @@ function getStateColor(state) {
 }
 
 // ─────────────────────────────────────────────────────────────────────
-// STAT CARD
+// ANIMATED COUNTER - Smooth count-up animation
+// ─────────────────────────────────────────────────────────────────────
+const AnimatedCounter = ({ value, duration = 800 }) => {
+    const [display, setDisplay] = useState(0);
+    const startRef = useRef(null);
+    const frameRef = useRef(null);
+
+    useEffect(() => {
+        const target = typeof value === 'number' ? value : 0;
+        const start = display;
+        const startTime = performance.now();
+        startRef.current = startTime;
+
+        const animate = (now) => {
+            if (startRef.current !== startTime) return; // cancelled
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            // Ease-out cubic
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setDisplay(Math.round(start + (target - start) * eased));
+            if (progress < 1) {
+                frameRef.current = requestAnimationFrame(animate);
+            }
+        };
+        frameRef.current = requestAnimationFrame(animate);
+        return () => { if (frameRef.current) cancelAnimationFrame(frameRef.current); };
+    }, [value]);
+
+    return <span>{display.toLocaleString()}</span>;
+};
+
+// ─────────────────────────────────────────────────────────────────────
+// NETWORK ACTIVITY VISUALIZATION (Innovative Canvas Animation)
+// Shows real-time flowing particles representing network connections
+// ─────────────────────────────────────────────────────────────────────
+const NetworkActivityCanvas = ({ connectionCount, stateGroups }) => {
+    const canvasRef = useRef(null);
+    const animFrameRef = useRef(null);
+    const particlesRef = useRef([]);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+
+        const resize = () => {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            canvas.style.width = `${rect.width}px`;
+            canvas.style.height = `${rect.height}px`;
+            ctx.scale(dpr, dpr);
+        };
+        resize();
+
+        // Create particles based on connection count (capped for performance)
+        const particleCount = Math.min(Math.max(connectionCount / 3, 12), 60);
+        const colors = ['#818cf8', '#22d3ee', '#34d399', '#a78bfa', '#fb7185'];
+        const particles = [];
+        const width = canvas.width / dpr;
+        const height = canvas.height / dpr;
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.8,
+                vy: (Math.random() - 0.5) * 0.8,
+                radius: Math.random() * 2 + 1,
+                color: colors[i % colors.length],
+                alpha: Math.random() * 0.5 + 0.3,
+                pulse: Math.random() * Math.PI * 2,
+            });
+        }
+        particlesRef.current = particles;
+
+        const animate = () => {
+            const w = canvas.width / dpr;
+            const h = canvas.height / dpr;
+            ctx.clearRect(0, 0, w, h);
+
+            // Draw connection lines between nearby particles
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 80) {
+                        const alpha = (1 - dist / 80) * 0.15;
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(129, 140, 248, ${alpha})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Update and draw particles
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.pulse += 0.03;
+
+                // Bounce off walls
+                if (p.x < 0 || p.x > w) p.vx *= -1;
+                if (p.y < 0 || p.y > h) p.vy *= -1;
+                p.x = Math.max(0, Math.min(w, p.x));
+                p.y = Math.max(0, Math.min(h, p.y));
+
+                const pulseAlpha = p.alpha + Math.sin(p.pulse) * 0.15;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color.replace(')', `, ${pulseAlpha})`).replace('rgb', 'rgba').replace('#', '');
+                // handle hex colors
+                const r = parseInt(p.color.slice(1, 3), 16);
+                const g = parseInt(p.color.slice(3, 5), 16);
+                const b = parseInt(p.color.slice(5, 7), 16);
+                ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${pulseAlpha})`;
+                ctx.fill();
+
+                // Glow effect
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius * 3, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${pulseAlpha * 0.15})`;
+                ctx.fill();
+            });
+
+            animFrameRef.current = requestAnimationFrame(animate);
+        };
+        animate();
+
+        return () => {
+            if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+        };
+    }, [connectionCount]);
+
+    return (
+        <canvas
+            ref={canvasRef}
+            style={{
+                position: 'absolute', top: 0, left: 0,
+                width: '100%', height: '100%',
+                pointerEvents: 'none', opacity: 0.7,
+            }}
+        />
+    );
+};
+
+// ─────────────────────────────────────────────────────────────────────
+// STAT CARD (with animated counter)
 // ─────────────────────────────────────────────────────────────────────
 const StatCard = ({ icon, label, value, accent, delay }) => (
     <div className="ip-stat-card ip-card-animate" style={{
@@ -97,15 +256,15 @@ const StatCard = ({ icon, label, value, accent, delay }) => (
     }}>
         <div style={{
             width: '42px', height: '42px', borderRadius: 'var(--radius-md)',
-            background: `color-mix(in srgb, ${accent} 10%, transparent)`,
+            background: `rgba(99, 102, 241, 0.08)`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: accent, border: `1px solid color-mix(in srgb, ${accent} 20%, transparent)`,
+            color: accent, border: `1px solid rgba(99, 102, 241, 0.15)`,
         }}>
             {icon}
         </div>
         <div>
-            <div className="ip-counter" style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', lineHeight: 1.1 }}>
-                {typeof value === 'number' ? value.toLocaleString() : value}
+            <div style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', lineHeight: 1.1 }}>
+                <AnimatedCounter value={typeof value === 'number' ? value : 0} />
             </div>
             <div style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', letterSpacing: '0.3px', marginTop: '2px' }}>
                 {label}
@@ -135,9 +294,91 @@ const cardHeaderStyle = {
 };
 
 // ─────────────────────────────────────────────────────────────────────
+// PROGRESS BAR COMPONENT (reliable, no color-mix)
+// ─────────────────────────────────────────────────────────────────────
+const ProgressBar = ({ percentage, color, animate = true }) => {
+    const [width, setWidth] = useState(0);
+    useEffect(() => {
+        if (animate) {
+            const timer = setTimeout(() => setWidth(percentage), 50);
+            return () => clearTimeout(timer);
+        }
+        setWidth(percentage);
+    }, [percentage, animate]);
+
+    return (
+        <div style={{ height: '6px', borderRadius: '3px', background: 'var(--bg-hover)', overflow: 'hidden' }}>
+            <div style={{
+                width: `${width}%`,
+                height: '100%',
+                borderRadius: '3px',
+                background: color,
+                transition: 'width 800ms cubic-bezier(0.4, 0, 0.2, 1)',
+            }} />
+        </div>
+    );
+};
+
+// ─────────────────────────────────────────────────────────────────────
+// DONUT CHART - Lightweight SVG donut for connection state breakdown
+// ─────────────────────────────────────────────────────────────────────
+const DonutChart = ({ data, size = 120 }) => {
+    const total = data.reduce((sum, d) => sum + d.value, 0);
+    if (total === 0) return null;
+
+    const radius = (size - 16) / 2;
+    const circumference = 2 * Math.PI * radius;
+    let cumulativePercent = 0;
+
+    return (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="ip-donut">
+                {data.map((segment, idx) => {
+                    const percent = segment.value / total;
+                    const strokeDash = circumference * percent;
+                    const strokeOffset = circumference * cumulativePercent;
+                    cumulativePercent += percent;
+                    return (
+                        <circle
+                            key={segment.label}
+                            cx={size / 2}
+                            cy={size / 2}
+                            r={radius}
+                            fill="none"
+                            stroke={segment.rawColor}
+                            strokeWidth="10"
+                            strokeDasharray={`${strokeDash} ${circumference - strokeDash}`}
+                            strokeDashoffset={-strokeOffset}
+                            strokeLinecap="round"
+                            style={{
+                                transition: 'stroke-dasharray 600ms ease, stroke-dashoffset 600ms ease',
+                                transform: 'rotate(-90deg)',
+                                transformOrigin: '50% 50%',
+                            }}
+                        />
+                    );
+                })}
+                <text x="50%" y="50%" textAnchor="middle" dominantBaseline="central" style={{ fill: 'var(--text-primary)', fontSize: '16px', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
+                    {total}
+                </text>
+            </svg>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {data.map(segment => (
+                    <div key={segment.label} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: segment.rawColor, flexShrink: 0 }} />
+                        <span style={{ fontSize: '11px', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>{segment.label}</span>
+                        <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', marginLeft: 'auto' }}>{segment.value}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+// ─────────────────────────────────────────────────────────────────────
 // DASHBOARD VIEW
 // ─────────────────────────────────────────────────────────────────────
-const DashboardView = ({ connections, reservedPorts, isFetching, error }) => {
+const DashboardView = ({ connections, reservedPorts, isFetching, error, onRefresh }) => {
     const data = connections.toJS ? connections.toJS() : connections;
 
     if (isFetching) {
@@ -153,7 +394,10 @@ const DashboardView = ({ connections, reservedPorts, isFetching, error }) => {
         return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
                 <WifiIcon style={{ fontSize: 56, color: 'var(--accent-rose)', opacity: 0.4, marginBottom: 12 }} />
-                <span style={{ color: 'var(--accent-rose)', fontWeight: 600 }}>{error}</span>
+                <span style={{ color: 'var(--accent-rose)', fontWeight: 600, fontSize: '14px' }}>{error}</span>
+                <Button onClick={onRefresh} style={{ marginTop: 16, color: 'var(--accent-indigo)', textTransform: 'none', fontWeight: 600 }}>
+                    <RefreshIcon style={{ fontSize: 16, marginRight: 6 }} /> Retry
+                </Button>
             </div>
         );
     }
@@ -162,7 +406,7 @@ const DashboardView = ({ connections, reservedPorts, isFetching, error }) => {
     const totalConnections = data.length;
     const stateGroups = {};
     const resourceGroups = {};
-    const portRanges = { '0-1023': 0, '1024-8999': 0, '9000-19999': 0, '20000-49151': 0, '49152-65535': 0 };
+    const portRanges = { 'Well-Known (0-1023)': 0, 'Registered (1024-49151)': 0, 'Dynamic (49152-65535)': 0 };
     const uniqueRemoteIPs = new Set();
 
     data.forEach(conn => {
@@ -170,11 +414,9 @@ const DashboardView = ({ connections, reservedPorts, isFetching, error }) => {
         resourceGroups[conn.resourceName] = (resourceGroups[conn.resourceName] || 0) + 1;
         if (conn.remoteIPaddress) uniqueRemoteIPs.add(conn.remoteIPaddress);
         const port = parseInt(conn.localPort, 10);
-        if (port <= 1023) portRanges['0-1023']++;
-        else if (port <= 8999) portRanges['1024-8999']++;
-        else if (port <= 19999) portRanges['9000-19999']++;
-        else if (port <= 49151) portRanges['20000-49151']++;
-        else portRanges['49152-65535']++;
+        if (port <= 1023) portRanges['Well-Known (0-1023)']++;
+        else if (port <= 49151) portRanges['Registered (1024-49151)']++;
+        else portRanges['Dynamic (49152-65535)']++;
     });
 
     const topResources = Object.entries(resourceGroups)
@@ -184,47 +426,65 @@ const DashboardView = ({ connections, reservedPorts, isFetching, error }) => {
     const stateEntries = Object.entries(stateGroups).sort((a, b) => b[1] - a[1]);
     const reservedData = reservedPorts.toJS ? reservedPorts.toJS() : reservedPorts;
 
+    // Color mapping for donut
+    const stateColorMap = {
+        'Established': '#34d399',
+        'Listen': '#818cf8',
+        'TimeWait': '#fbbf24',
+        'CloseWait': '#fb7185',
+    };
+    const donutData = stateEntries.map(([label, value]) => ({
+        label, value, rawColor: stateColorMap[label] || '#8b8fba',
+    }));
+
     return (
         <div className="ip-dashboard" style={{ padding: '20px', overflow: 'auto', height: '100%' }}>
+            {/* Network Activity Banner */}
+            <div className="ip-card ip-card-animate" style={{
+                ...cardStyle, position: 'relative', height: '100px', marginBottom: '20px',
+                display: 'flex', alignItems: 'center', padding: '0 24px', overflow: 'hidden',
+            }}>
+                <NetworkActivityCanvas connectionCount={totalConnections} stateGroups={stateGroups} />
+                <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <SettingsEthernetIcon style={{ fontSize: 28, color: 'var(--accent-indigo)' }} />
+                    <div>
+                        <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-primary)' }}>Network Activity</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                            {totalConnections} active connections across {Object.keys(resourceGroups).length} resources
+                        </div>
+                    </div>
+                </div>
+                <div style={{ position: 'relative', zIndex: 1, marginLeft: 'auto' }}>
+                    <Tooltip title="Refresh Data">
+                        <IconButton onClick={onRefresh} style={{ color: 'var(--accent-indigo)' }}>
+                            <RefreshIcon />
+                        </IconButton>
+                    </Tooltip>
+                </div>
+            </div>
+
             {/* Summary Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '24px' }}>
-                <StatCard icon={<WifiIcon style={{ fontSize: 22 }} />} label="Total Connections" value={totalConnections} accent="var(--accent-indigo)" delay={0} />
-                <StatCard icon={<DeviceHubIcon style={{ fontSize: 22 }} />} label="Unique Remote IPs" value={uniqueRemoteIPs.size} accent="var(--accent-cyan)" delay={1} />
-                <StatCard icon={<StorageIcon style={{ fontSize: 22 }} />} label="Active Resources" value={Object.keys(resourceGroups).length} accent="var(--accent-violet)" delay={2} />
-                <StatCard icon={<LockIcon style={{ fontSize: 22 }} />} label="Reserved Ports" value={reservedData.length} accent="var(--accent-emerald)" delay={3} />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '14px', marginBottom: '20px' }}>
+                <StatCard icon={<WifiIcon style={{ fontSize: 20 }} />} label="Total Connections" value={totalConnections} accent="var(--accent-indigo)" delay={0} />
+                <StatCard icon={<DeviceHubIcon style={{ fontSize: 20 }} />} label="Unique Remote IPs" value={uniqueRemoteIPs.size} accent="var(--accent-cyan)" delay={1} />
+                <StatCard icon={<StorageIcon style={{ fontSize: 20 }} />} label="Active Resources" value={Object.keys(resourceGroups).length} accent="var(--accent-violet)" delay={2} />
+                <StatCard icon={<LockIcon style={{ fontSize: 20 }} />} label="Reserved Ports" value={reservedData.length} accent="var(--accent-emerald)" delay={3} />
             </div>
 
             {/* Charts Row */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
-                {/* Connection States */}
-                <div className="ip-card ip-card-animate" style={{ ...cardStyle, animationDelay: '100ms' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px', marginBottom: '20px' }}>
+                {/* Connection States with Donut */}
+                <div className="ip-card ip-card-animate" style={{ ...cardStyle, animationDelay: '120ms' }}>
                     <div style={cardHeaderStyle}>
                         <TrendingUpIcon style={{ fontSize: 16, color: 'var(--accent-indigo)' }} />
                         <span>Connection States</span>
                     </div>
-                    <div style={{ padding: '16px' }}>
-                        {stateEntries.map(([state, count], idx) => {
-                            const colors = getStateColor(state);
-                            const pct = totalConnections > 0 ? (count / totalConnections * 100) : 0;
-                            return (
-                                <div key={state} className="ip-bar-row" style={{ marginBottom: '12px', animationDelay: `${idx * 60}ms` }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                                        <span style={{ fontSize: '12px', fontWeight: 600, color: colors.color }}>{state}</span>
-                                        <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                                            {count} ({pct.toFixed(1)}%)
-                                        </span>
-                                    </div>
-                                    <div style={{ height: '6px', borderRadius: '3px', background: 'var(--bg-hover)', overflow: 'hidden' }}>
-                                        <div className="ip-bar-fill" style={{
-                                            width: `${pct}%`, height: '100%', borderRadius: '3px',
-                                            background: colors.color,
-                                            transition: 'width 800ms cubic-bezier(0.4, 0, 0.2, 1)',
-                                        }} />
-                                    </div>
-                                </div>
-                            );
-                        })}
-                        {stateEntries.length === 0 && <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>No data</span>}
+                    <div style={{ padding: '20px', display: 'flex', justifyContent: 'center' }}>
+                        {donutData.length > 0 ? (
+                            <DonutChart data={donutData} size={130} />
+                        ) : (
+                            <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>No connection data</span>
+                        )}
                     </div>
                 </div>
 
@@ -232,24 +492,21 @@ const DashboardView = ({ connections, reservedPorts, isFetching, error }) => {
                 <div className="ip-card ip-card-animate" style={{ ...cardStyle, animationDelay: '200ms' }}>
                     <div style={cardHeaderStyle}>
                         <StorageIcon style={{ fontSize: 16, color: 'var(--accent-cyan)' }} />
-                        <span>Port Range Distribution</span>
+                        <span>Port Distribution</span>
                     </div>
                     <div style={{ padding: '16px' }}>
                         {Object.entries(portRanges).map(([range, count], idx) => {
                             const pct = totalConnections > 0 ? (count / totalConnections * 100) : 0;
+                            const rangeColors = ['var(--accent-indigo)', 'var(--accent-cyan)', 'var(--accent-violet)'];
                             return (
-                                <div key={range} className="ip-bar-row" style={{ marginBottom: '12px', animationDelay: `${idx * 60}ms` }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                                        <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{range}</span>
-                                        <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{count}</span>
+                                <div key={range} className="ip-bar-row" style={{ marginBottom: '14px', animationDelay: `${idx * 80}ms` }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
+                                        <span style={{ fontSize: '11.5px', fontWeight: 500, color: 'var(--text-primary)' }}>{range}</span>
+                                        <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                                            {count} ({pct.toFixed(0)}%)
+                                        </span>
                                     </div>
-                                    <div style={{ height: '6px', borderRadius: '3px', background: 'var(--bg-hover)', overflow: 'hidden' }}>
-                                        <div className="ip-bar-fill" style={{
-                                            width: `${pct}%`, height: '100%', borderRadius: '3px',
-                                            background: 'var(--accent-cyan)',
-                                            transition: 'width 800ms cubic-bezier(0.4, 0, 0.2, 1)',
-                                        }} />
-                                    </div>
+                                    <ProgressBar percentage={pct} color={rangeColors[idx] || 'var(--accent-indigo)'} />
                                 </div>
                             );
                         })}
@@ -261,36 +518,40 @@ const DashboardView = ({ connections, reservedPorts, isFetching, error }) => {
             <div className="ip-card ip-card-animate" style={{ ...cardStyle, animationDelay: '300ms' }}>
                 <div style={cardHeaderStyle}>
                     <DeviceHubIcon style={{ fontSize: 16, color: 'var(--accent-violet)' }} />
-                    <span>Top Resources by Connections</span>
+                    <span>Top Resources</span>
+                    <span style={{ marginLeft: 'auto', fontSize: '10px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'none' }}>
+                        by connection count
+                    </span>
                 </div>
-                <div style={{ padding: '16px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '10px' }}>
+                <div style={{ padding: '14px 16px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '8px' }}>
                     {topResources.map(([name, count], idx) => (
                         <div key={name} className="ip-resource-chip" style={{
                             display: 'flex', alignItems: 'center', gap: '12px',
                             padding: '10px 14px', borderRadius: 'var(--radius-md)',
                             background: 'var(--bg-base)', border: '1px solid var(--border-subtle)',
-                            animationDelay: `${idx * 50}ms`,
+                            animationDelay: `${idx * 40}ms`,
                         }}>
                             <div style={{
-                                width: '36px', height: '36px', borderRadius: 'var(--radius-sm)',
+                                width: '32px', height: '32px', borderRadius: 'var(--radius-sm)',
                                 background: 'rgba(129, 140, 248, 0.08)', display: 'flex',
                                 alignItems: 'center', justifyContent: 'center',
                                 border: '1px solid var(--border-subtle)',
+                                flexShrink: 0,
                             }}>
                                 <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 700, color: 'var(--accent-indigo)' }}>
                                     {count}
                                 </span>
                             </div>
                             <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                     {name}
                                 </div>
-                                <div style={{ height: '3px', borderRadius: '2px', background: 'var(--bg-hover)', marginTop: '6px', overflow: 'hidden' }}>
+                                <div style={{ height: '3px', borderRadius: '2px', background: 'var(--bg-hover)', marginTop: '5px', overflow: 'hidden' }}>
                                     <div style={{
                                         width: `${(count / maxResourceCount * 100)}%`,
                                         height: '100%', borderRadius: '2px',
                                         background: 'linear-gradient(90deg, var(--accent-indigo), var(--accent-violet))',
-                                        transition: 'width 600ms ease',
+                                        transition: 'width 600ms ease-out',
                                     }} />
                                 </div>
                             </div>
@@ -317,6 +578,7 @@ const styles = {
         padding: '14px 20px 0',
         borderBottom: '1px solid var(--border-subtle)',
         background: 'var(--bg-surface)',
+        flexShrink: 0,
     },
     tabBar: {
         minHeight: '36px',
@@ -337,6 +599,7 @@ const styles = {
         padding: '12px 20px',
         borderBottom: '1px solid var(--border-subtle)',
         background: 'var(--bg-base)',
+        flexShrink: 0,
     },
     searchField: {
         width: '280px',
@@ -344,9 +607,6 @@ const styles = {
     tableContainer: {
         flex: 1,
         overflow: 'auto',
-    },
-    tableHead: {
-        background: 'var(--bg-surface)',
     },
     headCell: {
         fontWeight: 700,
@@ -384,6 +644,7 @@ const styles = {
         fontSize: '11.5px',
         color: 'var(--text-muted)',
         fontWeight: 500,
+        flexShrink: 0,
     },
     emptyState: {
         display: 'flex',
@@ -414,37 +675,37 @@ const IPExplorerView = ({ dispatch, connections, reservedPorts, isFetchingConnec
 
     useEffect(() => {
         dispatch(fetchDefaultTcpipName()).then(name => {
-            dispatch(fetchConnections(name));
-            dispatch(fetchReservedPortsList(name));
-            dispatch(fetchTcpipInfo(name));
+            if (name) {
+                dispatch(fetchConnections(name));
+                dispatch(fetchReservedPortsList(name));
+                dispatch(fetchTcpipInfo(name));
+            }
         });
-    }, []);
+    }, [dispatch]);
 
-    const handleSort = (property) => {
+    const handleSort = useCallback((property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };
+    }, [order, orderBy]);
 
-    const handleTabChange = (event, newValue) => {
+    const handleTabChange = useCallback((event, newValue) => {
         dispatch(setIpTab(newValue));
         setOrderBy(newValue === 0 ? 'localPort' : 'portNumber');
         setOrder('asc');
-    };
+    }, [dispatch]);
 
-    const handleFilterChange = (event) => {
+    const handleFilterChange = useCallback((event) => {
         dispatch(setIpFilter(event.target.value));
-    };
+    }, [dispatch]);
 
-    const handleRefresh = () => {
-        if (activeTab === 0) {
-            dispatch(fetchConnections(tcpipName));
-        } else {
-            dispatch(fetchReservedPortsList(tcpipName));
-        }
-    };
+    const handleRefresh = useCallback(() => {
+        const name = tcpipName || '*';
+        dispatch(fetchConnections(name));
+        dispatch(fetchReservedPortsList(name));
+    }, [dispatch, tcpipName]);
 
-    const filterData = (data) => {
+    const filterData = useCallback((data) => {
         if (!filter) return data;
         const lowerFilter = filter.toLowerCase();
         return data.filter(row => {
@@ -452,7 +713,7 @@ const IPExplorerView = ({ dispatch, connections, reservedPorts, isFetchingConnec
                 String(val).toLowerCase().includes(lowerFilter)
             );
         });
-    };
+    }, [filter]);
 
     const renderConnectionsTable = () => {
         const isFetching = isFetchingConnections;
@@ -477,6 +738,9 @@ const IPExplorerView = ({ dispatch, connections, reservedPorts, isFetchingConnec
                     <WifiIcon style={{ fontSize: 48, marginBottom: 12, opacity: 0.3, color: 'var(--accent-rose)' }} />
                     <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--accent-rose)' }}>Connection Error</span>
                     <span style={{ fontSize: '12px', marginTop: 4, color: 'var(--text-muted)' }}>{connectionsError}</span>
+                    <Button onClick={handleRefresh} style={{ marginTop: 12, color: 'var(--accent-indigo)', textTransform: 'none', fontWeight: 600, fontSize: '12px' }}>
+                        <RefreshIcon style={{ fontSize: 14, marginRight: 4 }} /> Retry
+                    </Button>
                 </div>
             );
         }
@@ -516,7 +780,7 @@ const IPExplorerView = ({ dispatch, connections, reservedPorts, isFetchingConnec
                     </TableHead>
                     <TableBody>
                         {sortedData.slice(0, 500).map((row, index) => (
-                            <TableRow key={index} hover className="ip-table-row">
+                            <TableRow key={`${row.localPort}-${row.remotePort}-${index}`} hover className="ip-table-row">
                                 <TableCell align="right" style={styles.bodyCellNumeric}>{row.localPort}</TableCell>
                                 <TableCell style={styles.bodyCell}>{row.localIPaddress}</TableCell>
                                 <TableCell style={styles.bodyCell}>{row.remoteIPaddress}</TableCell>
@@ -585,6 +849,9 @@ const IPExplorerView = ({ dispatch, connections, reservedPorts, isFetchingConnec
                     <LockIcon style={{ fontSize: 48, marginBottom: 12, opacity: 0.3, color: 'var(--accent-rose)' }} />
                     <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--accent-rose)' }}>Failed to Load Ports</span>
                     <span style={{ fontSize: '12px', marginTop: 4, color: 'var(--text-muted)' }}>{portsError}</span>
+                    <Button onClick={handleRefresh} style={{ marginTop: 12, color: 'var(--accent-indigo)', textTransform: 'none', fontWeight: 600, fontSize: '12px' }}>
+                        <RefreshIcon style={{ fontSize: 14, marginRight: 4 }} /> Retry
+                    </Button>
                 </div>
             );
         }
@@ -624,7 +891,7 @@ const IPExplorerView = ({ dispatch, connections, reservedPorts, isFetchingConnec
                     </TableHead>
                     <TableBody>
                         {sortedData.slice(0, 500).map((row, index) => (
-                            <TableRow key={index} hover className="ip-table-row">
+                            <TableRow key={`${row.portNumber}-${row.jobname}-${index}`} hover className="ip-table-row">
                                 <TableCell align="right" style={styles.bodyCellNumeric}>{row.portNumber}</TableCell>
                                 <TableCell align="right" style={styles.bodyCellNumeric}>{row.portNumberEnd}</TableCell>
                                 <TableCell style={styles.bodyCell}>
@@ -745,7 +1012,7 @@ const IPExplorerView = ({ dispatch, connections, reservedPorts, isFetchingConnec
 
             {/* Toolbar - only in table mode */}
             {viewMode === 'table' && (
-                <div style={styles.toolbar} className="ip-fade-in">
+                <div style={styles.toolbar}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <TextField
                             placeholder="Search..."
@@ -807,16 +1074,19 @@ const IPExplorerView = ({ dispatch, connections, reservedPorts, isFetchingConnec
             )}
 
             {/* Content */}
-            <div style={{ flex: 1, overflow: 'auto' }}>
+            <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                 {viewMode === 'dashboard' ? (
                     <DashboardView
                         connections={connections}
                         reservedPorts={reservedPorts}
                         isFetching={isFetchingConnections}
                         error={connectionsError}
+                        onRefresh={handleRefresh}
                     />
                 ) : (
-                    activeTab === 0 ? renderConnectionsTable() : renderReservedPortsTable()
+                    <div style={{ flex: 1, overflow: 'auto' }}>
+                        {activeTab === 0 ? renderConnectionsTable() : renderReservedPortsTable()}
+                    </div>
                 )}
             </div>
 
@@ -840,7 +1110,7 @@ const IPExplorerView = ({ dispatch, connections, reservedPorts, isFetchingConnec
                         display: 'inline-block',
                     }} />
                     {(connectionsError || portsError) ? 'Error' : 'Connected'}
-                    {timestamp && viewMode === 'dashboard' && (
+                    {timestamp && (
                         <span style={{ marginLeft: '8px', fontSize: '10px' }}>{'\u2022'} {timestamp}</span>
                     )}
                 </span>
