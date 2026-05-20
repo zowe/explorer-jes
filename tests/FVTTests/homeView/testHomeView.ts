@@ -414,7 +414,7 @@ describe('JES explorer function verification tests', function () {
 
             // TODO:: Need to add tests for checking read only changes when looking at output file vs SJ
             it('Should be read only', async () => {
-                const textLines = await driver.findElements(By.css('.textviewContent > div > span'));
+                const textLines = await driver.findElements(By.css('.monaco-editor .view-lines .view-line span'));
                 expect(textLines)
                     .to.be.an('array')
                     .that.has.length.gte(1);
@@ -465,12 +465,12 @@ describe('JES explorer function verification tests', function () {
                 expect(await testWindowHeightChangeForcesComponentHeightChange(
                     driver, 'content-viewer', initialWindowHeight - contentViewerHeightInt)).to.be.true;
             });
-            it('Should handle resizing just the editor text area (embeddedEditor)', async () => {
-                const embeddedEditor = await driver.findElement(By.id('embeddedEditor'));
-                const embeddedEditorHeight = await embeddedEditor.getCssValue('height');
-                const embeddedEditorHeightInt = parseInt(embeddedEditorHeight.substr(0, embeddedEditorHeight.length - 2), 10);
+            it('Should handle resizing just the editor text area (content-viewer-body)', async () => {
+                const editorBody = await driver.findElement(By.id('content-viewer-body'));
+                const editorBodyHeight = await editorBody.getCssValue('height');
+                const editorBodyHeightInt = parseInt(editorBodyHeight.substr(0, editorBodyHeight.length - 2), 10);
                 expect(await testWindowHeightChangeForcesComponentHeightChange(
-                    driver, 'embeddedEditor', initialWindowHeight - embeddedEditorHeightInt)).to.be.true;
+                    driver, 'content-viewer-body', initialWindowHeight - editorBodyHeightInt)).to.be.true;
             });
         });
     });
