@@ -15,7 +15,6 @@ import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import IconButton from '@material-ui/core/IconButton';
 import JobTree from '../JobTree';
 import ConnectedContentViewer from '../ContentViewer';
-import ConnectedIPExplorerView from '../IPExplorerView';
 import LoginDialog from '../../components/dialogs/LoginDialog';
 import ConnectedSnackbar from '../../components/Snackbar';
 import debounce from '../../utilities/debouncer';
@@ -31,7 +30,6 @@ const HomeView = props => {
     const [collapsed, setCollapse] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [treeWidthPercent, setTreeWidth] = useState(gridOfTwelveCol3);
-    const [activeView, setActiveView] = useState('jes');
 
     useEffect(() => {
         const handleResize = () => {
@@ -126,18 +124,11 @@ const HomeView = props => {
         </div>
     );
 
-    const renderIPView = () => (
-        <div style={{ height: 'calc(100vh - 48px)', width: '100%' }}>
-            <ConnectedIPExplorerView />
-            <ConnectedSnackbar />
-        </div>
-    );
-
     if (validated) {
         return (
             <div className="row group" role="main" aria-label="Home" style={{ height: '100vh', overflow: 'hidden' }}>
-                <TopBar activeView={activeView} onViewChange={setActiveView} />
-                {activeView === 'jes' ? renderJESView() : renderIPView()}
+                <TopBar />
+                {renderJESView()}
             </div>
         );
     }

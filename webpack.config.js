@@ -29,6 +29,7 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 const copyArray = [{
     from: path.resolve(__dirname, './WebContent/zlux-hooks'),
@@ -99,13 +100,14 @@ if (debug) {
 
 const definePlugin = new webpack.DefinePlugin(defineEnvConstants);
 
-const plugins = debug ? [cleanTask, definePlugin, copyTask, htmlTask] : [cleanTask, definePlugin,
+const plugins = debug ? [cleanTask, definePlugin, copyTask, htmlTask, new MonacoWebpackPlugin({ languages: [] })] : [cleanTask, definePlugin,
     new CompressionPlugin({
         threshold: 100000,
         minRatio: 0.8,
     }),
     copyTask,
     htmlTask,
+    new MonacoWebpackPlugin({ languages: [] }),
 ];
 
 if (analyze) {

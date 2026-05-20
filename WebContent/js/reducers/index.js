@@ -14,7 +14,6 @@ import jobNodes from './jobNodes';
 import filters from './filters';
 import validation from './validation';
 import snackbarNotifications from './snackbarNotifications';
-import ipExplorer from './ipExplorer';
 
 const REDUCERS = {
     content,
@@ -22,6 +21,5 @@ const REDUCERS = {
     filters,
     validation,
     snackbarNotifications,
-    ipExplorer,
 };
 export default combineReducers(REDUCERS);

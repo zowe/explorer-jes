@@ -12,7 +12,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { List } from 'immutable';
 import { connect } from 'react-redux';
-import OrionEditor from 'orion-editor-component';
+import MonacoEditor from '../components/MonacoEditor';
+import { useThemeMode } from '../themes/ThemeContext';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
@@ -307,7 +308,7 @@ export class ContentViewer extends React.Component {
     }
 
     render() {
-        const { content, locationHost, selectedContent } = this.props;
+        const { content, selectedContent } = this.props;
         const cardTextStyle = { paddingTop: '0', paddingBottom: '0' };
         return (
             <Card
@@ -321,11 +322,10 @@ export class ContentViewer extends React.Component {
                     style={{ paddingBottom: 0, paddingTop: 0, whiteSpace: 'nowrap', overflowY: 'hidden', overflowX: 'auto', borderBottom: '1px solid var(--border-subtle)', background: 'var(--bg-surface)' }}
                 />
                 <CardContent id="content-viewer-body" style={cardTextStyle} role="tabpanel">
-                    <OrionEditor
+                    <MonacoEditor
                         content={(content.get(selectedContent) && content.get(selectedContent).content) || ' '}
-                        syntax="text/jclcontext"
-                        languageFilesHost={locationHost}
                         readonly={content.get(selectedContent) ? content.get(selectedContent).readOnly : true}
+                        theme={this.props.themeMode === 'light' ? 'zowe-light' : 'zowe-dark'}
                         editorReady={this.editorReady}
                         passContentToParent={this.getContent}
                     />
@@ -339,10 +339,10 @@ ContentViewer.propTypes = {
     content: PropTypes.instanceOf(List),
     dispatch: PropTypes.func.isRequired,
     selectedContent: PropTypes.number.isRequired,
-    locationHost: PropTypes.string,
     locationSearch: PropTypes.string,
     isSubmittingJCL: PropTypes.bool.isRequired,
     title: PropTypes.string.isRequired,
+    themeMode: PropTypes.string,
 };
 
 function mapStateToProps(state) {
@@ -356,5 +356,11 @@ function mapStateToProps(state) {
     };
 }
 
-const ConnectedContentViewer = connect(mapStateToProps)(ContentViewer);
+const ReduxConnectedContentViewer = connect(mapStateToProps)(ContentViewer);
+
+// Wrapper to inject theme context into class component
+const ConnectedContentViewer = (props) => {
+    const { mode } = useThemeMode();
+    return <ReduxConnectedContentViewer {...props} themeMode={mode} />;
+};
 export default ConnectedContentViewer;

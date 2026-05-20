@@ -25,7 +25,6 @@ import Brightness7Icon from '@material-ui/icons/Brightness7';
 import Popover from '@material-ui/core/Popover';
 import Tooltip from '@material-ui/core/Tooltip';
 import SettingForm from './Setting';
-import ViewSwitcher from './ViewSwitcher';
 import { useThemeMode } from '../themes/ThemeContext';
 
 const styles = {
@@ -50,14 +49,8 @@ const styles = {
         letterSpacing: '-0.3px',
         color: 'var(--text-primary)',
     },
-    version: {
-        opacity: 0.5,
-        fontSize: '10px',
-        fontWeight: 500,
-        color: 'var(--text-muted)',
-    },
 };
-const APP_VERSION = process.env.APP_VERSION;
+
 class TopBar extends React.Component {
     constructor(props) {
         super(props);
@@ -77,15 +70,9 @@ class TopBar extends React.Component {
 
     render() {
         const { anchorEl } = this.state;
-        const { validated, username, classes, activeView, onViewChange, themeMode, toggleTheme } = this.props;
+        const { validated, username, classes, themeMode, toggleTheme } = this.props;
         const open = Boolean(anchorEl);
         const id = open ? 'simple-popover' : undefined;
-        const titleStyle = {
-            fontWeight: 700,
-            fontSize: '15px',
-            letterSpacing: '-0.3px',
-            color: 'var(--text-primary)',
-        };
         return (
             <AppBar position="static" id="app-bar" elevation={0}>
                 <Toolbar
@@ -93,9 +80,8 @@ class TopBar extends React.Component {
                     variant="dense"
                 >
                     <Typography type="title" color="inherit" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={titleStyle}>Zowe Explorer</span>
+                        <span className={classes.title}>Zowe Explorer</span>
                     </Typography>
-                    {onViewChange && <ViewSwitcher activeView={activeView} onViewChange={onViewChange} />}
                     <div style={{ flex: 1 }} />
                     <Tooltip title={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'} placement="bottom">
                         <IconButton color="inherit" onClick={toggleTheme} style={{ marginRight: '4px' }}>
@@ -127,11 +113,11 @@ class TopBar extends React.Component {
                         <SettingForm />
                     </Popover>
                     {
-                        <Tooltip title={username} placement="bottom">
+                        validated && <Tooltip title={username} placement="bottom">
                             <IconButton color="inherit">
                                 <Avatar className={classes.small}>{username.charAt(0).toUpperCase()}</Avatar>
                             </IconButton>
-                        </Tooltip> && validated
+                        </Tooltip>
                     }
                 </Toolbar>
             </AppBar>
@@ -142,8 +128,6 @@ class TopBar extends React.Component {
 TopBar.propTypes = {
     validated: PropTypes.bool.isRequired,
     username: PropTypes.string.isRequired,
-    activeView: PropTypes.string,
-    onViewChange: PropTypes.func,
     themeMode: PropTypes.string,
     toggleTheme: PropTypes.func,
     // eslint-disable-next-line react/forbid-prop-types
