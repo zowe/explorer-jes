@@ -107,8 +107,7 @@
     ],
     "exclude": [
       "tests",
-      "WebContent/js/themes",
-      "WebContent/js/resources/languages"
+      "WebContent/js/themes"
     ]
   },
   "repository": "zowe/explorer-jes",

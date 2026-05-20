@@ -225,7 +225,7 @@ describe('JES explorer function verification tests', function () {
                     expect(fileLink).to.be.an('array').that.has.lengthOf.at.least(1);
                     await fileLink[0].click();
 
-                    const viewer = await driver.findElement(By.css('#embeddedEditor > div > div > .textviewContent'));
+                    const viewer = await driver.findElement(By.css('.monaco-editor .view-lines'));
                     const text = await viewer.getText();
                     expect(text).to.have.lengthOf.greaterThan(1);
                 });
@@ -374,8 +374,8 @@ describe('JES explorer function verification tests', function () {
                 expect(tabLabelText).to.contain(jobFileName);
             });
 
-            it('Should display file contents in Orion text area', async () => {
-                const textLineDivs = await driver.findElements(By.css('.textviewContent > div'));
+            it('Should display file contents in Monaco editor', async () => {
+                const textLineDivs = await driver.findElements(By.css('.monaco-editor .view-lines .view-line'));
                 expect(textLineDivs).to.be.an('array').that.has.length.gte(1);
             });
 

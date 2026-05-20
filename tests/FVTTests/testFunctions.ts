@@ -207,8 +207,8 @@ export async function getJobAndOpenFile(driver, ownerFilter, prefixFilter, statu
 
     // Check the job name/prefix is in the content
     await Promise.all(filterLinks.map(async () => {
-        const textviewContent = await driver.findElements(By.className('textviewContent'));
-        const text = await textviewContent[0].getText(textviewContent);
+        const monacoViewLines = await driver.findElements(By.css('.monaco-editor .view-lines'));
+        const text = await monacoViewLines[0].getText(monacoViewLines);
         return text.includes(prefixFilter);
     }));
 

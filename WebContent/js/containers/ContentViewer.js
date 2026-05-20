@@ -48,6 +48,11 @@ export class ContentViewer extends React.Component {
     componentDidMount() {
         window.addEventListener('resize', this.updateSubmitJCLButtonOffset);
     }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateSubmitJCLButtonOffset);
+    }
+
     // eslint-disable-next-line
     componentWillReceiveProps(nextProps) {
         const { locationSearch, content, dispatch } = this.props;

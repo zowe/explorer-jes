@@ -100,14 +100,35 @@ if (debug) {
 
 const definePlugin = new webpack.DefinePlugin(defineEnvConstants);
 
-const plugins = debug ? [cleanTask, definePlugin, copyTask, htmlTask, new MonacoWebpackPlugin({ languages: [] })] : [cleanTask, definePlugin,
+// Monaco Editor configuration:
+// - languages: [] = no built-in language contributions (we use custom JCL Monarch tokenizer)
+// - Only include minimal features needed for a JCL viewer/editor
+const monacoConfig = {
+    languages: [],
+    features: [
+        'bracketMatching',
+        'clipboard',
+        'contextmenu',
+        'cursorUndo',
+        'find',
+        'folding',
+        'fontZoom',
+        'hover',
+        'lineSelection',
+        'links',
+        'multicursor',
+        'wordHighlighter',
+    ],
+};
+
+const plugins = debug ? [cleanTask, definePlugin, copyTask, htmlTask, new MonacoWebpackPlugin(monacoConfig)] : [cleanTask, definePlugin,
     new CompressionPlugin({
         threshold: 100000,
         minRatio: 0.8,
     }),
     copyTask,
     htmlTask,
-    new MonacoWebpackPlugin({ languages: [] }),
+    new MonacoWebpackPlugin(monacoConfig),
 ];
 
 if (analyze) {
@@ -117,6 +138,7 @@ if (analyze) {
 const optimization = {
     minimize: prod,
     minimizer: debug ? [] : [new TerserPlugin({
+        parallel: false,
         terserOptions: {
             ecma: 8,
             compress: {

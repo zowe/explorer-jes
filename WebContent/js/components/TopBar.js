@@ -80,7 +80,7 @@ class TopBar extends React.Component {
                     variant="dense"
                 >
                     <Typography type="title" color="inherit" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className={classes.title}>Zowe Explorer</span>
+                        <span className={classes.title}>Jes Explorer</span>
                     </Typography>
                     <div style={{ flex: 1 }} />
                     <Tooltip title={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'} placement="bottom">
