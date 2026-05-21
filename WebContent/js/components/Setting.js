@@ -18,10 +18,18 @@ import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import styled from 'styled-components';
-import { ENABLE_REDUX_LOGGER, NOTIFICATION_DURATION, getStorageItem, setStorageItem } from '../utilities/storageHelper';
+import {
+    EDITOR_FONT_SIZE,
+    EDITOR_MINIMAP,
+    EDITOR_WORD_WRAP,
+    EDITOR_LINE_NUMBERS,
+    EDITOR_RENDER_WHITESPACE,
+    getStorageItem,
+    setStorageItem,
+} from '../utilities/storageHelper';
 
 const Settings = styled.div`
-    width: 220px;
+    width: 260px;
     padding: 20px;
     margin: 0;
     font-size: 13px;
@@ -70,67 +78,120 @@ class SettingFormBase extends React.Component {
         super(props);
 
         this.state = {
-            enableReduxLogger: getStorageItem(ENABLE_REDUX_LOGGER) || false,
-            notificationDuration: getStorageItem(NOTIFICATION_DURATION) || 5000,
+            fontSize: getStorageItem(EDITOR_FONT_SIZE) || 13,
+            minimap: getStorageItem(EDITOR_MINIMAP) !== false,
+            wordWrap: getStorageItem(EDITOR_WORD_WRAP) || 'off',
+            lineNumbers: getStorageItem(EDITOR_LINE_NUMBERS) || 'on',
+            renderWhitespace: getStorageItem(EDITOR_RENDER_WHITESPACE) || 'none',
         };
 
-        this.mapStorageKey = new Map();
-        this.mapStorageKey.set(ENABLE_REDUX_LOGGER, 'enableReduxLogger');
-        this.mapStorageKey.set(NOTIFICATION_DURATION, 'notificationDuration');
-
         this.handleChange = this.handleChange.bind(this);
+        this.handleSwitchChange = this.handleSwitchChange.bind(this);
     }
 
     handleChange = ev => {
-        let value = ev.target.value;
-        const key = this.mapStorageKey.get(ev.target.name);
-
-        if ('checked' in ev.target) {
-            value = ev.target.checked;
+        const { name, value } = ev.target;
+        const keyMap = {
+            [EDITOR_FONT_SIZE]: 'fontSize',
+            [EDITOR_WORD_WRAP]: 'wordWrap',
+            [EDITOR_LINE_NUMBERS]: 'lineNumbers',
+            [EDITOR_RENDER_WHITESPACE]: 'renderWhitespace',
+        };
+        const stateKey = keyMap[name];
+        if (stateKey) {
+            const parsedValue = name === EDITOR_FONT_SIZE ? parseInt(value, 10) : value;
+            this.setState({ [stateKey]: parsedValue });
+            setStorageItem(name, parsedValue);
         }
+    };
 
-        this.setState({
-            [key]: value,
-        });
-
-        setStorageItem(ev.target.name, value);
+    handleSwitchChange = ev => {
+        const { name, checked } = ev.target;
+        if (name === EDITOR_MINIMAP) {
+            this.setState({ minimap: checked });
+            setStorageItem(name, checked);
+        }
     };
 
     render() {
-        const { notificationDuration, enableReduxLogger } = this.state;
+        const { fontSize, minimap, wordWrap, lineNumbers, renderWhitespace } = this.state;
         const { classes } = this.props;
         return (
             <Settings>
-                <Heading3>Preferences</Heading3>
+                <Heading3>Editor Preferences</Heading3>
                 <form>
-                    <H3>App</H3>
+                    <H3>Appearance</H3>
                     <SettingSection>
                         <FormControl>
                             <TextField
                                 select={true}
-                                label="Notification Duration"
-                                value={notificationDuration.toString()}
+                                label="Font Size"
+                                value={fontSize.toString()}
                                 onChange={this.handleChange}
-                                name={NOTIFICATION_DURATION}
+                                name={EDITOR_FONT_SIZE}
                             >
-                                <MenuItem id="notification-small" key="small" value="5000">Small(5s)</MenuItem>
-                                <MenuItem id="notification-medium" key="medium" value="10000">Medium(10s)</MenuItem>
-                                <MenuItem id="notification-large" key="large" value="15000">Large(15s)</MenuItem>
+                                <MenuItem key="11" value="11">11px</MenuItem>
+                                <MenuItem key="12" value="12">12px</MenuItem>
+                                <MenuItem key="13" value="13">13px</MenuItem>
+                                <MenuItem key="14" value="14">14px</MenuItem>
+                                <MenuItem key="15" value="15">15px</MenuItem>
+                                <MenuItem key="16" value="16">16px</MenuItem>
                             </TextField>
                         </FormControl>
-                    </SettingSection>
-                    <H3>Logging</H3>
-                    <SettingSection>
                         <FormControl>
                             <FormControlLabel
                                 control={(<Switch
-                                    name={ENABLE_REDUX_LOGGER}
-                                    checked={enableReduxLogger}
-                                    onChange={this.handleChange}
+                                    name={EDITOR_MINIMAP}
+                                    checked={minimap}
+                                    onChange={this.handleSwitchChange}
                                 />)}
-                                label="Browser Console Logging"
+                                label="Minimap"
                                 classes={{ label: classes.customizeLabel }}
                             />
+                        </FormControl>
+                    </SettingSection>
+                    <H3>Editor Behavior</H3>
+                    <SettingSection>
+                        <FormControl>
+                            <TextField
+                                select={true}
+                                label="Word Wrap"
+                                value={wordWrap}
+                                onChange={this.handleChange}
+                                name={EDITOR_WORD_WRAP}
+                            >
+                                <MenuItem key="off" value="off">Off</MenuItem>
+                                <MenuItem key="on" value="on">On</MenuItem>
+                                <MenuItem key="wordWrapColumn" value="wordWrapColumn">At Column 80</MenuItem>
+                                <MenuItem key="bounded" value="bounded">Bounded</MenuItem>
+                            </TextField>
+                        </FormControl>
+                        <FormControl>
+                            <TextField
+                                select={true}
+                                label="Line Numbers"
+                                value={lineNumbers}
+                                onChange={this.handleChange}
+                                name={EDITOR_LINE_NUMBERS}
+                            >
+                                <MenuItem key="on" value="on">On</MenuItem>
+                                <MenuItem key="off" value="off">Off</MenuItem>
+                                <MenuItem key="relative" value="relative">Relative</MenuItem>
+                            </TextField>
+                        </FormControl>
+                        <FormControl>
+                            <TextField
+                                select={true}
+                                label="Render Whitespace"
+                                value={renderWhitespace}
+                                onChange={this.handleChange}
+                                name={EDITOR_RENDER_WHITESPACE}
+                            >
+                                <MenuItem key="none" value="none">None</MenuItem>
+                                <MenuItem key="boundary" value="boundary">Boundary</MenuItem>
+                                <MenuItem key="selection" value="selection">Selection</MenuItem>
+                                <MenuItem key="all" value="all">All</MenuItem>
+                            </TextField>
                         </FormControl>
                     </SettingSection>
                 </form>

@@ -160,7 +160,7 @@ class JobInstance extends React.Component {
         this.setState({ preventSingleClick: true });
         this.setState({ keyEnterCount: 0 });
         if (this.isFileOpen(fileLabel)) {
-            this.findAndSwitchToContent(job, fileLabel);
+            this.findAndSwitchToContent(fileLabel);
         } else {
             dispatch(fetchConcatenatedJobFiles(job.get('jobName'), job.get('jobId')));
         }
@@ -189,7 +189,7 @@ class JobInstance extends React.Component {
         const { dispatch, job } = this.props;
         const fileLabel = getFileLabel(job.get('jobId'), 'JCL');
         if (this.isFileOpen(fileLabel)) {
-            this.findAndSwitchToContent(job, fileLabel);
+            this.findAndSwitchToContent(fileLabel);
         } else {
             dispatch(getJCL(job.get('jobName'), job.get('jobId')));
         }
@@ -327,9 +327,9 @@ class JobInstance extends React.Component {
                             aria-expanded={job.get('isToggled').toString()}
                             aria-level="1"
                             aria-haspopup={true}
-                            style={this.state.menuVisible ? { border: '1px solid var(--accent-indigo)', borderRadius: '6px' }
-                                : job.get('selectionType') === 'selected' ? { background: 'rgba(99, 102, 241, 0.08)', border: '1px solid var(--accent-indigo)', borderRadius: '6px' }
-                                    : job.get('selectionType') === 'highlighted' ? { background: 'rgba(99, 102, 241, 0.05)', border: 'none', borderRadius: '6px' }
+                            style={this.state.menuVisible ? { background: 'rgba(99, 102, 241, 0.1)' }
+                                : job.get('selectionType') === 'selected' ? { background: 'rgba(99, 102, 241, 0.1)' }
+                                    : job.get('selectionType') === 'highlighted' ? { background: 'rgba(99, 102, 241, 0.05)' }
                                         : null}
                         >
                             <LabelIcon className="node-icon" />

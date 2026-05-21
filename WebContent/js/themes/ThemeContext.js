@@ -12,7 +12,7 @@ import React, { createContext, useContext, useState, useMemo } from 'react';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 
 const ThemeContext = createContext({
-    mode: 'dark',
+    mode: 'light',
     toggleTheme: () => {},
 });
 
@@ -221,9 +221,9 @@ function buildTheme(mode) {
 export function ThemeProviderWrapper({ children }) {
     const [mode, setMode] = useState(() => {
         try {
-            return localStorage.getItem('jes-explorer-theme') || 'dark';
+            return localStorage.getItem('jes-explorer-theme') || 'light';
         } catch (e) {
-            return 'dark';
+            return 'light';
         }
     });
 

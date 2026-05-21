@@ -107,23 +107,27 @@ class JobNodeTree extends React.Component {
         const NOT_EXPANDED_FILTER_OFFSET_HEIGHT = 148;
         const EXPANDED_FILTER_OFFSET_HEIGHT = 381;
         return (
-            <Card class="tree-card">
+            <Card className="tree-card">
                 <CardHeader
                     subheader={this.getFilterValues()}
                     style={{ padding: '12px 16px 4px', borderBottom: 'none' }}
                     subheaderTypographyProps={{ style: { color: 'inherit', fontSize: '12px', fontWeight: 500, letterSpacing: '0.3px' } }}
                 />
-                <div style={{ paddingRight: '16px', textAlign: 'right', color: 'var(--accent-indigo)', display: jobs.size > 0 ? '' : 'none', fontSize: '12px', fontWeight: 600 }}>
-                    Jobs Found:
-                    {jobs.size}
+                <div style={{ padding: '0 16px', display: 'flex', alignItems: 'center' }}>
+                    {jobs.size > 0 && (
+                        <div style={{ color: 'var(--accent-indigo)', fontSize: '12px', fontWeight: 600 }}>
+                            Jobs Found: {jobs.size}
+                        </div>
+                    )}
+                    <div style={{ marginLeft: 'auto' }}>
+                        <RefreshIcon
+                            isFetching={isFetching}
+                            submitAction={() => { return dispatch(fetchJobs(this.props)); }}
+                        />
+                    </div>
                 </div>
                 <CardContent id="tree-text-content">
                     <ConnectedFilter updateFiltersToggledFunc={this.updateFiltersToggled} />
-                    <RefreshIcon
-                        isFetching={isFetching}
-                        submitAction={() => { return dispatch(fetchJobs(this.props)); }}
-                        dispatch={dispatch}
-                    />
                     <FullHeightTree offset={this.state.filtersToggled ? EXPANDED_FILTER_OFFSET_HEIGHT : NOT_EXPANDED_FILTER_OFFSET_HEIGHT}>
                         <ul id="job-list" role="tree">
                             {this.renderJobs()}

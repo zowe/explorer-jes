@@ -55,12 +55,19 @@ export class ContentViewer extends React.Component {
 
     // eslint-disable-next-line
     componentWillReceiveProps(nextProps) {
-        const { locationSearch, content, dispatch } = this.props;
+        const { locationSearch, content, dispatch, selectedContent } = this.props;
         const { content: newContent } = nextProps;
         if (locationSearch && locationSearch !== nextProps.locationSearch) {
             window.location.reload();
         }
         if (newContent.size > content.size) {
+            // Save current edits before auto-switching to new tab
+            const currentTab = content.get(selectedContent);
+            if (this.state.currentContent && currentTab
+                && this.state.currentContent !== currentTab.content) {
+                dispatch(updateContent(this.state.currentContent));
+            }
+            this.setState({ currentContent: '' });
             dispatch(changeSelectedContent(newContent.size - 1));
         }
     }
@@ -99,15 +106,23 @@ export class ContentViewer extends React.Component {
 
     handleSelectedTabChange(newTabIndex) {
         const { selectedContent, content, dispatch } = this.props;
-        if (this.state.currentContent !== content.get(selectedContent).content) {
+        const currentTabContent = content.get(selectedContent);
+        // Only save edits if user actually modified the content
+        if (this.state.currentContent && currentTabContent
+            && this.state.currentContent !== currentTabContent.content) {
             dispatch(updateContent(this.state.currentContent));
         }
+        // Reset currentContent for the new tab
+        const newTab = content.get(newTabIndex);
+        this.setState({ currentContent: newTab ? newTab.content || '' : '' });
         dispatch(changeSelectedContent(newTabIndex));
     }
 
     handleCloseTab(removeIndex) {
         const { selectedContent, dispatch } = this.props;
         dispatch(removeContent(removeIndex));
+        // Reset content state so stale edits don't bleed into adjacent tab
+        this.setState({ currentContent: '' });
         // Do we need to change the selectedContent
         if (removeIndex <= selectedContent && selectedContent >= 1) {
             dispatch(changeSelectedContent(selectedContent - 1));
@@ -125,6 +140,7 @@ export class ContentViewer extends React.Component {
                 dispatch(changeSelectedContent(index));
             }
         }
+        this.setState({ currentContent: '' });
     }
 
     handleCloseLeftTabs(index) {
@@ -139,6 +155,7 @@ export class ContentViewer extends React.Component {
                 dispatch(changeSelectedContent(0));
             }
         }
+        this.setState({ currentContent: '' });
     }
 
     handleCloseAllExceptTabs(index) {
@@ -160,6 +177,7 @@ export class ContentViewer extends React.Component {
             }
             dispatch(changeSelectedContent(0));
         }
+        this.setState({ currentContent: '' });
     }
 
     handleCloseAllTabs() {
@@ -168,6 +186,7 @@ export class ContentViewer extends React.Component {
         for (let index = 0; index < openedFilesCount; index++) {
             dispatch(removeContent(0));
         }
+        this.setState({ currentContent: '' });
     }
 
     handleKeyDownOnContentTabLabel(e, index) {
@@ -261,7 +280,7 @@ export class ContentViewer extends React.Component {
                                     onKeyDown={e => { if (e.key === 'Enter') this.handleCloseTab(index); }}
                                 />
                             </div>
-                            {tabContent.isFetching ? <LinearProgress class="progress-bar" style={{ width: '100%', height: '2px' }} /> : null}
+                            {tabContent.isFetching ? <LinearProgress className="progress-bar" style={{ width: '100%', height: '2px' }} /> : null}
                             {this.renderTabContextMenu(index)}
                         </ContextMenuTrigger>
                     </div>
@@ -328,7 +347,7 @@ export class ContentViewer extends React.Component {
                 />
                 <CardContent id="content-viewer-body" style={cardTextStyle} role="tabpanel">
                     <MonacoEditor
-                        content={(content.get(selectedContent) && content.get(selectedContent).content) || ' '}
+                        content={(content.get(selectedContent) && content.get(selectedContent).content) || ''}
                         readonly={content.get(selectedContent) ? content.get(selectedContent).readOnly : true}
                         theme={this.props.themeMode === 'light' ? 'zowe-light' : 'zowe-dark'}
                         editorReady={this.editorReady}

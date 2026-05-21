@@ -11,6 +11,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as monaco from 'monaco-editor';
+import {
+    EDITOR_FONT_SIZE,
+    EDITOR_MINIMAP,
+    EDITOR_WORD_WRAP,
+    EDITOR_LINE_NUMBERS,
+    EDITOR_RENDER_WHITESPACE,
+    getStorageItem,
+} from '../utilities/storageHelper';
 
 // ─── JCL Language Definition (Monarch Tokenizer) ────────────────────────────
 const JCL_LANGUAGE_ID = 'jcl';
@@ -130,6 +138,37 @@ function ensureRegistered() {
     monaco.languages.setMonarchTokensProvider(JCL_LANGUAGE_ID, JCL_MONARCH_TOKENS);
     monaco.editor.defineTheme('zowe-dark', ZOWE_DARK_THEME);
     monaco.editor.defineTheme('zowe-light', ZOWE_LIGHT_THEME);
+
+    // JCL folding: fold on JOB/EXEC/PROC boundaries
+    monaco.languages.registerFoldingRangeProvider(JCL_LANGUAGE_ID, {
+        provideFoldingRanges(model) {
+            const lines = model.getLineCount();
+            const ranges = [];
+            const stepStarts = [];
+
+            for (let i = 1; i <= lines; i++) {
+                const line = model.getLineContent(i);
+                // Detect step/job boundaries: //name EXEC or //name JOB
+                if (/^\/\/\S+\s+(EXEC|JOB|PROC)\b/i.test(line)) {
+                    stepStarts.push(i);
+                }
+            }
+
+            // Create ranges between consecutive steps
+            for (let i = 0; i < stepStarts.length; i++) {
+                const start = stepStarts[i];
+                const end = (i + 1 < stepStarts.length) ? stepStarts[i + 1] - 1 : lines;
+                if (end > start) {
+                    ranges.push({
+                        start,
+                        end,
+                        kind: monaco.languages.FoldingRangeKind.Region,
+                    });
+                }
+            }
+            return ranges;
+        },
+    });
 }
 
 /**
@@ -142,6 +181,8 @@ class MonacoEditor extends React.Component {
         this.containerRef = React.createRef();
         this.editor = null;
         this.resizeObserver = null;
+        this.changeListener = null;
+        this._suppressChangeEvent = false;
     }
 
     componentDidMount() {
@@ -169,7 +210,13 @@ class MonacoEditor extends React.Component {
         if (prevProps.content !== this.props.content) {
             const model = this.editor.getModel();
             if (model && model.getValue() !== this.props.content) {
+                this._suppressChangeEvent = true;
                 model.setValue(this.props.content || '');
+                this._suppressChangeEvent = false;
+                // Sync parent state so submit/save uses correct content
+                if (this.props.passContentToParent) {
+                    this.props.passContentToParent(this.props.content || '');
+                }
             }
         }
 
@@ -180,11 +227,15 @@ class MonacoEditor extends React.Component {
 
         // Update theme
         if (prevProps.theme !== this.props.theme) {
-            monaco.editor.setTheme(this.props.theme || 'zowe-dark');
+            monaco.editor.setTheme(this.props.theme || 'zowe-light');
         }
     }
 
     componentWillUnmount() {
+        if (this.changeListener) {
+            this.changeListener.dispose();
+            this.changeListener = null;
+        }
         if (this.resizeObserver) {
             this.resizeObserver.disconnect();
         }
@@ -199,26 +250,43 @@ class MonacoEditor extends React.Component {
         const container = this.containerRef.current;
         if (!container) return;
 
+        // Read user preferences from localStorage
+        const storedFontSize = getStorageItem(EDITOR_FONT_SIZE);
+        const storedMinimap = getStorageItem(EDITOR_MINIMAP);
+        const storedWordWrap = getStorageItem(EDITOR_WORD_WRAP);
+        const storedLineNumbers = getStorageItem(EDITOR_LINE_NUMBERS);
+        const storedRenderWhitespace = getStorageItem(EDITOR_RENDER_WHITESPACE);
+
         this.editor = monaco.editor.create(container, {
             value: content || '',
             language: JCL_LANGUAGE_ID,
-            theme: theme || 'zowe-dark',
+            theme: theme || 'zowe-light',
             readOnly: readonly !== false,
             automaticLayout: false,
-            minimap: { enabled: true, maxColumn: 80 },
-            fontSize: 13,
+            minimap: { enabled: storedMinimap !== false, maxColumn: 80 },
+            fontSize: storedFontSize || 13,
             fontFamily: "'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace",
             fontLigatures: true,
-            lineNumbers: 'on',
+            lineNumbers: storedLineNumbers || 'on',
             renderLineHighlight: 'line',
             scrollBeyondLastLine: false,
-            wordWrap: 'off',
-            rulers: [72, 80],
+            wordWrap: storedWordWrap || 'off',
+            wordWrapColumn: 80,
+            rulers: [],
             smoothScrolling: true,
             cursorBlinking: 'smooth',
             cursorSmoothCaretAnimation: 'on',
             bracketPairColorization: { enabled: true },
             padding: { top: 8 },
+            renderWhitespace: storedRenderWhitespace || 'none',
+            folding: true,
+            foldingStrategy: 'auto',
+            showFoldingControls: 'mouseover',
+            find: {
+                addExtraSpaceOnTop: false,
+                autoFindInSelection: 'never',
+                seedSearchStringFromSelection: 'selection',
+            },
             scrollbar: {
                 verticalScrollbarSize: 8,
                 horizontalScrollbarSize: 8,
@@ -226,8 +294,15 @@ class MonacoEditor extends React.Component {
             overviewRulerLanes: 0,
         });
 
-        // Pass content changes back to parent
-        this.editor.onDidChangeModelContent(() => {
+        // Pass content changes back to parent (suppress during programmatic setValue)
+        this.changeListener = this.editor.onDidChangeModelContent(() => {
+            if (!this._suppressChangeEvent && this.props.passContentToParent) {
+                this.props.passContentToParent(this.editor.getValue());
+            }
+        });
+
+        // Ctrl+S keyboard shortcut to trigger save/submit
+        this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
             if (this.props.passContentToParent) {
                 this.props.passContentToParent(this.editor.getValue());
             }
@@ -255,7 +330,7 @@ MonacoEditor.propTypes = {
 MonacoEditor.defaultProps = {
     content: '',
     readonly: true,
-    theme: 'zowe-dark',
+    theme: 'zowe-light',
 };
 
 export default MonacoEditor;
