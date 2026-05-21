@@ -23,7 +23,7 @@ import Button from '@material-ui/core/Button';
 import CircularProgressIcon from '@material-ui/core/CircularProgress';
 import queryString from 'query-string';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
-import { fetchJobFileNoName, removeContent, updateContent, changeSelectedContent, submitJCL } from '../actions/content';
+import { fetchJobFileNoName, removeContent, updateContent, updateContentAtIndex, changeSelectedContent, submitJCL } from '../actions/content';
 
 export class ContentViewer extends React.Component {
     constructor(props) {
@@ -38,6 +38,7 @@ export class ContentViewer extends React.Component {
         this.handleKeyDownOnContentTabLabel = this.handleKeyDownOnContentTabLabel.bind(this);
 
         this.fileTabs = [];
+        this._tabSwitchInternal = false;
         this.state = {
             height: 0, // eslint-disable-line
             currentContent: '',
@@ -68,13 +69,27 @@ export class ContentViewer extends React.Component {
                 dispatch(updateContent(this.state.currentContent));
             }
             this.setState({ currentContent: '' });
+            this._tabSwitchInternal = true;
             dispatch(changeSelectedContent(newContent.size - 1));
         }
     }
 
     componentDidUpdate(prevProp) {
-        const { selectedContent, title } = this.props;
+        const { selectedContent, content, dispatch, title } = this.props;
         if (selectedContent !== prevProp.selectedContent) {
+            // Auto-save edits when tab switches externally (from tree clicks)
+            if (!this._tabSwitchInternal) {
+                const prevTab = prevProp.content.get(prevProp.selectedContent);
+                if (this.state.currentContent && prevTab
+                    && this.state.currentContent !== prevTab.content) {
+                    // Use updateContentAtIndex to save to the PREVIOUS tab, not current
+                    dispatch(updateContentAtIndex(this.state.currentContent, prevProp.selectedContent));
+                }
+                // Initialize currentContent with the new tab's content
+                const newTab = content.get(selectedContent);
+                this.setState({ currentContent: newTab ? newTab.content || '' : '' });
+            }
+            this._tabSwitchInternal = false;
             this.focusToActiveTab();
         }
         document.title = title;
@@ -106,6 +121,7 @@ export class ContentViewer extends React.Component {
 
     handleSelectedTabChange(newTabIndex) {
         const { selectedContent, content, dispatch } = this.props;
+        if (newTabIndex === selectedContent) return; // Already on this tab
         const currentTabContent = content.get(selectedContent);
         // Only save edits if user actually modified the content
         if (this.state.currentContent && currentTabContent
@@ -115,16 +131,20 @@ export class ContentViewer extends React.Component {
         // Reset currentContent for the new tab
         const newTab = content.get(newTabIndex);
         this.setState({ currentContent: newTab ? newTab.content || '' : '' });
+        this._tabSwitchInternal = true;
         dispatch(changeSelectedContent(newTabIndex));
     }
 
     handleCloseTab(removeIndex) {
         const { selectedContent, dispatch } = this.props;
         dispatch(removeContent(removeIndex));
-        // Reset content state so stale edits don't bleed into adjacent tab
-        this.setState({ currentContent: '' });
+        // Only reset content state when the selected tab itself is being closed
+        if (removeIndex === selectedContent) {
+            this.setState({ currentContent: '' });
+        }
         // Do we need to change the selectedContent
         if (removeIndex <= selectedContent && selectedContent >= 1) {
+            this._tabSwitchInternal = true;
             dispatch(changeSelectedContent(selectedContent - 1));
         }
     }
@@ -137,10 +157,13 @@ export class ContentViewer extends React.Component {
                 dispatch(removeContent(index + 1));
             }
             if (index < selectedContent) {
+                // Selected tab was closed, switch and reset
+                this._tabSwitchInternal = true;
                 dispatch(changeSelectedContent(index));
+                this.setState({ currentContent: '' });
             }
+            // else: selected tab is preserved, keep currentContent
         }
-        this.setState({ currentContent: '' });
     }
 
     handleCloseLeftTabs(index) {
@@ -149,18 +172,22 @@ export class ContentViewer extends React.Component {
             for (let removeIndex = 0; removeIndex < index; removeIndex++) {
                 dispatch(removeContent(0));
             }
-            if (index < selectedContent) {
-                dispatch(changeSelectedContent(selectedContent - index));
-            } else {
+            this._tabSwitchInternal = true;
+            if (selectedContent < index) {
+                // Selected tab was in the closed range, reset
                 dispatch(changeSelectedContent(0));
+                this.setState({ currentContent: '' });
+            } else {
+                // Selected tab survives, just shifted left
+                dispatch(changeSelectedContent(selectedContent - index));
             }
         }
-        this.setState({ currentContent: '' });
     }
 
     handleCloseAllExceptTabs(index) {
         const { selectedContent, dispatch } = this.props;
         const openedFilesCount = this.props.content.size;
+        this._tabSwitchInternal = true;
         if (index < openedFilesCount - 1) {
             for (let removeIndex = index + 1; removeIndex < openedFilesCount; removeIndex++) {
                 dispatch(removeContent(index + 1));
@@ -177,7 +204,10 @@ export class ContentViewer extends React.Component {
             }
             dispatch(changeSelectedContent(0));
         }
-        this.setState({ currentContent: '' });
+        // Only reset if the surviving tab was not the one being edited
+        if (selectedContent !== index) {
+            this.setState({ currentContent: '' });
+        }
     }
 
     handleCloseAllTabs() {

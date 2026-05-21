@@ -15,6 +15,7 @@ import {
     RECEIVE_CONTENT,
     REMOVE_CONTENT,
     UPDATE_CONTENT,
+    UPDATE_CONTENT_AT_INDEX,
     CHANGE_SELECTED_CONTENT,
     REQUEST_SUBMIT_JCL,
     RECEIVE_SUBMIT_JCL,
@@ -48,30 +49,26 @@ function getIndexOfContentFromId(contentList, label, fileId) {
 export default function content(state = INITIAL_CONTENT_STATE, action) {
     switch (action.type) {
         case REQUEST_CONTENT:
-            return state.merge({
-                content: state.get('content').push({
+            return state.set('content', state.get('content').push({
+                label: action.fileLabel,
+                id: action.fileLabel + action.fileId,
+                content: '',
+                isFetching: true,
+            }));
+        case REFRESH_CONTENT:
+            return state.set('content', state.get('content').set(
+                getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId),
+                {
                     label: action.fileLabel,
                     id: action.fileLabel + action.fileId,
                     content: '',
                     isFetching: true,
-                }),
-            });
-        case REFRESH_CONTENT:
-            return state.merge({
-                content: state.get('content').set(
-                    getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId),
-                    {
-                        label: action.fileLabel,
-                        id: action.fileLabel + action.fileId,
-                        content: '',
-                        isFetching: true,
-                    },
-                ),
-            });
+                },
+            ));
         case RECEIVE_CONTENT:
-            return state.merge({
-                title: `${DEFAULT_TITLE} [${action.fileLabel}]`,
-                content: state.get('content').set(
+            return state
+                .set('title', `${DEFAULT_TITLE} [${action.fileLabel}]`)
+                .set('content', state.get('content').set(
                     getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId),
                     {
                         label: action.fileLabel,
@@ -80,44 +77,53 @@ export default function content(state = INITIAL_CONTENT_STATE, action) {
                         isFetching: false,
                         readOnly: action.readOnly,
                     },
-                ),
-            });
+                ));
         case REMOVE_CONTENT:
-            return state.merge({
-                title: `${DEFAULT_TITLE}`,
-                content: state.get('content').delete(action.index),
-            });
-        case UPDATE_CONTENT:
-            return state.merge({
-                content: state.get('content').set(state.get('selectedContent'), {
-                    label: state.get('content').get(state.get('selectedContent')).label,
-                    content: action.content,
-                    id: state.get('content').get(state.get('selectedContent')).id,
-                    isFetching: state.get('content').get(state.get('selectedContent')).isFetching,
-                    readOnly: state.get('content').get(state.get('selectedContent')).readOnly,
-                }),
-            });
-        case CHANGE_SELECTED_CONTENT:
-            return state.merge({
-                selectedContent: action.newSelectedContent,
-                title: `${DEFAULT_TITLE} [${state.get('content').get(action.newSelectedContent).label}]`,
-            });
+            return state
+                .set('title', `${DEFAULT_TITLE}`)
+                .set('content', state.get('content').delete(action.index));
+        case UPDATE_CONTENT: {
+            const selectedIdx = state.get('selectedContent');
+            const currentTab = state.get('content').get(selectedIdx);
+            if (!currentTab) return state;
+            return state.set('content', state.get('content').set(selectedIdx, {
+                label: currentTab.label,
+                content: action.content,
+                id: currentTab.id,
+                isFetching: currentTab.isFetching,
+                readOnly: currentTab.readOnly,
+            }));
+        }
+        case UPDATE_CONTENT_AT_INDEX: {
+            const targetTab = state.get('content').get(action.index);
+            if (!targetTab) return state;
+            return state.set('content', state.get('content').set(action.index, {
+                label: targetTab.label,
+                content: action.content,
+                id: targetTab.id,
+                isFetching: targetTab.isFetching,
+                readOnly: targetTab.readOnly,
+            }));
+        }
+        case CHANGE_SELECTED_CONTENT: {
+            const targetContent = state.get('content').get(action.newSelectedContent);
+            const newTitle = targetContent
+                ? `${DEFAULT_TITLE} [${targetContent.label}]`
+                : DEFAULT_TITLE;
+            return state
+                .set('selectedContent', action.newSelectedContent)
+                .set('title', newTitle);
+        }
         case REQUEST_SUBMIT_JCL:
-            return state.merge({
-                isSubmittingJCL: true,
-            });
+            return state.set('isSubmittingJCL', true);
         case RECEIVE_SUBMIT_JCL:
-            return state.merge({
-                isSubmittingJCL: false,
-            });
+            return state.set('isSubmittingJCL', false);
         case INVALIDATE_SUBMIT_JCL:
-            return state.merge({
-                isSubmittingJCL: false,
-            });
+            return state.set('isSubmittingJCL', false);
         case INVALIDATE_CONTENT:
-            return state.merge({
-                content: state.get('content').delete(getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId)),
-            });
+            return state.set('content', state.get('content').delete(
+                getIndexOfContentFromId(state.get('content'), action.fileLabel, action.fileId),
+            ));
         default:
             return state;
     }

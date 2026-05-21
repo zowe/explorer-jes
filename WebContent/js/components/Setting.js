@@ -102,6 +102,7 @@ class SettingFormBase extends React.Component {
             const parsedValue = name === EDITOR_FONT_SIZE ? parseInt(value, 10) : value;
             this.setState({ [stateKey]: parsedValue });
             setStorageItem(name, parsedValue);
+            window.dispatchEvent(new CustomEvent('editor-settings-changed'));
         }
     };
 
@@ -110,6 +111,7 @@ class SettingFormBase extends React.Component {
         if (name === EDITOR_MINIMAP) {
             this.setState({ minimap: checked });
             setStorageItem(name, checked);
+            window.dispatchEvent(new CustomEvent('editor-settings-changed'));
         }
     };
 
@@ -195,7 +197,7 @@ class SettingFormBase extends React.Component {
                         </FormControl>
                     </SettingSection>
                 </form>
-                <H5 style={{ color: '#fb7185' }}>*Preferences change require reload</H5>
+                <H5 style={{ color: '#fb7185' }}>*Settings are applied in real-time</H5>
             </Settings>
         );
     }

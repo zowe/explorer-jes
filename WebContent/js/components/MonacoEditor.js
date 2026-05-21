@@ -197,6 +197,9 @@ class MonacoEditor extends React.Component {
         if (this.containerRef.current) {
             this.resizeObserver.observe(this.containerRef.current);
         }
+        // Listen for live settings changes from preferences panel
+        this._onSettingsChanged = () => { this.applySettings(); };
+        window.addEventListener('editor-settings-changed', this._onSettingsChanged);
         // Notify parent that editor is ready
         if (this.props.editorReady) {
             this.props.editorReady();
@@ -213,10 +216,10 @@ class MonacoEditor extends React.Component {
                 this._suppressChangeEvent = true;
                 model.setValue(this.props.content || '');
                 this._suppressChangeEvent = false;
-                // Sync parent state so submit/save uses correct content
-                if (this.props.passContentToParent) {
-                    this.props.passContentToParent(this.props.content || '');
-                }
+            }
+            // Always sync parent state when content prop changes (even if model was already correct)
+            if (this.props.passContentToParent) {
+                this.props.passContentToParent(this.props.content || '');
             }
         }
 
@@ -232,6 +235,7 @@ class MonacoEditor extends React.Component {
     }
 
     componentWillUnmount() {
+        window.removeEventListener('editor-settings-changed', this._onSettingsChanged);
         if (this.changeListener) {
             this.changeListener.dispose();
             this.changeListener = null;
@@ -243,6 +247,22 @@ class MonacoEditor extends React.Component {
             this.editor.dispose();
             this.editor = null;
         }
+    }
+
+    applySettings() {
+        if (!this.editor) return;
+        const storedFontSize = getStorageItem(EDITOR_FONT_SIZE);
+        const storedMinimap = getStorageItem(EDITOR_MINIMAP);
+        const storedWordWrap = getStorageItem(EDITOR_WORD_WRAP);
+        const storedLineNumbers = getStorageItem(EDITOR_LINE_NUMBERS);
+        const storedRenderWhitespace = getStorageItem(EDITOR_RENDER_WHITESPACE);
+        this.editor.updateOptions({
+            fontSize: storedFontSize || 13,
+            minimap: { enabled: storedMinimap !== false, maxColumn: 80 },
+            wordWrap: storedWordWrap || 'off',
+            lineNumbers: storedLineNumbers || 'on',
+            renderWhitespace: storedRenderWhitespace || 'none',
+        });
     }
 
     createEditor() {

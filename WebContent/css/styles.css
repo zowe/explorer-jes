@@ -5,39 +5,6 @@
 
 /* ===== DESIGN TOKENS ===== */
 :root {
-    --bg-deep: #06060f;
-    --bg-base: #0a0a1a;
-    --bg-surface: #0f1022;
-    --bg-elevated: #151635;
-    --bg-hover: #1a1c45;
-    --bg-glass: rgba(15, 16, 34, 0.85);
-    --border-subtle: rgba(99, 102, 241, 0.08);
-    --border-default: rgba(99, 102, 241, 0.15);
-    --border-accent: rgba(99, 102, 241, 0.35);
-    --text-primary: #eef0ff;
-    --text-secondary: #8b8fba;
-    --text-muted: #5a5d8a;
-    --accent-indigo: #818cf8;
-    --accent-violet: #a78bfa;
-    --accent-cyan: #22d3ee;
-    --accent-emerald: #34d399;
-    --accent-rose: #fb7185;
-    --accent-amber: #fbbf24;
-    --glow-indigo: 0 0 20px rgba(129, 140, 248, 0.15);
-    --glow-cyan: 0 0 20px rgba(34, 211, 238, 0.1);
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 14px;
-    --radius-xl: 20px;
-    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-smooth: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-spring: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
-}
-
-/* ===== LIGHT THEME TOKENS ===== */
-[data-theme="light"], [data-theme="light"] :root {
     --bg-deep: #f8fafc;
     --bg-base: #ffffff;
     --bg-surface: #f1f5f9;
@@ -58,6 +25,39 @@
     --accent-amber: #d97706;
     --glow-indigo: 0 2px 8px rgba(79, 70, 229, 0.1);
     --glow-cyan: 0 2px 8px rgba(8, 145, 178, 0.08);
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-spring: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+/* ===== DARK THEME TOKENS ===== */
+[data-theme="dark"] {
+    --bg-deep: #06060f;
+    --bg-base: #0a0a1a;
+    --bg-surface: #0f1022;
+    --bg-elevated: #151635;
+    --bg-hover: #1a1c45;
+    --bg-glass: rgba(15, 16, 34, 0.85);
+    --border-subtle: rgba(99, 102, 241, 0.08);
+    --border-default: rgba(99, 102, 241, 0.15);
+    --border-accent: rgba(99, 102, 241, 0.35);
+    --text-primary: #eef0ff;
+    --text-secondary: #8b8fba;
+    --text-muted: #5a5d8a;
+    --accent-indigo: #818cf8;
+    --accent-violet: #a78bfa;
+    --accent-cyan: #22d3ee;
+    --accent-emerald: #34d399;
+    --accent-rose: #fb7185;
+    --accent-amber: #fbbf24;
+    --glow-indigo: 0 0 20px rgba(129, 140, 248, 0.15);
+    --glow-cyan: 0 0 20px rgba(34, 211, 238, 0.1);
 }
 
 /* ===== SMOOTH THEME TRANSITION ===== */
@@ -349,66 +349,38 @@ body {
 
 /* ===== TOP BAR ===== */
 #app-bar {
-    background: linear-gradient(135deg, #0f1022 0%, #151635 50%, #1a1048 100%) !important;
-    box-shadow: 0 1px 0 var(--border-subtle), 0 4px 20px rgba(0,0,0,0.3) !important;
-    border-bottom: 1px solid var(--border-subtle) !important;
-    backdrop-filter: blur(20px) !important;
-}
-
-[data-theme="light"] #app-bar {
     background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%) !important;
     box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
     border-bottom: 1px solid rgba(0,0,0,0.06) !important;
+    backdrop-filter: blur(20px) !important;
 }
 
-/* Light theme text visibility fixes */
-[data-theme="light"] .MuiTab-root {
-    color: #475569 !important;
+[data-theme="dark"] #app-bar {
+    background: linear-gradient(135deg, #0f1022 0%, #151635 50%, #1a1048 100%) !important;
+    box-shadow: 0 1px 0 var(--border-subtle), 0 4px 20px rgba(0,0,0,0.3) !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
 }
 
-[data-theme="light"] .MuiTab-root.Mui-selected {
-    color: #4f46e5 !important;
+/* ===== DARK THEME COMPONENT OVERRIDES ===== */
+[data-theme="dark"] .react-contextmenu {
+    background-color: #151635;
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
-[data-theme="light"] .MuiInputBase-input,
-[data-theme="light"] .MuiInputBase-input::placeholder {
-    color: #1e293b !important;
-    opacity: 0.7;
+[data-theme="dark"] .react-contextmenu-item {
+    color: #eef0ff;
 }
 
-[data-theme="light"] .MuiInputLabel-root {
-    color: #475569 !important;
+[data-theme="dark"] .react-contextmenu-item:hover {
+    color: #818cf8;
+    background-color: rgba(129, 140, 248, 0.1);
 }
 
-[data-theme="light"] .react-contextmenu {
-    background-color: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-}
-
-[data-theme="light"] .react-contextmenu-item {
-    color: #1e293b;
-}
-
-[data-theme="light"] .react-contextmenu-item:hover {
-    color: #4f46e5;
-    background-color: rgba(79, 70, 229, 0.08);
-}
-
-[data-theme="light"] .job-label,
-[data-theme="light"] .job-file-label,
-[data-theme="light"] .node-label {
-    color: #1e293b;
-}
-
-[data-theme="light"] .node-icon {
-    color: #64748b;
-}
-
-[data-theme="light"] .MuiTooltip-tooltip {
-    background: #1e293b !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+[data-theme="dark"] .MuiTooltip-tooltip {
+    background: #151635 !important;
+    color: #eef0ff !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
 }
 
 /* ===== MUI OVERRIDES ===== */
