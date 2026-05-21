@@ -85,17 +85,9 @@ class JobNodeTree extends React.Component {
             });
         } else if (!isFetching) { // eslint-disable-line
             return (
-                <div
-                    className="job-instance"
-                    role="none"
-                >
-                    <li
-                        role="treeitem"
-                        aria-level="1"
-                    >
-                        <ErrorIcon className="node-icon" />
-                        <span className="job-label">{NO_JOBS_FOUND_MESSAGE}</span>
-                    </li>
+                <div className="empty-state" role="none" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '32px 16px' }}>
+                    <ErrorIcon style={{ fontSize: '32px', color: 'var(--text-muted)', opacity: 0.5, marginBottom: '8px' }} />
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: 500 }}>{NO_JOBS_FOUND_MESSAGE}</span>
                 </div>
             );
         }

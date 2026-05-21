@@ -13,7 +13,7 @@ import React from 'react';
 import { Map, List } from 'immutable';
 import { connect } from 'react-redux';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
-import Description from '@material-ui/icons/Description';
+import InsertDriveFileOutlinedIcon from '@material-ui/icons/InsertDriveFileOutlined';
 import { hideMenu } from 'react-contextmenu/modules/actions';
 import { encodeURLComponent } from '../utilities/urlUtils';
 import { fetchJobFile, getFileLabel, changeSelectedContent, downloadFile } from '../actions/content';
@@ -142,12 +142,13 @@ class JobFile extends React.Component {
 
     render() {
         const { job, file } = this.props;
+        const isOpen = this.isFileOpen();
         return (
-            <div>
+            <div className="job-file-wrapper">
                 <li className="job-file" role="none">
                     <ContextMenuTrigger id={`${job.get('jobId')}${file.id}`}>
                         <span
-                            className="content-link"
+                            className={`content-link file-row${isOpen ? ' file-row--open' : ''}`}
                             onClick={() => { this.openFile(); }}
                             onContextMenu={() => { this.handleContextMenu(); }}
                             onKeyDown={this.handleKeyDown}
@@ -155,12 +156,12 @@ class JobFile extends React.Component {
                             role="treeitem"
                             aria-level="2"
                             aria-haspopup={true}
-                            style={this.state.menuVisible ? { border: '1px solid rgba(129, 140, 248, 0.4)' }
-                                : file.selectionType === 'selected' ? { background: 'rgba(129, 140, 248, 0.12)', border: '1px solid rgba(129, 140, 248, 0.4)' }
-                                    : file.selectionType === 'highlighted' ? { background: 'rgba(129, 140, 248, 0.06)' }
+                            style={this.state.menuVisible ? { background: 'var(--bg-hover)' }
+                                : file.selectionType === 'selected' ? { background: 'rgba(99, 102, 241, 0.12)' }
+                                    : file.selectionType === 'highlighted' ? { background: 'rgba(99, 102, 241, 0.06)' }
                                         : null}
                         >
-                            <Description className="node-icon" />
+                            <InsertDriveFileOutlinedIcon className="file-icon" />
                             <span className="job-file-label">{file.label}</span>
                         </span>
                     </ContextMenuTrigger>

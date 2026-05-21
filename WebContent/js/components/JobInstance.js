@@ -12,13 +12,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Map, List } from 'immutable';
 import { connect } from 'react-redux';
-import LabelIcon from '@material-ui/icons/Label';
+import WorkOutlineIcon from '@material-ui/icons/WorkOutline';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { hideMenu } from 'react-contextmenu/modules/actions';
 import { fetchJobFiles, toggleJob, invertJobSelectStatus, unselectAllJobs, cancelJob, purgeJob, purgeJobs, getSelectedJobs, unselectAllJobFiles, highlightSelected } from '../actions/jobNodes';
 import { getJCL, getFileLabel, changeSelectedContent, fetchConcatenatedJobFiles, downloadAllJobFiles, downloadFile } from '../actions/content';
 import JobFile from './JobFile';
-import JobStep from './JobStep';
 import { encodeURLComponent } from '../utilities/urlUtils';
 
 class JobInstance extends React.Component {
@@ -208,9 +209,6 @@ class JobInstance extends React.Component {
 
     renderJobStatus() {
         const { job } = this.props;
-        const statusStyleActive = { display: 'inline', color: 'var(--accent-indigo)', fontWeight: 600, fontSize: '11px' };
-        const statusStyleAbend = { color: 'var(--accent-rose)', display: 'inline', fontWeight: 600, fontSize: '11px' };
-        const statusStyleComplete = { color: 'var(--text-muted)', display: 'inline', fontWeight: 500, fontSize: '11px' };
         const errorReturnCodes = ['abend', 'jcl error', 'sys fail', 'conv error', 'sec error'];
         const completeReturnCodes = ['cc', 'canceled'];
         const jobStatus = job.get('status');
@@ -220,18 +218,43 @@ class JobInstance extends React.Component {
                 if (jobReturnCode) {
                     const lowerCaseJobReturnCode = jobReturnCode.toLowerCase();
                     if (errorReturnCodes.find(errorReturnCode => { return lowerCaseJobReturnCode.includes(errorReturnCode); })) {
-                        return (<div style={statusStyleAbend}> [{jobReturnCode}]</div>);
+                        return (
+                            <span className="job-status job-status--error">
+                                <span className="job-status-dot" />
+                                {jobReturnCode}
+                            </span>
+                        );
                     }
                     if (completeReturnCodes.find(completeReturnCode => { return lowerCaseJobReturnCode.includes(completeReturnCode); })) {
-                        return (<div style={statusStyleComplete}> [{jobReturnCode}]</div>);
+                        return (
+                            <span className="job-status job-status--complete">
+                                <span className="job-status-dot" />
+                                {jobReturnCode}
+                            </span>
+                        );
                     }
-                    return (<div style={statusStyleComplete}> [{jobReturnCode}]</div>);
+                    return (
+                        <span className="job-status job-status--complete">
+                            <span className="job-status-dot" />
+                            {jobReturnCode}
+                        </span>
+                    );
                 }
-                return (<div style={statusStyleComplete}> [{jobStatus}]</div>);
+                return (
+                    <span className="job-status job-status--complete">
+                        <span className="job-status-dot" />
+                        {jobStatus}
+                    </span>
+                );
             }
-            return <div style={statusStyleActive}> [{jobStatus}]</div>;
+            return (
+                <span className="job-status job-status--active">
+                    <span className="job-status-dot" />
+                    {jobStatus}
+                </span>
+            );
         }
-        return <div style={statusStyleActive}> []</div>;
+        return null;
     }
 
     renderJobFiles() {
@@ -244,18 +267,7 @@ class JobInstance extends React.Component {
                 showDD={showDD}
                 dispatch={dispatch}
                 file={file}
-                style={file.selectionType === 'selected' ? { background: 'rgba(99, 102, 241, 0.12)', border: '1px solid var(--accent-indigo)', borderRadius: '6px' }
-                    : file.selectionType === 'highlighted' ? { background: 'rgba(99, 102, 241, 0.06)', border: null, borderRadius: '6px' } 
-                        : null}
             />);
-        });
-    }
-
-    // eslint-disable-next-line
-    renderJobSteps() {
-        const { job } = this.props;
-        return job.get('steps').map(step => {
-            return (<JobStep key={step.id} step={step} />);
         });
     }
 
@@ -308,6 +320,7 @@ class JobInstance extends React.Component {
 
     render() {
         const { job } = this.props;
+        const isToggled = job.get('isToggled');
 
         return (
             <div
@@ -317,14 +330,14 @@ class JobInstance extends React.Component {
                 <li role="none">
                     <ContextMenuTrigger id={job.get('label')}>
                         <span
-                            className="content-link"
+                            className="content-link job-row"
                             onClick={e => { this.handleSingleClick(e); }}
                             onContextMenu={e => { this.handleContextMenu(e); }}
                             onDoubleClick={() => { this.handleOpenAllFiles(); }}
                             tabIndex="0"
                             onKeyDown={this.handleKeyDown}
                             role="treeitem"
-                            aria-expanded={job.get('isToggled').toString()}
+                            aria-expanded={isToggled.toString()}
                             aria-level="1"
                             aria-haspopup={true}
                             style={this.state.menuVisible ? { background: 'rgba(99, 102, 241, 0.1)' }
@@ -332,18 +345,23 @@ class JobInstance extends React.Component {
                                     : job.get('selectionType') === 'highlighted' ? { background: 'rgba(99, 102, 241, 0.05)' }
                                         : null}
                         >
-                            <LabelIcon className="node-icon" />
+                            <span className="job-chevron">
+                                {isToggled
+                                    ? <ExpandMoreIcon className="chevron-icon" />
+                                    : <ChevronRightIcon className="chevron-icon" />
+                                }
+                            </span>
+                            <WorkOutlineIcon className="job-icon" />
                             <span className="job-label">
                                 {job.get('label')}
-                                {this.renderJobStatus()}
                             </span>
+                            {this.renderJobStatus()}
                         </span>
                     </ContextMenuTrigger>
-                    {job.get('isToggled') && (
+                    {isToggled && (
                         <ul
                             role="group"
                             className="job-files-list"
-                            style={{ margin: '2px 0 4px 18px', padding: '2px 0', listStyle: 'none' }}
                         >
                             {this.renderJobFiles(job)}
                         </ul>
