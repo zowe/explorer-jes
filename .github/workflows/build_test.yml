@@ -69,9 +69,9 @@ jobs:
         uses: zowe-actions/shared-actions/prepare-workflow@main
 
       - name: '[Prep 4] Setup Node'
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
 
       - name: '[Setup] NodeJS project setup'
         uses: zowe-actions/nodejs-actions/setup@main
@@ -148,9 +148,9 @@ jobs:
         uses: zowe-actions/shared-actions/prepare-workflow@main
           
       - name: '[Prep 5] Setup Node'
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
 
       - name: '[Setup] NodeJS project setup'
         uses: zowe-actions/nodejs-actions/setup@main
