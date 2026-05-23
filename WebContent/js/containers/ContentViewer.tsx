@@ -98,7 +98,7 @@ export class ContentViewer extends React.Component {
         dispatch(changeSelectedContent(newTabIndex));
     }
 
-    handleCloseTab(removeIndex) {
+    handleCloseTab(removeIndex: number) {
         const { selectedContent, dispatch } = this.props;
         dispatch(removeContent(removeIndex));
         // Do we need to change the selectedContent

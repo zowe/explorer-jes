@@ -12,7 +12,7 @@ export const ENABLE_REDUX_LOGGER = 'ZoweJes.enableReduxLogger';
 export const NOTIFICATION_DURATION = 'ZoweJes.notificationDuration';
 export const LAST_FILTERS = 'ZoweJes.lastFilters';
 
-export function getStorageItem(storageKey) {
+export function getStorageItem(storageKey: string) {
     try {
         return JSON.parse(window.localStorage.getItem(storageKey));
     } catch (err) {
@@ -20,6 +20,6 @@ export function getStorageItem(storageKey) {
     }
 }
 
-export function setStorageItem(storageKey, value) {
+export function setStorageItem(storageKey: string, value) {
     return window.localStorage.setItem(storageKey, value);
 }

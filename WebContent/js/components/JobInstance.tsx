@@ -138,12 +138,12 @@ class JobInstance extends React.Component {
         }
     }
 
-    isFileOpen(fileLabel) {
+    isFileOpen(fileLabel: string) {
         const { content } = this.props;
         return content.filter(x => { return x.label === fileLabel; }).size > 0;
     }
 
-    findAndSwitchToContent(fileLabel) {
+    findAndSwitchToContent(fileLabel: string) {
         const { content, dispatch } = this.props;
         content.forEach(x => {
             if (x.label === fileLabel) {

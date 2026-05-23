@@ -29,7 +29,7 @@ export const INVALIDATE_SUBMIT_JCL = 'INVALIDATE_SUBMIT_JCL';
 
 export const NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE = 'No Content in response from API';
 
-function requestContent(jobName, jobId, fileName, fileId, fileLabel, refreshFile) {
+function requestContent(jobName, jobId, fileName, fileId, fileLabel, refreshFile: boolean) {
     return {
         type: refreshFile ? REFRESH_CONTENT : REQUEST_CONTENT,
         jobName,
@@ -79,7 +79,7 @@ function dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, file
     throw Error(text || NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE);
 }
 
-export function fetchJobFile(jobName, jobId, fileName, fileId, refreshFile = undefined) {
+export function fetchJobFile(jobName, jobId, fileName, fileId, refreshFile: boolean = undefined) {
     return dispatch => {
         const fileLabel = getFileLabel(jobId, fileName);
         dispatch(requestContent(jobName, jobId, fileName, fileId, fileLabel, refreshFile));
@@ -106,7 +106,7 @@ export function fetchJobFile(jobName, jobId, fileName, fileId, refreshFile = und
     };
 }
 
-export function fetchConcatenatedJobFiles(jobName, jobId, refreshFile) {
+export function fetchConcatenatedJobFiles(jobName, jobId, refreshFile: boolean) {
     return dispatch => {
         const fileLabel = getFileLabel(jobName, jobId);
         dispatch(requestContent(jobName, jobId, jobId, jobId, fileLabel, refreshFile));
@@ -117,7 +117,7 @@ export function fetchConcatenatedJobFiles(jobName, jobId, refreshFile) {
             .then(response => { return response.text(); })
             .then(text => {
                 let concatenatedText = '';
-                let index = 0;
+                let index: number = 0;
                 const jobFiles = JSON.parse(text);
                 if (jobFiles && jobFiles.constructor === Array) {
                     jobFiles.forEach(job => {
@@ -160,7 +160,7 @@ export function downloadAllJobFiles(jobName, jobId) {
             })
             .then(response => { return response.text(); })
             .then(text => {
-                let index = 0;
+                let index: number = 0;
                 const jobFiles = JSON.parse(text);
                 const zip = new JSZip();
                 // fetch the content of each file and download these respective files in a zip file format
@@ -253,7 +253,7 @@ export function fetchJobFileNoName(jobName, jobId, fileId) {
     };
 }
 
-export function removeContent(index) {
+export function removeContent(index: number) {
     return {
         type: REMOVE_CONTENT,
         index,
@@ -267,7 +267,7 @@ export function updateContent(content) {
     };
 }
 
-export function changeSelectedContent(index) {
+export function changeSelectedContent(index: number) {
     return {
         type: CHANGE_SELECTED_CONTENT,
         newSelectedContent: index,

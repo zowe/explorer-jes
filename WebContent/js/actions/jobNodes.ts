@@ -210,7 +210,7 @@ function getURIQuery(filters) {
 
 function filterByJobId(jobs, jobid, dispatch) {
     // filter for job Id as api doesn't support
-    let jobFound = false;
+    let jobFound: boolean = false;
     let jobArr = [...jobs];
     if (jobid[jobid.length - 1] === '*') { // [...]* search case
         const pattern = jobid.substring(0, jobid.length - 1);
@@ -408,7 +408,7 @@ export function purgeJobs(jobs) {
             return { "jobName": job.get('jobName'), "jobId": job.get('jobId') };
         });
         const mapSize = jobsToPurge.size;
-        let iteration = 0;
+        let iteration: number = 0;
         let failedJobs = '';
         jobsToPurge.every(value => {
             const jobName = value.jobName;
