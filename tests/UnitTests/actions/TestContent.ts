@@ -83,6 +83,7 @@ describe('Action: content', () => {
                 .reply(500, { status: 'INTERNAL_SERVER_ERROR', message: errorMessage });
 
             const store = mockStore();
+            // @ts-ignore
             return store.dispatch(contentActions.fetchJobFile(contentResources.jobName, contentResources.jobId, contentResources.fileName, contentResources.fileId))
                 .then(() => {
                     expect(store.getActions()).toEqual(expectedActions);

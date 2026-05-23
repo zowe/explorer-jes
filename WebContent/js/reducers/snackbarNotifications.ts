@@ -12,7 +12,7 @@ import { Map, List } from 'immutable';
 import { PUSH_NOTIFICATION_MESSAGE, POP_NOTIFICATION_MESSAGE } from '../actions/snackbarNotifications';
 
 const INITIAL_STATE = Map({
-    messages: new List([]),
+    messages: List([]),
 });
 
 export default function snackbarNotifications(state = INITIAL_STATE, action) {

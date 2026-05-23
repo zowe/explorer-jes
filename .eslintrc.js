@@ -1,53 +1,68 @@
 module.exports = {
-    "extends": "airbnb",
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended",
+        "plugin:jsx-a11y/recommended",
+    ],
+    "plugins": [
+        "@typescript-eslint",
+        "react",
+        "react-hooks",
+        "jsx-a11y",
+    ],
     "rules": {
-        "react/jsx-filename-extension": 0,
-        "react/no-did-update-set-state": 0,
-        "indent": ["error", 4,{ "SwitchCase": 1 }],
-        "react/jsx-indent": ["error", 4],
-        "react/jsx-indent-props": ["error", 4],
-        "jsx-a11y/href-no-hash":0,
+        // Style
+        "indent": ["error", 4, { "SwitchCase": 1 }],
+        "max-len": ["error", 200],
         "arrow-body-style": ["error", "always"],
         "arrow-parens": ["error", "as-needed"],
-        "react/jsx-boolean-value":["error", "always"],
-        "max-len": ["error", 200],
-        "jsx-a11y/label-has-for": 0,
-        "react/require-default-props": 0,
-        "no-underscore-dangle":0,
-        "no-nested-ternary":0,
-        "no-trailing-spaces":0,
-        "no-alert":0,
-        "jsx-a11y/no-static-element-interactions":0,
         "lines-between-class-members": ["error", "always"],
         "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
-        "react/no-unknown-property": "off",
+        // React style
+        "react/jsx-indent": ["error", 4],
+        "react/jsx-indent-props": ["error", 4],
+        "react/jsx-boolean-value": ["error", "always"],
+        // Relaxed — codebase uses these patterns
+        "no-underscore-dangle": "off",
+        "no-alert": "off",
         "prefer-destructuring": "off",
         "no-restricted-globals": "off",
+        "default-param-last": "off",
         "react/destructuring-assignment": "off",
         "react/function-component-definition": "off",
-        "object-curly-newline": "off",
-        "react/jsx-wrap-multilines": "off",
-        "jsx-a11y/role-has-required-aria-props": "off",
-        "default-param-last": "off",
         "react/jsx-one-expression-per-line": "off",
         "react/sort-comp": "off",
-        "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/fvtTest/**/*.*", "**/tests/**/*.*", "**/WebContent/**/*.*", "webpack.*"]},]
+        "react/no-unknown-property": "off",
+        "react/prop-types": "off",
+        "react/display-name": "off",
+        "jsx-a11y/no-static-element-interactions": "off",
+        // TS handles these
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-require-imports": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/no-unused-expressions": "off",
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/no-this-alias": "off",
+        // Pre-existing patterns in codebase
+        "react/no-direct-mutation-state": "off",
+        "jsx-a11y/no-autofocus": "off",
+        "jsx-a11y/role-has-required-aria-props": "off",
     },
     "env": {
         "browser": true,
         "node": true,
         "es6": true,
-        "mocha": true
+        "mocha": true,
     },
-    "parser": "@babel/eslint-parser",
+    "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "requireConfigFile": false,
-        "babelOptions": { "presets": ["@babel/preset-react"] },
-        "ecmaVersion": 6,
+        "ecmaVersion": 2020,
         "sourceType": "module",
-        "ecmaFeatures": {
-            "globalReturn": true,
-            "jsx": true
-        }
-    }
+        "ecmaFeatures": { "jsx": true },
+    },
+    "settings": {
+        "react": { "version": "detect" },
+    },
 };

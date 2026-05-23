@@ -11,7 +11,8 @@
     "strict": false,
     "noEmitOnError": false,
     "skipLibCheck": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "jsx": "react"
   },
   "include": [
     "tests/**/*"

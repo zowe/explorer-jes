@@ -50,14 +50,11 @@ const copyTask = new CopyWebpackPlugin({
 
 const rules = [
     {
-        test: /\.jsx?$/,
+        test: /\.[jt]sx?$/,
         use: {
-            loader:'babel-loader',
-            options: {
-                presets: ['@babel/react'],
-                plugins: [],
-            },
-    },
+            loader: 'ts-loader',
+            options: { transpileOnly: true },
+        },
         include: [
             path.join(__dirname, 'WebContent'),
             path.join(__dirname, 'tests'),
@@ -77,7 +74,7 @@ const rules = [
 
 const htmlTask = new HtmlWebpackPlugin({ template: './WebContent/index.html' });
 
-const entry = path.join(__dirname, 'WebContent/js/index.js');
+const entry = path.join(__dirname, 'WebContent/js/index.tsx');
 const output = {
     path: path.join(__dirname, OUTPUT_FOLDER),
     filename: 'app.[hash].min.js',
@@ -127,6 +124,9 @@ const devServer = {
 module.exports = {
     devtool: debug ? 'source-map' : false,
     entry,
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js', '.jsx'],
+    },
     module: {
         rules,
     },

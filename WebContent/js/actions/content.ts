@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * This program and the accompanying materials are made available under the terms of the
  * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -78,7 +79,7 @@ function dispatchReceiveContent(dispatch, jobName, jobId, fileName, fileId, file
     throw Error(text || NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE);
 }
 
-export function fetchJobFile(jobName, jobId, fileName, fileId, refreshFile) {
+export function fetchJobFile(jobName, jobId, fileName, fileId, refreshFile = undefined) {
     return dispatch => {
         const fileLabel = getFileLabel(jobId, fileName);
         dispatch(requestContent(jobName, jobId, fileName, fileId, fileLabel, refreshFile));

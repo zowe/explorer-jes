@@ -9,14 +9,11 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
-import Switch from '@material-ui/core/Switch';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { NOTIFICATION_DURATION, getStorageItem, setStorageItem } from '../utilities/storageHelper';
 
 const settingsStyle = {
@@ -86,7 +83,6 @@ class SettingFormBase extends React.Component {
 
     render() {
         const { notificationDuration } = this.state;
-        const { classes } = this.props;
         return (
             <div style={settingsStyle}>
                 <h3>Preferences</h3>
@@ -115,8 +111,6 @@ class SettingFormBase extends React.Component {
 }
 
 SettingFormBase.propTypes = {
-    // eslint-disable-next-line react/forbid-prop-types
-    classes: PropTypes.object.isRequired,
 };
 
 const SettingForm = withStyles(styles)(SettingFormBase);
