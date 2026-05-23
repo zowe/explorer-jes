@@ -11,7 +11,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -61,7 +60,7 @@ class TopBar extends React.Component {
         return (
             <AppBar position="static" id="app-bar">
                 <Toolbar
-                    className={classNames(classes.customizeToolbar)}
+                    className={classes.customizeToolbar}
                     variant="dense"
                 >
                     <Typography type="title" color="inherit" style={{ flex: 1 }}>

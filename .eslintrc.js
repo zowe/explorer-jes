@@ -1,10 +1,5 @@
 module.exports = {
     "extends": "airbnb",
-    "plugins": [
-        "react",
-        "jsx-a11y",
-        "import"
-    ],
     "rules": {
         "react/jsx-filename-extension": 0,
         "react/no-did-update-set-state": 0,
@@ -42,37 +37,17 @@ module.exports = {
         "browser": true,
         "node": true,
         "es6": true,
-        "jest": true,
         "mocha": true
     },
     "parser": "@babel/eslint-parser",
     "parserOptions": {
+        "requireConfigFile": false,
+        "babelOptions": { "presets": ["@babel/preset-react"] },
         "ecmaVersion": 6,
         "sourceType": "module",
         "ecmaFeatures": {
-            "arrowFunctions": true,
-            "binaryLiterals": true,
-            "blockBindings": true,
-            "classes": true,
-            "defaultParams": true,
-            "destructuring": true,
-            "forOf": true,
-            "generators": true,
-            "modules": true,
-            "objectLiteralComputedProperties": true,
-            "objectLiteralDuplicateProperties": true,
-            "objectLiteralShorthandMethods": true,
-            "objectLiteralShorthandProperties": true,
-            "octalLiterals": true,
-            "regexUFlag": true,
-            "regexYFlag": true,
-            "spread": true,
-            "superInFunctions": true,
-            "templateStrings": true,
-            "unicodeCodePointEscapes": true,
             "globalReturn": true,
-            "jsx": true,
-            "experimentalObjectRestSpread": true
+            "jsx": true
         }
     }
 };

@@ -8,25 +8,12 @@
  * Copyright IBM Corporation 2018, 2019
  */
 
-import 'isomorphic-fetch';
 import {
     LOCAL_HOST_SERVER_WITH_PROTOCOL as LOCAL_SERVER,
     LOCAL_HOSTNAME,
 } from './testResources/hostConstants';
 
-require.extensions['.css'] = () => {
-    return null;
-};
-require.extensions['.png'] = () => {
-    return null;
-};
-require.extensions['.jpg'] = () => {
-    return null;
-};
-
-require('@babel/register')();
-
-global.location = {
+(global as any).location = {
     hostname: LOCAL_HOSTNAME,
     origin: `${LOCAL_SERVER}`,
 };

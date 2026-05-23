@@ -9,7 +9,7 @@
  */
 
 import { By, until } from 'selenium-webdriver';
-import fetch from 'node-fetch';
+// Native fetch available in Node 18+
 import https = require('https');
 
 export const VAR_LANG_CLASS = 'variable-language';

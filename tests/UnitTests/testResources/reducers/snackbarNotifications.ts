@@ -8,10 +8,13 @@
  * Copyright IBM Corporation 2018, 2019
  */
 
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
+import * as snackbarNotificationsResources from '../actions/snackbarNotifications';
 
-export const sampleMessageText = 'TSTJCICS Submitted, id=JOB09646';
+export const baseNotifications = Map({
+    messages: List([]),
+});
 
-export const sampleMessage = new Map({
-    message: sampleMessageText,
+export const oneMessageNotifications = Map({
+    messages: List([snackbarNotificationsResources.sampleMessage]),
 });

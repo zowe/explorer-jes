@@ -333,7 +333,7 @@ describe('Action: content', () => {
                 .put('/zosmf/restjobs/jobs')
                 .reply(500, { status: 'INTERNAL_SERVER_ERROR', message: errorMessage });
 
-            return store.dispatch(contentActions.submitJCL(contentResources.jobJCL.content))
+            return store.dispatch(contentActions.submitJCL(contentResources.jobJCL))
                 .then(() => {
                     expect(store.getActions()).toEqual(expectedActions);
                 });

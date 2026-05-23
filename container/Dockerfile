@@ -45,7 +45,7 @@ RUN npm ci --legacy-peer-deps --no-audit --ignore-scripts \
     && cp -r dist/. final/web \
     && mv final/web/zlux-hooks/config final/config \
     && cp manifest.yaml final \
-    && cp pluginDefinition.prod.json final/pluginDefinition.json
+    && cp pluginDefinition.json final/pluginDefinition.json
 
 ##################################
 # second stage
