@@ -61,13 +61,17 @@
 }
 
 /* ===== SMOOTH THEME TRANSITION ===== */
-body, .card-component, .tree-card, #content-viewer,
-.MuiAppBar-root, .MuiCard-root, .MuiPaper-root,
-.MuiToolbar-root, .content-link, .react-contextmenu {
-    transition: background-color 400ms cubic-bezier(0.4, 0, 0.2, 1),
-                color 400ms cubic-bezier(0.4, 0, 0.2, 1),
-                border-color 400ms cubic-bezier(0.4, 0, 0.2, 1),
-                box-shadow 400ms cubic-bezier(0.4, 0, 0.2, 1);
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+    transition: background-color 500ms cubic-bezier(0.4, 0, 0.2, 1) !important,
+                color 500ms cubic-bezier(0.4, 0, 0.2, 1) !important,
+                border-color 500ms cubic-bezier(0.4, 0, 0.2, 1) !important,
+                box-shadow 500ms cubic-bezier(0.4, 0, 0.2, 1) !important,
+                background 500ms cubic-bezier(0.4, 0, 0.2, 1) !important,
+                fill 500ms cubic-bezier(0.4, 0, 0.2, 1) !important,
+                stroke 500ms cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 /* ===== RESET ===== */
@@ -416,10 +420,10 @@ body {
     padding: 10px 14px;
     white-space: nowrap;
     transition: all var(--transition-fast);
-    color: var(--text-secondary);
+    color: var(--text-primary);
 }
 
-.content-tab-label:hover { color: var(--text-primary); }
+.content-tab-label:hover { color: var(--accent-indigo); }
 
 /* ===== LAYOUT HELPERS ===== */
 .action-layer { height: 100vh; width: 100vw; }

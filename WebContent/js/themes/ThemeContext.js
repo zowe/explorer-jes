@@ -229,6 +229,8 @@ export function ThemeProviderWrapper({ children }) {
 
     const toggleTheme = () => {
         const newMode = mode === 'dark' ? 'light' : 'dark';
+        // Enable smooth transition class before changing theme
+        document.documentElement.classList.add('theme-transitioning');
         setMode(newMode);
         try {
             localStorage.setItem('jes-explorer-theme', newMode);
@@ -237,6 +239,10 @@ export function ThemeProviderWrapper({ children }) {
         document.body.style.backgroundColor = newMode === 'dark' ? '#06060f' : '#f8fafc';
         document.body.style.color = newMode === 'dark' ? '#eef0ff' : '#1e293b';
         document.documentElement.setAttribute('data-theme', newMode);
+        // Remove transition class after animation completes to avoid performance overhead
+        setTimeout(() => {
+            document.documentElement.classList.remove('theme-transitioning');
+        }, 550);
     };
 
     // Set initial theme attribute on mount
