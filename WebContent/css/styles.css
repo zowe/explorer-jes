@@ -575,10 +575,15 @@ body {
 .MuiCardHeader-subheader {
     font-size: 10.5px !important;
     font-weight: 600 !important;
-    color: var(--text-muted) !important;
+    color: var(--text-primary) !important;
     letter-spacing: 0.5px !important;
-    text-transform: uppercase !important;
+    text-transform: none !important;
     font-family: var(--font-mono) !important;
+}
+
+#content-viewer-header .MuiCardHeader-subheader {
+    text-transform: none !important;
+    color: inherit !important;
 }
 
 .MuiCard-root { background: var(--bg-base) !important; }

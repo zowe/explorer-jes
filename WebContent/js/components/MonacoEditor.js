@@ -289,7 +289,7 @@ class MonacoEditor extends React.Component {
             fontLigatures: true,
             lineNumbers: storedLineNumbers || 'on',
             renderLineHighlight: 'line',
-            scrollBeyondLastLine: false,
+            scrollBeyondLastLine: true,
             wordWrap: storedWordWrap || 'off',
             wordWrapColumn: 80,
             rulers: [],
@@ -333,7 +333,7 @@ class MonacoEditor extends React.Component {
         return (
             <div
                 ref={this.containerRef}
-                style={{ width: '100%', height: '100%', minHeight: '400px' }}
+                style={{ width: '100%', height: '100%', minHeight: '400px', background: 'var(--bg-base)' }}
             />
         );
     }
