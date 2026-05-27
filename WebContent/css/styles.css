@@ -107,6 +107,7 @@ body {
     box-shadow: none !important;
     border-left: 1px solid var(--border-subtle);
     background: var(--bg-base) !important;
+    height: 100%;
 }
 
 .tree-card {
@@ -403,11 +404,21 @@ body {
     border-radius: 0 !important;
     box-shadow: none !important;
     background: var(--bg-base) !important;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 #content-viewer-header {
     background: var(--bg-surface) !important;
     border-bottom: 1px solid var(--border-subtle) !important;
+    padding: 0 !important;
+    flex-shrink: 0;
+}
+
+#content-viewer-body {
+    flex: 1;
+    overflow: hidden;
     padding: 0 !important;
 }
 
@@ -442,8 +453,13 @@ body {
 }
 
 /* ===== LAYOUT HELPERS ===== */
-.action-layer { height: 100vh; width: 100vw; }
+.action-layer { height: calc(100vh - 48px); width: 100vw; }
 .hidden { display: none; }
+
+#explorer-viewer-home {
+    height: 100%;
+    overflow: hidden;
+}
 .rotate-180 { transform: rotate(180deg); transition: transform var(--transition-smooth); }
 .draggable { cursor: col-resize; }
 

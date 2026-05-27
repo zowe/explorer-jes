@@ -267,9 +267,11 @@ export class ContentViewer extends React.Component {
             fontWeight: 500,
             transition: 'all 200ms ease',
             borderBottom: '2px solid transparent',
+            color: 'var(--text-primary)',
         };
         const selectedTabStyle = {
             ...baseTabStyle,
+            color: 'var(--accent-indigo)',
             backgroundColor: 'rgba(129, 140, 248, 0.06)',
             borderBottomColor: 'var(--accent-indigo)',
             fontWeight: 600,

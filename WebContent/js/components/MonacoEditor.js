@@ -333,7 +333,7 @@ class MonacoEditor extends React.Component {
         return (
             <div
                 ref={this.containerRef}
-                style={{ width: '100%', height: '100%', minHeight: '400px', background: 'var(--bg-base)' }}
+                style={{ width: '100%', height: '100%', background: 'var(--bg-base)' }}
             />
         );
     }
