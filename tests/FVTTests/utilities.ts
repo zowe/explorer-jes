@@ -343,7 +343,7 @@ export async function submitJob(jcl, host, port, username, password) {
         },
         agent,
         body: jcl,
-    }).then(
+    } as RequestInit).then(
         response => {
             if (response.ok) {
                 return response.text();
@@ -377,7 +377,7 @@ export async function debugApiCall(path, host, port, username, password) {
             'Content-Type': 'application/json',
         },
         agent,
-    }).then(
+    } as RequestInit).then(
         response => {
             if (response.ok) {
                 return response.json();
