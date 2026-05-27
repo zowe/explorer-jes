@@ -32,24 +32,21 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-#  Requirement to prevent latest libraries from being used to prevent against package/npm hijacking is in direct conflict
-#    with requirement to be on the latest version of packages for major release. I guess whoever complains more wins.
-#  
-#  validate-package-json:
-#    needs: check-permission
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#
-#      - name: Validate package.json
-#        uses: zowe-actions/shared-actions/validate-package-json@main
-#        with:
-#          excluded-packages: explorer-fvt-utilities
+  validate-package-json:
+    needs: check-permission
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Validate package.json
+        uses: zowe-actions/shared-actions/validate-package-json@main
+        with:
+          excluded-packages: explorer-fvt-utilities
 
   integration-test:
     if: false  # Disabled: requires live Zowe/z/OS environment
     runs-on: ubuntu-latest
-#    needs: validate-package-json
+    needs: validate-package-json
     steps:
       - name: '[Prep 1] Checkout'
         uses: actions/checkout@v2
@@ -123,7 +120,7 @@ jobs:
 
   regular-build:
     runs-on: ubuntu-latest
-#    needs: validate-package-json
+    needs: validate-package-json
     steps: 
       - name: '[Prep 1] Checkout'
         uses: actions/checkout@v2
@@ -169,13 +166,15 @@ jobs:
         run: sed -i 's#'$GITHUB_WORKSPACE'#/github/workspace/#g' lcov.info
 
       - name: '[Scan 2] SonarCloud Scan'
-        uses: sonarsource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
-          sonar.projectVersion: ${{ env.P_VERSION }}
-          sonar.links.ci: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
-          sonar.branch.name: v3.x/master
+          SONAR_HOST_URL: https://sonarcloud.io
+        with:
+          args: >
+            -Dsonar.projectVersion=${{ env.P_VERSION }}
+            -Dsonar.links.ci=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       - name: '[Packaging] Make pax'
         uses: zowe-actions/shared-actions/make-pax@main
