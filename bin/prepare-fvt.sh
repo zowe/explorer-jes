@@ -142,13 +142,6 @@ cat >> "$FVT_WORKSPACE/docker-compose.yml" << EOF
       - ${FVT_WORKSPACE}/${FVT_NGINX_DIR}:/etc/nginx/conf.d
     image: nginx
 EOF
-echo "[${SCRIPT_NAME}] preparing test pod in docker compose ..."
-cat >> "$FVT_WORKSPACE/docker-compose.yml" << EOF
-  
-  test-pod:
-    image: jackjiaibm/ubuntu-toolbox
-    command: ["/bin/sh", "-c", "sleep 3600"]
-EOF
 echo "[${SCRIPT_NAME}] display docker-compose.yml"
 cd "${FVT_WORKSPACE}"
 cat "$FVT_WORKSPACE/docker-compose.yml"
