@@ -257,6 +257,9 @@ export class ContentViewer extends React.Component {
 
     renderTabs() {
         const { content, selectedContent } = this.props;
+        const isDark = this.props.themeMode === 'dark';
+        const tabTextColor = isDark ? '#eef0ff' : '#1e293b';
+        const tabActiveColor = isDark ? '#818cf8' : '#4f46e5';
         const baseTabStyle = {
             display: 'flex',
             float: 'left',
@@ -267,13 +270,13 @@ export class ContentViewer extends React.Component {
             fontWeight: 500,
             transition: 'all 200ms ease',
             borderBottom: '2px solid transparent',
-            color: 'var(--text-primary)',
+            color: tabTextColor,
         };
         const selectedTabStyle = {
             ...baseTabStyle,
-            color: 'var(--accent-indigo)',
-            backgroundColor: 'rgba(129, 140, 248, 0.06)',
-            borderBottomColor: 'var(--accent-indigo)',
+            color: tabActiveColor,
+            backgroundColor: isDark ? 'rgba(129, 140, 248, 0.06)' : 'rgba(79, 70, 229, 0.06)',
+            borderBottomColor: tabActiveColor,
             fontWeight: 600,
         };
         const unselectedTabStyle = {
