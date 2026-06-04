@@ -23,7 +23,7 @@ export default class RefreshIcon extends React.Component {
         const { isFetching } = this.props;
         const iconStyle = {
             cursor: 'pointer',
-            color: '#818cf8',
+            color: 'var(--accent-indigo)',
             transition: 'all 200ms ease',
             borderRadius: '8px',
         };
@@ -33,7 +33,7 @@ export default class RefreshIcon extends React.Component {
                 <CircularProgressMui
                     id="loading-icon"
                     size={iconSize}
-                    style={{ ...iconStyle, color: '#818cf8' }}
+                    style={{ ...iconStyle, color: 'var(--accent-indigo)' }}
                 />
             );
         }

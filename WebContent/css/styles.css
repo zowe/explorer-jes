@@ -65,12 +65,12 @@ html.theme-transitioning,
 html.theme-transitioning *,
 html.theme-transitioning *::before,
 html.theme-transitioning *::after {
-    transition: background-color 500ms cubic-bezier(0.4, 0, 0.2, 1) !important,
-                color 500ms cubic-bezier(0.4, 0, 0.2, 1) !important,
-                border-color 500ms cubic-bezier(0.4, 0, 0.2, 1) !important,
-                box-shadow 500ms cubic-bezier(0.4, 0, 0.2, 1) !important,
-                background 500ms cubic-bezier(0.4, 0, 0.2, 1) !important,
-                fill 500ms cubic-bezier(0.4, 0, 0.2, 1) !important,
+    transition: background-color 500ms cubic-bezier(0.4, 0, 0.2, 1),
+                color 500ms cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 500ms cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 500ms cubic-bezier(0.4, 0, 0.2, 1),
+                background 500ms cubic-bezier(0.4, 0, 0.2, 1),
+                fill 500ms cubic-bezier(0.4, 0, 0.2, 1),
                 stroke 500ms cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
@@ -489,6 +489,10 @@ body {
 
 .collapse-btn:hover {
     color: var(--accent-indigo) !important;
+    background: rgba(79, 70, 229, 0.08) !important;
+}
+
+[data-theme="dark"] .collapse-btn:hover {
     background: rgba(129, 140, 248, 0.1) !important;
 }
 
@@ -500,6 +504,9 @@ body {
     margin: 10px 4px !important;
     overflow: hidden;
     background: var(--bg-surface) !important;
+}
+
+[data-theme="dark"] #filter-view {
     backdrop-filter: blur(20px);
 }
 
@@ -516,21 +523,30 @@ body {
 #filter-view-header .MuiAccordionSummary-content { margin: 8px 0 !important; }
 
 #filters-apply-button {
-    background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%) !important;
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%) !important;
     border-radius: var(--radius-sm) !important;
     text-transform: none !important;
     font-weight: 600 !important;
     font-size: 11.5px !important;
     padding: 6px 22px !important;
-    box-shadow: 0 2px 12px rgba(129, 140, 248, 0.3) !important;
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25) !important;
     transition: all var(--transition-smooth) !important;
     border: none !important;
     color: #fff !important;
 }
 
+[data-theme="dark"] #filters-apply-button {
+    background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%) !important;
+    box-shadow: 0 2px 12px rgba(129, 140, 248, 0.3) !important;
+}
+
 #filters-apply-button:hover {
-    box-shadow: 0 4px 20px rgba(129, 140, 248, 0.5) !important;
+    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.35) !important;
     transform: translateY(-1px) scale(1.02);
+}
+
+[data-theme="dark"] #filters-apply-button:hover {
+    box-shadow: 0 4px 20px rgba(129, 140, 248, 0.5) !important;
 }
 
 #filters-reset-button {
@@ -556,7 +572,6 @@ body {
     background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%) !important;
     box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
     border-bottom: 1px solid rgba(0,0,0,0.06) !important;
-    backdrop-filter: blur(20px) !important;
 }
 
 [data-theme="dark"] #app-bar {
@@ -565,11 +580,18 @@ body {
     border-bottom: 1px solid var(--border-subtle) !important;
 }
 
+[data-theme="dark"] #app-bar .MuiAvatar-root {
+    background: linear-gradient(135deg, rgba(129, 140, 248, 0.3), rgba(167, 139, 250, 0.3)) !important;
+    border: 1px solid rgba(129, 140, 248, 0.3) !important;
+    backdrop-filter: blur(10px);
+}
+
 /* ===== DARK THEME COMPONENT OVERRIDES ===== */
 [data-theme="dark"] .react-contextmenu {
     background-color: #151635;
     border: 1px solid rgba(99, 102, 241, 0.15);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(16px);
 }
 
 [data-theme="dark"] .react-contextmenu-item {
@@ -581,27 +603,7 @@ body {
     background-color: rgba(129, 140, 248, 0.1);
 }
 
-[data-theme="dark"] .MuiTooltip-tooltip {
-    background: #151635 !important;
-    color: #eef0ff !important;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
-}
-
 /* ===== MUI OVERRIDES ===== */
-.MuiCardHeader-subheader {
-    font-size: 10.5px !important;
-    font-weight: 600 !important;
-    color: var(--text-primary) !important;
-    letter-spacing: 0.5px !important;
-    text-transform: none !important;
-    font-family: var(--font-mono) !important;
-}
-
-#content-viewer-header .MuiCardHeader-subheader {
-    text-transform: none !important;
-    color: inherit !important;
-}
-
 .MuiCard-root { background: var(--bg-base) !important; }
 .MuiAccordion-root { background: var(--bg-surface) !important; }
 .MuiButton-containedPrimary { background: var(--accent-indigo) !important; }
@@ -625,6 +627,12 @@ body {
     font-size: 11px !important;
     font-weight: 500 !important;
     padding: 6px 10px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12) !important;
+}
+
+[data-theme="dark"] .MuiTooltip-tooltip {
+    background: #151635 !important;
+    color: #eef0ff !important;
     box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
     backdrop-filter: blur(10px) !important;
 }
@@ -633,15 +641,23 @@ body {
     background: var(--bg-elevated) !important;
     border: 1px solid var(--border-default) !important;
     border-radius: var(--radius-md) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .MuiSnackbarContent-root {
     box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
     backdrop-filter: blur(20px) !important;
-    color: var(--text-primary) !important;
 }
 
 .MuiPopover-paper {
     background: var(--bg-elevated) !important;
     border: 1px solid var(--border-default) !important;
     border-radius: var(--radius-lg) !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
+}
+
+[data-theme="dark"] .MuiPopover-paper {
     box-shadow: 0 16px 48px rgba(0,0,0,0.5) !important;
     backdrop-filter: blur(30px) !important;
 }
@@ -652,8 +668,12 @@ body {
 }
 
 .MuiIconButton-root:hover {
-    background: rgba(129, 140, 248, 0.1) !important;
+    background: rgba(79, 70, 229, 0.08) !important;
     color: var(--accent-indigo) !important;
+}
+
+[data-theme="dark"] .MuiIconButton-root:hover {
+    background: rgba(129, 140, 248, 0.1) !important;
 }
 
 .MuiTab-root {
@@ -687,7 +707,8 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--accent-indigo); }
 
 /* ===== SELECTION ===== */
-::selection { background: rgba(129, 140, 248, 0.25); color: var(--text-primary); }
+::selection { background: rgba(79, 70, 229, 0.2); color: var(--text-primary); }
+[data-theme="dark"] ::selection { background: rgba(129, 140, 248, 0.25); color: var(--text-primary); }
 
 /* ===== ANIMATIONS ===== */
 @keyframes pulse-glow {
