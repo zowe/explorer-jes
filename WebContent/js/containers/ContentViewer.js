@@ -14,8 +14,6 @@ import { List } from 'immutable';
 import { connect } from 'react-redux';
 import MonacoEditor from '../components/MonacoEditor';
 import { useThemeMode } from '../themes/ThemeContext';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
 import ClearIcon from '@material-ui/icons/Clear';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Button from '@material-ui/core/Button';
@@ -365,22 +363,34 @@ export class ContentViewer extends React.Component {
 
     render() {
         const { content, selectedContent } = this.props;
-        const cardTextStyle = { paddingTop: '0', paddingBottom: '0' };
         const isDark = this.props.themeMode === 'dark';
+        const containerStyle = {
+            marginBottom: 0,
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            background: isDark ? '#0a0a1a' : '#ffffff',
+            borderLeft: isDark ? '1px solid rgba(99, 102, 241, 0.08)' : '1px solid rgba(0, 0, 0, 0.04)',
+        };
         const headerStyle = {
             paddingBottom: 0,
             paddingTop: 0,
             whiteSpace: 'nowrap',
             overflowY: 'hidden',
             overflowX: 'auto',
+            flexShrink: 0,
             borderBottom: isDark ? '1px solid rgba(99, 102, 241, 0.08)' : '1px solid rgba(0, 0, 0, 0.06)',
             background: isDark ? '#0f1022' : '#f1f5f9',
         };
+        const bodyStyle = {
+            flex: 1,
+            overflow: 'hidden',
+            padding: 0,
+        };
         return (
-            <Card
+            <div
                 id="content-viewer"
-                className="card-component"
-                style={{ marginBottom: 0 }}
+                style={containerStyle}
             >
                 <div
                     id="content-viewer-header"
@@ -388,16 +398,16 @@ export class ContentViewer extends React.Component {
                 >
                     {this.renderSubheader()}
                 </div>
-                <CardContent id="content-viewer-body" style={cardTextStyle} role="tabpanel">
+                <div id="content-viewer-body" style={bodyStyle} role="tabpanel">
                     <MonacoEditor
                         content={(content.get(selectedContent) && content.get(selectedContent).content) || ''}
                         readonly={content.get(selectedContent) ? content.get(selectedContent).readOnly : true}
-                        theme={this.props.themeMode === 'light' ? 'zowe-light' : 'zowe-dark'}
+                        theme={isDark ? 'zowe-dark' : 'zowe-light'}
                         editorReady={this.editorReady}
                         passContentToParent={this.getContent}
                     />
-                </CardContent>
-            </Card>
+                </div>
+            </div>
         );
     }
 }
