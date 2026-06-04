@@ -21,7 +21,6 @@ import debounce from '../../utilities/debouncer';
 import TopBar from '../../components/TopBar';
 
 const HomeView = props => {
-    const isEmbedded = window.top !== window;
     const { validated } = props;
     const gridOfTwelveCol3 = 0.238;
     const widthForFullScreen = 600;
@@ -35,7 +34,8 @@ const HomeView = props => {
     useEffect(() => {
         const handleResize = () => {
             setWindowWidth(window.innerWidth);
-            if (window.innerWidth * treeWidthPercent < minContainerWidth) {
+            const currentTreePercent = treeWidthPercent;
+            if (window.innerWidth * currentTreePercent < minContainerWidth) {
                 setTreeWidth(minContainerWidth / window.innerWidth);
             }
         };
@@ -44,7 +44,7 @@ const HomeView = props => {
         return () => {
             window.removeEventListener('resize', debHandleResize);
         };
-    });
+    }, [treeWidthPercent]);
 
     const recalcTreeWidth = mouseX => {
         const maxTreeWidth = window.innerWidth - minContainerWidth;
@@ -75,56 +75,60 @@ const HomeView = props => {
         }
     };
 
+    const renderJESView = () => (
+        <div
+            className={moveMode ? 'action-layer draggable' : 'action-layer'}
+            onMouseUp={onDraggingEnd}
+            onMouseMove={onDragging}
+        >
+            <div
+                id="explorer-sidebar"
+                className={`component col col-3 ${collapsed ? 'hidden' : ''}`}
+                style={windowWidth <= widthForFullScreen ? {} : { width: `${treeWidthPercent * 100}%` }}
+                region="search-jobs"
+                aria-label="Search Jobs"
+            >
+                <JobTree />
+            </div>
+            <div
+                id="resize-bar"
+                className={`component col col-0-1 collapse-col ${collapsed ? '' : 'draggable'} `}
+                onMouseDown={onDraggingStart}
+                region="resize-bar"
+                aria-label="Resize Bar"
+            >
+                <IconButton
+                    id="collapse-button"
+                    className="collapse-btn"
+                    onClick={() => {
+                        setCollapse(!collapsed);
+                    }}
+                    onMouseDown={e => {
+                        e.stopPropagation();
+                    }}
+                    aria-label="Collapse Tree"
+                >
+                    <KeyboardArrowLeftIcon className={collapsed ? 'rotate-180' : ''} />
+                </IconButton>
+            </div>
+            <div
+                id="explorer-viewer-home"
+                className={`component col ${collapsed ? 'col-11-8' : 'col-9-2'}`}
+                style={(collapsed || windowWidth <= widthForFullScreen) ? {} : { width: `calc(100% - ${treeWidthPercent * 100}% - 2%)` }}
+                region="content-viewer"
+                aria-label="Content Viewer"
+            >
+                <ConnectedContentViewer />
+            </div>
+            <ConnectedSnackbar />
+        </div>
+    );
+
     if (validated) {
         return (
-            <div className="row group" role="main" aria-label="Home">
-                { !isEmbedded && <TopBar /> }
-                <div
-                    className={moveMode ? 'action-layer draggable' : 'action-layer'}
-                    onMouseUp={onDraggingEnd}
-                    onMouseMove={onDragging}
-                >
-                    <div
-                        id="explorer-sidebar"
-                        className={`component col col-3 ${collapsed ? 'hidden' : ''}`}
-                        style={windowWidth <= widthForFullScreen ? {} : { width: `${treeWidthPercent * 100}%` }}
-                        region="search-jobs"
-                        aria-label="Search Jobs"
-                    >
-                        <JobTree />
-                    </div>
-                    <div
-                        id="resize-bar"
-                        className={`component col col-0-1 collapse-col ${collapsed ? '' : 'draggable'} `}
-                        onMouseDown={onDraggingStart}
-                        region="resize-bar"
-                        aria-label="Resize Bar"
-                    >
-                        <IconButton
-                            id="collapse-button"
-                            className="collapse-btn"
-                            onClick={() => {
-                                setCollapse(!collapsed);
-                            }}
-                            onMouseDown={e => {
-                                e.stopPropagation();
-                            }}
-                            aria-label="Collapse Tree"
-                        >
-                            <KeyboardArrowLeftIcon className={collapsed ? 'rotate-180' : ''} />
-                        </IconButton>
-                    </div>
-                    <div
-                        id="explorer-viewer-home"
-                        className={`component col ${collapsed ? 'col-11-8' : 'col-9-2'}`}
-                        style={(collapsed || windowWidth <= widthForFullScreen) ? {} : { width: `calc(100% - ${treeWidthPercent * 100}% - 2%)` }}
-                        region="content-viewer"
-                        aria-label="Content Viewer"
-                    >
-                        <ConnectedContentViewer />
-                    </div>
-                    <ConnectedSnackbar />
-                </div>
+            <div className="row group" role="main" aria-label="Home" style={{ height: '100vh', overflow: 'hidden' }}>
+                <TopBar />
+                {renderJESView()}
             </div>
         );
     }

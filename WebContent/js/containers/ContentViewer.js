@@ -12,17 +12,15 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { List } from 'immutable';
 import { connect } from 'react-redux';
-import OrionEditor from 'orion-editor-component';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardContent from '@material-ui/core/CardContent';
+import MonacoEditor from '../components/MonacoEditor';
+import { useThemeMode } from '../themes/ThemeContext';
 import ClearIcon from '@material-ui/icons/Clear';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Button from '@material-ui/core/Button';
 import CircularProgressIcon from '@material-ui/core/CircularProgress';
 import queryString from 'query-string';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
-import { fetchJobFileNoName, removeContent, updateContent, changeSelectedContent, submitJCL } from '../actions/content';
+import { fetchJobFileNoName, removeContent, updateContent, updateContentAtIndex, changeSelectedContent, submitJCL } from '../actions/content';
 
 export class ContentViewer extends React.Component {
     constructor(props) {
@@ -37,6 +35,7 @@ export class ContentViewer extends React.Component {
         this.handleKeyDownOnContentTabLabel = this.handleKeyDownOnContentTabLabel.bind(this);
 
         this.fileTabs = [];
+        this._tabSwitchInternal = false;
         this.state = {
             height: 0, // eslint-disable-line
             currentContent: '',
@@ -47,21 +46,47 @@ export class ContentViewer extends React.Component {
     componentDidMount() {
         window.addEventListener('resize', this.updateSubmitJCLButtonOffset);
     }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateSubmitJCLButtonOffset);
+    }
+
     // eslint-disable-next-line
     componentWillReceiveProps(nextProps) {
-        const { locationSearch, content, dispatch } = this.props;
+        const { locationSearch, content, dispatch, selectedContent } = this.props;
         const { content: newContent } = nextProps;
         if (locationSearch && locationSearch !== nextProps.locationSearch) {
             window.location.reload();
         }
         if (newContent.size > content.size) {
+            // Save current edits before auto-switching to new tab
+            const currentTab = content.get(selectedContent);
+            if (this.state.currentContent && currentTab
+                && this.state.currentContent !== currentTab.content) {
+                dispatch(updateContent(this.state.currentContent));
+            }
+            this.setState({ currentContent: '' });
+            this._tabSwitchInternal = true;
             dispatch(changeSelectedContent(newContent.size - 1));
         }
     }
 
     componentDidUpdate(prevProp) {
-        const { selectedContent, title } = this.props;
+        const { selectedContent, content, dispatch, title } = this.props;
         if (selectedContent !== prevProp.selectedContent) {
+            // Auto-save edits when tab switches externally (from tree clicks)
+            if (!this._tabSwitchInternal) {
+                const prevTab = prevProp.content.get(prevProp.selectedContent);
+                if (this.state.currentContent && prevTab
+                    && this.state.currentContent !== prevTab.content) {
+                    // Use updateContentAtIndex to save to the PREVIOUS tab, not current
+                    dispatch(updateContentAtIndex(this.state.currentContent, prevProp.selectedContent));
+                }
+                // Initialize currentContent with the new tab's content
+                const newTab = content.get(selectedContent);
+                this.setState({ currentContent: newTab ? newTab.content || '' : '' });
+            }
+            this._tabSwitchInternal = false;
             this.focusToActiveTab();
         }
         document.title = title;
@@ -93,17 +118,30 @@ export class ContentViewer extends React.Component {
 
     handleSelectedTabChange(newTabIndex) {
         const { selectedContent, content, dispatch } = this.props;
-        if (this.state.currentContent !== content.get(selectedContent).content) {
+        if (newTabIndex === selectedContent) return; // Already on this tab
+        const currentTabContent = content.get(selectedContent);
+        // Only save edits if user actually modified the content
+        if (this.state.currentContent && currentTabContent
+            && this.state.currentContent !== currentTabContent.content) {
             dispatch(updateContent(this.state.currentContent));
         }
+        // Reset currentContent for the new tab
+        const newTab = content.get(newTabIndex);
+        this.setState({ currentContent: newTab ? newTab.content || '' : '' });
+        this._tabSwitchInternal = true;
         dispatch(changeSelectedContent(newTabIndex));
     }
 
     handleCloseTab(removeIndex) {
         const { selectedContent, dispatch } = this.props;
         dispatch(removeContent(removeIndex));
+        // Only reset content state when the selected tab itself is being closed
+        if (removeIndex === selectedContent) {
+            this.setState({ currentContent: '' });
+        }
         // Do we need to change the selectedContent
         if (removeIndex <= selectedContent && selectedContent >= 1) {
+            this._tabSwitchInternal = true;
             dispatch(changeSelectedContent(selectedContent - 1));
         }
     }
@@ -116,8 +154,12 @@ export class ContentViewer extends React.Component {
                 dispatch(removeContent(index + 1));
             }
             if (index < selectedContent) {
+                // Selected tab was closed, switch and reset
+                this._tabSwitchInternal = true;
                 dispatch(changeSelectedContent(index));
+                this.setState({ currentContent: '' });
             }
+            // else: selected tab is preserved, keep currentContent
         }
     }
 
@@ -127,10 +169,14 @@ export class ContentViewer extends React.Component {
             for (let removeIndex = 0; removeIndex < index; removeIndex++) {
                 dispatch(removeContent(0));
             }
-            if (index < selectedContent) {
-                dispatch(changeSelectedContent(selectedContent - index));
-            } else {
+            this._tabSwitchInternal = true;
+            if (selectedContent < index) {
+                // Selected tab was in the closed range, reset
                 dispatch(changeSelectedContent(0));
+                this.setState({ currentContent: '' });
+            } else {
+                // Selected tab survives, just shifted left
+                dispatch(changeSelectedContent(selectedContent - index));
             }
         }
     }
@@ -138,6 +184,7 @@ export class ContentViewer extends React.Component {
     handleCloseAllExceptTabs(index) {
         const { selectedContent, dispatch } = this.props;
         const openedFilesCount = this.props.content.size;
+        this._tabSwitchInternal = true;
         if (index < openedFilesCount - 1) {
             for (let removeIndex = index + 1; removeIndex < openedFilesCount; removeIndex++) {
                 dispatch(removeContent(index + 1));
@@ -154,6 +201,10 @@ export class ContentViewer extends React.Component {
             }
             dispatch(changeSelectedContent(0));
         }
+        // Only reset if the surviving tab was not the one being edited
+        if (selectedContent !== index) {
+            this.setState({ currentContent: '' });
+        }
     }
 
     handleCloseAllTabs() {
@@ -162,6 +213,7 @@ export class ContentViewer extends React.Component {
         for (let index = 0; index < openedFilesCount; index++) {
             dispatch(removeContent(0));
         }
+        this.setState({ currentContent: '' });
     }
 
     handleKeyDownOnContentTabLabel(e, index) {
@@ -180,7 +232,6 @@ export class ContentViewer extends React.Component {
         return (
             <ContextMenu
                 id={index.toString()}
-                style={{ zIndex: '100' }}
             >
                 <MenuItem key="close" onClick={() => { this.handleCloseTab(index); }}>
                     Close
@@ -203,8 +254,31 @@ export class ContentViewer extends React.Component {
 
     renderTabs() {
         const { content, selectedContent } = this.props;
-        const unselectedTabStyle = { display: 'flex', float: 'left', alignItems: 'center', padding: '6px', cursor: 'pointer' };
-        const selectedTabStyle = { ...{ color: 'black', backgroundColor: 'white' }, ...unselectedTabStyle };
+        const isDark = this.props.themeMode === 'dark';
+        const tabTextColor = isDark ? '#eef0ff' : '#1e293b';
+        const tabActiveColor = isDark ? '#818cf8' : '#4f46e5';
+        const baseTabStyle = {
+            display: 'flex',
+            float: 'left',
+            alignItems: 'center',
+            padding: '8px 14px',
+            cursor: 'pointer',
+            fontSize: '12px',
+            fontWeight: 500,
+            transition: 'all 200ms ease',
+            borderBottom: '2px solid transparent',
+            color: tabTextColor,
+        };
+        const selectedTabStyle = {
+            ...baseTabStyle,
+            color: tabActiveColor,
+            backgroundColor: isDark ? 'rgba(129, 140, 248, 0.06)' : 'rgba(79, 70, 229, 0.06)',
+            borderBottomColor: tabActiveColor,
+            fontWeight: 600,
+        };
+        const unselectedTabStyle = {
+            ...baseTabStyle,
+        };
         if (content.size > 0) {
             return content.map((tabContent, index) => {
                 return (
@@ -236,7 +310,7 @@ export class ContentViewer extends React.Component {
                                     onKeyDown={e => { if (e.key === 'Enter') this.handleCloseTab(index); }}
                                 />
                             </div>
-                            {tabContent.isFetching ? <LinearProgress class="progress-bar" style={{ width: '100%', height: '2px' }} /> : null}
+                            {tabContent.isFetching ? <LinearProgress className="progress-bar" style={{ width: '100%', height: '2px' }} /> : null}
                             {this.renderTabContextMenu(index)}
                         </ContextMenuTrigger>
                     </div>
@@ -244,7 +318,7 @@ export class ContentViewer extends React.Component {
             });
         }
         return (
-            <div style={{ padding: '6px' }}>
+            <div style={{ padding: '12px 16px', color: 'inherit', fontWeight: 500, fontSize: '13px' }}>
                 Content viewer
             </div>
         );
@@ -268,7 +342,7 @@ export class ContentViewer extends React.Component {
                         ? <CircularProgressIcon
                             id="loading-icon"
                             size={20}
-                            style={{ color: 'white' }}
+                    style={{ color: 'var(--text-primary)' }}
                         />
                         : <div>SUBMIT</div>}
                 </Button>
@@ -288,30 +362,52 @@ export class ContentViewer extends React.Component {
     }
 
     render() {
-        const { content, locationHost, selectedContent } = this.props;
-        const cardTextStyle = { paddingTop: '0', paddingBottom: '0' };
+        const { content, selectedContent } = this.props;
+        const isDark = this.props.themeMode === 'dark';
+        const containerStyle = {
+            marginBottom: 0,
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            background: isDark ? '#0a0a1a' : '#ffffff',
+            borderLeft: isDark ? '1px solid rgba(99, 102, 241, 0.08)' : '1px solid rgba(0, 0, 0, 0.04)',
+        };
+        const headerStyle = {
+            paddingBottom: 0,
+            paddingTop: 0,
+            whiteSpace: 'nowrap',
+            overflowY: 'hidden',
+            overflowX: 'auto',
+            flexShrink: 0,
+            borderBottom: isDark ? '1px solid rgba(99, 102, 241, 0.08)' : '1px solid rgba(0, 0, 0, 0.06)',
+            background: isDark ? '#0f1022' : '#f1f5f9',
+        };
+        const bodyStyle = {
+            flex: 1,
+            overflow: 'hidden',
+            padding: 0,
+        };
         return (
-            <Card
+            <div
                 id="content-viewer"
-                className="card-component"
-                style={{ marginBottom: 0 }}
+                style={containerStyle}
             >
-                <CardHeader
+                <div
                     id="content-viewer-header"
-                    subheader={this.renderSubheader()}
-                    style={{ paddingBottom: 0, whiteSpace: 'nowrap', overflowY: 'hidden', overflowX: 'scroll' }}
-                />
-                <CardContent id="content-viewer-body" style={cardTextStyle} role="tabpanel">
-                    <OrionEditor
-                        content={(content.get(selectedContent) && content.get(selectedContent).content) || ' '}
-                        syntax="text/jclcontext"
-                        languageFilesHost={locationHost}
+                    style={headerStyle}
+                >
+                    {this.renderSubheader()}
+                </div>
+                <div id="content-viewer-body" style={bodyStyle} role="tabpanel">
+                    <MonacoEditor
+                        content={(content.get(selectedContent) && content.get(selectedContent).content) || ''}
                         readonly={content.get(selectedContent) ? content.get(selectedContent).readOnly : true}
+                        theme={isDark ? 'zowe-dark' : 'zowe-light'}
                         editorReady={this.editorReady}
                         passContentToParent={this.getContent}
                     />
-                </CardContent>
-            </Card>
+                </div>
+            </div>
         );
     }
 }
@@ -320,10 +416,10 @@ ContentViewer.propTypes = {
     content: PropTypes.instanceOf(List),
     dispatch: PropTypes.func.isRequired,
     selectedContent: PropTypes.number.isRequired,
-    locationHost: PropTypes.string,
     locationSearch: PropTypes.string,
     isSubmittingJCL: PropTypes.bool.isRequired,
     title: PropTypes.string.isRequired,
+    themeMode: PropTypes.string,
 };
 
 function mapStateToProps(state) {
@@ -337,5 +433,11 @@ function mapStateToProps(state) {
     };
 }
 
-const ConnectedContentViewer = connect(mapStateToProps)(ContentViewer);
+const ReduxConnectedContentViewer = connect(mapStateToProps)(ContentViewer);
+
+// Wrapper to inject theme context into class component
+const ConnectedContentViewer = (props) => {
+    const { mode } = useThemeMode();
+    return <ReduxConnectedContentViewer {...props} themeMode={mode} />;
+};
 export default ConnectedContentViewer;

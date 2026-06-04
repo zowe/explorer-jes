@@ -12,6 +12,13 @@ export const ENABLE_REDUX_LOGGER = 'ZoweJes.enableReduxLogger';
 export const NOTIFICATION_DURATION = 'ZoweJes.notificationDuration';
 export const LAST_FILTERS = 'ZoweJes.lastFilters';
 
+// Monaco Editor settings
+export const EDITOR_FONT_SIZE = 'ZoweJes.editorFontSize';
+export const EDITOR_MINIMAP = 'ZoweJes.editorMinimap';
+export const EDITOR_WORD_WRAP = 'ZoweJes.editorWordWrap';
+export const EDITOR_LINE_NUMBERS = 'ZoweJes.editorLineNumbers';
+export const EDITOR_RENDER_WHITESPACE = 'ZoweJes.editorRenderWhitespace';
+
 export function getStorageItem(storageKey) {
     try {
         return JSON.parse(window.localStorage.getItem(storageKey));
@@ -21,5 +28,5 @@ export function getStorageItem(storageKey) {
 }
 
 export function setStorageItem(storageKey, value) {
-    return window.localStorage.setItem(storageKey, value);
+    return window.localStorage.setItem(storageKey, JSON.stringify(value));
 }

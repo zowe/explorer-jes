@@ -11,7 +11,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import ConentViewer from '../ContentViewer';
+import ContentViewer from '../ContentViewer';
 import Snackbar from '../../components/Snackbar';
 import LoginDialog from '../../components/dialogs/LoginDialog';
 
@@ -31,7 +31,7 @@ class FullScreenViewer extends React.Component {
             return (
                 <div role="main" className="row group">
                     <div id="explorer-viewer-full" className="component col col-12">
-                        <ConentViewer locationSearch={location.search} />
+                        <ContentViewer locationSearch={location.search} />
                     </div>
                     <Snackbar />
                 </div>

@@ -225,7 +225,7 @@ describe('JES explorer function verification tests', function () {
                     expect(fileLink).to.be.an('array').that.has.lengthOf.at.least(1);
                     await fileLink[0].click();
 
-                    const viewer = await driver.findElement(By.css('#embeddedEditor > div > div > .textviewContent'));
+                    const viewer = await driver.findElement(By.css('.monaco-editor .view-lines'));
                     const text = await viewer.getText();
                     expect(text).to.have.lengthOf.greaterThan(1);
                 });
@@ -374,8 +374,8 @@ describe('JES explorer function verification tests', function () {
                 expect(tabLabelText).to.contain(jobFileName);
             });
 
-            it('Should display file contents in Orion text area', async () => {
-                const textLineDivs = await driver.findElements(By.css('.textviewContent > div'));
+            it('Should display file contents in Monaco editor', async () => {
+                const textLineDivs = await driver.findElements(By.css('.monaco-editor .view-lines .view-line'));
                 expect(textLineDivs).to.be.an('array').that.has.length.gte(1);
             });
 
@@ -414,7 +414,7 @@ describe('JES explorer function verification tests', function () {
 
             // TODO:: Need to add tests for checking read only changes when looking at output file vs SJ
             it('Should be read only', async () => {
-                const textLines = await driver.findElements(By.css('.textviewContent > div > span'));
+                const textLines = await driver.findElements(By.css('.monaco-editor .view-lines .view-line span'));
                 expect(textLines)
                     .to.be.an('array')
                     .that.has.length.gte(1);
@@ -465,12 +465,12 @@ describe('JES explorer function verification tests', function () {
                 expect(await testWindowHeightChangeForcesComponentHeightChange(
                     driver, 'content-viewer', initialWindowHeight - contentViewerHeightInt)).to.be.true;
             });
-            it('Should handle resizing just the editor text area (embeddedEditor)', async () => {
-                const embeddedEditor = await driver.findElement(By.id('embeddedEditor'));
-                const embeddedEditorHeight = await embeddedEditor.getCssValue('height');
-                const embeddedEditorHeightInt = parseInt(embeddedEditorHeight.substr(0, embeddedEditorHeight.length - 2), 10);
+            it('Should handle resizing just the editor text area (content-viewer-body)', async () => {
+                const editorBody = await driver.findElement(By.id('content-viewer-body'));
+                const editorBodyHeight = await editorBody.getCssValue('height');
+                const editorBodyHeightInt = parseInt(editorBodyHeight.substr(0, editorBodyHeight.length - 2), 10);
                 expect(await testWindowHeightChangeForcesComponentHeightChange(
-                    driver, 'embeddedEditor', initialWindowHeight - embeddedEditorHeightInt)).to.be.true;
+                    driver, 'content-viewer-body', initialWindowHeight - editorBodyHeightInt)).to.be.true;
             });
         });
     });

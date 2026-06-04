@@ -21,18 +21,19 @@ export default class RefreshIcon extends React.Component {
 
     render() {
         const { isFetching } = this.props;
-        const iconStyle = { float: 'right',
-            padding: '10px',
-            position: 'relative',
-            marginTop: '-45px',
-            marginRight: '-20px' };
+        const iconStyle = {
+            cursor: 'pointer',
+            color: 'var(--accent-indigo)',
+            transition: 'all 200ms ease',
+            borderRadius: '8px',
+        };
         const iconSize = 24;
         if (isFetching) {
             return (
                 <CircularProgressMui
                     id="loading-icon"
                     size={iconSize}
-                    style={iconStyle}
+                    style={{ ...iconStyle, color: 'var(--accent-indigo)' }}
                 />
             );
         }
@@ -42,7 +43,10 @@ export default class RefreshIcon extends React.Component {
                 size={iconSize}
                 style={iconStyle}
                 onClick={this.handleSubmit}
+                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.handleSubmit(); } }}
                 tabIndex="0"
+                role="button"
+                aria-label="Refresh jobs"
             />
         );
     }

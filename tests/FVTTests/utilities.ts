@@ -12,18 +12,20 @@ import { By, until } from 'selenium-webdriver';
 import fetch from 'node-fetch';
 import https = require('https');
 
-export const VAR_LANG_CLASS = 'variable-language';
-export const COMMENT_STR_CLASS = 'cm-string';
-export const COMMENT_CLASS = 'comment';
-export const COMMENT_ATTR_CLASS = 'cm-attribute';
-export const NO_CLASS = 'none';
+// Monaco Editor token CSS classes (from zowe-dark theme)
+// Monaco uses 'mtk*' classes for syntax tokens; these map to our custom theme colors
+export const VAR_LANG_CLASS = 'mtk6';          // variable tokens (foreground: 82AAFF)
+export const COMMENT_STR_CLASS = 'mtk8';       // string tokens (foreground: C3E88D)
+export const COMMENT_CLASS = 'mtk2';           // comment tokens (foreground: 6A9955)
+export const COMMENT_ATTR_CLASS = 'mtk5';      // keyword.control tokens (foreground: C792EA)
+export const NO_CLASS = 'mtk1';                // default tokens (foreground: eef0ff)
 
 export const textHighlightColors = {};
-textHighlightColors[VAR_LANG_CLASS] = 'rgb(127, 0, 85)';
-textHighlightColors[COMMENT_STR_CLASS] = 'rgb(0, 0, 255)';
-textHighlightColors[COMMENT_CLASS] = 'rgb(53, 125, 33)';
-textHighlightColors[COMMENT_ATTR_CLASS] = 'rgb(127, 0, 127)';
-textHighlightColors[NO_CLASS] = 'rgb(51, 51, 51)';
+textHighlightColors[VAR_LANG_CLASS] = 'rgb(130, 170, 255)';    // #82AAFF
+textHighlightColors[COMMENT_STR_CLASS] = 'rgb(195, 232, 141)'; // #C3E88D
+textHighlightColors[COMMENT_CLASS] = 'rgb(106, 153, 85)';      // #6A9955
+textHighlightColors[COMMENT_ATTR_CLASS] = 'rgb(199, 146, 234)'; // #C792EA
+textHighlightColors[NO_CLASS] = 'rgb(238, 240, 255)';           // #eef0ff
 
 export const textColorClasses = Object.keys(textHighlightColors);
 
@@ -192,7 +194,7 @@ export function loadPageWithFilterOptions(pageUrl, defaultFilters = {}, config =
             await driver.navigate().refresh();
 
             // make sure tree and editor have loaded
-            await driver.wait(until.elementLocated(By.id('embeddedEditor')), 30000);
+            await driver.wait(until.elementLocated(By.css('.monaco-editor')), 30000);
             if (config.checkJobsLoaded) { 
                 await driver.wait(until.elementLocated(By.id('refresh-icon')), 60000);
                 await driver.wait(until.elementLocated(By.id('job-list')), 10000);
@@ -308,8 +310,8 @@ export interface EditorElementTextLine {
 }
 
 export async function getTextLineElements(driver) :Promise<EditorElementTextLine[]> {
-    await driver.wait(until.elementLocated(By.css('.textviewContent > div > span')));
-    const textLineSpans = await driver.findElements(By.css('.textviewContent > div > span'));
+    await driver.wait(until.elementLocated(By.css('.monaco-editor .view-lines .view-line span')));
+    const textLineSpans = await driver.findElements(By.css('.monaco-editor .view-lines .view-line span'));
 
     if (!textLineSpans) return [];
 

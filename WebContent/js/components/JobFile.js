@@ -13,7 +13,7 @@ import React from 'react';
 import { Map, List } from 'immutable';
 import { connect } from 'react-redux';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
-import Description from '@material-ui/icons/Description';
+import InsertDriveFileOutlinedIcon from '@material-ui/icons/InsertDriveFileOutlined';
 import { hideMenu } from 'react-contextmenu/modules/actions';
 import { encodeURLComponent } from '../utilities/urlUtils';
 import { fetchJobFile, getFileLabel, changeSelectedContent, downloadFile } from '../actions/content';
@@ -119,52 +119,36 @@ class JobFile extends React.Component {
 
     renderJobFileMenu() {
         const { job, file } = this.props;
-        const menuItems = [
-            <MenuItem onClick={this.downloadJobFile} key="download">
-                <u>D</u>
-                ownload
-            </MenuItem>,
-            <MenuItem onClick={this.openInNewWindow} key="fullscreen">
-                <u>O</u>
-                pen in Fullscreen
-            </MenuItem>,
-        ];
-
-        if (this.isFileOpen()) {
-            menuItems.push(
-                <MenuItem onClick={() => { return this.refreshFile(); }} key="refresh">
-                    <u>R</u>
-                    efresh Content
-                </MenuItem>,
-            );
-        }
         return (
             <ContextMenu
                 id={`${job.get('jobId')}${file.id}`}
-                style={{ zIndex: '100' }}
                 onShow={() => { this.setState({ menuVisible: true }); }}
                 onHide={() => { this.setState({ menuVisible: false }); }}
             >
                 <MenuItem onClick={this.downloadJobFile}>
-                    <u>D</u>
-                    ownload
+                    Download
                 </MenuItem>
                 <MenuItem onClick={this.openInNewWindow}>
-                    <u>O</u>
-                    pen in Fullscreen
+                    Open in Fullscreen
                 </MenuItem>
+                {this.isFileOpen() && (
+                    <MenuItem onClick={() => { return this.refreshFile(); }}>
+                        Refresh Content
+                    </MenuItem>
+                )}
             </ContextMenu>
         );
     }
 
     render() {
         const { job, file } = this.props;
+        const isOpen = this.isFileOpen();
         return (
-            <div>
+            <div className="job-file-wrapper">
                 <li className="job-file" role="none">
                     <ContextMenuTrigger id={`${job.get('jobId')}${file.id}`}>
                         <span
-                            className="content-link"
+                            className={`content-link file-row${isOpen ? ' file-row--open' : ''}`}
                             onClick={() => { this.openFile(); }}
                             onContextMenu={() => { this.handleContextMenu(); }}
                             onKeyDown={this.handleKeyDown}
@@ -172,12 +156,12 @@ class JobFile extends React.Component {
                             role="treeitem"
                             aria-level="2"
                             aria-haspopup={true}
-                            style={this.state.menuVisible ? { border: '1px solid #333333' }
-                                : file.selectionType === 'selected' ? { background: '#dedede', border: '1px solid #333333' }
-                                    : file.selectionType === 'highlighted' ? { background: '#dedede' }
+                            style={this.state.menuVisible ? { background: 'var(--bg-hover)' }
+                                : file.selectionType === 'selected' ? { background: 'rgba(99, 102, 241, 0.12)' }
+                                    : file.selectionType === 'highlighted' ? { background: 'rgba(99, 102, 241, 0.06)' }
                                         : null}
                         >
-                            <Description className="node-icon" />
+                            <InsertDriveFileOutlinedIcon className="file-icon" />
                             <span className="job-file-label">{file.label}</span>
                         </span>
                     </ContextMenuTrigger>

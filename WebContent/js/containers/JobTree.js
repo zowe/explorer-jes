@@ -85,17 +85,9 @@ class JobNodeTree extends React.Component {
             });
         } else if (!isFetching) { // eslint-disable-line
             return (
-                <div
-                    className="job-instance"
-                    role="none"
-                >
-                    <li
-                        role="treeitem"
-                        aria-level="1"
-                    >
-                        <ErrorIcon className="node-icon" />
-                        <span className="job-label">{NO_JOBS_FOUND_MESSAGE}</span>
-                    </li>
+                <div className="empty-state" role="none" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '32px 16px' }}>
+                    <ErrorIcon style={{ fontSize: '32px', color: 'var(--text-muted)', opacity: 0.5, marginBottom: '8px' }} />
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: 500 }}>{NO_JOBS_FOUND_MESSAGE}</span>
                 </div>
             );
         }
@@ -104,22 +96,30 @@ class JobNodeTree extends React.Component {
 
     render() {
         const { dispatch, isFetching, jobs } = this.props;
-        const NOT_EXPANDED_FILTER_OFFSET_HEIGHT = 100;
-        const EXPANDED_FILTER_OFFSET_HEIGHT = 333;
+        const NOT_EXPANDED_FILTER_OFFSET_HEIGHT = 148;
+        const EXPANDED_FILTER_OFFSET_HEIGHT = 381;
         return (
-            <Card class="tree-card">
-                <CardHeader subheader={this.getFilterValues()} />
-                <div style={{ paddingRight: '33px', textAlign: 'right', color: '#2E77A1', display: jobs.size > 0 ? '' : 'none' }}>
-                    Jobs Found:
-                    {jobs.size}
+            <Card className="tree-card">
+                <CardHeader
+                    subheader={this.getFilterValues()}
+                    style={{ padding: '12px 16px 4px', borderBottom: 'none' }}
+                    subheaderTypographyProps={{ style: { color: 'inherit', fontSize: '12px', fontWeight: 500, letterSpacing: '0.3px' } }}
+                />
+                <div style={{ padding: '0 16px', display: 'flex', alignItems: 'center' }}>
+                    {jobs.size > 0 && (
+                        <div style={{ color: 'var(--accent-indigo)', fontSize: '12px', fontWeight: 600 }}>
+                            Jobs Found: {jobs.size}
+                        </div>
+                    )}
+                    <div style={{ marginLeft: 'auto' }}>
+                        <RefreshIcon
+                            isFetching={isFetching}
+                            submitAction={() => { return dispatch(fetchJobs(this.props)); }}
+                        />
+                    </div>
                 </div>
                 <CardContent id="tree-text-content">
                     <ConnectedFilter updateFiltersToggledFunc={this.updateFiltersToggled} />
-                    <RefreshIcon
-                        isFetching={isFetching}
-                        submitAction={() => { return dispatch(fetchJobs(this.props)); }}
-                        dispatch={dispatch}
-                    />
                     <FullHeightTree offset={this.state.filtersToggled ? EXPANDED_FILTER_OFFSET_HEIGHT : NOT_EXPANDED_FILTER_OFFSET_HEIGHT}>
                         <ul id="job-list" role="tree">
                             {this.renderJobs()}

@@ -86,9 +86,9 @@ describe('JES explorer spool file in url query (explorer-jes/#/viewer)', functio
         expect(fileName).to.be.equal(testFileName);
     });
 
-    it('Should handle rendering file contents in Orion editor', async () => {
+    it('Should handle rendering file contents in Monaco editor', async () => {
         // wait for content to load and check if the file is open correctly with specified strings
-        let viewer = await driver.findElement(By.css('#embeddedEditor > div > div > .textviewContent'));
+        let viewer = await driver.findElement(By.css('.monaco-editor .view-lines'));
         let text = await viewer.getText();
         text = text.trim();
         expect(text).to.have.lengthOf.greaterThan(1);

@@ -29,6 +29,7 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 const copyArray = [{
     from: path.resolve(__dirname, './WebContent/zlux-hooks'),
@@ -84,7 +85,7 @@ const htmlTask = new HtmlWebpackPlugin({ template: './WebContent/index.html' });
 const entry = path.join(__dirname, 'WebContent/js/index.js');
 const output = {
     path: path.join(__dirname, OUTPUT_FOLDER),
-    filename: 'app.[hash].min.js',
+    filename: 'app.[fullhash].min.js',
 };
 
 const defineEnvConstants = {
@@ -99,13 +100,35 @@ if (debug) {
 
 const definePlugin = new webpack.DefinePlugin(defineEnvConstants);
 
-const plugins = debug ? [cleanTask, definePlugin, copyTask, htmlTask] : [cleanTask, definePlugin,
+// Monaco Editor configuration:
+// - languages: [] = no built-in language contributions (we use custom JCL Monarch tokenizer)
+// - Only include minimal features needed for a JCL viewer/editor
+const monacoConfig = {
+    languages: [],
+    features: [
+        'bracketMatching',
+        'clipboard',
+        'contextmenu',
+        'cursorUndo',
+        'find',
+        'folding',
+        'fontZoom',
+        'hover',
+        'lineSelection',
+        'links',
+        'multicursor',
+        'wordHighlighter',
+    ],
+};
+
+const plugins = debug ? [cleanTask, definePlugin, copyTask, htmlTask, new MonacoWebpackPlugin(monacoConfig)] : [cleanTask, definePlugin,
     new CompressionPlugin({
         threshold: 100000,
         minRatio: 0.8,
     }),
     copyTask,
     htmlTask,
+    new MonacoWebpackPlugin(monacoConfig),
 ];
 
 if (analyze) {
@@ -115,6 +138,7 @@ if (analyze) {
 const optimization = {
     minimize: prod,
     minimizer: debug ? [] : [new TerserPlugin({
+        parallel: false,
         terserOptions: {
             ecma: 8,
             compress: {

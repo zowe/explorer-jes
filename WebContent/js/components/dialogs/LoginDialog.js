@@ -49,7 +49,7 @@ class LoginDialog extends React.Component {
             return (
                 <div
                     id="login-status-message"
-                    style={{ color: 'red' }}
+                    style={{ color: '#fb7185' }}
                     role="status"
                 >
                     {validationMessage}

@@ -16,7 +16,7 @@ import { Route, HashRouter, Switch } from 'react-router-dom';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { createLogger } from 'redux-logger';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProviderWrapper } from './themes/ThemeContext';
 import rootReducer from './reducers';
 import JobsView from './containers/pages/Jobs';
 import FullScreenView from './containers/pages/FullScreen';
@@ -32,30 +32,8 @@ if (getStorageItem(ENABLE_REDUX_LOGGER) === true) {
 
 const store = appMiddleware(createStore)(rootReducer, Map({}), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
-const theme = createMuiTheme({
-    overrides: {
-        MuiCard: {
-            root: {
-                backgroundColor: '#F5F8F8',
-            },
-        },
-        MuiAccordion: {
-            root: {
-                backgroundColor: '#F5F8F8',
-            },
-        },
-        MuiTypography: {
-            body1: {
-                fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
-                fontWeight: 400,
-                fontSize: '0.875rem',
-            },
-        },
-    },
-});
-
 ReactDOM.render(
-    <MuiThemeProvider theme={theme}>
+    <ThemeProviderWrapper>
         <Provider store={store}>
             <HashRouter>
                 <Switch>
@@ -65,6 +43,6 @@ ReactDOM.render(
                 </Switch>
             </HashRouter>
         </Provider>
-    </MuiThemeProvider>,
+    </ThemeProviderWrapper>,
     document.getElementById('app'),
 );

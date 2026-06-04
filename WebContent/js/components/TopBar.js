@@ -20,22 +20,36 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
 import SettingsIcon from '@material-ui/icons/Settings';
+import Brightness4Icon from '@material-ui/icons/Brightness4';
+import Brightness7Icon from '@material-ui/icons/Brightness7';
 import Popover from '@material-ui/core/Popover';
 import Tooltip from '@material-ui/core/Tooltip';
 import SettingForm from './Setting';
+import { useThemeMode } from '../themes/ThemeContext';
 
 const styles = {
     customizeToolbar: {
-        minHeight: 32,
-        maxHeight: 32,
+        minHeight: 48,
+        maxHeight: 48,
+        padding: '0 20px',
     },
     small: {
-        width: 20,
-        height: 20,
-        fontSize: '1rem',
+        width: 28,
+        height: 28,
+        fontSize: '0.75rem',
+        background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(124, 58, 237, 0.15))',
+        border: '1px solid rgba(79, 70, 229, 0.2)',
+        fontWeight: 700,
+        color: 'var(--text-primary)',
+    },
+    title: {
+        fontWeight: 700,
+        fontSize: '15px',
+        letterSpacing: '-0.3px',
+        color: 'var(--text-primary)',
     },
 };
-const APP_VERSION = process.env.APP_VERSION;
+
 class TopBar extends React.Component {
     constructor(props) {
         super(props);
@@ -55,22 +69,30 @@ class TopBar extends React.Component {
 
     render() {
         const { anchorEl } = this.state;
-        const { validated, username, classes } = this.props;
+        const { validated, username, classes, themeMode, toggleTheme } = this.props;
         const open = Boolean(anchorEl);
         const id = open ? 'simple-popover' : undefined;
         return (
-            <AppBar position="static" id="app-bar">
+            <AppBar position="static" id="app-bar" elevation={0}>
                 <Toolbar
                     className={classNames(classes.customizeToolbar)}
                     variant="dense"
                 >
-                    <Typography type="title" color="inherit" style={{ flex: 1 }}>
-                        JES Explorer
-                        <Typography variant="caption" color="inherit" style={{ flex: 1, paddingLeft: '5px' }}>v{ APP_VERSION }</Typography>
+                    <Typography type="title" color="inherit" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span className={classes.title}>Jes Explorer</span>
                     </Typography>
-                    <Tooltip title="Setting" placement="bottom">
-                        <IconButton color="inherit" aria-describedby={id} onClick={this.handleClick}>
-                            <SettingsIcon />
+                    <div style={{ flex: 1 }} />
+                    <Tooltip title={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'} placement="bottom">
+                        <IconButton color="inherit" onClick={toggleTheme} style={{ marginRight: '4px' }}>
+                            {themeMode === 'dark'
+                                ? <Brightness7Icon style={{ fontSize: '20px' }} />
+                                : <Brightness4Icon style={{ fontSize: '20px' }} />
+                            }
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Settings" placement="bottom">
+                        <IconButton color="inherit" aria-describedby={id} onClick={this.handleClick} style={{ marginRight: '4px' }}>
+                            <SettingsIcon style={{ fontSize: '20px' }} />
                         </IconButton>
                     </Tooltip>
                     <Popover
@@ -90,11 +112,11 @@ class TopBar extends React.Component {
                         <SettingForm />
                     </Popover>
                     {
-                        <Tooltip title={username} placement="bottom">
+                        validated && <Tooltip title={username} placement="bottom">
                             <IconButton color="inherit">
                                 <Avatar className={classes.small}>{username.charAt(0).toUpperCase()}</Avatar>
                             </IconButton>
-                        </Tooltip> && validated
+                        </Tooltip>
                     }
                 </Toolbar>
             </AppBar>
@@ -105,6 +127,8 @@ class TopBar extends React.Component {
 TopBar.propTypes = {
     validated: PropTypes.bool.isRequired,
     username: PropTypes.string.isRequired,
+    themeMode: PropTypes.string,
+    toggleTheme: PropTypes.func,
     // eslint-disable-next-line react/forbid-prop-types
     classes: PropTypes.object.isRequired,
 };
@@ -117,5 +141,11 @@ function mapStateToProps(state) {
     };
 }
 
-const ConnectedTopBar = connect(mapStateToProps)(withStyles(styles)(TopBar));
+const StyledTopBar = connect(mapStateToProps)(withStyles(styles)(TopBar));
+
+// Wrapper to inject theme context into class component
+const ConnectedTopBar = (props) => {
+    const { mode, toggleTheme } = useThemeMode();
+    return <StyledTopBar {...props} themeMode={mode} toggleTheme={toggleTheme} />;
+};
 export default ConnectedTopBar;

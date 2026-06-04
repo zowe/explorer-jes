@@ -19,6 +19,7 @@ export const REFRESH_CONTENT = 'REFRESH_CONTENT';
 export const RECEIVE_CONTENT = 'RECEIVE_CONTENT';
 export const REMOVE_CONTENT = 'REMOVE_CONTENT';
 export const UPDATE_CONTENT = 'UPDATE_CONTENT';
+export const UPDATE_CONTENT_AT_INDEX = 'UPDATE_CONTENT_AT_INDEX';
 export const CHANGE_SELECTED_CONTENT = 'CHANGE_SELECTED_CONTENT';
 export const INVALIDATE_CONTENT = 'INVALIDATE_CONTENT';
 
@@ -263,6 +264,14 @@ export function updateContent(content) {
     return {
         type: UPDATE_CONTENT,
         content,
+    };
+}
+
+export function updateContentAtIndex(content, index) {
+    return {
+        type: UPDATE_CONTENT_AT_INDEX,
+        content,
+        index,
     };
 }
 
