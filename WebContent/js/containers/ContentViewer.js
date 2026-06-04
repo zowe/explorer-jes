@@ -15,7 +15,6 @@ import { connect } from 'react-redux';
 import MonacoEditor from '../components/MonacoEditor';
 import { useThemeMode } from '../themes/ThemeContext';
 import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import ClearIcon from '@material-ui/icons/Clear';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -367,17 +366,28 @@ export class ContentViewer extends React.Component {
     render() {
         const { content, selectedContent } = this.props;
         const cardTextStyle = { paddingTop: '0', paddingBottom: '0' };
+        const isDark = this.props.themeMode === 'dark';
+        const headerStyle = {
+            paddingBottom: 0,
+            paddingTop: 0,
+            whiteSpace: 'nowrap',
+            overflowY: 'hidden',
+            overflowX: 'auto',
+            borderBottom: isDark ? '1px solid rgba(99, 102, 241, 0.08)' : '1px solid rgba(0, 0, 0, 0.06)',
+            background: isDark ? '#0f1022' : '#f1f5f9',
+        };
         return (
             <Card
                 id="content-viewer"
                 className="card-component"
                 style={{ marginBottom: 0 }}
             >
-                <CardHeader
+                <div
                     id="content-viewer-header"
-                    subheader={this.renderSubheader()}
-                    style={{ paddingBottom: 0, paddingTop: 0, whiteSpace: 'nowrap', overflowY: 'hidden', overflowX: 'auto', borderBottom: '1px solid var(--border-subtle)', background: 'var(--bg-surface)' }}
-                />
+                    style={headerStyle}
+                >
+                    {this.renderSubheader()}
+                </div>
                 <CardContent id="content-viewer-body" style={cardTextStyle} role="tabpanel">
                     <MonacoEditor
                         content={(content.get(selectedContent) && content.get(selectedContent).content) || ''}
