@@ -222,16 +222,16 @@ export const receivedJobFiles = Map({
                 isToggled: false,
                 selectionType: '',
                 files: List([
-                    Map({
+                    {
                         label: 'JESMSGLG',
-                        selectionType: '',
                         id: 2,
-                    }),
-                    Map({
-                        label: 'JESJCL',
                         selectionType: '',
+                    },
+                    {
+                        label: 'JESJCL',
                         id: 3,
-                    }),
+                        selectionType: '',
+                    },
                 ]),
             }),
         ],

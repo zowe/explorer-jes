@@ -89,10 +89,9 @@ function unselectAllJobs(jobs) {
 function unselectAllJobFiles(jobs) {
     return jobs.map(job => {
         if (job.get('files')) {
-            job.set('files', job.get('files').forEach(jobFile => {
-                const file = jobFile;
+            job.get('files').forEach(file => {
                 file.selectionType = '';
-            }));
+            });
         }
         return job;
     });
@@ -104,12 +103,11 @@ function highlightSelected(jobs) {
             return job.set('selectionType', 'highlighted');
         }
         if (job.get('files')) {
-            job.set('files', job.get('files').forEach(jobFile => {
-                const file = jobFile;
+            job.get('files').forEach(file => {
                 if (file.selectionType === 'selected') {
                     file.selectionType = 'highlighted';
                 }
-            }));
+            });
         }
         return job;
     });
@@ -118,12 +116,11 @@ function highlightSelected(jobs) {
 function selectFile(jobs, jobId, label) {
     return jobs.map(job => {
         if (job.get('files') && job.get('jobId') === jobId) {
-            job.set('files', job.get('files').forEach(jobFile => {
-                const file = jobFile;
+            job.get('files').forEach(file => {
                 if (file.label === label) {
                     file.selectionType = 'selected';
                 }
-            }));
+            });
         }
         return job;
     });
@@ -131,11 +128,11 @@ function selectFile(jobs, jobId, label) {
 
 function extractJobFiles(jobFiles) {
     return List(jobFiles.map(file => {
-        return Map({
+        return {
             label: file.ddname,
             id: file.id,
             selectionType: '',
-        });
+        };
     }));
 }
 

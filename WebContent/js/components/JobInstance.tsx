@@ -131,7 +131,7 @@ class JobInstance extends React.Component {
 
     handleJobToggle() {
         const { dispatch, job } = this.props;
-        if (!job.get('isToggled') && !job.get('files').length > 0) {
+        if (!job.get('isToggled') && !job.get('files').size > 0) {
             dispatch(fetchJobFiles(job.get('jobName'), job.get('jobId')));
         } else {
             dispatch(toggleJob(job.get('jobId')));
