@@ -8,7 +8,7 @@
  * Copyright IBM Corporation 2018, 2020
  */
 
-export function encodeURLComponent(URL) {
+export function encodeURLComponent(URL: string) {
     return encodeURIComponent(URL);
 }
 
@@ -20,6 +20,6 @@ export function whichServer() {
     return server;
 }
 
-export function atlasFetch(endpoint, content) {
+export function atlasFetch(endpoint: string, content) {
     return fetch(`https://${whichServer()}/ibmzosmf/api/v1/${endpoint}`, content);
 }

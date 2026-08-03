@@ -15,20 +15,12 @@ import { Provider } from 'react-redux';
 import { Route, HashRouter, Switch } from 'react-router-dom';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import { createLogger } from 'redux-logger';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import rootReducer from './reducers';
 import JobsView from './containers/pages/Jobs';
 import FullScreenView from './containers/pages/FullScreen';
-import { getStorageItem, ENABLE_REDUX_LOGGER } from './utilities/storageHelper';
 
-// redux dev tool extension enabled
-let appMiddleware;
-if (getStorageItem(ENABLE_REDUX_LOGGER) === true) {
-    appMiddleware = applyMiddleware(thunk, createLogger());
-} else {
-    appMiddleware = applyMiddleware(thunk);
-}
+const appMiddleware = applyMiddleware(thunk);
 
 const store = appMiddleware(createStore)(rootReducer, Map({}), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 

@@ -107,7 +107,7 @@ class JobNodeTree extends React.Component {
         const NOT_EXPANDED_FILTER_OFFSET_HEIGHT = 100;
         const EXPANDED_FILTER_OFFSET_HEIGHT = 333;
         return (
-            <Card class="tree-card">
+            <Card className="tree-card">
                 <CardHeader subheader={this.getFilterValues()} />
                 <div style={{ paddingRight: '33px', textAlign: 'right', color: '#2E77A1', display: jobs.size > 0 ? '' : 'none' }}>
                     Jobs Found:

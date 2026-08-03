@@ -9,47 +9,41 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
-import Switch from '@material-ui/core/Switch';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import styled from 'styled-components';
-import { ENABLE_REDUX_LOGGER, NOTIFICATION_DURATION, getStorageItem, setStorageItem } from '../utilities/storageHelper';
+import { NOTIFICATION_DURATION, getStorageItem, setStorageItem } from '../utilities/storageHelper';
 
-const Settings = styled.div`
-    width: 180px;
-    padding: 15px;
-    margin: 0px 0px 15px;
-    fontSize: 13px;
-    color: #39464e;
-    fontFamily: "Roboto", "Helvetica", "Arial", sans-serif;
-`;
-const H3 = styled.h3`
-    border-top-color:rgb(233, 233, 233);
-    border-top-style:solid;
-    border-top-width:1px;
-    color:rgb(57, 70, 78);
-    font-size:13px;
-    font-weight:700;
-    padding-top:8px;
-`;
+const settingsStyle = {
+    width: '180px',
+    padding: '15px',
+    margin: '0px 0px 15px',
+    fontSize: '13px',
+    color: '#39464e',
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+};
 
-const H5 = styled.h5`
-    color: red;
-`;
+const h3Style = {
+    borderTopColor: 'rgb(233, 233, 233)',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    color: 'rgb(57, 70, 78)',
+    fontSize: '13px',
+    fontWeight: '700',
+    paddingTop: '8px',
+};
 
-const Heading3 = styled.h3`
-`;
+const h5Style = {
+    color: 'red',
+};
 
-const SettingSection = styled.div`
-    width: 100%;
-    display: grid;
-    grid-template-columns: 100%
-`;
+const settingSectionStyle = {
+    width: '100%',
+    display: 'grid',
+    gridTemplateColumns: '100%',
+};
 
 const styles = {
     customizeLabel: {
@@ -63,12 +57,10 @@ class SettingFormBase extends React.Component {
         super(props);
 
         this.state = {
-            enableReduxLogger: getStorageItem(ENABLE_REDUX_LOGGER) || false,
             notificationDuration: getStorageItem(NOTIFICATION_DURATION) || 5000,
         };
 
         this.mapStorageKey = new Map();
-        this.mapStorageKey.set(ENABLE_REDUX_LOGGER, 'enableReduxLogger');
         this.mapStorageKey.set(NOTIFICATION_DURATION, 'notificationDuration');
 
         this.handleChange = this.handleChange.bind(this);
@@ -90,14 +82,13 @@ class SettingFormBase extends React.Component {
     };
 
     render() {
-        const { notificationDuration, enableReduxLogger } = this.state;
-        const { classes } = this.props;
+        const { notificationDuration } = this.state;
         return (
-            <Settings>
-                <Heading3>Preferences</Heading3>
+            <div style={settingsStyle}>
+                <h3>Preferences</h3>
                 <form>
-                    <H3>App</H3>
-                    <SettingSection>
+                    <h3 style={h3Style}>App</h3>
+                    <div style={settingSectionStyle}>
                         <FormControl>
                             <TextField
                                 select={true}
@@ -111,31 +102,15 @@ class SettingFormBase extends React.Component {
                                 <MenuItem id="notification-large" key="large" value="15000">Large(15s)</MenuItem>
                             </TextField>
                         </FormControl>
-                    </SettingSection>
-                    <H3>Logging</H3>
-                    <SettingSection>
-                        <FormControl>
-                            <FormControlLabel
-                                control={(<Switch
-                                    name={ENABLE_REDUX_LOGGER}
-                                    checked={enableReduxLogger}
-                                    onChange={this.handleChange}
-                                />)}
-                                label="Browser Console Logging"
-                                classes={{ label: classes.customizeLabel }}
-                            />
-                        </FormControl>
-                    </SettingSection>
+                    </div>
                 </form>
-                <H5 style={{ color: 'red' }}>*Preferences change require reload</H5>
-            </Settings>
+                <h5 style={h5Style}>*Preferences change require reload</h5>
+            </div>
         );
     }
 }
 
 SettingFormBase.propTypes = {
-    // eslint-disable-next-line react/forbid-prop-types
-    classes: PropTypes.object.isRequired,
 };
 
 const SettingForm = withStyles(styles)(SettingFormBase);

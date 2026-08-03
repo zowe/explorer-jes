@@ -20,7 +20,6 @@ import ClearIcon from '@material-ui/icons/Clear';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Button from '@material-ui/core/Button';
 import CircularProgressIcon from '@material-ui/core/CircularProgress';
-import queryString from 'query-string';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { fetchJobFileNoName, removeContent, updateContent, changeSelectedContent, submitJCL } from '../actions/content';
 
@@ -86,7 +85,7 @@ export class ContentViewer extends React.Component {
     editorReady = () => {
         const { locationSearch, dispatch } = this.props;
         if (locationSearch) {
-            const urlQueryParams = queryString.parse(locationSearch);
+            const urlQueryParams = Object.fromEntries(new URLSearchParams(locationSearch));
             dispatch(fetchJobFileNoName(urlQueryParams.jobName, urlQueryParams.jobId, urlQueryParams.fileId));
         }
     };
@@ -99,7 +98,7 @@ export class ContentViewer extends React.Component {
         dispatch(changeSelectedContent(newTabIndex));
     }
 
-    handleCloseTab(removeIndex) {
+    handleCloseTab(removeIndex: number) {
         const { selectedContent, dispatch } = this.props;
         dispatch(removeContent(removeIndex));
         // Do we need to change the selectedContent
@@ -236,7 +235,7 @@ export class ContentViewer extends React.Component {
                                     onKeyDown={e => { if (e.key === 'Enter') this.handleCloseTab(index); }}
                                 />
                             </div>
-                            {tabContent.isFetching ? <LinearProgress class="progress-bar" style={{ width: '100%', height: '2px' }} /> : null}
+                            {tabContent.isFetching ? <LinearProgress className="progress-bar" style={{ width: '100%', height: '2px' }} /> : null}
                             {this.renderTabContextMenu(index)}
                         </ContextMenuTrigger>
                     </div>

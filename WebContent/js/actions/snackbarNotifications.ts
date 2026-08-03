@@ -20,7 +20,7 @@ function pushMessage(message) {
     };
 }
 
-export function constructAndPushMessage(message) {
+export function constructAndPushMessage(message: string) {
     return pushMessage(Map({
         message,
     }));

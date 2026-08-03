@@ -114,12 +114,12 @@ export const jobId2 = 'JOB12345';
  * (label, returnCode, status, isToggled, files)
  */
 export const jobsStateWithOneJobSelected = List([
-    new Map({
+    Map({
         jobName,
         jobId,
         isSelected: false,
     }),
-    new Map({
+    Map({
         jobName: jobName2,
         jobId: jobId2,
         isSelected: true,

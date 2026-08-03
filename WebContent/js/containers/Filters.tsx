@@ -22,7 +22,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
-import queryString from 'query-string';
 import UpperCaseTextField from '../components/dialogs/UpperCaseTextField';
 import { getStorageItem, setStorageItem, LAST_FILTERS } from '../utilities/storageHelper';
 
@@ -114,7 +113,7 @@ export class Filters extends React.Component {
     componentDidMount() {
         const { location, dispatch, owner, username } = this.props;
         if (location && location.search) {
-            const urlQueryParams = queryString.parse(location.search);
+            const urlQueryParams = Object.fromEntries(new URLSearchParams(location.search));
 
             if (Object.keys(urlQueryParams).length > 0) {
                 const queryFilters = {};

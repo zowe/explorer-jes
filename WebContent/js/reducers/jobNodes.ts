@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * This program and the accompanying materials are made available under the terms of the
  * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -34,8 +35,8 @@ const INITIAL_STATE = Map({
 });
 
 function extractJobs(jobs) {
-    return jobs.map(job => {
-        return {
+    return List(jobs.map(job => {
+        return Map({
             jobName: job.jobname,
             jobId: job.jobid,
             label: `${job.jobname}:${job.jobid}`,
@@ -44,8 +45,8 @@ function extractJobs(jobs) {
             isToggled: false,
             selectionType: '',
             files: List(),
-        };
-    });
+        });
+    }));
 }
 
 function extractJob(job) {
@@ -88,10 +89,9 @@ function unselectAllJobs(jobs) {
 function unselectAllJobFiles(jobs) {
     return jobs.map(job => {
         if (job.get('files')) {
-            job.set('files', job.get('files').forEach(jobFile => {
-                const file = jobFile;
+            job.get('files').forEach(file => {
                 file.selectionType = '';
-            }));
+            });
         }
         return job;
     });
@@ -103,12 +103,11 @@ function highlightSelected(jobs) {
             return job.set('selectionType', 'highlighted');
         }
         if (job.get('files')) {
-            job.set('files', job.get('files').forEach(jobFile => {
-                const file = jobFile;
+            job.get('files').forEach(file => {
                 if (file.selectionType === 'selected') {
                     file.selectionType = 'highlighted';
                 }
-            }));
+            });
         }
         return job;
     });
@@ -117,25 +116,24 @@ function highlightSelected(jobs) {
 function selectFile(jobs, jobId, label) {
     return jobs.map(job => {
         if (job.get('files') && job.get('jobId') === jobId) {
-            job.set('files', job.get('files').forEach(jobFile => {
-                const file = jobFile;
+            job.get('files').forEach(file => {
                 if (file.label === label) {
                     file.selectionType = 'selected';
                 }
-            }));
+            });
         }
         return job;
     });
 }
 
 function extractJobFiles(jobFiles) {
-    return jobFiles.map(file => {
+    return List(jobFiles.map(file => {
         return {
             label: file.ddname,
             id: file.id,
             selectionType: '',
         };
-    });
+    }));
 }
 
 function createJobWithFiles(jobs, jobId, jobFiles) {

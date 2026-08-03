@@ -12,9 +12,6 @@
 import { By } from 'selenium-webdriver';
 import { expect } from 'chai';
 
-const chai = require('chai');
-chai.use(require('chai-things'));
-
 import {
     testElementAppearsXTimesByCSS
 } from 'explorer-fvt-utilities';

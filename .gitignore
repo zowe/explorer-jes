@@ -39,3 +39,6 @@ web
 .ehcache*
 *.data
 .vscode/tasks.json
+
+# TypeScript test compilation output
+dist-test/

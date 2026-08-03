@@ -11,8 +11,8 @@
       "pluginShortNameDefault": "JES Explorer", 
       "imageSrc": "img/explorer-JES.png"
     },
-    "descriptionKey": "JES Explorer",
-    "descriptionDefault": "IBM z/OS Jobs UI service",
+    "descriptionKey": "",
+    "descriptionDefault": "",
     "isSingleWindowApp": true,
     "defaultWindowStyle": {
       "width": 1400,

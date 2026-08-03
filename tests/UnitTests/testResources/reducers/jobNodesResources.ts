@@ -221,18 +221,18 @@ export const receivedJobFiles = Map({
                 status: 'OUTPUT',
                 isToggled: false,
                 selectionType: '',
-                files: [
+                files: List([
                     {
                         label: 'JESMSGLG',
-                        selectionType: '',
                         id: 2,
+                        selectionType: '',
                     },
                     {
                         label: 'JESJCL',
-                        selectionType: '',
                         id: 3,
+                        selectionType: '',
                     },
-                ],
+                ]),
             }),
         ],
     ),

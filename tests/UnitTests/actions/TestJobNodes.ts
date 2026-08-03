@@ -14,7 +14,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import nock from 'nock';
 import expect from 'expect';
-import rewire from 'rewire';
 import { fromJS, Map } from 'immutable';
 import * as JobNodes from '../../../WebContent/js/actions/jobNodes';
 import * as snackbar from '../../../WebContent/js/actions/snackbarNotifications';
@@ -27,9 +26,6 @@ describe('Action: jobNodes', () => {
     afterEach(() => {
         nock.cleanAll();
     });
-
-    // Use Rewire to export private functions
-    const rewiredJobNodes = rewire('../../../WebContent/js/actions/jobNodes');
 
     const middlewares = [thunk];
     const mockStore = configureMockStore(middlewares);
@@ -58,7 +54,7 @@ describe('Action: jobNodes', () => {
                 },
             ];
 
-            const rewiredGetURIQuery = rewiredJobNodes.__get__('getURIQuery');
+            const rewiredGetURIQuery = JobNodes.getURIQuery;
             nock(BASE_URL)
                 .get(`/zosmf/restjobs/jobs${rewiredGetURIQuery(filtersResources.filters)}`)
                 .reply(200, jobNodesResources.jobFetchResponse);
@@ -87,7 +83,7 @@ describe('Action: jobNodes', () => {
                 },
             ];
 
-            const rewiredGetURIQuery = rewiredJobNodes.__get__('getURIQuery');
+            const rewiredGetURIQuery = JobNodes.getURIQuery;
             nock(BASE_URL)
                 .get(`/zosmf/restjobs/jobs${rewiredGetURIQuery(filtersResources.filters)}`)
                 .reply(500, { message: apiResponseMessage });
@@ -171,7 +167,7 @@ describe('Action: jobNodes', () => {
             global.confirm = () => { return true; };
         });
         it('Should create an action to request a job purge and then receive confirmation', () => {
-            const purgeSuccessMessage = rewiredJobNodes.__get__('PURGE_JOB_SUCCESS_MESSAGE');
+            const purgeSuccessMessage = JobNodes.PURGE_JOB_SUCCESS_MESSAGE;
 
             const expectedActions = [{
                 type: JobNodes.REQUEST_PURGE_JOB,
@@ -193,7 +189,7 @@ describe('Action: jobNodes', () => {
                 jobId: jobNodesResources.jobId,
             }];
 
-            const node = new Map();
+            const node = Map();
             node.set('label', jobNodesResources.jobId);
 
             const store = mockStore(fromJS({
@@ -213,7 +209,7 @@ describe('Action: jobNodes', () => {
         });
 
         it('Should create an action to request a job purge and then invalidate', () => {
-            const purgeFail = rewiredJobNodes.__get__('PURGE_JOB_FAIL_MESSAGE');
+            const purgeFail = JobNodes.PURGE_JOB_FAIL_MESSAGE;
             const fetchResponseMessage = 'Job Not found';
             const expectedActions = [{
                 type: JobNodes.REQUEST_PURGE_JOB,
@@ -232,7 +228,7 @@ describe('Action: jobNodes', () => {
                 jobId: jobNodesResources.jobId,
             }];
 
-            const node = new Map();
+            const node = Map();
             node.set('label', jobNodesResources.jobId);
 
             const store = mockStore(fromJS({
@@ -254,7 +250,7 @@ describe('Action: jobNodes', () => {
 
     describe('cancelJob', () => {
         it('Should create an action to request a job cancel and then receive confirmation', () => {
-            const cancelSuccessMessage = rewiredJobNodes.__get__('CANCEL_JOB_SUCCESS_MESSAGE');
+            const cancelSuccessMessage = JobNodes.CANCEL_JOB_SUCCESS_MESSAGE;
 
             const expectedActions = [{
                 type: JobNodes.REQUEST_CANCEL_JOB,
@@ -273,7 +269,7 @@ describe('Action: jobNodes', () => {
                 jobId: jobNodesResources.jobId,
             }];
 
-            const node = new Map();
+            const node = Map();
             node.set('label', jobNodesResources.jobId);
 
             const store = mockStore(fromJS({
@@ -293,7 +289,7 @@ describe('Action: jobNodes', () => {
         });
 
         it('Should create an action to request a job cancel and then invalidate', () => {
-            const cancelFail = rewiredJobNodes.__get__('CANCEL_JOB_FAIL_MESSAGE');
+            const cancelFail = JobNodes.CANCEL_JOB_FAIL_MESSAGE;
             const fetchResponseMessage = 'Job Not found';
             const expectedActions = [{
                 type: JobNodes.REQUEST_CANCEL_JOB,
@@ -312,7 +308,7 @@ describe('Action: jobNodes', () => {
                 jobId: jobNodesResources.jobId,
             }];
 
-            const node = new Map();
+            const node = Map();
             node.set('label', jobNodesResources.jobId);
 
             const store = mockStore(fromJS({

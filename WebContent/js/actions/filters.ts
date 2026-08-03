@@ -21,14 +21,14 @@ export function setFilters(filters) {
     };
 }
 
-export function resetFilters(username) {
+export function resetFilters(username: string) {
     return {
         type: RESET_FILTERS,
         username,
     };
 }
 
-export function setOwnerAndFetchJobs(username, filters) {
+export function setOwnerAndFetchJobs(username: string, filters) {
     return dispatch => {
         dispatch(setFilters({ owner: username.toUpperCase() }));
         dispatch(fetchJobs({ ...filters, ...{ owner: username.toUpperCase() } }));

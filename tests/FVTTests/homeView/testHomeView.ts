@@ -18,9 +18,6 @@ import {
 import { By, until, WebDriver, WebElement } from 'selenium-webdriver';
 import { expect } from 'chai';
 
-const chai = require('chai');
-chai.use(require('chai-things'));
-
 import {
     findAndClickApplyButton,
     reloadAndOpenFilterPanel,

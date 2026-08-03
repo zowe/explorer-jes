@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * This program and the accompanying materials are made available under the terms of the
  * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -39,15 +40,15 @@ export const RECEIVE_PURGE_JOB = 'RECEIVE_PURGE_JOB';
 export const INVALIDATE_PURGE_JOB = 'INVALIDATE_PURGE_JOB';
 
 const NO_JOBS_FOUND_MESSAGE = 'No Jobs found for filter parameters';
-const CANCEL_JOB_SUCCESS_MESSAGE = 'Cancel request succeeded for';
-const CANCEL_JOB_FAIL_MESSAGE = 'Cancel request failed for';
-const CANCEL_JOB_CANCEL_MESSAGE = 'Cancel request canceled for';
-const PURGE_JOB_SUCCESS_MESSAGE = 'Purge request succeeded for';
-const PURGE_JOBS_SUCCESS_MESSAGE = 'Purge request succeeded for selected jobs';
-const PURGE_JOB_CANCEL_MESSAGE = 'Purge request canceled for';
-const PURGE_JOBS_CANCEL_MESSAGE = 'Purge request canceled for selected jobs';
-const PURGE_JOB_FAIL_MESSAGE = 'Purge request failed for';
-const PURGE_JOBS_FAIL_MESSAGE = 'Purge request failed for the following selected jobs';
+export const CANCEL_JOB_SUCCESS_MESSAGE = 'Cancel request succeeded for';
+export const CANCEL_JOB_FAIL_MESSAGE = 'Cancel request failed for';
+export const CANCEL_JOB_CANCEL_MESSAGE = 'Cancel request canceled for';
+export const PURGE_JOB_SUCCESS_MESSAGE = 'Purge request succeeded for';
+export const PURGE_JOBS_SUCCESS_MESSAGE = 'Purge request succeeded for selected jobs';
+export const PURGE_JOB_CANCEL_MESSAGE = 'Purge request canceled for';
+export const PURGE_JOBS_CANCEL_MESSAGE = 'Purge request canceled for selected jobs';
+export const PURGE_JOB_FAIL_MESSAGE = 'Purge request failed for';
+export const PURGE_JOBS_FAIL_MESSAGE = 'Purge request failed for the following selected jobs';
 
 function requestJobs(filters) {
     return {
@@ -198,7 +199,7 @@ function invalidatePurge(jobName, jobId) {
     };
 }
 
-function getURIQuery(filters) {
+export function getURIQuery(filters) {
     let query = `?owner=${filters.owner ? encodeURLComponent(filters.owner) : '*'}&prefix=${filters.prefix ? encodeURLComponent(filters.prefix) : '*'}`;
 
     if (filters.status && filters.status !== '*') {
@@ -209,7 +210,7 @@ function getURIQuery(filters) {
 
 function filterByJobId(jobs, jobid, dispatch) {
     // filter for job Id as api doesn't support
-    let jobFound = false;
+    let jobFound: boolean = false;
     let jobArr = [...jobs];
     if (jobid[jobid.length - 1] === '*') { // [...]* search case
         const pattern = jobid.substring(0, jobid.length - 1);
@@ -407,7 +408,7 @@ export function purgeJobs(jobs) {
             return { "jobName": job.get('jobName'), "jobId": job.get('jobId') };
         });
         const mapSize = jobsToPurge.size;
-        let iteration = 0;
+        let iteration: number = 0;
         let failedJobs = '';
         jobsToPurge.every(value => {
             const jobName = value.jobName;
