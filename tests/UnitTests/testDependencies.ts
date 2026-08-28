@@ -11,9 +11,11 @@
 import {
     LOCAL_HOST_SERVER_WITH_PROTOCOL as LOCAL_SERVER,
     LOCAL_HOSTNAME,
+    LOCAL_HOST_SERVER,
 } from './testResources/hostConstants';
 
 (global as any).location = {
     hostname: LOCAL_HOSTNAME,
+    host: LOCAL_HOST_SERVER,
     origin: `${LOCAL_SERVER}`,
 };
