@@ -12,14 +12,6 @@ export function encodeURLComponent(URL: string) {
     return encodeURIComponent(URL);
 }
 
-export function whichServer() {
-    let server = location.host;
-    if (location.hostname === 'tester.test.com') {
-        server = 'tester.test.com:7443';
-    }
-    return server;
-}
-
 export function atlasFetch(endpoint: string, content) {
-    return fetch(`https://${whichServer()}/ibmzosmf/api/v1/${endpoint}`, content);
+    return fetch(`https://${location.host}/ibmzosmf/api/v1/${endpoint}`, content);
 }
