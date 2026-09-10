@@ -77,7 +77,8 @@ cd "${ROOT_DIR}"
 echo 
 echo "[${SCRIPT_NAME}] fixing certificates permission caused by github actions ..."
 cd ${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}
-chmod 644 "localhost.cert.pem" "localhost.private.pem"
+chmod 644 "localhost.cert.pem"
+chmod 600 "localhost.private.pem"
 ls -l
 echo
 
