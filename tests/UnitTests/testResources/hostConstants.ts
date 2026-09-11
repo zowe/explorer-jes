@@ -19,7 +19,8 @@ Object.defineProperty(globalThis, 'location', {
         host: LOCAL_HOST_SERVER,
         hostname: LOCAL_HOSTNAME,
         protocol: 'https:',
-        href: LOCAL_HOST_SERVER_WITH_PROTOCOL
+        href: LOCAL_HOST_SERVER_WITH_PROTOCOL,
+        origin: LOCAL_HOST_SERVER_WITH_PROTOCOL
     },
     writable: true, // Allows individual tests to change it if needed
     configurable: true
