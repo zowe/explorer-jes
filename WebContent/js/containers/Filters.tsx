@@ -30,6 +30,20 @@ import { fetchJobs } from '../actions/jobNodes';
 
 const STATUS_TYPES = ['ACTIVE'];
 const SORTING_TYPES = ['DEFAULT', 'PREFIX', 'JOB ID'];
+const APP2APP_KEYS = ['owner', 'prefix', 'jobId', 'status', 'expand', 'showDD'];
+
+function sanitizeApp2AppFilters(raw) {
+    if (!raw || typeof raw !== 'object') {
+        return null;
+    }
+    const clean = {};
+    APP2APP_KEYS.forEach(key => {
+        if (Object.prototype.hasOwnProperty.call(raw, key) && typeof raw[key] !== 'object') {
+            clean[key] = raw[key];
+        }
+    });
+    return Object.keys(clean).length > 0 ? clean : null;
+}
 
 export class Filters extends React.Component {
     static renderStatusOptions() {
@@ -66,6 +80,10 @@ export class Filters extends React.Component {
         }
         const dispatchApp2AppData = this.dispatchApp2AppData;
         function receiveMessage(event) {
+            // window.parent is the only legitimate sender, reject everything else
+            if (event.source !== window.parent) {
+                return;
+            }
             const data = event.data;
             let messageData;
             if (data) {
@@ -118,7 +136,7 @@ export class Filters extends React.Component {
             if (Object.keys(urlQueryParams).length > 0) {
                 const queryFilters = {};
                 Object.keys(urlQueryParams).forEach(filter => {
-                    if (['owner', 'prefix', 'jobId', 'status', 'expand', 'showDD'].indexOf(filter) > -1) {
+                    if (APP2APP_KEYS.indexOf(filter) > -1) {
                         queryFilters[filter] = urlQueryParams[filter].toUpperCase();
                     }
                 });
@@ -151,9 +169,10 @@ export class Filters extends React.Component {
 
     dispatchApp2AppData(messageData) {
         const { dispatch } = this.props;
-        if (messageData) {
-            dispatch(setFilters(messageData));
-            dispatch(fetchJobs(messageData));
+        const filters = sanitizeApp2AppFilters(messageData);
+        if (filters) {
+            dispatch(setFilters(filters));
+            dispatch(fetchJobs(filters));
         }
     }
 
