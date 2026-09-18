@@ -9,11 +9,19 @@
  */
 
 import {
-    LOCAL_HOST_SERVER_WITH_PROTOCOL as LOCAL_SERVER,
     LOCAL_HOSTNAME,
+    LOCAL_HOST_SERVER,
+    LOCAL_HOST_SERVER_WITH_PROTOCOL
 } from './testResources/hostConstants';
 
-(global as any).location = {
-    hostname: LOCAL_HOSTNAME,
-    origin: `${LOCAL_SERVER}`,
-};
+Object.defineProperty(globalThis, 'location', {
+    value: {
+        host: LOCAL_HOST_SERVER,                       
+        hostname: LOCAL_HOSTNAME,                     
+        protocol: 'https:',                            
+        href: LOCAL_HOST_SERVER_WITH_PROTOCOL,         
+        origin: LOCAL_HOST_SERVER_WITH_PROTOCOL        
+    },
+    writable: true,
+    configurable: true
+});
