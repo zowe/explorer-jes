@@ -136,7 +136,7 @@ export class Filters extends React.Component {
             if (Object.keys(urlQueryParams).length > 0) {
                 const queryFilters = {};
                 Object.keys(urlQueryParams).forEach(filter => {
-                    if (APP2APP_KEYS.indexOf(filter) > -1) {
+                    if (APP2APP_KEYS.includes(filter)) {
                         queryFilters[filter] = urlQueryParams[filter].toUpperCase();
                     }
                 });
