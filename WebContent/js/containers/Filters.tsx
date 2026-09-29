@@ -24,26 +24,18 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import UpperCaseTextField from '../components/dialogs/UpperCaseTextField';
 import { getStorageItem, setStorageItem, LAST_FILTERS } from '../utilities/storageHelper';
+import {
+    STATUS_TYPES,
+    isTrustedApp2AppSender,
+    sanitizeApp2AppFilters,
+    readLaunchMetadataFromStorage,
+} from '../utilities/app2app';
 
 import { setFilters, resetFilters, setOwnerAndFetchJobs } from '../actions/filters';
 import { fetchJobs } from '../actions/jobNodes';
 
-const STATUS_TYPES = ['ACTIVE'];
 const SORTING_TYPES = ['DEFAULT', 'PREFIX', 'JOB ID'];
 const APP2APP_KEYS = ['owner', 'prefix', 'jobId', 'status', 'expand', 'showDD'];
-
-function sanitizeApp2AppFilters(raw) {
-    if (!raw || typeof raw !== 'object') {
-        return null;
-    }
-    const clean = {};
-    APP2APP_KEYS.forEach(key => {
-        if (Object.prototype.hasOwnProperty.call(raw, key) && typeof raw[key] !== 'object') {
-            clean[key] = raw[key];
-        }
-    });
-    return Object.keys(clean).length > 0 ? clean : null;
-}
 
 export class Filters extends React.Component {
     static renderStatusOptions() {
@@ -80,8 +72,7 @@ export class Filters extends React.Component {
         }
         const dispatchApp2AppData = this.dispatchApp2AppData;
         function receiveMessage(event) {
-            // window.parent is the only legitimate sender, reject everything else
-            if (event.source !== window.parent) {
+            if (!isTrustedApp2AppSender(event)) {
                 return;
             }
             const data = event.data;
@@ -95,7 +86,7 @@ export class Filters extends React.Component {
                             } else if (data.dispatchData.data) {
                                 messageData = data.dispatchData.data;
                             } else {
-                                messageData = JSON.parse(localStorage.getItem('ZoweZLUX.iframe.launchMetadata'));
+                                messageData = readLaunchMetadataFromStorage();
                                 if (messageData && messageData.data) {
                                     messageData = messageData.data;
                                 }
@@ -124,7 +115,8 @@ export class Filters extends React.Component {
                 }
             }
         }
-        window.addEventListener('message', e => { receiveMessage(e); }, false);
+        this.receiveMessage = receiveMessage;
+        window.addEventListener('message', this.receiveMessage, false);
         window.top.postMessage('iframeload', '*');
     }
 
@@ -159,6 +151,7 @@ export class Filters extends React.Component {
     }
 
     componentWillUnmount() {
+        window.removeEventListener('message', this.receiveMessage, false);
     }
 
     setFocusOnOwner() {
