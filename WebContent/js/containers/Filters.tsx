@@ -24,12 +24,18 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import UpperCaseTextField from '../components/dialogs/UpperCaseTextField';
 import { getStorageItem, setStorageItem, LAST_FILTERS } from '../utilities/storageHelper';
+import {
+    STATUS_TYPES,
+    isTrustedApp2AppSender,
+    sanitizeApp2AppFilters,
+    readLaunchMetadataFromStorage,
+} from '../utilities/app2app';
 
 import { setFilters, resetFilters, setOwnerAndFetchJobs } from '../actions/filters';
 import { fetchJobs } from '../actions/jobNodes';
 
-const STATUS_TYPES = ['ACTIVE'];
 const SORTING_TYPES = ['DEFAULT', 'PREFIX', 'JOB ID'];
+const APP2APP_KEYS = ['owner', 'prefix', 'jobId', 'status', 'expand', 'showDD'];
 
 export class Filters extends React.Component {
     static renderStatusOptions() {
@@ -66,6 +72,9 @@ export class Filters extends React.Component {
         }
         const dispatchApp2AppData = this.dispatchApp2AppData;
         function receiveMessage(event) {
+            if (!isTrustedApp2AppSender(event)) {
+                return;
+            }
             const data = event.data;
             let messageData;
             if (data) {
@@ -77,7 +86,7 @@ export class Filters extends React.Component {
                             } else if (data.dispatchData.data) {
                                 messageData = data.dispatchData.data;
                             } else {
-                                messageData = JSON.parse(localStorage.getItem('ZoweZLUX.iframe.launchMetadata'));
+                                messageData = readLaunchMetadataFromStorage();
                                 if (messageData && messageData.data) {
                                     messageData = messageData.data;
                                 }
@@ -106,7 +115,8 @@ export class Filters extends React.Component {
                 }
             }
         }
-        window.addEventListener('message', e => { receiveMessage(e); }, false);
+        this.receiveMessage = receiveMessage;
+        window.addEventListener('message', this.receiveMessage, false);
         window.top.postMessage('iframeload', '*');
     }
 
@@ -118,7 +128,7 @@ export class Filters extends React.Component {
             if (Object.keys(urlQueryParams).length > 0) {
                 const queryFilters = {};
                 Object.keys(urlQueryParams).forEach(filter => {
-                    if (['owner', 'prefix', 'jobId', 'status', 'expand', 'showDD'].indexOf(filter) > -1) {
+                    if (APP2APP_KEYS.includes(filter)) {
                         queryFilters[filter] = urlQueryParams[filter].toUpperCase();
                     }
                 });
@@ -141,6 +151,7 @@ export class Filters extends React.Component {
     }
 
     componentWillUnmount() {
+        window.removeEventListener('message', this.receiveMessage, false);
     }
 
     setFocusOnOwner() {
@@ -151,9 +162,10 @@ export class Filters extends React.Component {
 
     dispatchApp2AppData(messageData) {
         const { dispatch } = this.props;
-        if (messageData) {
-            dispatch(setFilters(messageData));
-            dispatch(fetchJobs(messageData));
+        const filters = sanitizeApp2AppFilters(messageData);
+        if (filters) {
+            dispatch(setFilters(filters));
+            dispatch(fetchJobs(filters));
         }
     }
 

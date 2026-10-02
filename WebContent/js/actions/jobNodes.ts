@@ -203,7 +203,7 @@ export function getURIQuery(filters) {
     let query = `?owner=${filters.owner ? encodeURLComponent(filters.owner) : '*'}&prefix=${filters.prefix ? encodeURLComponent(filters.prefix) : '*'}`;
 
     if (filters.status && filters.status !== '*') {
-        query += `&status=${filters.status}`;
+        query += `&status=${encodeURLComponent(filters.status)}`;
     }
     return query;
 }
