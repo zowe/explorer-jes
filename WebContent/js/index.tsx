@@ -23,7 +23,7 @@ import FullScreenView from './containers/pages/FullScreen';
 const appMiddleware = applyMiddleware(thunk);
 
 const enableReduxDevTools = process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION__;
-const store = appMiddleware(createStore)(rootReducer, Map({}), enableReduxDevTools && window.__REDUX_DEVTOOLS_EXTENSION__());
+const store = appMiddleware(createStore)(rootReducer, Map({}), enableReduxDevTools ? window.__REDUX_DEVTOOLS_EXTENSION__() : undefined);
 
 const theme = createMuiTheme({
     overrides: {
