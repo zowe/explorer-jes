@@ -11,7 +11,7 @@
 
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
-import { encodeURLComponent, atlasFetch } from '../utilities/urlUtils';
+import { encodeURLComponent, atlasFetch, isValidJobName, isValidJobId, isValidFileId } from '../utilities/urlUtils';
 import { constructAndPushMessage } from './snackbarNotifications';
 import { checkForValidationFailure } from './validation';
 
@@ -28,6 +28,7 @@ export const RECEIVE_SUBMIT_JCL = 'RECEIVE_SUBMIT_JCL';
 export const INVALIDATE_SUBMIT_JCL = 'INVALIDATE_SUBMIT_JCL';
 
 export const NO_CONTENT_IN_RESPONSE_ERROR_MESSAGE = 'No Content in response from API';
+export const INVALID_JOB_FILE_PARAMETERS_MESSAGE = 'Invalid job name, job ID or file ID';
 
 function requestContent(jobName, jobId, fileName, fileId, fileLabel, refreshFile: boolean) {
     return {
@@ -200,7 +201,7 @@ export function downloadAllJobFiles(jobName, jobId) {
 }
 
 function getFileNameFromJob(jobName, jobId, fileId) {
-    const contentPath = `zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}/files`;
+    const contentPath = `zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${encodeURLComponent(jobId)}/files`;
     return atlasFetch(contentPath, { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
         .then(response => {
             if (response.ok) {
@@ -219,9 +220,15 @@ function getFileNameFromJob(jobName, jobId, fileId) {
         });
 }
 
+// Reached from the /viewer route with values taken straight from the URL, so they
+// are untrusted: reject anything that is not a well-formed job name/id/file id
+// before it is put into a request path.
 export function fetchJobFileNoName(jobName, jobId, fileId) {
     return dispatch => {
-        const contentPath = `zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${jobId}/files/${fileId}/records`;
+        if (!isValidJobName(jobName) || !isValidJobId(jobId) || !isValidFileId(fileId)) {
+            return Promise.resolve(dispatch(constructAndPushMessage(INVALID_JOB_FILE_PARAMETERS_MESSAGE)));
+        }
+        const contentPath = `zosmf/restjobs/jobs/${encodeURLComponent(jobName)}/${encodeURLComponent(jobId)}/files/${encodeURLComponent(fileId)}/records`;
         dispatch(requestContent(jobName, jobId, '', fileId, getFileLabel(jobId)));
         return atlasFetch(contentPath, { credentials: 'include', headers: { 'X-CSRF-ZOSMF-HEADER': '*' } })
             .then(response => {
