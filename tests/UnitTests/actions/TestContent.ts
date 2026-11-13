@@ -189,6 +189,31 @@ describe('Action: content', () => {
                     expect(store.getActions()).toEqual(expectedActions);
                 });
         });
+
+        const invalidParams = [
+            { desc: 'path traversal in jobId', jobName: 'A', jobId: '../../../../?', fileId: '1' },
+            { desc: 'bare dot segment in jobId', jobName: 'A', jobId: '..', fileId: '1' },
+            { desc: 'path traversal in fileId', jobName: 'A', jobId: contentResources.jobId, fileId: '../../x?' },
+            { desc: 'dot segment in jobName', jobName: '..', jobId: contentResources.jobId, fileId: '1' },
+            { desc: 'slash in jobName', jobName: 'A/B', jobId: contentResources.jobId, fileId: '1' },
+            { desc: 'missing jobId', jobName: 'A', jobId: undefined, fileId: '1' },
+            { desc: 'missing fileId', jobName: 'A', jobId: contentResources.jobId, fileId: undefined },
+        ];
+        invalidParams.forEach(({ desc, jobName, jobId, fileId }) => {
+            it(`Should reject ${desc} without making a request`, () => {
+                const store = mockStore();
+                // no REQUEST_CONTENT means the fetch was never reached
+                return store.dispatch(contentActions.fetchJobFileNoName(jobName, jobId, fileId))
+                    .then(() => {
+                        expect(store.getActions()).toEqual([
+                            {
+                                type: snackbarNotifications.PUSH_NOTIFICATION_MESSAGE,
+                                message: Map({ message: contentActions.INVALID_JOB_FILE_PARAMETERS_MESSAGE }),
+                            },
+                        ]);
+                    });
+            });
+        });
     });
 
     describe('removeContent', () => {
